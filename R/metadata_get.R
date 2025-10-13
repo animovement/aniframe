@@ -1,8 +1,5 @@
 #' Get metadata
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
-#'
 #' @param data aniframe
 #'
 #' @return the metadata associated with the aniframe
