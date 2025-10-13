@@ -1,6 +1,8 @@
+citHeader("To cite aniframe in publications use:")
 
 bibentry(bibtype = "Misc",
-         key = "roaldarbol:2025",
+         key = "aniframe",
+         doi = "10.5281/zenodo.17344598",
          title = "aniframe: An S3 class for movement data",
          author = person(given = "Mikkel",
                          family = "Roald-Arbøl",
