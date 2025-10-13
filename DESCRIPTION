@@ -7,7 +7,7 @@ Authors@R:
       "Mikkel", 
       "Roald-Arbøl", 
       role = c("aut", "cre"), 
-      email = "trackballr.htmc8@passmail.net",
+      email = "aniframe.pkelz@passmail.com",
       comment = c(ORCID = "0000-0002-9998-0058")
       )
 Description: An S3 class for movement data.
