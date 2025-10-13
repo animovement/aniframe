@@ -21,6 +21,19 @@ test_that("as_aniframe works with minimal required columns", {
   expect_true("individual" %in% names(result))
 })
 
+test_that("as_aniframe works with only a z column", {
+  df <- data.frame(
+    time = 1:5,
+    z = 1:5
+  )
+
+  result <- suppressMessages(as_aniframe(df))
+
+  expect_s3_class(result, "aniframe")
+  expect_true("keypoint" %in% names(result))
+  expect_true("individual" %in% names(result))
+})
+
 test_that("as_aniframe creates keypoint column with default value", {
   df <- data.frame(
     time = 1:5,
