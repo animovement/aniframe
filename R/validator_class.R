@@ -6,7 +6,7 @@ check_class <- function(x, cls) {
 }
 
 ensure_class <- function(x, cls) {
-  if (!check_class(cls)) {
+  if (!check_class(x, cls)) {
     cli::cli_abort("Expected an object of class {cls}, but got {class(x)}.")
   }
 }

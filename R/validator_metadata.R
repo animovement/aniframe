@@ -15,7 +15,7 @@ check_metadata_exists <- function(data) {
 ensure_metadata_exists <- function(data) {
   if (!check_metadata_exists(data)) {
     cli::cli_abort(
-      "Metadata hasn't been initiated. Initialise it with `init_metadata`."
+      "Metadata hasn't been initiated. Initialise it with `set_metadata`."
     )
   }
 }
@@ -24,7 +24,7 @@ ensure_metadata_exists <- function(data) {
 # Is the "metadata" attribute a list?
 # ------------------------------------------------------------------
 check_is_list <- function(x) {
-  is.list(x) |> invisible()
+  is.list(x) && !is.data.frame(x) |> invisible()
 }
 
 ensure_is_list <- function(x) {
