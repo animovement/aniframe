@@ -11,8 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![R-CMD-check](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
 badge](https://roaldarbol.r-universe.dev/badges/aniframe)](https://roaldarbol.r-universe.dev)
-[![Codecov test
-coverage](https://codecov.io/gh/roaldarbol/aniframe/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/aniframe)
+[![codecov](https://codecov.io/gh/roaldarbol/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/roaldarbol/aniframe)
 <!-- badges: end -->
 
 *An S3 class for movement data*
