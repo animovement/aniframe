@@ -11,13 +11,14 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+install.packages('aniframe', repos = c('https://roaldarbol.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 
 # aniframe
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17344598.svg)](https://doi.org/10.5281/zenodo.17344598)
 [![R-CMD-check](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
 badge](https://roaldarbol.r-universe.dev/badges/aniframe)](https://roaldarbol.r-universe.dev)
@@ -54,6 +55,6 @@ If you enjoy the package, please make sure to cite it. If you find a bug, feel f
 
 To cite *aniframe* in publications use:
 
-```{r eval=FALSE}
+```{r}
 citation("aniframe")
 ```

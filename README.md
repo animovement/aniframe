@@ -7,7 +7,7 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17344598.svg)](https://doi.org/10.5281/zenodo.17344598)
 [![R-CMD-check](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
 badge](https://roaldarbol.r-universe.dev/badges/aniframe)](https://roaldarbol.r-universe.dev)
@@ -49,4 +49,22 @@ To cite *aniframe* in publications use:
 
 ``` r
 citation("aniframe")
+#> To cite aniframe in publications use:
+#> 
+#>   Roald-Arbøl M (2025). "aniframe: An S3 class for movement data."
+#>   doi:10.5281/zenodo.17344598
+#>   <https://doi.org/10.5281/zenodo.17344598>,
+#>   <http://www.roald-arboel.com/aniframe/>.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Misc{aniframe,
+#>     doi = {10.5281/zenodo.17344598},
+#>     title = {aniframe: An S3 class for movement data},
+#>     author = {Mikkel Roald-Arbøl},
+#>     year = {2025},
+#>     url = {http://www.roald-arboel.com/aniframe/},
+#>     abstract = {An S3 class for movement data.},
+#>     version = {0.1.0},
+#>   }
 ```
