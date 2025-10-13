@@ -19,6 +19,11 @@
       "Version": "2.4.6",
       "Source": "Repository"
     },
+    "dplyr": {
+      "Package": "dplyr",
+      "Version": "1.1.4",
+      "Source": "Repository"
+    },
     "renv": {
       "Package": "renv",
       "Version": "1.0.3",

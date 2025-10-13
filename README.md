@@ -1,0 +1,53 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# aniframe
+
+<!-- badges: start -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![DOI](https://zenodo.org/badge/773406370.svg)](https://zenodo.org/doi/10.5281/zenodo.13235277)
+[![R-CMD-check](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml)
+[![aniframe status
+badge](https://roaldarbol.r-universe.dev/badges/aniframe)](https://roaldarbol.r-universe.dev)
+[![Codecov test
+coverage](https://codecov.io/gh/roaldarbol/aniframe/graph/badge.svg)](https://app.codecov.io/gh/roaldarbol/aniframe)
+<!-- badges: end -->
+
+*An S3 class for movement data*
+
+The primary aim of the *aniframe* package is to provide an S3 data class
+that serves as the core data class in the *animovement* package.
+
+## Installation
+
+You can install the development version of *aniframe* with:
+
+``` r
+install.packages('aniframe', repos = c('https://roaldarbol.r-universe.dev', 'https://cloud.r-project.org'))
+```
+
+Once you have installed the package, you can load it with:
+
+``` r
+library("aniframe")
+```
+
+## Status
+
+> **Warning**
+>
+> 🏗️ The package is currently in early development and the interface is
+> subject to change. Feel free to play around and provide feedback.
+
+## Citation
+
+If you enjoy the package, please make sure to cite it. If you find a
+bug, feel free to open an issue.
+
+To cite *aniframe* in publications use:
+
+``` r
+citation("aniframe")
+```

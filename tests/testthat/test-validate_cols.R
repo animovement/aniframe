@@ -1,7 +1,6 @@
 # Tests for aniframe validator
 
 library(testthat)
-library(tibble)
 
 # ---- Test validate_cols() ----
 

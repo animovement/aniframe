@@ -4,18 +4,18 @@
 
 #' Ungroup an aniframe
 #'
-#' @param .data An aniframe object
+#' @param x An aniframe object
 #' @param ... Additional arguments passed to dplyr::ungroup
 #' @return An ungrouped aniframe
 #' @export
-ungroup.aniframe <- function(.data, ...) {
+ungroup.aniframe <- function(x, ...) {
   # if (!quiet) {
     cli::cli_warn(
       "Ungrouping an aniframe data frame makes errors more likely. Proceed with care."
     )
   # }
-  md <- get_metadata(.data)
-  class(.data) <- setdiff(class(.data), "aniframe")
+  md <- get_metadata(x)
+  class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
   x <- new_aniframe(x)
   x <- set_metadata(x, metadata = md)

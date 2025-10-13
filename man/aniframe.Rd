@@ -26,7 +26,7 @@ aniframe(
 An aniframe object (tibble with aniframe class)
 }
 \description{
-An S3 class for movement data
+An S3 class for movement data.
 
 Creates a specialized data frame for animal tracking data with required
 columns for positional data (x/y/z) and time, plus optional columns for

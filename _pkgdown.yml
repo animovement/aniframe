@@ -56,18 +56,19 @@ reference:
       - ungroup.aniframe
 
   - title: "Conversion helpers"
-    desc: >
+    desc: |
       Methods that let you treat aniframe objects like regular data frames.
     contents:
       - as.data.frame.aniframe
-      - `[.aniframe`
-      - `[[.aniframe`
-      - `$<-.aniframe`
-      - `$.aniframe`
+      - "[.aniframe"
+      - "[[.aniframe"
+      - "[[<-.aniframe"
+      - "[<-.aniframe"
+      - "$<-.aniframe"
+      - "$.aniframe"
 
   - title: "Utility functions"
-    desc: >
+    desc: |
       Miscellaneous helpers that are part of the public API.
     contents:
-      - set_sampling_rate
       - names<-.aniframe    # if you expose the setter for names

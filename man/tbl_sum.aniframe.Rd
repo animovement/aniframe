@@ -4,7 +4,7 @@
 \alias{tbl_sum.aniframe}
 \title{Custom tibble summary for aniframe}
 \usage{
-tbl_sum.aniframe(x, ...)
+\method{tbl_sum}{aniframe}(x, ...)
 }
 \arguments{
 \item{x}{An aniframe object}

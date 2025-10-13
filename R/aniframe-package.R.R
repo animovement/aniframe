@@ -12,6 +12,7 @@
 #'   select
 #'   slice
 #'   ungroup
+#'
 #' @importFrom rlang .data
 #' @keywords internal
 "_PACKAGE"

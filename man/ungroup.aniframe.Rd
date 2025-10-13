@@ -4,10 +4,10 @@
 \alias{ungroup.aniframe}
 \title{Ungroup an aniframe}
 \usage{
-\method{ungroup}{aniframe}(.data, ...)
+\method{ungroup}{aniframe}(x, ...)
 }
 \arguments{
-\item{.data}{An aniframe object}
+\item{x}{An aniframe object}
 
 \item{...}{Additional arguments passed to dplyr::ungroup}
 }
