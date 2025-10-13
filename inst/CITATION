@@ -1,0 +1,12 @@
+
+bibentry(bibtype = "Misc",
+         key = "roaldarbol:2025",
+         title = "aniframe: An S3 class for movement data",
+         author = person(given = "Mikkel",
+                         family = "Roald-Arbøl",
+                         email = "trackballr.htmc8@passmail.net",
+                         comment = c(ORCID = "0000-0002-9998-0058")),
+         year = "2025",
+         url = "http://www.roald-arboel.com/aniframe/",
+         abstract = "An S3 class for movement data.",
+         version = "0.1.0")

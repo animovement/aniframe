@@ -1,0 +1,31 @@
+Package: aniframe
+Type: Package
+Title: An S3 class for movement data
+Version: 0.1.0
+Authors@R: 
+    person(
+      "Mikkel", 
+      "Roald-Arbøl", 
+      role = c("aut", "cre"), 
+      email = "trackballr.htmc8@passmail.net",
+      comment = c(ORCID = "0000-0002-9998-0058")
+      )
+Description: An S3 class for movement data
+License: MIT + file LICENSE
+URL: http://www.roald-arboel.com/aniframe/, https://github.com/roaldarbol/aniframe/
+BugReports: https://github.com/roaldarbol/aniframe/issues
+Encoding: UTF-8
+LazyData: true
+Imports: 
+  cli,
+  dplyr,
+  rlang,
+  pillar
+Suggests: 
+  knitr,
+  rmarkdown,
+  testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+VignetteBuilder: knitr

@@ -1,0 +1,25 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+
+cff-version: 1.2.0
+message: 'To cite package "aniframe" in publications use:'
+type: software
+license: MIT
+title: 'aniframe: An S3 class for movement data'
+version: 0.1.0
+date-released: 2025-10-13
+abstract: An S3 class for movement data
+authors:
+- family-names: Roald-Arbøl
+  given-names: Mikkel
+  email: trackballr.htmc8@passmail.net
+  orcid: https://orcid.org/0000-0002-9998-0058
+url: http://www.roald-arboel.com/aniframe/
+contact:
+- family-names: Roald-Arbøl
+  given-names: Mikkel
+  email: trackballr.htmc8@passmail.net
+  orcid: https://orcid.org/0000-0002-9998-0058
+

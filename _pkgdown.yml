@@ -1,0 +1,73 @@
+url: http://www.roald-arboel.com/aniframe/
+home:
+  title: "aniframe – a S3 class for movement data"
+
+authors:
+  - name: "Mikkel Roald‑Arbøl"
+    href: "https://roald-arboel.com"
+
+template:
+  bootstrap: 5
+  light-switch: true
+
+navbar:
+  structure:
+    left:
+      - intro
+      - reference
+      - news
+    right:
+      - search
+      - github
+      - lightswitch
+
+reference:
+  - title: "Creating and converting aniframe objects"
+    desc: >
+      Functions that create an aniframe, coerce other objects to aniframe,
+      or provide example data.
+    contents:
+      - as_aniframe
+      - aniframe
+      - example_aniframe
+      - is_aniframe
+
+  - title: "Metadata handling"
+    desc: >
+      Functions for reading, setting, and retrieving the metadata attached to an aniframe.
+    contents:
+      - set_metadata
+      - get_metadata
+      - default_metadata
+
+  - title: "Data manipulation (dplyr‑style verbs)"
+    desc: >
+      S3 methods that mirror dplyr verbs for aniframe objects.
+    contents:
+      - arrange.aniframe
+      - filter.aniframe
+      - group_by.aniframe
+      - mutate.aniframe
+      - relocate.aniframe
+      - rename.aniframe
+      - select.aniframe
+      - slice.aniframe
+      - tbl_sum.aniframe   # (or tbl_sum.aniframe if that’s the name)
+      - ungroup.aniframe
+
+  - title: "Conversion helpers"
+    desc: >
+      Methods that let you treat aniframe objects like regular data frames.
+    contents:
+      - as.data.frame.aniframe
+      - `[.aniframe`
+      - `[[.aniframe`
+      - `$<-.aniframe`
+      - `$.aniframe`
+
+  - title: "Utility functions"
+    desc: >
+      Miscellaneous helpers that are part of the public API.
+    contents:
+      - set_sampling_rate
+      - names<-.aniframe    # if you expose the setter for names
