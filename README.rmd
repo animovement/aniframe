@@ -25,7 +25,7 @@ badge](https://roaldarbol.r-universe.dev/badges/aniframe)](https://roaldarbol.r-
 [![codecov](https://codecov.io/gh/roaldarbol/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/roaldarbol/aniframe)
 <!-- badges: end -->
 
-*An S3 class for movement data*
+*An S3 class for movement data in R*
 
 The primary aim of the *aniframe* package is to provide an S3 data class that serves as the core data class in the *animovement* package.
 

@@ -1,6 +1,6 @@
 Package: aniframe
 Type: Package
-Title: An S3 class for movement data
+Title: An S3 class for movement data in R
 Version: 0.1.0
 Authors@R: 
     person(
