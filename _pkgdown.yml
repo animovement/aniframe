@@ -1,6 +1,6 @@
 url: http://www.roald-arboel.com/aniframe/
 home:
-  title: "aniframe – a S3 class for movement data"
+  title: "aniframe – An R package providing core data structures for movement data"
 
 authors:
   - name: "Mikkel Roald‑Arbøl"
@@ -39,6 +39,17 @@ reference:
       - set_metadata
       - get_metadata
       - default_metadata
+
+  - title: "Transformations"
+    desc: |
+      These functions allow you to make tranformations to your coordinate system,
+      such as translations, rotations or conversion to polar coordinates.
+    contents:
+    - transform_to_egocentric
+    - translate_coords
+    - rotate_coords
+    - map_to_cartesian
+    - map_to_polar
 
   - title: "Data manipulation (dplyr‑style verbs)"
     desc: >
