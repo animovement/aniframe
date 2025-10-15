@@ -1,12 +1,14 @@
 # ------------------------------------------------------------------
 # Simple class helpers (keep as‑is)
 # ------------------------------------------------------------------
-check_class <- function(x, cls) {
+#' @keywords internal
+is_class <- function(x, cls) {
   cls %in% class(x)
 }
 
+#' @keywords internal
 ensure_class <- function(x, cls) {
-  if (!check_class(x, cls)) {
+  if (!is_class(x, cls)) {
     cli::cli_abort("Expected an object of class {cls}, but got {class(x)}.")
   }
 }

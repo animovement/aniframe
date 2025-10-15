@@ -1,47 +1,47 @@
 library(testthat)
 
 # ------------------------------------------------------------------
-# Tests for check_class()
+# Tests for is_class()
 # ------------------------------------------------------------------
 
-test_that("check_class returns TRUE when class matches", {
+test_that("is_class returns TRUE when class matches", {
   x <- data.frame(a = 1:3)
-  expect_true(check_class(x, "data.frame"))
+  expect_true(is_class(x, "data.frame"))
 })
 
-test_that("check_class returns TRUE when class matches one of multiple classes", {
+test_that("is_class returns TRUE when class matches one of multiple classes", {
   x <- structure(list(), class = c("my_class", "list"))
-  expect_true(check_class(x, "my_class"))
-  expect_true(check_class(x, "list"))
+  expect_true(is_class(x, "my_class"))
+  expect_true(is_class(x, "list"))
 })
 
-test_that("check_class returns FALSE when class does not match", {
+test_that("is_class returns FALSE when class does not match", {
   x <- data.frame(a = 1:3)
-  expect_false(check_class(x, "matrix"))
+  expect_false(is_class(x, "matrix"))
 })
 
-test_that("check_class works with numeric objects", {
+test_that("is_class works with numeric objects", {
   x <- 42
-  expect_true(check_class(x, "numeric"))
-  expect_false(check_class(x, "character"))
+  expect_true(is_class(x, "numeric"))
+  expect_false(is_class(x, "character"))
 })
 
-test_that("check_class works with character objects", {
+test_that("is_class works with character objects", {
   x <- "hello"
-  expect_true(check_class(x, "character"))
-  expect_false(check_class(x, "numeric"))
+  expect_true(is_class(x, "character"))
+  expect_false(is_class(x, "numeric"))
 })
 
-test_that("check_class works with list objects", {
+test_that("is_class works with list objects", {
   x <- list(a = 1, b = 2)
-  expect_true(check_class(x, "list"))
-  expect_false(check_class(x, "data.frame"))
+  expect_true(is_class(x, "list"))
+  expect_false(is_class(x, "data.frame"))
 })
 
-test_that("check_class works with custom S3 classes", {
+test_that("is_class works with custom S3 classes", {
   x <- structure(list(), class = "my_custom_class")
-  expect_true(check_class(x, "my_custom_class"))
-  expect_false(check_class(x, "another_class"))
+  expect_true(is_class(x, "my_custom_class"))
+  expect_false(is_class(x, "another_class"))
 })
 
 # ------------------------------------------------------------------
