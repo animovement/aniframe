@@ -10,9 +10,9 @@
 #' @export
 ungroup.aniframe <- function(x, ...) {
   # if (!quiet) {
-    cli::cli_warn(
-      "Ungrouping an aniframe data frame makes errors more likely. Proceed with care."
-    )
+  cli::cli_warn(
+    "Ungrouping an aniframe data frame makes errors more likely. Proceed with care."
+  )
   # }
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")

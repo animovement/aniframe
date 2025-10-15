@@ -44,7 +44,9 @@ set_metadata <- function(data, ..., metadata = NULL) {
 
   # Ensure that the user provides input with *either* ... or a metadata list
   if (!is.null(metadata) && !rlang::is_empty(dot_args)) {
-    cli::cli_abort("Metadata input can only be provided as either name-value pairs *or* a list through the {.arg metadata} parameter, not both.")
+    cli::cli_abort(
+      "Metadata input can only be provided as either name-value pairs *or* a list through the {.arg metadata} parameter, not both."
+    )
   } else if (!is.null(metadata)) {
     user_md <- metadata
   } else if (!rlang::is_empty(dot_args)) {
@@ -57,7 +59,7 @@ set_metadata <- function(data, ..., metadata = NULL) {
   # ------------------------------------------------------------------
   # Does the data have metadata or not?
   # ------------------------------------------------------------------
-  if (!check_metadata_exists(data)){
+  if (!check_metadata_exists(data)) {
     new_md <- default_metadata()
   } else {
     new_md <- get_metadata(data)

@@ -26,11 +26,10 @@
 #' @return movement data frame with rotated coordinates
 #' @export
 rotate_coords <- function(
-    data,
-    alignment_points, # Two keypoint names to use for alignment
-    align_perpendicular = FALSE # If TRUE, alignment_points will be made perpendicular to 0°
+  data,
+  alignment_points, # Two keypoint names to use for alignment
+  align_perpendicular = FALSE # If TRUE, alignment_points will be made perpendicular to 0°
 ) {
-
   # Input validation
   ensure_is_aniframe(data)
   ensure_is_cartesian(data)

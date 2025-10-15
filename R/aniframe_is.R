@@ -8,8 +8,8 @@ is_aniframe <- function(x) {
 }
 
 #' @keywords internal
-ensure_is_aniframe <- function(data){
-  if (!is_aniframe(data)){
+ensure_is_aniframe <- function(data) {
+  if (!is_aniframe(data)) {
     cli::cli_abort("Data is not an aniframe.")
   }
 }

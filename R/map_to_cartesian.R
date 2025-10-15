@@ -6,11 +6,11 @@
 #' @export
 map_to_cartesian <- function(data) {
   ensure_is_aniframe()
-  if (is_polar(data)){
+  if (is_polar(data)) {
     data <- map_to_cartesian_polar(data)
-  } else if (is_cylindrical(data)){
+  } else if (is_cylindrical(data)) {
     data <- map_to_cartesian_cylindrical(data)
-  } else if (is_spherical(data)){
+  } else if (is_spherical(data)) {
     data <- map_to_cartesian_spherical(data)
   } else {
     cli::cli_abort("Data is neither polar, cylindrical or spherical.")
@@ -21,7 +21,7 @@ map_to_cartesian <- function(data) {
 
 # TODO: Make individual functions for polar, cylindrical and spherical
 
-map_to_cartesian_polar <- function(data){
+map_to_cartesian_polar <- function(data) {
   ensure_is_polar(data)
   data |>
     dplyr::mutate(
@@ -31,7 +31,7 @@ map_to_cartesian_polar <- function(data){
     )
 }
 
-map_to_cartesian_cylindrical <- function(data){
+map_to_cartesian_cylindrical <- function(data) {
   ensure_is_cylindrical(data)
   data |>
     dplyr::mutate(
@@ -41,7 +41,7 @@ map_to_cartesian_cylindrical <- function(data){
     )
 }
 
-map_to_cartesian_spherical <- function(data){
+map_to_cartesian_spherical <- function(data) {
   # TODO: ensure_coord_spherical(data)
   data |>
     dplyr::mutate(

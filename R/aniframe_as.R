@@ -12,8 +12,17 @@ as_aniframe <- function(data, metadata = list()) {
   data <- standardise_aniframe_cols(data)
 
   # Relocate columns to standard order
-  standard_cols <- c("session", "trial", "individual", "keypoint", "time",
-                     "x", "y", "z", "confidence")
+  standard_cols <- c(
+    "session",
+    "trial",
+    "individual",
+    "keypoint",
+    "time",
+    "x",
+    "y",
+    "z",
+    "confidence"
+  )
   present_standard <- standard_cols[standard_cols %in% names(data)]
   other_cols <- setdiff(names(data), present_standard)
   data <- data[, c(present_standard, other_cols)]

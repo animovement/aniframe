@@ -42,26 +42,25 @@
 #' # Create minimal example with just centroid in 3D
 #' example_aniframe(n_keypoints = 1, n_dims = 3)
 example_aniframe <- function(
-    n_obs = 50,
-    n_individuals = 3,
-    n_keypoints = 11,
-    n_trials = 1,
-    n_sessions = 1,
-    n_dims = 2
+  n_obs = 50,
+  n_individuals = 3,
+  n_keypoints = 11,
+  n_trials = 1,
+  n_sessions = 1,
+  n_dims = 2
 ) {
-
   # Max 11 keypoints
-  if (n_keypoints > 11){
+  if (n_keypoints > 11) {
     cli::cli_abort("`example_aniframe` can max handle 11 keypoints.")
   }
 
   # Check valid dimensions
-  if (!n_dims %in% c(1, 2, 3)){
+  if (!n_dims %in% c(1, 2, 3)) {
     cli::cli_abort("`n_dims` must be 1, 2, or 3.")
   }
 
   # Make vector of keypoints
-  if (n_keypoints == 1){
+  if (n_keypoints == 1) {
     keypoints <- c("centroid")
   } else {
     keypoints <- c(

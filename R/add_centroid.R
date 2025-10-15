@@ -63,10 +63,10 @@
 #'
 #' @export
 add_centroid <- function(
-    data,
-    include_keypoints = NULL,
-    exclude_keypoints = NULL,
-    centroid_name = "centroid"
+  data,
+  include_keypoints = NULL,
+  exclude_keypoints = NULL,
+  centroid_name = "centroid"
 ) {
   # Data validation
   ensure_is_aniframe(data)
@@ -89,9 +89,21 @@ add_centroid <- function(
     dplyr::ungroup(.data$keypoint) |>
     dplyr::group_by(.data$time, .add = TRUE) |>
     dplyr::summarise(
-      x = if ("x" %in% names(dplyr::pick(dplyr::everything()))) mean(.data$x, na.rm = TRUE) else NA_real_,
-      y = if ("y" %in% names(dplyr::pick(dplyr::everything()))) mean(.data$y, na.rm = TRUE) else NA_real_,
-      z = if ("z" %in% names(dplyr::pick(dplyr::everything()))) mean(.data$z, na.rm = TRUE) else NA_real_,
+      x = if ("x" %in% names(dplyr::pick(dplyr::everything()))) {
+        mean(.data$x, na.rm = TRUE)
+      } else {
+        NA_real_
+      },
+      y = if ("y" %in% names(dplyr::pick(dplyr::everything()))) {
+        mean(.data$y, na.rm = TRUE)
+      } else {
+        NA_real_
+      },
+      z = if ("z" %in% names(dplyr::pick(dplyr::everything()))) {
+        mean(.data$z, na.rm = TRUE)
+      } else {
+        NA_real_
+      },
       confidence = NA
     ) |>
     dplyr::mutate(keypoint = factor(as.character(centroid_name))) |>

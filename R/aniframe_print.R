@@ -22,7 +22,10 @@ tbl_sum.aniframe <- function(x, ...) {
 
   # Add trials if column exists
   if ("trial" %in% names(x)) {
-    new_header <- c(new_header, "Trials" = paste(unique(x$trial), collapse = ", "))
+    new_header <- c(
+      new_header,
+      "Trials" = paste(unique(x$trial), collapse = ", ")
+    )
   }
 
   # Add sampling rate if available in metadata

@@ -1,12 +1,14 @@
 #' @keywords internal
-is_cartesian <- function(data){
+is_cartesian <- function(data) {
   any(c("x", "y", "z") %in% names(data))
 }
 
 #' @keywords internal
 ensure_is_cartesian <- function(data) {
   if (!is_cartesian(data)) {
-    cli::cli_abort("This data frame is not in a Cartesian coordinate system. Requires at least one of 'x', 'y', or 'z'.")
+    cli::cli_abort(
+      "This data frame is not in a Cartesian coordinate system. Requires at least one of 'x', 'y', or 'z'."
+    )
   }
 }
 

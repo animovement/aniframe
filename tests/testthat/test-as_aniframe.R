@@ -3,7 +3,7 @@ test_that("as_aniframe validates required columns", {
 
   expect_error(
     as_aniframe(df),
-    "time"  # Adjust based on your validate_cols error message
+    "time" # Adjust based on your validate_cols error message
   )
 })
 
@@ -149,8 +149,17 @@ test_that("as_aniframe relocates columns to standard order", {
 
   result <- suppressMessages(as_aniframe(df))
 
-  standard_cols <- c("session", "trial", "individual", "keypoint", "time",
-                     "x", "y", "z", "confidence")
+  standard_cols <- c(
+    "session",
+    "trial",
+    "individual",
+    "keypoint",
+    "time",
+    "x",
+    "y",
+    "z",
+    "confidence"
+  )
   present_standard <- standard_cols[standard_cols %in% names(result)]
 
   expect_equal(names(result)[1:length(present_standard)], present_standard)
@@ -182,7 +191,9 @@ test_that("as_aniframe groups by appropriate columns", {
   result <- suppressMessages(as_aniframe(df))
 
   expect_s3_class(result, "grouped_df")
-  expect_true(all(c("trial", "individual", "keypoint") %in% dplyr::group_vars(result)))
+  expect_true(all(
+    c("trial", "individual", "keypoint") %in% dplyr::group_vars(result)
+  ))
 })
 
 test_that("as_aniframe attaches metadata", {
@@ -216,9 +227,20 @@ test_that("as_aniframe works with all standard columns", {
   result <- as_aniframe(df)
 
   expect_s3_class(result, "aniframe")
-  expect_equal(names(result)[1:9],
-               c("session", "trial", "individual", "keypoint", "time",
-                 "x", "y", "z", "confidence"))
+  expect_equal(
+    names(result)[1:9],
+    c(
+      "session",
+      "trial",
+      "individual",
+      "keypoint",
+      "time",
+      "x",
+      "y",
+      "z",
+      "confidence"
+    )
+  )
 })
 
 test_that("as_aniframe arranges by groups", {

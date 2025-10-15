@@ -101,4 +101,3 @@ test_that("ensure_class returns invisibly when successful", {
   result <- ensure_class(x, "data.frame")
   expect_null(result)
 })
-

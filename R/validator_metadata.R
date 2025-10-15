@@ -8,8 +8,7 @@ validate_metadata <- function(metadata) {
 # Does the object have a "metadata" attribute?
 # ------------------------------------------------------------------
 check_metadata_exists <- function(data) {
-  "metadata" %in% names(attributes(data)) |>
-    invisible()
+  "metadata" %in% names(attributes(data)) |> invisible()
 }
 
 ensure_metadata_exists <- function(data) {
@@ -60,7 +59,7 @@ check_metadata_fields_are_correct_class <- function(metadata) {
   supplied_names <- names(metadata)
   matches <- c()
   for (nm in supplied_names) {
-    user_val    <- metadata[[nm]]
+    user_val <- metadata[[nm]]
     default_val <- default_metadata()[[nm]]
 
     # `identical()` returns a single logical even if class() gives a vector
@@ -77,7 +76,7 @@ check_metadata_fields_are_correct_class <- function(metadata) {
 }
 
 ensure_metadata_fields_are_correct_class <- function(metadata) {
-  if (!check_metadata_fields_are_correct_class(metadata)){
+  if (!check_metadata_fields_are_correct_class(metadata)) {
     cli::cli_abort(
       "Metadata fields are not of the correct types."
     )

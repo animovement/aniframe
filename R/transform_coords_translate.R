@@ -17,11 +17,11 @@
 #' @return movement data frame with translated coordinates
 #' @export
 translate_coords <- function(
-    data,
-    to_x = 0,
-    to_y = 0,
-    to_z = NULL,
-    to_keypoint = NULL
+  data,
+  to_x = 0,
+  to_y = 0,
+  to_z = NULL,
+  to_keypoint = NULL
 ) {
   # Takes a keypoint
   if (!is.null(to_keypoint)) {
@@ -50,7 +50,7 @@ translate_coords <- function(
   } else if (
     all(
       length(to_x) == length(unique(data$time)) &
-      length(to_y) == length(unique(data$time))
+        length(to_y) == length(unique(data$time))
     )
   ) {
     # Takes a time-length vector
