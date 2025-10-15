@@ -75,7 +75,7 @@ standardise_aniframe_cols <- function(data) {
 
   # Handle confidence column
   if (!"confidence" %in% names(data)) {
-    data$confidence <- factor(NA)
+    data$confidence <- as.numeric(NA)
   } else {
     data$confidence <- as.numeric(data$confidence)
   }
