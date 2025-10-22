@@ -5,13 +5,11 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17344598.svg)](https://doi.org/10.5281/zenodo.17344598)
-[![R-CMD-check](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
-badge](https://roaldarbol.r-universe.dev/badges/aniframe)](https://roaldarbol.r-universe.dev)
-[![codecov](https://codecov.io/gh/roaldarbol/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/roaldarbol/aniframe)
+badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.r-universe.dev)
+[![codecov](https://codecov.io/gh/animovement/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/animovement/aniframe)
 <!-- badges: end -->
 
 *An S3 class for movement data in R*
@@ -24,7 +22,7 @@ that serves as the core data class in the *animovement* package.
 You can install the development version of *aniframe* with:
 
 ``` r
-install.packages('aniframe', repos = c('https://roaldarbol.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('aniframe', repos = c('https://animovement.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 Once you have installed the package, you can load it with:
@@ -51,7 +49,7 @@ To cite *aniframe* in publications use:
 citation("aniframe")
 #> To cite aniframe in publications use:
 #> 
-#>   Roald-Arbøl M (2025). "aniframe: An S3 class for movement data."
+#>   Roald-Arbøl M (2025). "aniframe: An S3 class for movement data in R."
 #>   doi:10.5281/zenodo.17344598
 #>   <https://doi.org/10.5281/zenodo.17344598>,
 #>   <http://www.roald-arboel.com/aniframe/>.
@@ -60,11 +58,11 @@ citation("aniframe")
 #> 
 #>   @Misc{aniframe,
 #>     doi = {10.5281/zenodo.17344598},
-#>     title = {aniframe: An S3 class for movement data},
+#>     title = {aniframe: An S3 class for movement data in R},
 #>     author = {Mikkel Roald-Arbøl},
 #>     year = {2025},
 #>     url = {http://www.roald-arboel.com/aniframe/},
-#>     abstract = {An S3 class for movement data.},
+#>     abstract = {An S3 class for movement data in R.},
 #>     version = {0.1.0},
 #>   }
 ```

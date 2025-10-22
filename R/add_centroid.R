@@ -58,10 +58,7 @@
 #' )
 #' }
 #'
-#' @seealso
-#' [convert_nan_to_na()] for NaN handling in the centroid calculation
-#'
-#' @export
+#' @keywords internal
 add_centroid <- function(
   data,
   include_keypoints = NULL,

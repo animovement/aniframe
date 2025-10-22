@@ -11,18 +11,17 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
-install.packages('aniframe', repos = c('https://roaldarbol.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('aniframe', repos = c('https://animovement.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 
 # aniframe
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17344598.svg)](https://doi.org/10.5281/zenodo.17344598)
-[![R-CMD-check](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/roaldarbol/aniframe/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
-badge](https://roaldarbol.r-universe.dev/badges/aniframe)](https://roaldarbol.r-universe.dev)
-[![codecov](https://codecov.io/gh/roaldarbol/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/roaldarbol/aniframe)
+badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.r-universe.dev)
+[![codecov](https://codecov.io/gh/animovement/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/animovement/aniframe)
 <!-- badges: end -->
 
 *An S3 class for movement data in R*
@@ -34,7 +33,7 @@ The primary aim of the *aniframe* package is to provide an S3 data class that se
 You can install the development version of *aniframe* with:
 
 ```{r, eval=FALSE}
-install.packages('aniframe', repos = c('https://roaldarbol.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('aniframe', repos = c('https://animovement.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 Once you have installed the package, you can load it with:

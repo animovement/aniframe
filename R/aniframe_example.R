@@ -97,7 +97,8 @@ example_aniframe <- function(
     time = design$time,
     trial = design$trial,
     session = design$session,
-    x = stats::rnorm(n_total)
+    x = stats::rnorm(n_total),
+    confidence = stats::rbeta(n_total, shape1 = 5, shape2 = 2)
   )
 
   # Add y coordinate if n_dims >= 2
@@ -111,5 +112,5 @@ example_aniframe <- function(
   }
 
   # Create the aniframe using do.call
-  do.call(aniframe, aniframe_args)
+  a <- do.call(aniframe, aniframe_args)
 }

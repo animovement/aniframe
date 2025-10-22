@@ -4,14 +4,60 @@
 \alias{example_aniframe}
 \title{Create example aniframe data}
 \usage{
-example_aniframe()
+example_aniframe(
+  n_obs = 50,
+  n_individuals = 3,
+  n_keypoints = 11,
+  n_trials = 1,
+  n_sessions = 1,
+  n_dims = 2
+)
+}
+\arguments{
+\item{n_obs}{Integer. Number of time observations per combination. Default is 50.}
+
+\item{n_individuals}{Integer. Number of individuals to simulate. Default is 3.}
+
+\item{n_keypoints}{Integer. Number of keypoints per individual (max 11).
+Default is 11. When set to 1, only "centroid" is used. Otherwise, anatomical
+keypoints are used (head, neck, shoulders, etc.).}
+
+\item{n_trials}{Integer. Number of trials per session. Default is 1.}
+
+\item{n_sessions}{Integer. Number of sessions. Default is 1.}
+
+\item{n_dims}{Integer. Number of spatial dimensions (1, 2, or 3). Default is 2.
+If 1, only x coordinates are generated. If 2, x and y coordinates are generated.
+If 3, x, y, and z coordinates are generated.}
 }
 \value{
-An example aniframe object
+An aniframe object containing randomly generated tracking data with
+columns for individual, keypoint, time, trial, session, and spatial coordinates
+(x, y, and/or z depending on \code{n_dims}). The coordinates are drawn from a
+standard normal distribution.
 }
 \description{
-Create example aniframe data
+Generates a synthetic aniframe object with random coordinates for
+testing and demonstration purposes. The function creates a complete design
+with all combinations of time points, individuals, keypoints, trials, and
+sessions.
 }
 \examples{
+# Create a basic example with default parameters (2D)
 example_aniframe()
+
+# Create a 1D example
+example_aniframe(n_dims = 1)
+
+# Create a 3D example
+example_aniframe(n_dims = 3)
+
+# Create a smaller example with 2 individuals and 5 keypoints
+example_aniframe(n_individuals = 2, n_keypoints = 5)
+
+# Create example with multiple trials and sessions
+example_aniframe(n_obs = 100, n_trials = 3, n_sessions = 2)
+
+# Create minimal example with just centroid in 3D
+example_aniframe(n_keypoints = 1, n_dims = 3)
 }

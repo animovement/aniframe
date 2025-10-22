@@ -1,4 +1,4 @@
-url: http://www.roald-arboel.com/aniframe/
+url: http://animovement.dev/aniframe/
 home:
   title: "aniframe – An R package providing core data structures for movement data"
 
@@ -50,6 +50,8 @@ reference:
     - rotate_coords
     - map_to_cartesian
     - map_to_polar
+    - map_to_cylindrical
+    - map_to_spherical
 
   - title: "Data manipulation (dplyr‑style verbs)"
     desc: >

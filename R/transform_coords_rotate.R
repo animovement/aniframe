@@ -1,36 +1,21 @@
-#' Rotate coordinates in Cartesian space
+#' Rotate coordinates in Cartesian space (2D or 3D)
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
+#' Automatically detects whether data are 2D or 3D and applies
+#' the corresponding rotation method.
 #'
-#' Rotates coordinates in Cartesian space based on two alignment points.
-#' The rotation aligns these points either with the 0-degree axis (parallel)
-#' or makes them perpendicular to it. This is particularly useful for
-#' creating egocentric reference frames or standardizing orientation across
-#' multiple frames or individuals.
-#'
-#' @param data movement data frame with columns: time, individual, keypoint, x, y
-#' @param alignment_points character vector of length 2 specifying the keypoint names
-#'        to use for alignment
-#' @param align_perpendicular logical; if TRUE, alignment_points will be rotated to be
-#'        perpendicular to the 0-degree axis. If FALSE (default), alignment_points
-#'        will be rotated to align with the 0-degree axis
-#'
-#' @details
-#' The function processes each individual separately and maintains their independence.
-#' For each time point, it:
-#' 1. Calculates the vector between the alignment points
-#' 2. Determines the current angle of this vector
-#' 3. Rotates all points to achieve the desired alignment
+#' @param data movement data frame with columns: time, individual, keypoint, x, y, z (optional)
+#' @param alignment_points character vector of length 2 specifying the keypoints used for alignment
+#' @param align_perpendicular logical; if TRUE, alignment_points are rotated to be
+#'        perpendicular to the 0-degree axis (y-axis). If FALSE (default), they are
+#'        aligned with the x-axis.
 #'
 #' @return movement data frame with rotated coordinates
 #' @export
 rotate_coords <- function(
-  data,
-  alignment_points, # Two keypoint names to use for alignment
-  align_perpendicular = FALSE # If TRUE, alignment_points will be made perpendicular to 0°
+    data,
+    alignment_points,
+    align_perpendicular = FALSE
 ) {
-  # Input validation
   ensure_is_aniframe(data)
   ensure_is_cartesian(data)
 
@@ -41,55 +26,64 @@ rotate_coords <- function(
     cli::cli_abort("Some specified keypoints not found in data")
   }
 
-  # Process each individual separately
+  has_z <- "z" %in% names(data) && !all(is.na(data$z))
+
+  if (has_z) {
+    rotate_coords_3d(data, alignment_points, align_perpendicular)
+  } else {
+    rotate_coords_2d(data, alignment_points, align_perpendicular)
+  }
+}
+
+#' @keywords internal
+rotate_coords_2d <- function(data, alignment_points, align_perpendicular = FALSE) {
   individuals <- unique(data$individual)
   out_data <- data.frame()
 
   for (ind in individuals) {
-    ind_data <- data |>
-      dplyr::filter(.data$individual == ind)
+    ind_data <- dplyr::filter(data, .data$individual == ind)
 
-    # Get all coordinates of alignment points for this individual
     p1 <- ind_data |>
       dplyr::filter(.data$keypoint == alignment_points[1]) |>
-      dplyr::select(.data$time, .data$x, .data$y) |>
-      dplyr::rename(x1 = .data$x, y1 = .data$y)
+      dplyr::select(dplyr::all_of(c("time", "x", "y"))) |>
+      dplyr::rename(x1 = "x", y1 = "y") |>
+      suppressMessages()
 
     p2 <- ind_data |>
       dplyr::filter(.data$keypoint == alignment_points[2]) |>
-      dplyr::select(.data$time, .data$x, .data$y) |>
-      dplyr::rename(x2 = .data$x, y2 = .data$y)
+      dplyr::select(dplyr::all_of(c("time", "x", "y"))) |>
+      dplyr::rename(x2 = "x", y2 = "y") |>
+      suppressMessages()
 
-    # Calculate rotation angles for each time point
-    angles <- p1 |>
-      dplyr::left_join(p2, by = "time") |>
+    angles <- dplyr::left_join(p1, p2, by = "time") |>
       dplyr::mutate(
-        # Calculate vector between alignment points
         vec_x = .data$x2 - .data$x1,
         vec_y = .data$y2 - .data$y1,
-        # Calculate current angle and needed rotation
         current_angle = atan2(.data$vec_y, .data$vec_x),
-        target_angle = dplyr::if_else(isTRUE(align_perpendicular), pi / 2, 0),
+        target_angle = if (align_perpendicular) pi / 2 else 0,
         rotation_angle = .data$target_angle - .data$current_angle
       ) |>
-      dplyr::select(.data$time, .data$rotation_angle)
+      dplyr::select(dplyr::all_of(c("time", "rotation_angle")))
 
-    # Apply rotation to all points for this individual
     ind_rotated <- ind_data |>
       dplyr::left_join(angles, by = "time") |>
       dplyr::mutate(
-        x_new = .data$x *
-          cos(.data$rotation_angle) -
-          .data$y * sin(.data$rotation_angle),
-        y_new = .data$x *
-          sin(.data$rotation_angle) +
-          .data$y * cos(.data$rotation_angle)
+        x_new = .data$x * cos(.data$rotation_angle) - .data$y * sin(.data$rotation_angle),
+        y_new = .data$x * sin(.data$rotation_angle) + .data$y * cos(.data$rotation_angle)
       ) |>
-      dplyr::select(-.data$rotation_angle, -.data$x, -.data$y) |>
-      dplyr::rename(x = .data$x_new, y = .data$y_new)
+      dplyr::select(!dplyr::all_of(c("rotation_angle", "x", "y"))) |>
+      dplyr::rename(x = "x_new", y = "y_new") |>
+      suppressMessages()
 
     out_data <- dplyr::bind_rows(out_data, ind_rotated)
   }
 
-  return(aniframe::as_aniframe(out_data))
+  as_aniframe(out_data)
+}
+
+#' @keywords internal
+rotate_coords_3d <- function(data, alignment_points, align_perpendicular = FALSE) {
+  cli::cli_abort("3D rotation is not supported yet")
+
+  # as_aniframe(out_data)
 }

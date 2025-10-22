@@ -5,7 +5,7 @@
 #' @return an aniframe with Cartesian coordinates
 #' @export
 map_to_cartesian <- function(data) {
-  ensure_is_aniframe()
+  ensure_is_aniframe(data)
   if (is_polar(data)) {
     data <- map_to_cartesian_polar(data)
   } else if (is_cylindrical(data)) {
@@ -16,37 +16,41 @@ map_to_cartesian <- function(data) {
     cli::cli_abort("Data is neither polar, cylindrical or spherical.")
   }
 
-  aniframe::as_aniframe(data)
+  as_aniframe(data)
 }
 
-# TODO: Make individual functions for polar, cylindrical and spherical
-
+#' @keywords internal
 map_to_cartesian_polar <- function(data) {
   ensure_is_polar(data)
   data |>
     dplyr::mutate(
       x = polar_to_x(.data$rho, .data$phi),
       y = polar_to_y(.data$rho, .data$phi),
-      z = NA
-    )
+      z = as.numeric(NA)
+    ) |>
+    dplyr::select(-c("rho", "phi"))
 }
 
+#' @keywords internal
 map_to_cartesian_cylindrical <- function(data) {
   ensure_is_cylindrical(data)
   data |>
     dplyr::mutate(
-      x = polar_to_x(.data$rho, .data$rho),
-      y = polar_to_y(.data$rho, .data$rho),
-      # TODO: z = polar_to_z()
-    )
+      x = polar_to_x(.data$rho, .data$phi),
+      y = polar_to_y(.data$rho, .data$phi),
+      z = .data$z
+    ) |>
+    dplyr::select(-c("rho", "phi"))
 }
 
+#' @keywords internal
 map_to_cartesian_spherical <- function(data) {
-  # TODO: ensure_coord_spherical(data)
+  ensure_is_spherical(data)
   data |>
     dplyr::mutate(
-      x = polar_to_x(.data$rho, .data$theta),
-      y = polar_to_y(.data$rho, .data$theta),
-      # TODO: z = polar_to_z()
-    )
+      x = polar_to_x(.data$rho, .data$phi),
+      y = polar_to_y(.data$rho, .data$phi),
+      z = spherical_to_z(.data$rho, .data$theta)
+    ) |>
+    dplyr::select(-c("rho", "phi", "theta"))
 }

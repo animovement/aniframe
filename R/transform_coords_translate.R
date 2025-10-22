@@ -1,8 +1,5 @@
 #' Translate coordinates (Cartesian)
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
-#'
 #' Translates coordinates in Cartesian space. Takes either a single point
 #' (`to_x` and `to_y`), a vector with the same length as the time dimension or a
 #' keypoint (`to_keypoint`), which can be used to transform the data into an
@@ -23,6 +20,9 @@ translate_coords <- function(
   to_z = NULL,
   to_keypoint = NULL
 ) {
+  ensure_is_aniframe(data)
+  ensure_is_cartesian(data)
+
   # Takes a keypoint
   if (!is.null(to_keypoint)) {
     if (is.character(to_keypoint)) {
@@ -46,7 +46,7 @@ translate_coords <- function(
       )
     }
     # Takes a single point
-    data <- translate_coords_vector(data, to_x, to_y)
+    data <- translate_coords_vector(data, to_x, to_y, to_z)
   } else if (
     all(
       length(to_x) == length(unique(data$time)) &
@@ -54,7 +54,7 @@ translate_coords <- function(
     )
   ) {
     # Takes a time-length vector
-    data <- translate_coords_vector(data, to_x, to_y)
+    data <- translate_coords_vector(data, to_x, to_y, to_z)
   }
 
   return(data)
@@ -77,7 +77,7 @@ translate_coords_keypoint <- function(data, to_keypoint) {
       dplyr::mutate(x = .data$x - ref_coords$x, y = .data$y - ref_coords$y) |>
       # dplyr::bind_rows(ref_coords) |>
       dplyr::arrange(.data$time, .data$individual, .data$keypoint)
-    out_data <- bind_rows(out_data, data_individual)
+    out_data <- dplyr::bind_rows(out_data, data_individual)
   }
 
   return(out_data)

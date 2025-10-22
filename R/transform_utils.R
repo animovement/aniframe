@@ -4,7 +4,7 @@
 #' @keywords internal
 calculate_angular_difference <- function(from_angle, to_angle) {
   diff_angle <- from_angle - to_angle
-  case_when(
+  dplyr::case_when(
     diff_angle > pi ~ diff_angle - 2 * pi,
     diff_angle < -pi ~ diff_angle + 2 * pi,
     .default = diff_angle

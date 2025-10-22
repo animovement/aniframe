@@ -1,8 +1,5 @@
 #' Transform coordinates to egocentric reference frame
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`
-#'
 #' Transforms Cartesian coordinates into an egocentric reference frame through
 #' a two-step process: translation followed by rotation. First translates all
 #' coordinates relative to a reference keypoint, then rotates the coordinate

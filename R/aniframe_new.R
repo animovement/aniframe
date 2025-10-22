@@ -7,5 +7,6 @@
 #' @keywords internal
 new_aniframe <- function(x) {
   class(x) <- c("aniframe", class(x))
+  class(x) <- unique(class(x))
   x
 }

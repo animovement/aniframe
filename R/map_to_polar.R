@@ -10,10 +10,12 @@ map_to_polar <- function(data) {
   data <- data |>
     dplyr::mutate(
       rho = cartesian_to_rho(.data$x, .data$y),
-      theta = cartesian_to_theta(.data$x, .data$y)
+      phi = cartesian_to_phi(.data$x, .data$y)
     ) |>
     dplyr::select(-c("x", "y")) |>
     dplyr::relocate("rho", .after = "keypoint") |>
-    dplyr::relocate("theta", .after = "rho")
-  return(data)
+    dplyr::relocate("phi", .after = "rho")
+
+  ensure_is_polar(data)
+  as_aniframe(data)
 }
