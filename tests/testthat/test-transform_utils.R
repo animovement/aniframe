@@ -48,12 +48,28 @@ test_that("calculate_angular_difference() returns expected signed differences", 
   expect_equal(calculate_angular_difference(0, pi / 4), -pi / 4)
 
   # Wrap-around at 2*pi boundary
-  expect_equal(calculate_angular_difference(0, 2 * pi - 0.1), 0.1, tolerance = 1e-10)
-  expect_equal(calculate_angular_difference(2 * pi - 0.1, 0), -0.1, tolerance = 1e-10)
+  expect_equal(
+    calculate_angular_difference(0, 2 * pi - 0.1),
+    0.1,
+    tolerance = 1e-10
+  )
+  expect_equal(
+    calculate_angular_difference(2 * pi - 0.1, 0),
+    -0.1,
+    tolerance = 1e-10
+  )
 
   # Large differences should wrap correctly
-  expect_equal(calculate_angular_difference(0, 3 * pi / 2), pi / 2, tolerance = 1e-10)
-  expect_equal(calculate_angular_difference(3 * pi / 2, 0), -pi / 2, tolerance = 1e-10)
+  expect_equal(
+    calculate_angular_difference(0, 3 * pi / 2),
+    pi / 2,
+    tolerance = 1e-10
+  )
+  expect_equal(
+    calculate_angular_difference(3 * pi / 2, 0),
+    -pi / 2,
+    tolerance = 1e-10
+  )
 
   # Difference exactly equal to pi stays as pi, not wrapped
   expect_equal(calculate_angular_difference(pi, 0), pi)
@@ -62,7 +78,7 @@ test_that("calculate_angular_difference() returns expected signed differences", 
 
 test_that("calculate_angular_difference() is vectorised", {
   from <- c(0, pi / 2, pi)
-  to   <- c(pi / 2, pi, 0)
+  to <- c(pi / 2, pi, 0)
   result <- calculate_angular_difference(from, to)
   expected <- c(-pi / 2, -pi / 2, pi)
   expect_equal(result, expected)

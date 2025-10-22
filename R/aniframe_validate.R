@@ -16,7 +16,7 @@ validate_cols <- function(data) {
 }
 
 #' @keywords internal
-allowed_position_cols <- function(){
+allowed_position_cols <- function() {
   list(
     cartesian_1d_x = c("x"),
     cartesian_1d_y = c("y"),
@@ -39,13 +39,13 @@ has_position <- function(data, allowed_position_cols) {
 #' @keywords internal
 matching_position_system <- function(data) {
   # Keep only the groups whose required columns are all present
-  if (is_cartesian(data)){
+  if (is_cartesian(data)) {
     return("cartesian")
-  } else if (is_polar(data)){
+  } else if (is_polar(data)) {
     return("polar")
-  } else if (is_cylindrical(data)){
+  } else if (is_cylindrical(data)) {
     return("cylindrical")
-  } else if (is_spherical(data)){
+  } else if (is_spherical(data)) {
     return("spherical")
   }
 }

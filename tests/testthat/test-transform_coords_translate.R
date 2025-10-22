@@ -31,7 +31,7 @@ test_that("translate_coords_vector translates by single point", {
 
 test_that("translate_coords_vector translates by vector", {
   data <- create_test_data()
-  to_x_vec <- c(1, 2, 3,4,5,6,7,8,9,10,11,12)
+  to_x_vec <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
   to_y_vec <- c(10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120)
 
   result <- translate_coords_vector(data, to_x = to_x_vec, to_y = to_y_vec)
@@ -232,4 +232,3 @@ test_that("translate_coords_keypoint handles single time point", {
   nose_coords <- result |> dplyr::filter(keypoint == "nose")
   expect_true(all(nose_coords$x == 0))
 })
-

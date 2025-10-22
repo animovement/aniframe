@@ -10,7 +10,11 @@ test_that("cartesian_to_phi() behaves consistently with atan2()", {
 
   # helper to compare with true atan2
   truth <- atan2(1, 1)
-  expect_equal(cartesian_to_phi(1, 1), constrain_angles_radians(truth), tolerance = 1e-8)
+  expect_equal(
+    cartesian_to_phi(1, 1),
+    constrain_angles_radians(truth),
+    tolerance = 1e-8
+  )
 
   # Test all quadrants
   xy <- list(
@@ -55,18 +59,18 @@ test_that("cartesian_to_phi() should match atan2() for key reference points", {
 
   ## True values using atan2(y, x)
   expected_angles <- c(
-    atan2(1, 0),   # (x = 0, y = 1) → π/2
-    atan2(0, 1),   # (x = 1, y = 0) → 0
-    atan2(-1, 0),  # (x = 0, y = -1) → -π/2
-    atan2(0, -1)   # (x = -1, y = 0) → π (or -π)
+    atan2(1, 0), # (x = 0, y = 1) → π/2
+    atan2(0, 1), # (x = 1, y = 0) → 0
+    atan2(-1, 0), # (x = 0, y = -1) → -π/2
+    atan2(0, -1) # (x = -1, y = 0) → π (or -π)
   )
 
   ## Test points as a list of (x, y) pairs
   test_points <- list(
-    c(0,  1),   # straight up
-    c(1,  0),   # right
-    c(0, -1),   # down
-    c(-1, 0)    # left
+    c(0, 1), # straight up
+    c(1, 0), # right
+    c(0, -1), # down
+    c(-1, 0) # left
   )
 
   ## Compute the angles from cartesian_to_phi for each point
@@ -76,9 +80,7 @@ test_that("cartesian_to_phi() should match atan2() for key reference points", {
   ## Constrain the reference angles and compare
   expected_constrained <- sapply(expected_angles, constrain_angles_radians)
 
-  expect_equal(results,
-               expected_constrained,
-               tolerance = 1e-8)
+  expect_equal(results, expected_constrained, tolerance = 1e-8)
 })
 
 test_that("cartesian_to_phi() handles axes and quadrants correctly", {
@@ -91,15 +93,19 @@ test_that("cartesian_to_phi() handles axes and quadrants correctly", {
   expect_true(abs(cartesian_to_phi(1, 0) - 0) < 1e-8)
 
   # Expect roughly pi/2 radians at (x=0, y>0)
-  expect_true(abs(cartesian_to_phi(0, 1) - pi/2) < 1e-8)
+  expect_true(abs(cartesian_to_phi(0, 1) - pi / 2) < 1e-8)
 
   # Expect roughly pi radians at (x<0, y=0)
   expect_true(abs(abs(cartesian_to_phi(-1, 0)) - pi) < 1e-8)
 
   # Expect roughly -pi/2 radians at (x=0, y<0)
-  expect_true(calculate_angular_difference(
-    abs(cartesian_to_phi(0, -1) + pi/2),
-    0) < 1e-8)
+  expect_true(
+    calculate_angular_difference(
+      abs(cartesian_to_phi(0, -1) + pi / 2),
+      0
+    ) <
+      1e-8
+  )
 })
 
 # -------------------------------------------------------------
@@ -116,8 +122,8 @@ tol <- 1e-8
 # -----------------------------------------------------------------
 test_that("spherical_to_z() returns correct z for generic angles", {
   # Choose a set of (rho, theta) pairs where tan(theta) is well‑behaved
-  rho_vals   <- c(1, 2, 5, 10)
-  theta_vals <- c(pi / 6, pi / 4, pi / 3, pi / 2)   # 30°,45°,60°,90°
+  rho_vals <- c(1, 2, 5, 10)
+  theta_vals <- c(pi / 6, pi / 4, pi / 3, pi / 2) # 30°,45°,60°,90°
 
   # Expected values from the analytic formula
   exp_z <- rho_vals / tan(theta_vals)
@@ -132,8 +138,8 @@ test_that("spherical_to_z() returns correct z for generic angles", {
 # -----------------------------------------------------------------
 test_that("spherical_to_z() treats the +z axis correctly", {
   # On the +z axis rho must be (practically) zero; we test a few tiny values
-  rho_vals   <- c(0, 0, 0)
-  theta_vals <- c(0, 1e-12, 5e-13)   # very close to 0
+  rho_vals <- c(0, 0, 0)
+  theta_vals <- c(0, 1e-12, 5e-13) # very close to 0
 
   # By definition the point lies on the +z axis, so z = 0 (or could be NA)
   # Our implementation returns 0 for these cases
@@ -144,8 +150,8 @@ test_that("spherical_to_z() treats the +z axis correctly", {
 # 3️⃣  Pole handling – theta ≈ π  (negative z‑axis)
 # -----------------------------------------------------------------
 test_that("spherical_to_z() treats the -z axis correctly", {
-  rho_vals   <- c(0, 0, 0)
-  theta_vals <- c(pi, pi - 1e-12, pi - 5e-13)   # just below π
+  rho_vals <- c(0, 0, 0)
+  theta_vals <- c(pi, pi - 1e-12, pi - 5e-13) # just below π
 
   # Should also return 0 (the radius in the xy‑plane is zero)
   expect_equal(spherical_to_z(rho_vals, theta_vals), rep(0, 3))
@@ -155,8 +161,8 @@ test_that("spherical_to_z() treats the -z axis correctly", {
 # 4️⃣  Mixed vector input – ensure element‑wise operation
 # -----------------------------------------------------------------
 test_that("spherical_to_z() works element‑wise on mixed vectors", {
-  rho_vals   <- c(3, 0, 4, 0)
-  theta_vals <- c(pi / 4, 0, pi, pi / 2)   # mix of regular and pole angles
+  rho_vals <- c(3, 0, 4, 0)
+  theta_vals <- c(pi / 4, 0, pi, pi / 2) # mix of regular and pole angles
 
   # Manually compute expected results
   exp_z <- numeric(4)
@@ -176,14 +182,14 @@ test_that("spherical_to_z() works element‑wise on mixed vectors", {
 # 5️⃣  Non‑finite inputs – propagate NA / NaN appropriately
 # -----------------------------------------------------------------
 test_that("spherical_to_z() propagates NA / NaN values", {
-  rho_vals   <- c(1, NA, 2, NaN)
+  rho_vals <- c(1, NA, 2, NaN)
   theta_vals <- c(pi / 3, pi / 4, NA, pi / 6)
 
   got_z <- spherical_to_z(rho_vals, theta_vals)
 
-  expect_true(is.na(got_z[2]))   # NA in rho → NA result
-  expect_true(is.na(got_z[3]))   # NA in theta → NA result
-  expect_true(is.na(got_z[4]))  # NaN propagates
+  expect_true(is.na(got_z[2])) # NA in rho → NA result
+  expect_true(is.na(got_z[3])) # NA in theta → NA result
+  expect_true(is.na(got_z[4])) # NaN propagates
   # First element should be a valid numeric value
   expect_false(is.na(got_z[1]))
   expect_false(is.na(got_z[1]))
@@ -193,7 +199,7 @@ test_that("spherical_to_z() propagates NA / NaN values", {
 # 6️⃣  Negative rho (physically meaningless but mathematically allowed)
 # -----------------------------------------------------------------
 test_that("spherical_to_z() handles negative rho gracefully", {
-  rho_vals   <- c(-3, -5)
+  rho_vals <- c(-3, -5)
   theta_vals <- c(pi / 4, pi / 3)
 
   # Formula still applies: z = rho / tan(theta)

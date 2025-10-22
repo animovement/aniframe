@@ -11,7 +11,8 @@ make_pair <- function(name1, x1, y1, z1, name2, x2, y2, z2, n = 3, ind = "A") {
   dplyr::bind_rows(
     make_point(t, ind, name1, x1, y1, z1),
     make_point(t, ind, name2, x2, y2, z2)
-  ) |> as_aniframe()
+  ) |>
+    as_aniframe()
 }
 
 angle_2d <- function(p1, p2) atan2(p2$y - p1$y, p2$x - p1$x)
@@ -184,8 +185,8 @@ create_varying_angle_data <- function() {
     time = 1:3,
     individual = "A",
     keypoint = "tail",
-    x = c(1, 0, 1),      # Different positions across time
-    y = c(0, 1, 1)       # Creates different angles
+    x = c(1, 0, 1), # Different positions across time
+    y = c(0, 1, 1) # Creates different angles
   )
 
   data_body <- dplyr::tibble(
@@ -299,16 +300,20 @@ test_that("rotate_coords preserves distances between points", {
 
   # Calculate original distances
   orig_dist_head_tail <- sqrt(
-    (data$x[data$keypoint == "head"][1] - data$x[data$keypoint == "tail"][1])^2 +
-      (data$y[data$keypoint == "head"][1] - data$y[data$keypoint == "tail"][1])^2
+    (data$x[data$keypoint == "head"][1] -
+      data$x[data$keypoint == "tail"][1])^2 +
+      (data$y[data$keypoint == "head"][1] -
+        data$y[data$keypoint == "tail"][1])^2
   )
 
   result <- rotate_coords(data, alignment_points = c("head", "tail"))
 
   # Calculate rotated distances
   rot_dist_head_tail <- sqrt(
-    (result$x[result$keypoint == "head"][1] - result$x[result$keypoint == "tail"][1])^2 +
-      (result$y[result$keypoint == "head"][1] - result$y[result$keypoint == "tail"][1])^2
+    (result$x[result$keypoint == "head"][1] -
+      result$x[result$keypoint == "tail"][1])^2 +
+      (result$y[result$keypoint == "head"][1] -
+        result$y[result$keypoint == "tail"][1])^2
   )
 
   expect_equal(orig_dist_head_tail, rot_dist_head_tail, tolerance = 1e-10)
@@ -547,7 +552,7 @@ test_that("rotate_coords perpendicular creates 90-degree angle", {
   )
 
   angle_after <- get_vector_angle(result, "head", "tail", "A", 1)
-  expect_equal(angle_after, pi/2, tolerance = 1e-10)
+  expect_equal(angle_after, pi / 2, tolerance = 1e-10)
 })
 
 # ==== 3D test data ===========================================================
@@ -574,7 +579,8 @@ create_three_keypoint_3d <- function() {
     make_point(t, "A", "head", 0, 0, 0),
     make_point(t, "A", "body", 1, 0.5, 0.5),
     make_point(t, "A", "tail", 2, 0, 1)
-  ) |> as_aniframe()
+  ) |>
+    as_aniframe()
 }
 
 # ==== 3D rotation tests ======================================================

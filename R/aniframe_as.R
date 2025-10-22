@@ -20,13 +20,13 @@ as_aniframe <- function(data, metadata = list()) {
     "time"
   )
   coord_system <- matching_position_system(data)
-  if (coord_system == "cartesian"){
+  if (coord_system == "cartesian") {
     standard_cols <- c(standard_cols, "x", "y", "z", "confidence")
-  } else if (coord_system == "polar"){
+  } else if (coord_system == "polar") {
     standard_cols <- c(standard_cols, "rho", "phi", "confidence")
-  } else if (coord_system == "cylindrical"){
+  } else if (coord_system == "cylindrical") {
     standard_cols <- c(standard_cols, "rho", "phi", "z", "confidence")
-  } else if (coord_system == "spherical"){
+  } else if (coord_system == "spherical") {
     standard_cols <- c(standard_cols, "rho", "phi", "theta", "confidence")
   }
   present_standard <- standard_cols[standard_cols %in% names(data)]
@@ -50,7 +50,10 @@ as_aniframe <- function(data, metadata = list()) {
   data <- set_metadata(data, metadata = metadata)
 
   # Set coordinate system according to columns present
-  data <- set_metadata(data, coordinate_system = factor(matching_position_system(data)))
+  data <- set_metadata(
+    data,
+    coordinate_system = factor(matching_position_system(data))
+  )
   data
 }
 

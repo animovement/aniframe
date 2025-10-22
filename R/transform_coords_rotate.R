@@ -12,9 +12,9 @@
 #' @return movement data frame with rotated coordinates
 #' @export
 rotate_coords <- function(
-    data,
-    alignment_points,
-    align_perpendicular = FALSE
+  data,
+  alignment_points,
+  align_perpendicular = FALSE
 ) {
   ensure_is_aniframe(data)
   ensure_is_cartesian(data)
@@ -36,7 +36,11 @@ rotate_coords <- function(
 }
 
 #' @keywords internal
-rotate_coords_2d <- function(data, alignment_points, align_perpendicular = FALSE) {
+rotate_coords_2d <- function(
+  data,
+  alignment_points,
+  align_perpendicular = FALSE
+) {
   individuals <- unique(data$individual)
   out_data <- data.frame()
 
@@ -68,8 +72,12 @@ rotate_coords_2d <- function(data, alignment_points, align_perpendicular = FALSE
     ind_rotated <- ind_data |>
       dplyr::left_join(angles, by = "time") |>
       dplyr::mutate(
-        x_new = .data$x * cos(.data$rotation_angle) - .data$y * sin(.data$rotation_angle),
-        y_new = .data$x * sin(.data$rotation_angle) + .data$y * cos(.data$rotation_angle)
+        x_new = .data$x *
+          cos(.data$rotation_angle) -
+          .data$y * sin(.data$rotation_angle),
+        y_new = .data$x *
+          sin(.data$rotation_angle) +
+          .data$y * cos(.data$rotation_angle)
       ) |>
       dplyr::select(!dplyr::all_of(c("rotation_angle", "x", "y"))) |>
       dplyr::rename(x = "x_new", y = "y_new") |>
@@ -82,7 +90,11 @@ rotate_coords_2d <- function(data, alignment_points, align_perpendicular = FALSE
 }
 
 #' @keywords internal
-rotate_coords_3d <- function(data, alignment_points, align_perpendicular = FALSE) {
+rotate_coords_3d <- function(
+  data,
+  alignment_points,
+  align_perpendicular = FALSE
+) {
   cli::cli_abort("3D rotation is not supported yet")
 
   # as_aniframe(out_data)

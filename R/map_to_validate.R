@@ -17,7 +17,7 @@ is_cartesian_1d <- function(data, stop = FALSE) {
   forbidden <- c("rho", "phi", "theta")
   present_forbidden <- intersect(names(data), forbidden)
   cartesian_axes <- c("x", "y", "z")
-  present_axes   <- intersect(names(data), cartesian_axes)
+  present_axes <- intersect(names(data), cartesian_axes)
 
   if (length(present_forbidden) > 0L) {
     invisible(FALSE)
@@ -40,7 +40,9 @@ ensure_is_cartesian_1d <- function(data) {
 #' @keywords internal
 is_cartesian_2d <- function(data) {
   # Must contain x and y
-  if (!all(c("x", "y") %in% names(data))) return(invisible(FALSE))
+  if (!all(c("x", "y") %in% names(data))) {
+    return(invisible(FALSE))
+  }
 
   # If z exists, it must be entirely NA (or absent)
   if ("z" %in% names(data) && !all(is.na(data$z))) {
@@ -81,7 +83,8 @@ ensure_is_cartesian_3d <- function(data) {
 
 #' @keywords internal
 is_polar <- function(data) {
-  all(c("rho", "phi") %in% names(data)) && !any(c("theta", "z") %in% names(data))
+  all(c("rho", "phi") %in% names(data)) &&
+    !any(c("theta", "z") %in% names(data))
 }
 
 #' @keywords internal
@@ -93,7 +96,8 @@ ensure_is_polar <- function(data) {
 
 #' @keywords internal
 is_cylindrical <- function(data) {
-  all(c("rho", "phi", "z") %in% names(data)) && !any(c("theta") %in% names(data))
+  all(c("rho", "phi", "z") %in% names(data)) &&
+    !any(c("theta") %in% names(data))
 }
 
 #' @keywords internal
@@ -105,7 +109,8 @@ ensure_is_cylindrical <- function(data) {
 
 #' @keywords internal
 is_spherical <- function(data) {
-  all(c("rho", "phi", "theta") %in% names(data)) && !any(c("z") %in% names(data))
+  all(c("rho", "phi", "theta") %in% names(data)) &&
+    !any(c("z") %in% names(data))
 }
 
 #' @keywords internal

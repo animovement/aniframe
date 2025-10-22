@@ -1,6 +1,6 @@
 #' @keywords internal
 cartesian_to_rho <- function(x, y, z = NULL) {
-  if (is.null(z)){
+  if (is.null(z)) {
     sqrt(x^2 + y^2)
   } else {
     sqrt(x^2 + y^2 + z^2)
@@ -67,7 +67,7 @@ spherical_to_z <- function(rho, theta) {
   ## -----------------------------------------------------------------
   ok_idx <- is.finite(rho) &
     is.finite(theta) &
-    abs(sin(theta)) > .Machine$double.eps   # sin(theta) ≠ 0  →  not a pole
+    abs(sin(theta)) > .Machine$double.eps # sin(theta) ≠ 0  →  not a pole
 
   if (any(ok_idx)) {
     # Regular case:  z = ρ / tan(θ)  (equivalently ρ * cot(θ))
