@@ -65,7 +65,7 @@ transform_to_egocentric <- function(
   transformed_data <- transformed_data |>
     as_aniframe() |>
     set_metadata(
-      reference_frame = factor("egocentric")
+      reference_frame = "egocentric"
     )
 
   transformed_data
