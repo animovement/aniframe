@@ -61,7 +61,7 @@ test_that("map_to_cartesian_polar() drops polar columns and creates x/y", {
   expect_false(any(c("rho", "phi") %in% colnames(df_out)))
 
   # Metadata should indicate cartesian
-  expect_equal(get_coordinate_system(df_out), factor("cartesian"))
+  expect_equal(get_coordinate_system(df_out) |> as.character(), "cartesian")
 })
 
 test_that("map_to_cartesian_cylindrical() retains original z", {
@@ -73,7 +73,7 @@ test_that("map_to_cartesian_cylindrical() retains original z", {
   expect_equal(df_out$z, df_in$z) # z unchanged
 
   expect_false(any(c("rho", "phi") %in% colnames(df_out)))
-  expect_equal(get_coordinate_system(df_out), factor("cartesian"))
+  expect_equal(get_coordinate_system(df_out) |> as.character(), "cartesian")
 })
 
 test_that("map_to_cartesian_spherical() correctly computes z via spherical_to_z()", {
@@ -85,7 +85,7 @@ test_that("map_to_cartesian_spherical() correctly computes z via spherical_to_z(
   expect_equal(df_out$z, spherical_to_z(df_in$rho, df_in$theta))
 
   expect_false(any(c("rho", "phi", "theta") %in% colnames(df_out)))
-  expect_equal(get_coordinate_system(df_out), factor("cartesian"))
+  expect_equal(get_coordinate_system(df_out) |> as.character(), "cartesian")
 })
 
 # -----------------------------------------------------------------
@@ -175,7 +175,7 @@ test_that("map_to_cartesian_*() preserves additional non‑coordinate columns", 
   expect_equal(out$weight, df_extra$weight)
 
   # Still get the cartesian metadata
-  expect_equal(get_coordinate_system(out), factor("cartesian"))
+  expect_equal(get_coordinate_system(out) |> as.character(), "cartesian")
 })
 
 # -----------------------------------------------------------------

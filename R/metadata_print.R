@@ -1,6 +1,6 @@
 #' @export
 print.aniframe_metadata <- function(x, ...) {
-  cli::cli_h2("aniframe metadata")
+  cli::cli_h1("aniframe metadata")
 
   if (length(x) == 0) {
     cli::cli_alert_info("No metadata available")

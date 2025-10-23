@@ -41,7 +41,6 @@ rotate_coords_2d <- function(
   alignment_points,
   align_perpendicular = FALSE
 ) {
-
   individuals <- unique(data$individual)
   out_data <- data.frame()
   # TODO: Will likely break with multiple trials right now.
@@ -54,14 +53,14 @@ rotate_coords_2d <- function(
     # Get all coordinates of alignment points for this individual
     p1 <- ind_data |>
       dplyr::filter(.data$keypoint == alignment_points[1]) |>
-      dplyr::select(.data$time, .data$x, .data$y) |>
-      dplyr::rename(x1 = .data$x, y1 = .data$y) |>
+      dplyr::select(dplyr::all_of(c("time", "x", "y"))) |>
+      dplyr::rename(x1 = "x", y1 = "y") |>
       suppressMessages()
 
     p2 <- ind_data |>
       dplyr::filter(.data$keypoint == alignment_points[2]) |>
-      dplyr::select(.data$time, .data$x, .data$y) |>
-      dplyr::rename(x2 = .data$x, y2 = .data$y) |>
+      dplyr::select(dplyr::all_of(c("time", "x", "y"))) |>
+      dplyr::rename(x2 = "x", y2 = "y") |>
       suppressMessages()
 
     # Calculate rotation angles for each time point
@@ -76,7 +75,7 @@ rotate_coords_2d <- function(
         target_angle = dplyr::if_else(align_perpendicular == TRUE, pi / 2, 0),
         rotation_angle = .data$target_angle - .data$current_angle
       ) |>
-      dplyr::select(.data$time, .data$rotation_angle)
+      dplyr::select(dplyr::all_of(c("time", "rotation_angle")))
 
     # Apply rotation to all points for this individual
     ind_rotated <- ind_data |>
@@ -89,8 +88,8 @@ rotate_coords_2d <- function(
           sin(.data$rotation_angle) +
           .data$y * cos(.data$rotation_angle)
       ) |>
-      dplyr::select(-.data$rotation_angle, -.data$x, -.data$y) |>
-      dplyr::rename(x = .data$x_new, y = .data$y_new) |>
+      dplyr::select(-dplyr::all_of(c("rotation_angle", "x", "y"))) |>
+      dplyr::rename(x = "x_new", y = "y_new") |>
       suppressMessages()
 
     out_data <- dplyr::bind_rows(out_data, ind_rotated)

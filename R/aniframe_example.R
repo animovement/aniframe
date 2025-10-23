@@ -113,4 +113,5 @@ example_aniframe <- function(
 
   # Create the aniframe using do.call
   a <- do.call(aniframe, aniframe_args)
+  a
 }
