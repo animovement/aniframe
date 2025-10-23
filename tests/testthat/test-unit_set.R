@@ -216,9 +216,9 @@ test_that("set_unit_time handles custom calibration factor", {
     set_metadata(unit_time = "frame")
 
   # 30 frames per second (1 frame = 1/30 seconds)
-  result <- set_unit_time(data, to_unit = "s", calibration_factor = 1/30)
+  result <- set_unit_time(data, to_unit = "s", calibration_factor = 1 / 30)
 
-  expect_equal(result$time, c(0, 1/30, 2/30))
+  expect_equal(result$time, c(0, 1 / 30, 2 / 30))
   expect_equal(get_metadata(result, "unit_time") |> as.character(), "s")
 })
 
@@ -292,13 +292,13 @@ test_that("conversion_factors_space has correct conversion values", {
   result <- conversion_factors_space()
 
   # mm to cm
-  expect_equal(result["cm", "mm"], 1/10)
+  expect_equal(result["cm", "mm"], 1 / 10)
   # mm to m
-  expect_equal(result["m", "mm"], 1/1000)
+  expect_equal(result["m", "mm"], 1 / 1000)
   # cm to mm
   expect_equal(result["mm", "cm"], 10)
   # cm to m
-  expect_equal(result["m", "cm"], 1/100)
+  expect_equal(result["m", "cm"], 1 / 100)
   # m to mm
   expect_equal(result["mm", "m"], 1000)
   # m to cm
@@ -326,21 +326,21 @@ test_that("conversion_factors_time has correct conversion values", {
   result <- conversion_factors_time()
 
   # ms to s
-  expect_equal(result["s", "ms"], 1/1000)
+  expect_equal(result["s", "ms"], 1 / 1000)
   # ms to m
-  expect_equal(result["m", "ms"], 1/(1000 * 60))
+  expect_equal(result["m", "ms"], 1 / (1000 * 60))
   # ms to h
-  expect_equal(result["h", "ms"], 1/(1000 * 60 * 60))
+  expect_equal(result["h", "ms"], 1 / (1000 * 60 * 60))
   # s to ms
   expect_equal(result["ms", "s"], 1000)
   # s to m
-  expect_equal(result["m", "s"], 1/60)
+  expect_equal(result["m", "s"], 1 / 60)
   # s to h
-  expect_equal(result["h", "s"], 1/(60 * 60))
+  expect_equal(result["h", "s"], 1 / (60 * 60))
   # m to s
   expect_equal(result["s", "m"], 60)
   # m to h
-  expect_equal(result["h", "m"], 1/60)
+  expect_equal(result["h", "m"], 1 / 60)
   # h to m
   expect_equal(result["m", "h"], 60)
   # h to s
@@ -350,11 +350,11 @@ test_that("conversion_factors_time has correct conversion values", {
 # Test get_conversion_factor_space ----
 
 test_that("get_conversion_factor_space returns correct values", {
-  expect_equal(get_conversion_factor_space("mm", "cm"), 1/10)
+  expect_equal(get_conversion_factor_space("mm", "cm"), 1 / 10)
   expect_equal(get_conversion_factor_space("cm", "mm"), 10)
-  expect_equal(get_conversion_factor_space("mm", "m"), 1/1000)
+  expect_equal(get_conversion_factor_space("mm", "m"), 1 / 1000)
   expect_equal(get_conversion_factor_space("m", "mm"), 1000)
-  expect_equal(get_conversion_factor_space("cm", "m"), 1/100)
+  expect_equal(get_conversion_factor_space("cm", "m"), 1 / 100)
   expect_equal(get_conversion_factor_space("m", "cm"), 100)
 })
 
@@ -367,13 +367,13 @@ test_that("get_conversion_factor_space returns 1 for same units", {
 # Test get_conversion_factor_time ----
 
 test_that("get_conversion_factor_time returns correct values", {
-  expect_equal(get_conversion_factor_time("ms", "s"), 1/1000)
+  expect_equal(get_conversion_factor_time("ms", "s"), 1 / 1000)
   expect_equal(get_conversion_factor_time("s", "ms"), 1000)
-  expect_equal(get_conversion_factor_time("s", "m"), 1/60)
+  expect_equal(get_conversion_factor_time("s", "m"), 1 / 60)
   expect_equal(get_conversion_factor_time("m", "s"), 60)
-  expect_equal(get_conversion_factor_time("m", "h"), 1/60)
+  expect_equal(get_conversion_factor_time("m", "h"), 1 / 60)
   expect_equal(get_conversion_factor_time("h", "m"), 60)
-  expect_equal(get_conversion_factor_time("s", "h"), 1/3600)
+  expect_equal(get_conversion_factor_time("s", "h"), 1 / 3600)
   expect_equal(get_conversion_factor_time("h", "s"), 3600)
 })
 

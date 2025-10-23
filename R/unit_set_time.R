@@ -115,10 +115,12 @@ set_unit_time <- function(data, to_unit, calibration_factor = 1) {
 #' }
 #'
 #' @export
-set_sampling_rate <- function(data, sampling_rate){
+set_sampling_rate <- function(data, sampling_rate) {
   ensure_is_aniframe(data)
-  if (!get_metadata(data, "unit_time") %in% c("frame", "unknown")){
-    cli::cli_alert_info("unit_time is already set to a SI unit (not {c(\"frame\", \"unknown\")}). Data remains unchanged, but sampling_rate has been changed in the metadata")
+  if (!get_metadata(data, "unit_time") %in% c("frame", "unknown")) {
+    cli::cli_alert_info(
+      "unit_time is already set to a SI unit (not {c(\"frame\", \"unknown\")}). Data remains unchanged, but sampling_rate has been changed in the metadata"
+    )
   } else {
     data <- data |>
       set_unit_time("s", calibration_factor = 1 / sampling_rate)
