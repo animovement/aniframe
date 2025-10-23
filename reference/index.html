@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,7 +18,7 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/roaldarbol/aniframe/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/animovement/aniframe/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch"><li><button class="dropdown-item" data-bs-theme-value="light"><span class="fa fa-sun"></span> Light</button></li>
@@ -90,16 +90,93 @@
         <dd>Set metadata for an aniframe</dd>
       </dl><dl><dt>
 
+          <code><a href="set_unit_time.html">set_unit_time()</a></code>
+
+        </dt>
+        <dd>Set the temporal unit of an aniframe object</dd>
+      </dl><dl><dt>
+
+          <code><a href="set_unit_space.html">set_unit_space()</a></code>
+
+        </dt>
+        <dd>Set the spatial unit of an aniframe object</dd>
+      </dl><dl><dt>
+
+          <code><a href="set_sampling_rate.html">set_sampling_rate()</a></code>
+
+        </dt>
+        <dd>Set the sampling rate of an aniframe object</dd>
+      </dl><dl><dt>
+
           <code><a href="get_metadata.html">get_metadata()</a></code>
 
         </dt>
         <dd>Get metadata</dd>
       </dl><dl><dt>
 
+          <code><a href="get_trackball_calibration_factor.html">get_trackball_calibration_factor()</a></code>
+
+        </dt>
+        <dd>Calculate trackball calibration factor</dd>
+      </dl><dl><dt>
+
           <code><a href="default_metadata.html">default_metadata()</a></code>
 
         </dt>
         <dd>Default metadata structure</dd>
+      </dl></div><div class="section level2">
+      <h2 id="transformations">Transformations<a class="anchor" aria-label="anchor" href="#transformations"></a></h2>
+
+      <div class="section-desc"><p>These functions allow you to make tranformations to your coordinate system, such as translations, rotations or conversion to polar coordinates.</p></div>
+
+
+    </div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="transform_to_egocentric.html">transform_to_egocentric()</a></code>
+
+        </dt>
+        <dd>Transform coordinates to egocentric reference frame</dd>
+      </dl><dl><dt>
+
+          <code><a href="translate_coords.html">translate_coords()</a></code>
+
+        </dt>
+        <dd>Translate coordinates (Cartesian)</dd>
+      </dl><dl><dt>
+
+          <code><a href="rotate_coords.html">rotate_coords()</a></code>
+
+        </dt>
+        <dd>Rotate coordinates in Cartesian space (2D or 3D)</dd>
+      </dl><dl><dt>
+
+          <code><a href="map_to_cartesian.html">map_to_cartesian()</a></code>
+
+        </dt>
+        <dd>Map from polar to Cartesian coordinates</dd>
+      </dl><dl><dt>
+
+          <code><a href="map_to_polar.html">map_to_polar()</a></code>
+
+        </dt>
+        <dd>Map from Cartesian to polar coordinates</dd>
+      </dl><dl><dt>
+
+          <code><a href="map_to_cylindrical.html">map_to_cylindrical()</a></code>
+
+        </dt>
+        <dd>Map from Cartesian to cylindrical coordinates</dd>
+      </dl><dl><dt>
+
+          <code><a href="map_to_spherical.html">map_to_spherical()</a></code>
+
+        </dt>
+        <dd>Map from Cartesian to spherical coordinates</dd>
       </dl></div><div class="section level2">
       <h2 id="data-manipulation-dplyr-style-verbs-">Data manipulation (dplyr‑style verbs)<a class="anchor" aria-label="anchor" href="#data-manipulation-dplyr-style-verbs-"></a></h2>
 
@@ -224,18 +301,7 @@
 
         </dt>
         <dd>Extract column from aniframe with $</dd>
-      </dl></div><div class="section level2">
-      <h2 id="utility-functions">Utility functions<a class="anchor" aria-label="anchor" href="#utility-functions"></a></h2>
-
-      <div class="section-desc"><p>Miscellaneous helpers that are part of the public API.</p></div>
-
-
-    </div><div class="section level2">
-
-
-
-
-      <dl><dt>
+      </dl><dl><dt>
 
           <code><a href="names-set-.aniframe.html">`names&lt;-`(<i>&lt;aniframe&gt;</i>)</a></code>
 
