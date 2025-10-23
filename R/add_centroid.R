@@ -116,7 +116,7 @@ add_centroid <- function(
     as_aniframe() |>
     set_metadata(metadata = md)
 
-  if (!has_z){
+  if (!has_z) {
     data <- data |>
       dplyr::select(-"z")
   }

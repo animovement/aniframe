@@ -65,9 +65,9 @@ check_metadata_fields_are_correct_class <- function(metadata) {
     # `identical()` returns a single logical even if class() gives a vector
     if (!identical(class(user_val), class(default_val))) {
       matches <- c(matches, FALSE)
-      cli::cli_alert_info(
-        "Metadata field '{nm}' is of class {class(user_val)}, but it should be of class {class(default_val)}."
-      )
+      # cli::cli_alert_info(
+      #   "Metadata field '{nm}' is of class {class(user_val)}, but it should be of class {class(default_val)}."
+      # )
     } else {
       matches <- c(matches, TRUE)
     }

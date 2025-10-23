@@ -52,6 +52,24 @@ set_metadata <- function(data, ..., metadata = NULL) {
   } else if (!rlang::is_empty(dot_args)) {
     ensure_is_list(dot_args)
     user_md <- dot_args
+
+    names_md <- names(user_md)
+    class_md <- c()
+    # Ensure that input ar translated into factors and that they have the correct levels
+    for (n in names_md) {
+      if (is.factor(default_metadata()[[n]])) {
+        if (!user_md[[n]] %in% levels(default_metadata()[[n]])) {
+          cli::cli_abort(
+            "Metadata field {n} can only be {levels(default_metadata()[[n]])}, not {user_md[[n]]}."
+          )
+        } else {
+          user_md[[n]] <- factor(
+            user_md[[n]],
+            levels = levels(default_metadata()[[n]])
+          )
+        }
+      }
+    }
   } else {
     user_md <- list()
   }

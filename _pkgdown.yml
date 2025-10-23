@@ -37,6 +37,9 @@ reference:
       Functions for reading, setting, and retrieving the metadata attached to an aniframe.
     contents:
       - set_metadata
+      - set_unit_time
+      - set_unit_space
+      - set_sampling_rate
       - get_metadata
       - default_metadata
 
@@ -79,9 +82,4 @@ reference:
       - "[<-.aniframe"
       - "$<-.aniframe"
       - "$.aniframe"
-
-  - title: "Utility functions"
-    desc: |
-      Miscellaneous helpers that are part of the public API.
-    contents:
       - names<-.aniframe    # if you expose the setter for names

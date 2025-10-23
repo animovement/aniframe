@@ -66,7 +66,7 @@ is_cartesian_3d <- function(data) {
   # Must contain x, y, and z
   if (!all(c("x", "y", "z") %in% names(data))) {
     invisible(FALSE)
-  } else if (all(c("x", "y", "z") %in% names(data)) && all(is.na(data$z))){
+  } else if (all(c("x", "y", "z") %in% names(data)) && all(is.na(data$z))) {
     invisible(FALSE)
   } else {
     # All required columns are present

@@ -25,8 +25,46 @@ default_metadata <- function() {
     filename = as.character(NA),
     sampling_rate = as.numeric(NA),
     start_datetime = as.POSIXct(NA),
-    reference_frame = factor("allocentric"),
-    coordinate_system = factor("cartesian"),
+    unit_space = factor(
+      "px",
+      levels = c(
+        "px",
+        "none",
+        "mm",
+        "cm",
+        "m"
+      )
+    ),
+    unit_time = factor(
+      "frame",
+      levels = c(
+        "unknown",
+        "frame",
+        "ms",
+        "s",
+        "m",
+        "h"
+      )
+    ),
+    reference_frame = factor(
+      "allocentric",
+      levels = c(
+        "allocentric",
+        "egocentric"
+      )
+    ),
+    coordinate_system = factor(
+      "cartesian_2d",
+      levels = c(
+        "cartesian",
+        "cartesian_1d",
+        "cartesian_2d",
+        "cartesian_3d",
+        "polar",
+        "cylindrical",
+        "spherical"
+      )
+    ),
     point_of_reference = factor("bottom_left")
   )
 }
