@@ -82,6 +82,8 @@ add_centroid <- function(
     df_centroid <- data
   }
 
+  has_z <- "z" %in% names(data)
+
   df_centroid <- df_centroid |>
     dplyr::ungroup(.data$keypoint) |>
     dplyr::group_by(.data$time, .add = TRUE) |>
@@ -113,6 +115,11 @@ add_centroid <- function(
   data <- dplyr::bind_rows(data, df_centroid) |>
     as_aniframe() |>
     set_metadata(metadata = md)
+
+  if (!has_z){
+    data <- data |>
+      dplyr::select(-"z")
+  }
 
   return(data)
 }

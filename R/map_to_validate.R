@@ -65,11 +65,13 @@ ensure_is_cartesian_2d <- function(data) {
 is_cartesian_3d <- function(data) {
   # Must contain x, y, and z
   if (!all(c("x", "y", "z") %in% names(data))) {
-    return(invisible(FALSE))
+    invisible(FALSE)
+  } else if (all(c("x", "y", "z") %in% names(data)) && all(is.na(data$z))){
+    invisible(FALSE)
+  } else {
+    # All required columns are present
+    invisible(TRUE)
   }
-
-  # All required columns are present
-  invisible(TRUE)
 }
 
 #' @keywords internal

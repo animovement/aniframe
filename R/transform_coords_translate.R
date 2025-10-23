@@ -57,7 +57,7 @@ translate_coords <- function(
     data <- translate_coords_vector(data, to_x, to_y, to_z)
   }
 
-  return(data)
+  as_aniframe(data)
 }
 
 #' Translate coordinates relative to a keypoint
