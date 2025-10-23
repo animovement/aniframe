@@ -21,10 +21,10 @@
 #'   trial = 1
 #' )
 aniframe <- function(
-    ...,
-    metadata = list(),
-    .rows = NULL,
-    .name_repair = c("check_unique", "unique", "universal", "minimal")
+  ...,
+  metadata = list(),
+  .rows = NULL,
+  .name_repair = c("check_unique", "unique", "universal", "minimal")
 ) {
   dots <- list(...)
 

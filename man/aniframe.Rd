@@ -26,7 +26,7 @@ aniframe(
 An aniframe object (tibble with aniframe class)
 }
 \description{
-An S3 class for movement data.
+An R package providing core data structures for movement data.
 
 Creates a specialized data frame for animal tracking data with required
 columns for positional data (x/y/z) and time, plus optional columns for
@@ -44,14 +44,14 @@ aniframe(
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://www.roald-arboel.com/aniframe/}
-  \item \url{https://github.com/roaldarbol/aniframe/}
-  \item Report bugs at \url{https://github.com/roaldarbol/aniframe/issues}
+  \item \url{http://animovement.dev/aniframe/}
+  \item \url{https://github.com/animovement/aniframe/}
+  \item Report bugs at \url{https://github.com/animovement/aniframe/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Mikkel Roald-Arbøl \email{aniframe.pkelz@passmail.com} (\href{https://orcid.org/0000-0002-9998-0058}{ORCID})
+\strong{Maintainer}: Mikkel Roald-Arbøl \email{animovement.84w1m@passmail.com} (\href{https://orcid.org/0000-0002-9998-0058}{ORCID})
 
 }
 \keyword{internal}

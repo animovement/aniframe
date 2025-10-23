@@ -7,22 +7,22 @@ cff-version: 1.2.0
 message: 'To cite package "aniframe" in publications use:'
 type: software
 license: MIT
-title: 'aniframe: An S3 class for movement data in R'
-version: 0.1.0
-date-released: 2025-10-13
+title: 'aniframe: An R package providing core data structures for movement data'
+version: 0.2.0
+date-released: 2025-10-23
 identifiers:
   - type: doi
     value: 10.5281/zenodo.17344598
-abstract: An S3 class for movement data in R
+abstract: An R package providing core data structures for movement data.
 authors:
 - family-names: Roald-Arbøl
   given-names: Mikkel
-  email: aniframe.pkelz@passmail.com
+  email: animovement.84w1m@passmail.com
   orcid: https://orcid.org/0000-0002-9998-0058
-url: http://www.roald-arboel.com/aniframe/
+url: http://animovement.dev/aniframe/
 contact:
 - family-names: Roald-Arbøl
   given-names: Mikkel
-  email: aniframe.pkelz@passmail.com
+  email: animovement.84w1m@passmail.com
   orcid: https://orcid.org/0000-0002-9998-0058
 

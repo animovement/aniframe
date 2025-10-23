@@ -48,7 +48,7 @@ test_that("set_metadata merges with existing metadata", {
 
   md <- get_metadata(result)
   expect_equal(md$sampling_rate, 60)
-  expect_equal(md$source, "original")  # Should be preserved
+  expect_equal(md$source, "original") # Should be preserved
 })
 
 test_that("set_metadata overwrites existing values", {

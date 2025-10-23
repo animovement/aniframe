@@ -1,6 +1,6 @@
-url: http://www.roald-arboel.com/aniframe/
+url: http://animovement.dev/aniframe/
 home:
-  title: "aniframe – a S3 class for movement data"
+  title: "aniframe – An R package providing core data structures for movement data"
 
 authors:
   - name: "Mikkel Roald‑Arbøl"
@@ -37,8 +37,25 @@ reference:
       Functions for reading, setting, and retrieving the metadata attached to an aniframe.
     contents:
       - set_metadata
+      - set_unit_time
+      - set_unit_space
+      - set_sampling_rate
       - get_metadata
+      - get_trackball_calibration_factor
       - default_metadata
+
+  - title: "Transformations"
+    desc: |
+      These functions allow you to make tranformations to your coordinate system,
+      such as translations, rotations or conversion to polar coordinates.
+    contents:
+    - transform_to_egocentric
+    - translate_coords
+    - rotate_coords
+    - map_to_cartesian
+    - map_to_polar
+    - map_to_cylindrical
+    - map_to_spherical
 
   - title: "Data manipulation (dplyr‑style verbs)"
     desc: >
@@ -66,9 +83,4 @@ reference:
       - "[<-.aniframe"
       - "$<-.aniframe"
       - "$.aniframe"
-
-  - title: "Utility functions"
-    desc: |
-      Miscellaneous helpers that are part of the public API.
-    contents:
       - names<-.aniframe    # if you expose the setter for names

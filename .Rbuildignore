@@ -8,5 +8,7 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^\.vscode$
 ^CITATION\.cff$
 ^README\.Rmd$
+^vignettes/articles$

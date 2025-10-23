@@ -4,7 +4,7 @@
 # Helper ----------------------------------------------------------------
 # Create a fresh aniframe object and capture its metadata once.
 make_af <- function() {
-  af <- example_aniframe()          # ← your convenience constructor
+  af <- example_aniframe() # ← your convenience constructor
   meta <- get_metadata(af)
   list(obj = af, meta = meta)
 }
@@ -13,7 +13,7 @@ make_af <- function() {
 # 1. dplyr verbs ----------------------------------------------------
 test_that("group_by preserves class & metadata", {
   src <- make_af()
-  out <- dplyr::group_by(src$obj, individual)   # individual is a column in example_aniframe()
+  out <- dplyr::group_by(src$obj, individual) # individual is a column in example_aniframe()
   expect_s3_class(out, "aniframe")
   expect_identical(get_metadata(out), src$meta)
 })
@@ -23,7 +23,7 @@ test_that("ungroup preserves class & metadata", {
   tmp <- dplyr::group_by(src$obj, individual)
   expect_warning(
     out <- dplyr::ungroup(tmp)
-    )
+  )
   expect_s3_class(out, "aniframe")
   expect_identical(get_metadata(out), src$meta)
 })
@@ -37,7 +37,7 @@ test_that("mutate preserves class & metadata", {
 
 test_that("select preserves class & metadata", {
   src <- make_af()
-  out <- dplyr::select(src$obj, individual, x)   # keep a subset of columns
+  out <- dplyr::select(src$obj, individual, x) # keep a subset of columns
   expect_s3_class(out, "aniframe")
   expect_identical(get_metadata(out), src$meta)
 })
@@ -119,7 +119,7 @@ test_that("[<-] assignment preserves class & metadata", {
 test_that("[[<-] assignment preserves class & metadata", {
   src <- make_af()
   out <- src$obj
-  out[[ "x" ]] <- 123
+  out[["x"]] <- 123
   expect_s3_class(out, "aniframe")
   expect_identical(get_metadata(out), src$meta)
 })

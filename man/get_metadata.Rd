@@ -4,10 +4,12 @@
 \alias{get_metadata}
 \title{Get metadata}
 \usage{
-get_metadata(data)
+get_metadata(data, fields = NULL)
 }
 \arguments{
 \item{data}{aniframe}
+
+\item{fields}{If only specific metadata fields should be returned.}
 }
 \value{
 the metadata associated with the aniframe
