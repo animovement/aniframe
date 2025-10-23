@@ -41,6 +41,7 @@ reference:
       - set_unit_space
       - set_sampling_rate
       - get_metadata
+      - get_trackball_calibration_factor
       - default_metadata
 
   - title: "Transformations"
