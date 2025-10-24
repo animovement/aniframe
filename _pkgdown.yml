@@ -58,6 +58,15 @@ reference:
     - map_to_cylindrical
     - map_to_spherical
 
+  - title: "Helpers"
+    desc:
+    contents:
+    - rad_to_deg
+    - deg_to_rad
+    - calculate_angular_difference
+    - constrain_angles_radians
+    - diff_angle
+
   - title: "Data manipulation (dplyr‑style verbs)"
     desc: >
       S3 methods that mirror dplyr verbs for aniframe objects.

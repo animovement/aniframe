@@ -1,27 +1,24 @@
-#' First‑Order Angular Difference with NA Padding
+#' Difference of angular values
 #'
-#' A thin wrapper around base `diff()` that returns the smallest signed angular
-#' distance (in radians) between successive elements of a numeric vector.  The
-#' result is padded with `NA`s (equal to the chosen `lag`) so the output can be
-#' used directly inside `dplyr::mutate()` without breaking row alignment.
+#' Computes lagged differences between successive angles (in radians) and
+#' converts each raw subtraction into the shortest signed angular distance
+#' using `calculate_angular_difference()`.  The output mimics `base::diff()`,
+#' returning `NA`s for the first `lag` positions so it works nicely inside
+#' `dplyr::mutate()`.
 #'
-#' @param x A numeric vector of angles expressed in **radians**.
-#' @param lag Integer ≥ 1. Number of positions to shift when computing the
-#'   difference (identical to the `lag` argument of `base::diff`). Default is
-#'   `1L`.
-#' @return A numeric vector of length `length(x)`.  The first `lag` entries are
-#'   `NA`; the remaining entries contain the minimal signed angular distance
-#'   between successive angles, wrapped to the interval \(-π, π]\`.
-#' @details
-#' * **Angular wrapping** – Each raw difference `to_angle - from_angle` is fed
-#'   to `calculate_angular_difference()`, which constrains the result to the
-#'   shortest rotation (‑π … π).  This prevents the artificial jump that occurs
-#'   at the ±π boundary.
-#' * **NA padding** – Unlike `base::diff()`, which returns a vector of length
-#'   `length(x) - lag`, this implementation prepends `lag` `NA`s.  This makes the
-#'   function safe for use inside `dplyr::mutate()` where row‑wise alignment is
-#'   required.
-#' @keywords internal
+#' @param x   Numeric vector of angles (radians).
+#' @param lag Positive integer indicating the lag (default = 1L). Must be
+#'            an integer ≥ 1.
+#' @return Numeric vector of the same length as `x`. The first `lag` entries
+#'         are `NA`; subsequent entries contain the angular differences.
+#' @examples
+#' # Simple example
+#' angles <- c(0, pi/2, pi, 3*pi/2)
+#' diff_angle(angles)
+#'
+#' # Using a lag of 2
+#' diff_angle(angles, lag = 2L)
+#' @export
 diff_angle <- function(x, lag = 1L) {
   # Input validation – mimic base::diff's checks
   if (!is.numeric(x)) {
@@ -52,28 +49,47 @@ diff_angle <- function(x, lag = 1L) {
 }
 
 #' Calculate angular difference
-#' @param from_angle From angle
-#' @param to_angle To angle
-#' @keywords internal
+#'
+#' Computes the shortest signed angular distance (in radians) from
+#' `from_angle` to `to_angle`.
+#'
+#' @param from_angle Numeric. Starting angle (radians).
+#' @param to_angle   Numeric. Target angle (radians).
+#' @return Numeric scalar – the angular difference wrapped to \[-π, π\].
+#' @export
 calculate_angular_difference <- function(from_angle, to_angle) {
   diff_angle <- constrain_angles_radians(to_angle - from_angle)
   dplyr::case_when(
     diff_angle > pi ~ diff_angle - 2 * pi,
-    .default = diff_angle
+    .default        = diff_angle
   )
 }
 
-#' @keywords internal
+#' Constrain angles to \[0, 2π)
+#'
+#' Wraps any numeric vector to the interval \[0, 2π) using modulo arithmetic.
+#'
+#' @param x Numeric vector of angles (radians).
+#' @return Numeric vector of the same length, each element in \[0, 2π).
+#' @export
 constrain_angles_radians <- function(x) {
-  (x %% (2 * pi))
+  x %% (2 * pi)
 }
 
-#' @keywords internal
+#' Convert radians to degrees
+#'
+#' @param x Numeric vector of angles (radians).
+#' @return Numeric vector of angles expressed in degrees.
+#' @export
 rad_to_deg <- function(x) {
   (x * 180) / pi
 }
 
-#' @keywords internal
+#' Convert degrees to radians
+#'
+#' @param x Numeric vector of angles (degrees).
+#' @return Numeric vector of angles expressed in radians.
+#' @export
 deg_to_rad <- function(x) {
   (x * pi) / 180
 }

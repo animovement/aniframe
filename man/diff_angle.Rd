@@ -2,38 +2,32 @@
 % Please edit documentation in R/transform_utils.R
 \name{diff_angle}
 \alias{diff_angle}
-\title{First‑Order Angular Difference with NA Padding}
+\title{Difference of angular values}
 \usage{
 diff_angle(x, lag = 1L)
 }
 \arguments{
-\item{x}{A numeric vector of angles expressed in \strong{radians}.}
+\item{x}{Numeric vector of angles (radians).}
 
-\item{lag}{Integer ≥ 1. Number of positions to shift when computing the
-difference (identical to the \code{lag} argument of \code{base::diff}). Default is
-\code{1L}.}
+\item{lag}{Positive integer indicating the lag (default = 1L). Must be
+an integer ≥ 1.}
 }
 \value{
-A numeric vector of length \code{length(x)}.  The first \code{lag} entries are
-\code{NA}; the remaining entries contain the minimal signed angular distance
-between successive angles, wrapped to the interval \(-π, π]\`.
+Numeric vector of the same length as \code{x}. The first \code{lag} entries
+are \code{NA}; subsequent entries contain the angular differences.
 }
 \description{
-A thin wrapper around base \code{diff()} that returns the smallest signed angular
-distance (in radians) between successive elements of a numeric vector.  The
-result is padded with \code{NA}s (equal to the chosen \code{lag}) so the output can be
-used directly inside \code{dplyr::mutate()} without breaking row alignment.
+Computes lagged differences between successive angles (in radians) and
+converts each raw subtraction into the shortest signed angular distance
+using \code{calculate_angular_difference()}.  The output mimics \code{base::diff()},
+returning \code{NA}s for the first \code{lag} positions so it works nicely inside
+\code{dplyr::mutate()}.
 }
-\details{
-\itemize{
-\item \strong{Angular wrapping} – Each raw difference \code{to_angle - from_angle} is fed
-to \code{calculate_angular_difference()}, which constrains the result to the
-shortest rotation (‑π … π).  This prevents the artificial jump that occurs
-at the ±π boundary.
-\item \strong{NA padding} – Unlike \code{base::diff()}, which returns a vector of length
-\code{length(x) - lag}, this implementation prepends \code{lag} \code{NA}s.  This makes the
-function safe for use inside \code{dplyr::mutate()} where row‑wise alignment is
-required.
+\examples{
+# Simple example
+angles <- c(0, pi/2, pi, 3*pi/2)
+diff_angle(angles)
+
+# Using a lag of 2
+diff_angle(angles, lag = 2L)
 }
-}
-\keyword{internal}

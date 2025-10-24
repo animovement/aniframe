@@ -7,11 +7,14 @@
 calculate_angular_difference(from_angle, to_angle)
 }
 \arguments{
-\item{from_angle}{From angle}
+\item{from_angle}{Numeric. Starting angle (radians).}
 
-\item{to_angle}{To angle}
+\item{to_angle}{Numeric. Target angle (radians).}
+}
+\value{
+Numeric scalar – the angular difference wrapped to [-π, π].
 }
 \description{
-Calculate angular difference
+Computes the shortest signed angular distance (in radians) from
+\code{from_angle} to \code{to_angle}.
 }
-\keyword{internal}
