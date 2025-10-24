@@ -95,9 +95,11 @@ calc_ang_diff <- calculate_angular_difference
 # ------------------------------------------------------------------
 expected_diff <- function(x, lag = 1L) {
   # Mimic the same logic as diff_angle but without the NA padding
-  if (length(x) <= lag) return(numeric(0))
+  if (length(x) <= lag) {
+    return(numeric(0))
+  }
   from <- x[seq_len(length(x) - lag)]
-  to   <- x[(lag + 1):length(x)]
+  to <- x[(lag + 1):length(x)]
   mapply(calc_ang_diff, from_angle = from, to_angle = to)
 }
 
@@ -105,18 +107,17 @@ expected_diff <- function(x, lag = 1L) {
 # 1. Input validation ------------------------------------------------
 # ------------------------------------------------------------------
 test_that("`x` must be numeric", {
-  expect_error(diff_angle("not numeric", lag = 1L),
-               "`x` must be a numeric vector of angles")
+  expect_error(
+    diff_angle("not numeric", lag = 1L),
+    "`x` must be a numeric vector of angles"
+  )
 })
 
 test_that("`lag` must be a positive integer", {
-  expect_error(diff_angle(1:5, lag = 0L),
-               "`lag` must be a positive integer")
-  expect_error(diff_angle(1:5, lag = -2L),
-               "`lag` must be a positive integer")
+  expect_error(diff_angle(1:5, lag = 0L), "`lag` must be a positive integer")
+  expect_error(diff_angle(1:5, lag = -2L), "`lag` must be a positive integer")
   # Non‑integer numeric should also trigger the same check
-  expect_error(diff_angle(1:5, lag = 1.5),
-               "`lag` must be a positive integer")
+  expect_error(diff_angle(1:5, lag = 1.5), "`lag` must be a positive integer")
 })
 
 # ------------------------------------------------------------------
@@ -133,12 +134,12 @@ test_that("returns numeric(0) when length(x) <= lag", {
 # ------------------------------------------------------------------
 test_that("computes angular differences and pads with NA", {
   set.seed(123)
-  angles <- runif(10, 0, 2 * pi)   # random radian angles
+  angles <- runif(10, 0, 2 * pi) # random radian angles
 
   # lag = 1 (default)
   res1 <- diff_angle(angles, lag = 1L)
   expect_length(res1, length(angles))
-  expect_true(all(is.na(res1[1:1])))                     # first lag positions are NA
+  expect_true(all(is.na(res1[1:1]))) # first lag positions are NA
   expect_equal(res1[-(1:1)], expected_diff(angles, lag = 1L))
 
   # lag = 3
@@ -153,15 +154,15 @@ test_that("computes angular differences and pads with NA", {
 # 4. Handles vectors containing NA values ---------------------------
 # ------------------------------------------------------------------
 test_that("propagates NA values correctly", {
-  vec <- c(0, pi/2, NA, pi, 3*pi/2)
+  vec <- c(0, pi / 2, NA, pi, 3 * pi / 2)
 
   # lag = 1
   out <- diff_angle(vec, lag = 1L)
   # First element is NA (padding)
   expect_true(is.na(out[1]))
   # Subsequent elements where either side is NA should be NA
-  expect_true(is.na(out[3]))   # diff between pi/2 and NA
-  expect_true(is.na(out[4]))   # diff between NA and pi
+  expect_true(is.na(out[3])) # diff between pi/2 and NA
+  expect_true(is.na(out[4])) # diff between NA and pi
   # Non‑NA diffs should match the helper
   expect_equal(out[2], calc_ang_diff(vec[1], vec[2]))
   expect_equal(out[5], calc_ang_diff(vec[4], vec[5]))
@@ -171,7 +172,7 @@ test_that("propagates NA values correctly", {
 # 5. Edge case: single‑element vector --------------------------------
 # ------------------------------------------------------------------
 test_that("single‑element vector returns numeric(0)", {
-  expect_identical(diff_angle(c(pi/4), lag = 1L), numeric(0))
+  expect_identical(diff_angle(c(pi / 4), lag = 1L), numeric(0))
 })
 
 # ------------------------------------------------------------------
@@ -186,7 +187,7 @@ test_that("large lag greater than length returns numeric(0)", {
 # 7. Consistency with base::diff for linear (non‑wrapped) values ---
 # ------------------------------------------------------------------
 test_that("behaves like base::diff when angles are monotonic and within [-π, π]", {
-  lin_angles <- seq(-pi/2, pi/2, length.out = 7)   # monotonic, no wrap needed
+  lin_angles <- seq(-pi / 2, pi / 2, length.out = 7) # monotonic, no wrap needed
   expect_equal(
     diff_angle(lin_angles, lag = 1L)[-1],
     base::diff(lin_angles, lag = 1L)
