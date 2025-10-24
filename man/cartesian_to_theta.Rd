@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_to_utils.R
 \name{cartesian_to_theta}
 \alias{cartesian_to_theta}
-\title{Polar angle θ (angle from the +z axis) – vectorised}
+\title{Polar angle (θ) from Cartesian coordinates}
 \usage{
 cartesian_to_theta(x, y, z)
 }
@@ -14,9 +14,9 @@ cartesian_to_theta(x, y, z)
 \item{z}{numeric vector of z‑coordinates}
 }
 \value{
-numeric vector of angles in radians
+numeric vector of polar angles (θ) in radians
 }
 \description{
-Polar angle θ (angle from the +z axis) – vectorised
+Calculates the inclination angle measured from the positive z‑axis
+(the “polar” angle) for each point.
 }
-\keyword{internal}

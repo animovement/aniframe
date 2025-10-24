@@ -1,4 +1,13 @@
-#' @keywords internal
+#' Cartesian radius (ρ) from coordinates
+#'
+#' Computes the Euclidean distance from the origin to a point in either 2‑D
+#' (`z` omitted) or 3‑D space.
+#'
+#' @param x numeric vector of x‑coordinates
+#' @param y numeric vector of y‑coordinates
+#' @param z optional numeric vector of z‑coordinates; if `NULL` a 2‑D radius is returned
+#' @return numeric vector of radii (ρ)
+#' @export
 cartesian_to_rho <- function(x, y, z = NULL) {
   if (is.null(z)) {
     sqrt(x^2 + y^2)
@@ -7,7 +16,17 @@ cartesian_to_rho <- function(x, y, z = NULL) {
   }
 }
 
-#' @keywords internal
+#' Cartesian azimuth (φ) from coordinates
+#'
+#' Returns the planar angle measured from the positive x‑axis toward the
+#' positive y‑axis.  By default the result is mapped to \[0, 2π); setting
+#' `centered = TRUE` leaves the native `atan2` range \[-π, π\].
+#'
+#' @param x numeric vector of x‑coordinates
+#' @param y numeric vector of y‑coordinates
+#' @param centered logical; if `TRUE` keep the \[-π, π\] range, otherwise map to \[0, 2π\)
+#' @return numeric vector of azimuth angles (φ) in radians
+#' @export
 cartesian_to_phi <- function(x, y, centered = FALSE) {
   # atan2(y, x) returns angles in [-pi, pi]
   angle <- atan2(y, x)
@@ -19,13 +38,16 @@ cartesian_to_phi <- function(x, y, centered = FALSE) {
   angle
 }
 
-#' Polar angle θ (angle from the +z axis) – vectorised
+#' Polar angle (θ) from Cartesian coordinates
+#'
+#' Calculates the inclination angle measured from the positive z‑axis
+#' (the “polar” angle) for each point.
 #'
 #' @param x numeric vector of x‑coordinates
 #' @param y numeric vector of y‑coordinates
 #' @param z numeric vector of z‑coordinates
-#' @return numeric vector of angles in radians
-#' @keywords internal
+#' @return numeric vector of polar angles (θ) in radians
+#' @export
 cartesian_to_theta <- function(x, y, z) {
   # Full 3‑D radius for each observation
   rho <- cartesian_to_rho(x, y, z)
@@ -42,22 +64,35 @@ cartesian_to_theta <- function(x, y, z) {
   invisible(theta)
 }
 
-#' @keywords internal
+#' Convert polar radius to Cartesian x‑coordinate
+#'
+#' @param rho numeric vector of radial distances
+#' @param phi numeric vector of azimuth angles (radians)
+#' @return numeric vector of x‑coordinates
+#' @export
 polar_to_x <- function(rho, phi) {
   rho * cos(phi)
 }
 
-#' @keywords internal
+#' Convert polar radius to Cartesian y‑coordinate
+#'
+#' @param rho numeric vector of radial distances
+#' @param phi numeric vector of azimuth angles (radians)
+#' @return numeric vector of y‑coordinates
+#' @export
 polar_to_y <- function(rho, phi) {
   rho * sin(phi)
 }
 
-#' Convert cylindrical radius ρ and polar angle θ to the Cartesian z‑coordinate.
+#' Convert cylindrical radius and polar angle to Cartesian z‑coordinate
 #'
-#' @param rho   Numeric vector – cylindrical radius (√(x²+y²)).
+#' Handles regular points as well as the two pole regions (θ≈0 and θ≈π).
+#' Non‑finite inputs remain `NA`.
+#'
+#' @param rho   Numeric vector – cylindrical radius (√(x² + y²)).
 #' @param theta Numeric vector – polar angle measured from the +z axis (radians).
-#' @return      Numeric vector of z‑coordinates (same length as input).
-#' @keywords internal
+#' @return Numeric vector of z‑coordinates (same length as input)
+#' @export
 spherical_to_z <- function(rho, theta) {
   # Initialise output with NA so that any non‑finite input stays NA.
   z <- rep(NA_real_, length(rho))
@@ -67,7 +102,7 @@ spherical_to_z <- function(rho, theta) {
   ## -----------------------------------------------------------------
   ok_idx <- is.finite(rho) &
     is.finite(theta) &
-    abs(sin(theta)) > .Machine$double.eps # sin(theta) ≠ 0  →  not a pole
+    abs(sin(theta)) > .Machine$double.eps # sin(theta) ≠ 0 → not a pole
 
   if (any(ok_idx)) {
     # Regular case:  z = ρ / tan(θ)  (equivalently ρ * cot(θ))

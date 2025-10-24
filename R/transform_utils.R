@@ -61,7 +61,7 @@ calculate_angular_difference <- function(from_angle, to_angle) {
   diff_angle <- constrain_angles_radians(to_angle - from_angle)
   dplyr::case_when(
     diff_angle > pi ~ diff_angle - 2 * pi,
-    .default        = diff_angle
+    .default = diff_angle
   )
 }
 

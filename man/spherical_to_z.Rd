@@ -2,20 +2,19 @@
 % Please edit documentation in R/map_to_utils.R
 \name{spherical_to_z}
 \alias{spherical_to_z}
-\title{Convert cylindrical radius ρ and polar angle θ to the Cartesian z‑coordinate.}
+\title{Convert cylindrical radius and polar angle to Cartesian z‑coordinate}
 \usage{
 spherical_to_z(rho, theta)
 }
 \arguments{
-\item{rho}{Numeric vector – cylindrical radius (√(x²+y²)).}
+\item{rho}{Numeric vector – cylindrical radius (√(x² + y²)).}
 
 \item{theta}{Numeric vector – polar angle measured from the +z axis (radians).}
 }
 \value{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ Numeric vector of z‑coordinates (same length as input).
-}\if{html}{\out{</div>}}
+Numeric vector of z‑coordinates (same length as input)
 }
 \description{
-Convert cylindrical radius ρ and polar angle θ to the Cartesian z‑coordinate.
+Handles regular points as well as the two pole regions (θ≈0 and θ≈π).
+Non‑finite inputs remain \code{NA}.
 }
-\keyword{internal}
