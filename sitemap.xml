@@ -12,6 +12,8 @@
 <url><loc>http://animovement.dev/aniframe/reference/as.data.frame.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/as_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/calculate_angular_difference.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/cartesian_to_phi.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/cartesian_to_rho.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cartesian_to_theta.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-set-.aniframe.html</loc></url>
@@ -19,6 +21,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/default_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/deg_to_rad.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/diff_angle.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/example_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/filter.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/get_metadata.html</loc></url>
@@ -33,6 +36,8 @@
 <url><loc>http://animovement.dev/aniframe/reference/mutate.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/names-set-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/new_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/polar_to_x.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/polar_to_y.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/rad_to_deg.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/relocate.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/rename.aniframe.html</loc></url>
