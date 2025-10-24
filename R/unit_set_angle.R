@@ -56,20 +56,19 @@ set_unit_angle <- function(data, cols, to_unit) {
   }
 
   # Check that provided columns are numeric
-  if (!all(cols %in% names(data))){
+  if (!all(cols %in% names(data))) {
     cli::cli_abort("All provided columns must be in the data.")
   }
-  if (!all(vapply(data[, cols, drop = FALSE], is.numeric, logical(1)))){
+  if (!all(vapply(data[, cols, drop = FALSE], is.numeric, logical(1)))) {
     cli::cli_abort("All provided columns must be numeric.")
   }
-
 
   current_unit_angle <- get_metadata(data, "unit_angle")
   if (identical(as.character(current_unit_angle), to_unit)) {
     cli::cli_alert_info(
       "Angular unit is already {to_unit}."
     )
-  } else if (to_unit == "deg"){
+  } else if (to_unit == "deg") {
     cols_to_calibrate <- cols %in% names(data)
     data <- data |>
       dplyr::mutate(
@@ -79,7 +78,7 @@ set_unit_angle <- function(data, cols, to_unit) {
           .names = "{.col}" # keep the original column names
         )
       )
-  } else if (to_unit == "rad"){
+  } else if (to_unit == "rad") {
     cols_to_calibrate <- cols %in% names(data)
     data <- data |>
       dplyr::mutate(

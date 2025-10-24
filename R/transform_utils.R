@@ -32,15 +32,19 @@ diff_angle <- function(x, lag = 1L) {
   }
 
   # Base case: no work to do
-  if (length(x) <= lag) return(numeric(0))
+  if (length(x) <= lag) {
+    return(numeric(0))
+  }
 
   # Compute successive differences recursively, just like base::diff
   result <- x[(lag + 1):length(x)] - x[seq_len(length(x) - lag)]
 
   # Apply the angular‑distance conversion element‑wise
-  result <- mapply(calculate_angular_difference,
-                   from_angle = x[seq_len(length(x) - lag)],
-                   to_angle   = x[(lag + 1):length(x)])
+  result <- mapply(
+    calculate_angular_difference,
+    from_angle = x[seq_len(length(x) - lag)],
+    to_angle = x[(lag + 1):length(x)]
+  )
 
   # Prepend NAs to make it work in dplyr mutate functions
   result <- c(rep(NA, lag), result)
