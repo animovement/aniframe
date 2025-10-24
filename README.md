@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17344598.svg)](https://doi.org/10.5281/zenodo.17344598)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17344597.svg)](10.5281/zenodo.17344597)
 [![R-CMD-check](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
 badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.r-universe.dev)
@@ -14,7 +14,8 @@ badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.
 
 *An R package providing core data structures for movement data*
 
-The primary aim of the _aniframe_ package is to provide S3 classes and methods for representing and manipulating movement data.
+The primary aim of the *aniframe* package is to provide S3 classes and
+methods for representing and manipulating movement data.
 
 ## Installation
 

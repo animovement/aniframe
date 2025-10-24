@@ -36,11 +36,12 @@ reference:
     desc: >
       Functions for reading, setting, and retrieving the metadata attached to an aniframe.
     contents:
+      - get_metadata
       - set_metadata
       - set_unit_time
       - set_unit_space
+      - set_unit_angle
       - set_sampling_rate
-      - get_metadata
       - get_trackball_calibration_factor
       - default_metadata
 
