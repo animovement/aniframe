@@ -102,7 +102,7 @@ spherical_to_z <- function(rho, theta) {
   ## -----------------------------------------------------------------
   ok_idx <- is.finite(rho) &
     is.finite(theta) &
-    abs(sin(theta)) > .Machine$double.eps   # sin(theta) ≠ 0 → not a pole
+    abs(sin(theta)) > .Machine$double.eps # sin(theta) ≠ 0 → not a pole
 
   if (any(ok_idx)) {
     # Regular case:  z = ρ / tan(θ)  (equivalently ρ * cot(θ))
