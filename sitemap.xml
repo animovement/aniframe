@@ -16,6 +16,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/cash-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-set-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/default_metadata.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/diff_angle.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/example_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/filter.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/get_metadata.html</loc></url>
@@ -36,6 +37,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/select.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/set_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/set_sampling_rate.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/set_unit_angle.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/set_unit_space.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/set_unit_time.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/slice.aniframe.html</loc></url>
