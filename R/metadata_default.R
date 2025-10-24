@@ -35,6 +35,13 @@ default_metadata <- function() {
         "m"
       )
     ),
+    unit_angle = factor(
+      "rad",
+      levels = c(
+        "rad",
+        "deg"
+      )
+    ),
     unit_time = factor(
       "frame",
       levels = c(
