@@ -27,7 +27,7 @@ diff_angle <- function(x, lag = 1L) {
   if (!is.numeric(x)) {
     cli::cli_abort("`x` must be a numeric vector of angles (in radians).")
   }
-  if (lag < 1L) {
+  if (lag < 1L || !is.integer(lag)) {
     cli::cli_abort("`lag` must be a positive integer.")
   }
 
