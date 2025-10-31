@@ -58,10 +58,11 @@ diff_angle <- function(x, lag = 1L) {
 #' @return Numeric scalar – the angular difference wrapped to \[-π, π\].
 #' @export
 calculate_angular_difference <- function(from_angle, to_angle) {
-  diff_angle <- constrain_angles_radians(to_angle - from_angle)
-  dplyr::case_when(
-    diff_angle > pi ~ diff_angle - 2 * pi,
-    .default = diff_angle
+  diff_angle <- wrap_angle(to_angle - from_angle)
+  dplyr::if_else(
+    diff_angle > pi,
+    diff_angle - 2 * pi,
+    diff_angle
   )
 }
 
@@ -72,8 +73,21 @@ calculate_angular_difference <- function(from_angle, to_angle) {
 #' @param x Numeric vector of angles (radians).
 #' @return Numeric vector of the same length, each element in \[0, 2π).
 #' @export
-constrain_angles_radians <- function(x) {
+wrap_angle <- function(x) {
   x %% (2 * pi)
+}
+
+#' Remove constrain for angles to keep within \[0, 2π)
+#'
+#' Unwraps any numeric vector from the interval \[0, 2π).
+#'
+#' @param x Numeric vector of angles (radians).
+#' @return Numeric vector of the same length.
+#' @export
+unwrap_angle <- function(x) {
+  angle_diff <- diff(x)
+  angle_diff_wrapped <- ((angle_diff + pi) %% (2 * pi)) - pi
+  c(x[1], x[1] + cumsum(angle_diff_wrapped))
 }
 
 #' Convert radians to degrees

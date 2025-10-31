@@ -6,13 +6,13 @@ test_that("cartesian_to_rho() computes Euclidean distance correctly", {
 })
 
 test_that("cartesian_to_phi() behaves consistently with atan2()", {
-  skip_if_not(exists("constrain_angles_radians"))
+  skip_if_not(exists("wrap_angle"))
 
   # helper to compare with true atan2
   truth <- atan2(1, 1)
   expect_equal(
     cartesian_to_phi(1, 1),
-    constrain_angles_radians(truth),
+    wrap_angle(truth),
     tolerance = 1e-8
   )
 
@@ -26,14 +26,14 @@ test_that("cartesian_to_phi() behaves consistently with atan2()", {
   for (q in xy) {
     expect_equal(
       cartesian_to_phi(q[1], q[2]),
-      constrain_angles_radians(atan2(q[2], q[1])),
+      wrap_angle(atan2(q[2], q[1])),
       tolerance = 1e-8
     )
   }
 })
 
 test_that("cartesian_to_phi() centers correctly when centered = TRUE", {
-  skip_if_not(exists("constrain_angles_radians"))
+  skip_if_not(exists("wrap_angle"))
   phi <- cartesian_to_phi(1, -1, centered = TRUE)
   expect_true(phi >= -pi && phi <= pi)
 })
@@ -55,7 +55,7 @@ test_that("polar_to_x() and polar_to_y() handle zero radius correctly", {
 # -------------------------------------------------------------------------
 
 test_that("cartesian_to_phi() should match atan2() for key reference points", {
-  skip_if_not(exists("constrain_angles_radians"))
+  skip_if_not(exists("wrap_angle"))
 
   ## True values using atan2(y, x)
   expected_angles <- c(
@@ -78,13 +78,13 @@ test_that("cartesian_to_phi() should match atan2() for key reference points", {
   results <- sapply(test_points, function(pt) cartesian_to_phi(pt[1], pt[2]))
 
   ## Constrain the reference angles and compare
-  expected_constrained <- sapply(expected_angles, constrain_angles_radians)
+  expected_constrained <- sapply(expected_angles, wrap_angle)
 
   expect_equal(results, expected_constrained, tolerance = 1e-8)
 })
 
 test_that("cartesian_to_phi() handles axes and quadrants correctly", {
-  skip_if_not(exists("constrain_angles_radians"))
+  skip_if_not(exists("wrap_angle"))
 
   # The current implementation will incorrectly swap x/y
   # This test will fail until cartesian_to_phi() uses atan2(y, x)
