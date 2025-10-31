@@ -17,7 +17,6 @@
 <url><loc>http://animovement.dev/aniframe/reference/cartesian_to_theta.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-set-.aniframe.html</loc></url>
-<url><loc>http://animovement.dev/aniframe/reference/constrain_angles_radians.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/default_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/deg_to_rad.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/diff_angle.html</loc></url>
@@ -61,5 +60,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/translate_coords_keypoint.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/translate_coords_vector.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ungroup.aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/unwrap_angle.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/wrap_angle.html</loc></url>
 </urlset>
 
