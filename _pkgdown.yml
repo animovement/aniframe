@@ -71,7 +71,8 @@ reference:
     - rad_to_deg
     - deg_to_rad
     - calculate_angular_difference
-    - constrain_angles_radians
+    - wrap_angle
+    - unwrap_angle
     - diff_angle
 
   - title: "Data manipulation (dplyr‑style verbs)"

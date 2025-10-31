@@ -24,19 +24,19 @@ test_that("rad_to_deg() converts correctly for key values", {
   expect_equal(rad_to_deg(2 * pi), 360, tolerance = 1e-10)
 })
 
-test_that("constrain_angles_radians() wraps angles to [0, 2pi)", {
-  expect_equal(constrain_angles_radians(0), 0)
-  expect_equal(constrain_angles_radians(2 * pi), 0)
-  expect_equal(constrain_angles_radians(-pi / 2), 3 * pi / 2)
-  expect_equal(constrain_angles_radians(3 * pi), pi)
-  expect_equal(constrain_angles_radians(4 * pi), 0)
-  expect_equal(constrain_angles_radians(5 * pi / 2), pi / 2)
+test_that("wrap_angle() wraps angles to [0, 2pi)", {
+  expect_equal(wrap_angle(0), 0)
+  expect_equal(wrap_angle(2 * pi), 0)
+  expect_equal(wrap_angle(-pi / 2), 3 * pi / 2)
+  expect_equal(wrap_angle(3 * pi), pi)
+  expect_equal(wrap_angle(4 * pi), 0)
+  expect_equal(wrap_angle(5 * pi / 2), pi / 2)
 })
 
-test_that("constrain_angles_radians() is vectorised", {
+test_that("wrap_angle() is vectorised", {
   input <- c(-pi / 2, 0, pi / 2, pi, 3 * pi / 2, 2 * pi)
   expected <- c(3 * pi / 2, 0, pi / 2, pi, 3 * pi / 2, 0)
-  expect_equal(constrain_angles_radians(input), expected)
+  expect_equal(wrap_angle(input), expected)
 })
 
 test_that("calculate_angular_difference() returns expected signed differences", {
