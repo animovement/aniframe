@@ -21,6 +21,13 @@
 <url><loc>http://animovement.dev/aniframe/reference/deg_to_rad.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/diff_angle.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian_2d.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian_3d.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_cylindrical.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_polar.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_spherical.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/example_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/filter.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/get_metadata.html</loc></url>
@@ -28,6 +35,13 @@
 <url><loc>http://animovement.dev/aniframe/reference/group_by.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/index.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/is_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_cartesian.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_cartesian_1d.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_cartesian_2d.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_cartesian_3d.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_cylindrical.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_polar.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_spherical.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/map_to_cartesian.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/map_to_cylindrical.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/map_to_polar.html</loc></url>
