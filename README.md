@@ -9,7 +9,8 @@
 [![R-CMD-check](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
 badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.r-universe.dev)
-[![codecov](https://codecov.io/gh/animovement/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/animovement/aniframe)
+[![Codecov test
+coverage](https://codecov.io/gh/animovement/aniframe/graph/badge.svg)](https://app.codecov.io/gh/animovement/aniframe)
 <!-- badges: end -->
 
 *An R package providing core data structures for movement data*
@@ -49,20 +50,20 @@ To cite *aniframe* in publications use:
 citation("aniframe")
 #> To cite aniframe in publications use:
 #> 
-#>   Roald-Arbøl M (2025). "aniframe: An S3 class for movement data in R."
-#>   doi:10.5281/zenodo.17344598
+#>   Roald-Arbøl M (2025). "aniframe: An R package providing core data
+#>   structures for movement data." doi:10.5281/zenodo.17344598
 #>   <https://doi.org/10.5281/zenodo.17344598>,
-#>   <http://www.roald-arboel.com/aniframe/>.
+#>   <http://animovement.dev/aniframe/>.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Misc{aniframe,
 #>     doi = {10.5281/zenodo.17344598},
-#>     title = {aniframe: An S3 class for movement data in R},
+#>     title = {aniframe: An R package providing core data structures for movement data},
 #>     author = {Mikkel Roald-Arbøl},
 #>     year = {2025},
-#>     url = {http://www.roald-arboel.com/aniframe/},
-#>     abstract = {An S3 class for movement data in R.},
-#>     version = {0.1.0},
+#>     url = {http://animovement.dev/aniframe/},
+#>     abstract = {An R package providing core data structures for movement data.},
+#>     version = {0.2.0},
 #>   }
 ```

@@ -64,6 +64,13 @@ reference:
     - polar_to_x
     - polar_to_y
     - spherical_to_z
+    - is_cartesian
+    - is_cartesian_1d
+    - is_cartesian_2d
+    - is_cartesian_3d
+    - is_polar
+    - is_cylindrical
+    - is_spherical
 
   - title: "Helpers"
     desc:

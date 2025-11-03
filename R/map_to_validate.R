@@ -1,8 +1,23 @@
-#' @keywords internal
+#' Test whether a data frame uses a Cartesian coordinate system
+#'
+#' Returns `TRUE` if the data frame satisfies *any* of the 1‑D, 2‑D or 3‑D
+#' Cartesian checks defined in the helper functions.
+#'
+#' @param data A data frame.
+#' @return Logical scalar.
+#' @export
 is_cartesian <- function(data) {
-  is_cartesian_1d(data) || is_cartesian_2d(data) || is_cartesian_3d(data)
+  is_cartesian_1d(data) ||
+    is_cartesian_2d(data) ||
+    is_cartesian_3d(data)
 }
 
+
+#' Internal guard for Cartesian checks
+#'
+#' Stops with a clear error message if `data` is not Cartesian.
+#'
+#' @param data A data frame.
 #' @keywords internal
 ensure_is_cartesian <- function(data) {
   if (!is_cartesian(data)) {
@@ -12,7 +27,16 @@ ensure_is_cartesian <- function(data) {
   }
 }
 
-#' @keywords internal
+
+#' Test for a 1‑D Cartesian coordinate system
+#'
+#' The data frame must contain **exactly one** of `x`, `y` or `z` and none of the
+#' polar columns (`rho`, `phi`, `theta`).
+#'
+#' @param data A data frame.
+#' @param stop Unused placeholder kept for API compatibility.
+#' @return Logical scalar (invisible).
+#' @export
 is_cartesian_1d <- function(data, stop = FALSE) {
   forbidden <- c("rho", "phi", "theta")
   present_forbidden <- intersect(names(data), forbidden)
@@ -28,6 +52,10 @@ is_cartesian_1d <- function(data, stop = FALSE) {
   }
 }
 
+
+#' Internal guard for 1‑D Cartesian checks
+#'
+#' @param data A data frame.
 #' @keywords internal
 ensure_is_cartesian_1d <- function(data) {
   if (!is_cartesian_1d(data)) {
@@ -37,7 +65,15 @@ ensure_is_cartesian_1d <- function(data) {
   }
 }
 
-#' @keywords internal
+
+#' Test for a 2‑D Cartesian coordinate system
+#'
+#' Requires columns `x` and `y`.  Column `z` may be present only if it is
+#' completely `NA`.
+#'
+#' @param data A data frame.
+#' @return Logical scalar (invisible).
+#' @export
 is_cartesian_2d <- function(data) {
   # Must contain x and y
   if (!all(c("x", "y") %in% names(data))) {
@@ -52,6 +88,10 @@ is_cartesian_2d <- function(data) {
   }
 }
 
+
+#' Internal guard for 2‑D Cartesian checks
+#'
+#' @param data A data frame.
 #' @keywords internal
 ensure_is_cartesian_2d <- function(data) {
   if (!is_cartesian_2d(data)) {
@@ -61,7 +101,14 @@ ensure_is_cartesian_2d <- function(data) {
   }
 }
 
-#' @keywords internal
+
+#' Test for a 3‑D Cartesian coordinate system
+#'
+#' Requires non‑missing columns `x`, `y` and `z`.
+#'
+#' @param data A data frame.
+#' @return Logical scalar (invisible).
+#' @export
 is_cartesian_3d <- function(data) {
   # Must contain x, y, and z
   if (!all(c("x", "y", "z") %in% names(data))) {
@@ -74,6 +121,10 @@ is_cartesian_3d <- function(data) {
   }
 }
 
+
+#' Internal guard for 3‑D Cartesian checks
+#'
+#' @param data A data frame.
 #' @keywords internal
 ensure_is_cartesian_3d <- function(data) {
   if (!is_cartesian_3d(data)) {
@@ -83,12 +134,23 @@ ensure_is_cartesian_3d <- function(data) {
   }
 }
 
-#' @keywords internal
+
+#' Test whether a data frame uses a polar coordinate system
+#'
+#' Requires columns `rho` and `phi` and forbids `theta` or `z`.
+#'
+#' @param data A data frame.
+#' @return Logical scalar.
+#' @export
 is_polar <- function(data) {
   all(c("rho", "phi") %in% names(data)) &&
     !any(c("theta", "z") %in% names(data))
 }
 
+
+#' Internal guard for polar checks
+#'
+#' @param data A data frame.
 #' @keywords internal
 ensure_is_polar <- function(data) {
   if (!is_polar(data)) {
@@ -96,12 +158,23 @@ ensure_is_polar <- function(data) {
   }
 }
 
-#' @keywords internal
+
+#' Test whether a data frame uses a cylindrical coordinate system
+#'
+#' Requires `rho`, `phi` and `z`; forbids `theta`.
+#'
+#' @param data A data frame.
+#' @return Logical scalar.
+#' @export
 is_cylindrical <- function(data) {
   all(c("rho", "phi", "z") %in% names(data)) &&
     !any(c("theta") %in% names(data))
 }
 
+
+#' Internal guard for cylindrical checks
+#'
+#' @param data A data frame.
 #' @keywords internal
 ensure_is_cylindrical <- function(data) {
   if (!is_cylindrical(data)) {
@@ -109,12 +182,23 @@ ensure_is_cylindrical <- function(data) {
   }
 }
 
-#' @keywords internal
+
+#' Test whether a data frame uses a spherical coordinate system
+#'
+#' Requires `rho`, `phi` and `theta`; forbids `z`.
+#'
+#' @param data A data frame.
+#' @return Logical scalar.
+#' @export
 is_spherical <- function(data) {
   all(c("rho", "phi", "theta") %in% names(data)) &&
     !any(c("z") %in% names(data))
 }
 
+
+#' Internal guard for spherical checks
+#'
+#' @param data A data frame.
 #' @keywords internal
 ensure_is_spherical <- function(data) {
   if (!is_spherical(data)) {
