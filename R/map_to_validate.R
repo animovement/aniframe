@@ -38,10 +38,10 @@ ensure_is_cartesian <- function(data) {
 #' @return Logical scalar (invisible).
 #' @export
 is_cartesian_1d <- function(data, stop = FALSE) {
-  forbidden        <- c("rho", "phi", "theta")
+  forbidden <- c("rho", "phi", "theta")
   present_forbidden <- intersect(names(data), forbidden)
-  cartesian_axes   <- c("x", "y", "z")
-  present_axes     <- intersect(names(data), cartesian_axes)
+  cartesian_axes <- c("x", "y", "z")
+  present_axes <- intersect(names(data), cartesian_axes)
 
   if (length(present_forbidden) > 0L) {
     invisible(FALSE)

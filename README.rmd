@@ -21,7 +21,7 @@ install.packages('aniframe', repos = c('https://animovement.r-universe.dev', 'ht
 [![R-CMD-check](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml)
 [![aniframe status
 badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.r-universe.dev)
-[![codecov](https://codecov.io/gh/animovement/aniframe/graph/badge.svg?token=Pf5n3yzLzK)](https://codecov.io/gh/animovement/aniframe)
+[![Codecov test coverage](https://codecov.io/gh/animovement/aniframe/graph/badge.svg)](https://app.codecov.io/gh/animovement/aniframe)
 <!-- badges: end -->
 
 *An R package providing core data structures for movement data*
