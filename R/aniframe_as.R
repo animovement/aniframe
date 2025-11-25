@@ -16,6 +16,7 @@ as_aniframe <- function(data, metadata = list()) {
     "session",
     "trial",
     "individual",
+    "model",
     "keypoint",
     "time"
   )
@@ -34,7 +35,7 @@ as_aniframe <- function(data, metadata = list()) {
   data <- data[, c(present_standard, other_cols)]
 
   # Group by relevant columns
-  potential_groups <- c("session", "trial", "individual", "keypoint")
+  potential_groups <- c("session", "trial", "individual", "model", "keypoint")
   groupings <- potential_groups[potential_groups %in% names(data)]
 
   if (length(groupings) > 0) {
@@ -88,6 +89,11 @@ standardise_aniframe_cols <- function(data) {
   # Handle theta column
   if ("theta" %in% names(data)) {
     data$theta <- as.numeric(data$theta)
+  }
+
+  # Handle model column
+  if ("model" %in% names(data)) {
+    data$model <- factor(data$model)
   }
 
   # Handle keypoint column

@@ -1,3 +1,48 @@
+# Test outline for as_aniframe():
+#
+# Validation and minimal requirements:
+#   - validates required columns
+#   - works with minimal required columns (time, x, y)
+#   - works with only a z column
+#
+# keypoint column handling:
+#   - creates keypoint column with default NA value
+#   - converts existing keypoint to factor
+#
+# individual column handling:
+#   - creates individual column with NA
+#   - converts existing individual to factor
+#
+# model column handling:
+#   - does not create model column when absent
+#   - converts existing model to factor
+#   - converts numeric model to factor
+#   - places model in correct column order
+#   - groups by model when present
+#
+# trial column handling:
+#   - converts numeric trial to integer
+#   - converts character trial to factor
+#
+# session column handling:
+#   - converts numeric session to integer
+#   - converts character session to factor
+#
+# Column ordering and preservation:
+#   - relocates columns to standard order
+#   - preserves non-standard columns
+#
+# Grouping and arrangement:
+#   - groups by appropriate columns
+#   - arranges by groups (time within groups)
+#
+# Metadata:
+#   - attaches metadata
+#
+# Complete functionality:
+#   - works with all standard columns (without model)
+#   - works with model and all standard columns
+
 test_that("as_aniframe validates required columns", {
   df <- data.frame(x = 1:5, y = 1:5)
 
@@ -256,4 +301,109 @@ test_that("as_aniframe arranges by groups", {
   # Should be arranged by trial, then by time within trial
   expect_equal(result$trial, c(1, 1, 1, 2, 2, 2))
   expect_equal(result$time, c(1, 2, 3, 4, 5, 6))
+})
+
+test_that("as_aniframe does not create model column when absent", {
+  df <- data.frame(
+    time = 1:5,
+    x = 1:5,
+    y = 1:5
+  )
+
+  result <- suppressMessages(as_aniframe(df))
+  expect_false("model" %in% names(result))
+})
+
+test_that("as_aniframe converts existing model to factor", {
+  df <- data.frame(
+    time = 1:5,
+    x = 1:5,
+    y = 1:5,
+    model = c("mediapipe", "mediapipe", "yolo", "yolo", "mediapipe")
+  )
+
+  result <- suppressMessages(as_aniframe(df))
+
+  expect_s3_class(result$model, "factor")
+  expect_equal(levels(result$model), c("mediapipe", "yolo"))
+})
+
+test_that("as_aniframe converts numeric model to factor", {
+  df <- data.frame(
+    time = 1:5,
+    x = 1:5,
+    y = 1:5,
+    model = c(1, 1, 2, 2, 1)
+  )
+
+  result <- suppressMessages(as_aniframe(df))
+
+  expect_s3_class(result$model, "factor")
+  expect_equal(levels(result$model), c("1", "2"))
+})
+
+test_that("as_aniframe places model in correct column order", {
+  df <- data.frame(
+    time = 1:5,
+    x = 1:5,
+    y = 1:5,
+    individual = "A",
+    model = "mediapipe",
+    keypoint = "nose"
+  )
+
+  result <- suppressMessages(as_aniframe(df))
+
+  # model should come after individual and before keypoint
+  col_positions <- match(c("individual", "model", "keypoint"), names(result))
+  expect_true(all(diff(col_positions) == 1))
+})
+
+test_that("as_aniframe groups by model when present", {
+  df <- data.frame(
+    time = 1:6,
+    x = 1:6,
+    y = 1:6,
+    trial = c(1, 1, 1, 2, 2, 2),
+    model = c("mediapipe", "mediapipe", "yolo", "mediapipe", "yolo", "yolo")
+  )
+
+  result <- suppressMessages(as_aniframe(df))
+
+  expect_s3_class(result, "grouped_df")
+  expect_true("model" %in% dplyr::group_vars(result))
+})
+
+test_that("as_aniframe works with model and all standard columns", {
+  df <- data.frame(
+    session = c(1, 1, 1, 2, 2, 2),
+    trial = c(1, 1, 2, 1, 1, 2),
+    individual = c("A", "B", "A", "A", "B", "A"),
+    model = c("mediapipe", "mediapipe", "yolo", "yolo", "mediapipe", "yolo"),
+    keypoint = rep("nose", 6),
+    time = 1:6,
+    x = 1:6,
+    y = 1:6,
+    z = 1:6,
+    confidence = rep(0.95, 6)
+  )
+
+  result <- as_aniframe(df)
+
+  expect_s3_class(result, "aniframe")
+  expect_equal(
+    names(result)[1:10],
+    c(
+      "session",
+      "trial",
+      "individual",
+      "model",
+      "keypoint",
+      "time",
+      "x",
+      "y",
+      "z",
+      "confidence"
+    )
+  )
 })
