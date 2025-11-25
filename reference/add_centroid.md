@@ -1,0 +1,96 @@
+# Add Centroid to Movement Data
+
+Calculates and adds a centroid point to movement tracking data. The
+centroid represents the mean position of selected keypoints at each time
+point for each individual (and trial/session if present).
+
+## Usage
+
+``` r
+add_centroid(
+  data,
+  include_keypoints = NULL,
+  exclude_keypoints = NULL,
+  centroid_name = "centroid"
+)
+```
+
+## Arguments
+
+- data:
+
+  An aniframe object containing movement tracking data. Must have
+  Cartesian coordinates (x, y, and/or z columns).
+
+- include_keypoints:
+
+  Optional character vector specifying which keypoints to use for
+  centroid calculation. If NULL (default), all keypoints are used unless
+  `exclude_keypoints` is specified. Cannot be used simultaneously with
+  `exclude_keypoints`.
+
+- exclude_keypoints:
+
+  Optional character vector specifying which keypoints to exclude from
+  centroid calculation. If NULL (default), no keypoints are excluded
+  unless `include_keypoints` is specified. Cannot be used simultaneously
+  with `include_keypoints`.
+
+- centroid_name:
+
+  Character string specifying the name for the centroid keypoint.
+  Default is "centroid".
+
+## Value
+
+An aniframe object with the same structure as the input, but with an
+additional keypoint level representing the centroid. The centroid is
+calculated for each combination of grouping variables (individual, time,
+and trial/session if present). Coordinate values (x, y, z) are the mean
+of the selected keypoints, and the confidence value is set to NA. If a
+coordinate dimension is not present in the input data, it will be NA in
+the centroid. If all values for a coordinate are NA at a given time
+point, the centroid coordinate will also be NA.
+
+## Details
+
+The function calculates the centroid as the mean position of the
+selected keypoints at each time point, respecting all grouping variables
+in the aniframe (individual, trial, session, etc.). The function
+handles:
+
+- Missing coordinate dimensions (x, y, z) - only calculates means for
+  present dimensions
+
+- NA values - uses `na.rm = TRUE` when calculating means
+
+- All-NA cases - returns NA for that coordinate
+
+- 1D, 2D, or 3D data automatically
+
+Keypoints can be selected either by specifying which ones to include
+(`include_keypoints`) or which ones to exclude (`exclude_keypoints`),
+but not both. The resulting centroid is added as a new keypoint level to
+the data.
+
+## Examples
+
+``` r
+if (FALSE) { # \dontrun{
+# Add centroid using all keypoints
+data_with_centroid <- add_centroid(movement_data)
+
+# Calculate centroid using only specific keypoints
+data_with_centroid <- add_centroid(
+  movement_data,
+  include_keypoints = c("head", "thorax", "abdomen")
+)
+
+# Calculate centroid excluding certain keypoints
+data_with_centroid <- add_centroid(
+  movement_data,
+  exclude_keypoints = c("antenna_left", "antenna_right"),
+  centroid_name = "body_centroid"
+)
+} # }
+```
