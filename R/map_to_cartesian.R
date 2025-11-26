@@ -25,8 +25,7 @@ map_to_cartesian_polar <- function(data) {
   data |>
     dplyr::mutate(
       x = polar_to_x(.data$rho, .data$phi),
-      y = polar_to_y(.data$rho, .data$phi),
-      z = as.numeric(NA)
+      y = polar_to_y(.data$rho, .data$phi)
     ) |>
     dplyr::select(-c("rho", "phi"))
 }
