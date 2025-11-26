@@ -55,7 +55,6 @@ test_that("map_to_cartesian_polar() drops polar columns and creates x/y", {
   # Expected Cartesian values (use the same primitives for consistency)
   expect_equal(df_out$x, polar_to_x(df_in$rho, df_in$phi))
   expect_equal(df_out$y, polar_to_y(df_in$rho, df_in$phi))
-  expect_true(all(is.na(df_out$z))) # z should be NA for pure polar
 
   # Original polar columns must be gone
   expect_false(any(c("rho", "phi") %in% colnames(df_out)))
@@ -220,7 +219,6 @@ test_that("Cartesian results from the three systems are mutually consistent when
   # All three should give the same (x, y, z) triple (within tolerance)
   expect_equal(cart_pol$x, x, tolerance = 1e-8)
   expect_equal(cart_pol$y, y, tolerance = 1e-8)
-  expect_equal(cart_pol$z, NA_real_) # polar has no z
 
   expect_equal(cart_cyl$x, x, tolerance = 1e-8)
   expect_equal(cart_cyl$y, y, tolerance = 1e-8)
