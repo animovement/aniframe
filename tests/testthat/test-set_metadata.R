@@ -19,6 +19,76 @@ test_that("set_metadata works with metadata list", {
   expect_equal(md$source, "sleap")
 })
 
+test_that("set_metadata converts character to factor for factor fields", {
+  data <- dplyr::tibble()
+
+  result <- set_metadata(
+    data,
+    unit_space = "m",
+    reference_frame = "egocentric"
+  )
+
+  md <- get_metadata(result)
+  expect_s3_class(md$unit_space, "factor")
+  expect_equal(as.character(md$unit_space), "m")
+  expect_s3_class(md$reference_frame, "factor")
+  expect_equal(as.character(md$reference_frame), "egocentric")
+})
+
+test_that("set_metadata converts character to factor in metadata list", {
+  data <- dplyr::tibble()
+
+  md_list <- list(
+    unit_space = "cm",
+    coordinate_system = "cartesian_3d"
+  )
+  result <- set_metadata(data, metadata = md_list)
+
+  md <- get_metadata(result)
+  expect_s3_class(md$unit_space, "factor")
+  expect_equal(as.character(md$unit_space), "cm")
+  expect_s3_class(md$coordinate_system, "factor")
+  expect_equal(as.character(md$coordinate_system), "cartesian_3d")
+})
+
+test_that("set_metadata errors on invalid factor levels with character", {
+  data <- dplyr::tibble()
+
+  expect_error(
+    set_metadata(data, unit_space = "invalid_unit"),
+    "can only be"
+  )
+
+  expect_error(
+    set_metadata(data, reference_frame = "not_a_frame"),
+    "can only be"
+  )
+})
+
+test_that("set_metadata errors on invalid factor levels in metadata list", {
+  data <- dplyr::tibble()
+
+  expect_error(
+    set_metadata(data, metadata = list(unit_space = "invalid")),
+    "can only be"
+  )
+})
+
+test_that("set_metadata preserves factors with correct levels", {
+  data <- dplyr::tibble()
+
+  # Provide factor directly
+  result <- set_metadata(
+    data,
+    unit_space = factor("mm", levels = levels(default_metadata()$unit_space))
+  )
+
+  md <- get_metadata(result)
+  expect_s3_class(md$unit_space, "factor")
+  expect_equal(as.character(md$unit_space), "mm")
+  expect_equal(levels(md$unit_space), levels(default_metadata()$unit_space))
+})
+
 test_that("set_metadata errors when both ... and metadata are provided", {
   data <- dplyr::tibble()
 
@@ -86,7 +156,7 @@ test_that("set_metadata handles multiple fields at once", {
     sampling_rate = 60,
     source = "test_source",
     filename = "test.csv",
-    reference_frame = factor("egocentric")
+    reference_frame = "egocentric"
   )
 
   md <- get_metadata(result)
@@ -94,6 +164,26 @@ test_that("set_metadata handles multiple fields at once", {
   expect_equal(md$source, "test_source")
   expect_equal(md$filename, "test.csv")
   expect_equal(as.character(md$reference_frame), "egocentric")
+})
+
+test_that("set_metadata handles mixed character and non-character fields", {
+  data <- dplyr::tibble()
+
+  result <- set_metadata(
+    data,
+    sampling_rate = 90,
+    source = "mixed_test",
+    unit_space = "mm",
+    unit_time = "s"
+  )
+
+  md <- get_metadata(result)
+  expect_equal(md$sampling_rate, 90)
+  expect_equal(md$source, "mixed_test")
+  expect_s3_class(md$unit_space, "factor")
+  expect_equal(as.character(md$unit_space), "mm")
+  expect_s3_class(md$unit_time, "factor")
+  expect_equal(as.character(md$unit_time), "s")
 })
 
 test_that("set_metadata validates metadata", {

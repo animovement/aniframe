@@ -6,6 +6,9 @@
 #' the new values will be merged with existing values, with new values taking
 #' precedence.
 #'
+#' Character values for factor fields will be automatically converted to factors
+#' if they match allowed levels.
+#'
 #' Default metadata fields include:
 #' * `source`: Data source identifier
 #' * `source_version`: Version of the data source
@@ -52,26 +55,48 @@ set_metadata <- function(data, ..., metadata = NULL) {
   } else if (!rlang::is_empty(dot_args)) {
     ensure_is_list(dot_args)
     user_md <- dot_args
+  } else {
+    user_md <- list()
+  }
 
+  # ------------------------------------------------------------------
+  # Convert character values to factors where appropriate
+  # ------------------------------------------------------------------
+  if (length(user_md) > 0) {
     names_md <- names(user_md)
-    class_md <- c()
-    # Ensure that input ar translated into factors and that they have the correct levels
+    defaults <- default_metadata()
+
     for (n in names_md) {
-      if (is.factor(default_metadata()[[n]])) {
-        if (!user_md[[n]] %in% levels(default_metadata()[[n]])) {
-          cli::cli_abort(
-            "Metadata field {n} can only be {levels(default_metadata()[[n]])}, not {user_md[[n]]}."
-          )
-        } else {
+      # Check if this field exists in defaults and should be a factor
+      if (n %in% names(defaults) && is.factor(defaults[[n]])) {
+        # If the user provided a character, try to convert to factor
+        if (is.character(user_md[[n]])) {
+          # Check if it's a valid level
+          if (!user_md[[n]] %in% levels(defaults[[n]])) {
+            cli::cli_abort(
+              "Metadata field {.field {n}} can only be {.val {levels(defaults[[n]])}} not {.val {user_md[[n]]}}."
+            )
+          }
+          # Convert to factor with correct levels
           user_md[[n]] <- factor(
             user_md[[n]],
-            levels = levels(default_metadata()[[n]])
+            levels = levels(defaults[[n]])
+          )
+        } else if (is.factor(user_md[[n]])) {
+          # If already a factor, check if it's a valid level
+          if (!as.character(user_md[[n]]) %in% levels(defaults[[n]])) {
+            cli::cli_abort(
+              "Metadata field {.field {n}} can only be {.val {levels(defaults[[n]])}} not {.val {as.character(user_md[[n]])}}."
+            )
+          }
+          # Ensure it has the correct levels
+          user_md[[n]] <- factor(
+            as.character(user_md[[n]]),
+            levels = levels(defaults[[n]])
           )
         }
       }
     }
-  } else {
-    user_md <- list()
   }
 
   # ------------------------------------------------------------------
@@ -90,9 +115,6 @@ set_metadata <- function(data, ..., metadata = NULL) {
   validate_metadata(new_md)
   data <- attach_metadata(data, new_md)
 
-  # ------------------------------------------------------------------
-  # Calibrate time
-  # ------------------------------------------------------------------
   # TODO: Figure out whether it makes sense to include these special cases in the aniframe package
 
   # has_sr   <- "sampling_rate" %in% names(user_md)

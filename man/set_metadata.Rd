@@ -23,6 +23,9 @@ either as named arguments or as a list. If the aniframe already has metadata,
 the new values will be merged with existing values, with new values taking
 precedence.
 
+Character values for factor fields will be automatically converted to factors
+if they match allowed levels.
+
 Default metadata fields include:
 \itemize{
 \item \code{source}: Data source identifier
