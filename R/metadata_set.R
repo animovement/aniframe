@@ -115,7 +115,6 @@ set_metadata <- function(data, ..., metadata = NULL) {
   validate_metadata(new_md)
   data <- attach_metadata(data, new_md)
 
-
   # TODO: Figure out whether it makes sense to include these special cases in the aniframe package
 
   # has_sr   <- "sampling_rate" %in% names(user_md)
