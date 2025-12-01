@@ -1,4 +1,10 @@
-#' @keywords internal
+#' Convert NaN to NA in numeric columns
+#'
+#' Replaces all `NaN` values with `NA` in numeric columns of a data frame.
+#'
+#' @param data A data frame.
+#' @return A data frame with `NaN` values replaced by `NA` in numeric columns.
+#' @export
 convert_nan_to_na <- function(data) {
   dplyr::mutate(
     data,
