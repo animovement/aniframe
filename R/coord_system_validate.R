@@ -18,7 +18,7 @@ is_cartesian <- function(data) {
 #' Stops with a clear error message if `data` is not Cartesian.
 #'
 #' @param data A data frame.
-#' @keywords internal
+#' @export
 ensure_is_cartesian <- function(data) {
   if (!is_cartesian(data)) {
     cli::cli_abort(
@@ -56,7 +56,7 @@ is_cartesian_1d <- function(data, stop = FALSE) {
 #' Internal guard for 1‑D Cartesian checks
 #'
 #' @param data A data frame.
-#' @keywords internal
+#' @export
 ensure_is_cartesian_1d <- function(data) {
   if (!is_cartesian_1d(data)) {
     cli::cli_abort(
@@ -92,7 +92,7 @@ is_cartesian_2d <- function(data) {
 #' Internal guard for 2‑D Cartesian checks
 #'
 #' @param data A data frame.
-#' @keywords internal
+#' @export
 ensure_is_cartesian_2d <- function(data) {
   if (!is_cartesian_2d(data)) {
     cli::cli_abort(
@@ -125,7 +125,7 @@ is_cartesian_3d <- function(data) {
 #' Internal guard for 3‑D Cartesian checks
 #'
 #' @param data A data frame.
-#' @keywords internal
+#' @export
 ensure_is_cartesian_3d <- function(data) {
   if (!is_cartesian_3d(data)) {
     cli::cli_abort(
@@ -151,7 +151,7 @@ is_polar <- function(data) {
 #' Internal guard for polar checks
 #'
 #' @param data A data frame.
-#' @keywords internal
+#' @export
 ensure_is_polar <- function(data) {
   if (!is_polar(data)) {
     cli::cli_abort("This data frame is not in a polar coordinate system.")
@@ -175,7 +175,7 @@ is_cylindrical <- function(data) {
 #' Internal guard for cylindrical checks
 #'
 #' @param data A data frame.
-#' @keywords internal
+#' @export
 ensure_is_cylindrical <- function(data) {
   if (!is_cylindrical(data)) {
     cli::cli_abort("This data frame is not in a cylindrical coordinate system.")
@@ -199,7 +199,7 @@ is_spherical <- function(data) {
 #' Internal guard for spherical checks
 #'
 #' @param data A data frame.
-#' @keywords internal
+#' @export
 ensure_is_spherical <- function(data) {
   if (!is_spherical(data)) {
     cli::cli_abort("This data frame is not in a spherical coordinate system.")

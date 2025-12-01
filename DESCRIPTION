@@ -1,7 +1,7 @@
 Package: aniframe
 Type: Package
 Title: An R package providing core data structures for movement data
-Version: 0.2.5
+Version: 0.3.0
 Authors@R: 
     person(
       "Mikkel", 
@@ -16,6 +16,8 @@ URL: http://animovement.dev/aniframe/, https://github.com/animovement/aniframe/
 BugReports: https://github.com/animovement/aniframe/issues
 Encoding: UTF-8
 LazyData: true
+Depends:
+  R (>= 4.1.0)
 Imports: 
   cli,
   dplyr,

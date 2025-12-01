@@ -46,24 +46,10 @@ reference:
       - get_trackball_calibration_factor
       - default_metadata
 
-  - title: "Transformations"
+  - title: "Spatial checks"
     desc: |
-      These functions allow you to make tranformations to your coordinate system,
-      such as translations, rotations or conversion to polar coordinates.
+      These functions provide checks for your coordinate system.
     contents:
-    - transform_to_egocentric
-    - translate_coords
-    - rotate_coords
-    - map_to_cartesian
-    - map_to_polar
-    - map_to_cylindrical
-    - map_to_spherical
-    - cartesian_to_rho
-    - cartesian_to_phi
-    - cartesian_to_theta
-    - polar_to_x
-    - polar_to_y
-    - spherical_to_z
     - is_cartesian
     - is_cartesian_1d
     - is_cartesian_2d
@@ -71,16 +57,20 @@ reference:
     - is_polar
     - is_cylindrical
     - is_spherical
+    - ensure_is_cartesian
+    - ensure_is_cartesian_1d
+    - ensure_is_cartesian_2d
+    - ensure_is_cartesian_3d
+    - ensure_is_polar
+    - ensure_is_cylindrical
+    - ensure_is_spherical
 
   - title: "Helpers"
     desc:
     contents:
     - rad_to_deg
     - deg_to_rad
-    - calculate_angular_difference
-    - wrap_angle
-    - unwrap_angle
-    - diff_angle
+    - convert_nan_to_na
 
   - title: "Data manipulation (dplyr‑style verbs)"
     desc: >
