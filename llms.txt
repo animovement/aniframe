@@ -95,38 +95,10 @@ an aniframe.
 - [`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
   : Default metadata structure
 
-## Transformations
+## Spatial checks
 
-These functions allow you to make tranformations to your coordinate
-system, such as translations, rotations or conversion to polar
-coordinates.
+These functions provide checks for your coordinate system.
 
-- [`transform_to_egocentric()`](http://animovement.dev/aniframe/reference/transform_to_egocentric.md)
-  : Transform coordinates to egocentric reference frame
-- [`translate_coords()`](http://animovement.dev/aniframe/reference/translate_coords.md)
-  : Translate coordinates (Cartesian)
-- [`rotate_coords()`](http://animovement.dev/aniframe/reference/rotate_coords.md)
-  : Rotate coordinates in Cartesian space (2D or 3D)
-- [`map_to_cartesian()`](http://animovement.dev/aniframe/reference/map_to_cartesian.md)
-  : Map from polar to Cartesian coordinates
-- [`map_to_polar()`](http://animovement.dev/aniframe/reference/map_to_polar.md)
-  : Map from Cartesian to polar coordinates
-- [`map_to_cylindrical()`](http://animovement.dev/aniframe/reference/map_to_cylindrical.md)
-  : Map from Cartesian to cylindrical coordinates
-- [`map_to_spherical()`](http://animovement.dev/aniframe/reference/map_to_spherical.md)
-  : Map from Cartesian to spherical coordinates
-- [`cartesian_to_rho()`](http://animovement.dev/aniframe/reference/cartesian_to_rho.md)
-  : Cartesian radius (ρ) from coordinates
-- [`cartesian_to_phi()`](http://animovement.dev/aniframe/reference/cartesian_to_phi.md)
-  : Cartesian azimuth (φ) from coordinates
-- [`cartesian_to_theta()`](http://animovement.dev/aniframe/reference/cartesian_to_theta.md)
-  : Polar angle (θ) from Cartesian coordinates
-- [`polar_to_x()`](http://animovement.dev/aniframe/reference/polar_to_x.md)
-  : Convert polar radius to Cartesian x‑coordinate
-- [`polar_to_y()`](http://animovement.dev/aniframe/reference/polar_to_y.md)
-  : Convert polar radius to Cartesian y‑coordinate
-- [`spherical_to_z()`](http://animovement.dev/aniframe/reference/spherical_to_z.md)
-  : Convert cylindrical radius and polar angle to Cartesian z‑coordinate
 - [`is_cartesian()`](http://animovement.dev/aniframe/reference/is_cartesian.md)
   : Test whether a data frame uses a Cartesian coordinate system
 - [`is_cartesian_1d()`](http://animovement.dev/aniframe/reference/is_cartesian_1d.md)
@@ -141,6 +113,20 @@ coordinates.
   : Test whether a data frame uses a cylindrical coordinate system
 - [`is_spherical()`](http://animovement.dev/aniframe/reference/is_spherical.md)
   : Test whether a data frame uses a spherical coordinate system
+- [`ensure_is_cartesian()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian.md)
+  : Internal guard for Cartesian checks
+- [`ensure_is_cartesian_1d()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.md)
+  : Internal guard for 1‑D Cartesian checks
+- [`ensure_is_cartesian_2d()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian_2d.md)
+  : Internal guard for 2‑D Cartesian checks
+- [`ensure_is_cartesian_3d()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian_3d.md)
+  : Internal guard for 3‑D Cartesian checks
+- [`ensure_is_polar()`](http://animovement.dev/aniframe/reference/ensure_is_polar.md)
+  : Internal guard for polar checks
+- [`ensure_is_cylindrical()`](http://animovement.dev/aniframe/reference/ensure_is_cylindrical.md)
+  : Internal guard for cylindrical checks
+- [`ensure_is_spherical()`](http://animovement.dev/aniframe/reference/ensure_is_spherical.md)
+  : Internal guard for spherical checks
 
 ## Helpers
 
@@ -148,14 +134,8 @@ coordinates.
   : Convert radians to degrees
 - [`deg_to_rad()`](http://animovement.dev/aniframe/reference/deg_to_rad.md)
   : Convert degrees to radians
-- [`calculate_angular_difference()`](http://animovement.dev/aniframe/reference/calculate_angular_difference.md)
-  : Calculate angular difference
-- [`wrap_angle()`](http://animovement.dev/aniframe/reference/wrap_angle.md)
-  : Constrain angles to \[0, 2π)
-- [`unwrap_angle()`](http://animovement.dev/aniframe/reference/unwrap_angle.md)
-  : Remove constrain for angles to keep within \[0, 2π)
-- [`diff_angle()`](http://animovement.dev/aniframe/reference/diff_angle.md)
-  : Difference of angular values
+- [`convert_nan_to_na()`](http://animovement.dev/aniframe/reference/convert_nan_to_na.md)
+  : Convert NaN to NA in numeric columns
 
 ## Data manipulation (dplyr‑style verbs)
 

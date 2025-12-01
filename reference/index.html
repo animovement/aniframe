@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,9 +146,9 @@
         </dt>
         <dd>Default metadata structure</dd>
       </dl></div><div class="section level2">
-      <h2 id="transformations">Transformations<a class="anchor" aria-label="anchor" href="#transformations"></a></h2>
+      <h2 id="spatial-checks">Spatial checks<a class="anchor" aria-label="anchor" href="#spatial-checks"></a></h2>
 
-      <div class="section-desc"><p>These functions allow you to make tranformations to your coordinate system, such as translations, rotations or conversion to polar coordinates.</p></div>
+      <div class="section-desc"><p>These functions provide checks for your coordinate system.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -156,97 +156,6 @@
 
 
       <dl><dt>
-
-          <code><a href="transform_to_egocentric.html">transform_to_egocentric()</a></code>
-
-        </dt>
-        <dd>Transform coordinates to egocentric reference frame</dd>
-
-        <dt>
-
-          <code><a href="translate_coords.html">translate_coords()</a></code>
-
-        </dt>
-        <dd>Translate coordinates (Cartesian)</dd>
-
-        <dt>
-
-          <code><a href="rotate_coords.html">rotate_coords()</a></code>
-
-        </dt>
-        <dd>Rotate coordinates in Cartesian space (2D or 3D)</dd>
-
-        <dt>
-
-          <code><a href="map_to_cartesian.html">map_to_cartesian()</a></code>
-
-        </dt>
-        <dd>Map from polar to Cartesian coordinates</dd>
-
-        <dt>
-
-          <code><a href="map_to_polar.html">map_to_polar()</a></code>
-
-        </dt>
-        <dd>Map from Cartesian to polar coordinates</dd>
-
-        <dt>
-
-          <code><a href="map_to_cylindrical.html">map_to_cylindrical()</a></code>
-
-        </dt>
-        <dd>Map from Cartesian to cylindrical coordinates</dd>
-
-        <dt>
-
-          <code><a href="map_to_spherical.html">map_to_spherical()</a></code>
-
-        </dt>
-        <dd>Map from Cartesian to spherical coordinates</dd>
-
-        <dt>
-
-          <code><a href="cartesian_to_rho.html">cartesian_to_rho()</a></code>
-
-        </dt>
-        <dd>Cartesian radius (ρ) from coordinates</dd>
-
-        <dt>
-
-          <code><a href="cartesian_to_phi.html">cartesian_to_phi()</a></code>
-
-        </dt>
-        <dd>Cartesian azimuth (φ) from coordinates</dd>
-
-        <dt>
-
-          <code><a href="cartesian_to_theta.html">cartesian_to_theta()</a></code>
-
-        </dt>
-        <dd>Polar angle (θ) from Cartesian coordinates</dd>
-
-        <dt>
-
-          <code><a href="polar_to_x.html">polar_to_x()</a></code>
-
-        </dt>
-        <dd>Convert polar radius to Cartesian x‑coordinate</dd>
-
-        <dt>
-
-          <code><a href="polar_to_y.html">polar_to_y()</a></code>
-
-        </dt>
-        <dd>Convert polar radius to Cartesian y‑coordinate</dd>
-
-        <dt>
-
-          <code><a href="spherical_to_z.html">spherical_to_z()</a></code>
-
-        </dt>
-        <dd>Convert cylindrical radius and polar angle to Cartesian z‑coordinate</dd>
-
-        <dt>
 
           <code><a href="is_cartesian.html">is_cartesian()</a></code>
 
@@ -294,6 +203,55 @@
 
         </dt>
         <dd>Test whether a data frame uses a spherical coordinate system</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_cartesian.html">ensure_is_cartesian()</a></code>
+
+        </dt>
+        <dd>Internal guard for Cartesian checks</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_cartesian_1d.html">ensure_is_cartesian_1d()</a></code>
+
+        </dt>
+        <dd>Internal guard for 1‑D Cartesian checks</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_cartesian_2d.html">ensure_is_cartesian_2d()</a></code>
+
+        </dt>
+        <dd>Internal guard for 2‑D Cartesian checks</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_cartesian_3d.html">ensure_is_cartesian_3d()</a></code>
+
+        </dt>
+        <dd>Internal guard for 3‑D Cartesian checks</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_polar.html">ensure_is_polar()</a></code>
+
+        </dt>
+        <dd>Internal guard for polar checks</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_cylindrical.html">ensure_is_cylindrical()</a></code>
+
+        </dt>
+        <dd>Internal guard for cylindrical checks</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_spherical.html">ensure_is_spherical()</a></code>
+
+        </dt>
+        <dd>Internal guard for spherical checks</dd>
       </dl></div><div class="section level2">
       <h2 id="helpers">Helpers<a class="anchor" aria-label="anchor" href="#helpers"></a></h2>
 
@@ -320,31 +278,10 @@
 
         <dt>
 
-          <code><a href="calculate_angular_difference.html">calculate_angular_difference()</a></code>
+          <code><a href="convert_nan_to_na.html">convert_nan_to_na()</a></code>
 
         </dt>
-        <dd>Calculate angular difference</dd>
-
-        <dt>
-
-          <code><a href="wrap_angle.html">wrap_angle()</a></code>
-
-        </dt>
-        <dd>Constrain angles to [0, 2π)</dd>
-
-        <dt>
-
-          <code><a href="unwrap_angle.html">unwrap_angle()</a></code>
-
-        </dt>
-        <dd>Remove constrain for angles to keep within [0, 2π)</dd>
-
-        <dt>
-
-          <code><a href="diff_angle.html">diff_angle()</a></code>
-
-        </dt>
-        <dd>Difference of angular values</dd>
+        <dd>Convert NaN to NA in numeric columns</dd>
       </dl></div><div class="section level2">
       <h2 id="data-manipulation-dplyr-style-verbs-">Data manipulation (dplyr‑style verbs)<a class="anchor" aria-label="anchor" href="#data-manipulation-dplyr-style-verbs-"></a></h2>
 
