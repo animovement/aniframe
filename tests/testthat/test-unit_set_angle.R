@@ -81,7 +81,7 @@ test_that("no conversion occurs when target unit already set", {
   # Object should be identical (aside from possible class attributes)
   expect_identical(
     out,
-    as_aniframe(raw_df) %>% set_metadata(unit_angle = "rad")
+    as_aniframe(raw_df) |> set_metadata(unit_angle = "rad")
   )
 })
 

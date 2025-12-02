@@ -15,9 +15,11 @@ print.aniframe_metadata <- function(x, ...) {
     if (length(value) == 1 && is.na(value)) {
       cli::cli_text("{.field {name}} {.emph ({value_class})}: {.emph <NA>}")
     } else if (is.factor(value)) {
+      levels_str <- paste(levels(value), collapse = ", ")
       cli::cli_text(
         "{.field {name}} {.emph ({value_class})}: {.val {as.character(value)}}"
       )
+      cli::cli_text("  {.emph [levels: {levels_str}]}")
     } else if (length(value) > 1) {
       cli::cli_text(
         "{.field {name}} {.emph ({value_class})}: {.val {paste(value, collapse = ', ')}}"

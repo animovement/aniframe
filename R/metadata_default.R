@@ -19,7 +19,7 @@
 #'
 #' @export
 default_metadata <- function() {
-  list(
+  metadata <- list(
     source = as.character(NA),
     source_version = as.character(NA),
     filename = as.character(NA),
@@ -63,7 +63,6 @@ default_metadata <- function() {
     coordinate_system = factor(
       "cartesian_2d",
       levels = c(
-        "cartesian",
         "cartesian_1d",
         "cartesian_2d",
         "cartesian_3d",
@@ -74,4 +73,7 @@ default_metadata <- function() {
     ),
     point_of_reference = factor("bottom_left")
   )
+
+  class(metadata) <- "aniframe_metadata"
+  metadata
 }

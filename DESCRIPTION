@@ -1,7 +1,7 @@
 Package: aniframe
 Type: Package
 Title: An R package providing core data structures for movement data
-Version: 0.3.1
+Version: 0.3.2
 Authors@R: 
     person(
       "Mikkel", 
@@ -19,10 +19,11 @@ LazyData: true
 Depends:
   R (>= 4.1.0)
 Imports: 
-  cli,
-  dplyr,
-  rlang,
-  pillar
+    cli,
+    dplyr,
+    rlang,
+    pillar,
+    anytime
 Suggests: 
   knitr,
   rmarkdown,
