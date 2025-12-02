@@ -73,7 +73,7 @@ default_metadata <- function() {
     ),
     point_of_reference = factor("bottom_left")
   )
-  
+
   class(metadata) <- "aniframe_metadata"
   metadata
 }

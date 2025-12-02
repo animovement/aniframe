@@ -236,7 +236,7 @@ test_that("set_metadata converts datetime values to POSIXct", {
     y = runif(5)
   ) |>
     as_aniframe()
-  
+
   # Test character datetime conversion
   data_char <- set_metadata(data, start_datetime = "2024-01-15 14:30:00")
   expect_s3_class(get_metadata(data_char)$start_datetime, "POSIXct")
@@ -244,12 +244,12 @@ test_that("set_metadata converts datetime values to POSIXct", {
     as.character(get_metadata(data_char)$start_datetime),
     "2024-01-15 14:30:00"
   )
-  
+
   # Test numeric timestamp conversion
   timestamp <- as.numeric(as.POSIXct("2024-01-15 14:30:00"))
   data_numeric <- set_metadata(data, start_datetime = timestamp)
   expect_s3_class(get_metadata(data_numeric)$start_datetime, "POSIXct")
-  
+
   # Test existing POSIXct is preserved (compare as numeric to ignore timezone)
   dt <- as.POSIXct("2024-01-15 14:30:00")
   data_posix <- set_metadata(data, start_datetime = dt)

@@ -95,7 +95,12 @@ set_metadata <- function(data, ..., metadata = NULL) {
             levels = levels(defaults[[n]])
           )
         }
-      } else if (n %in% names(defaults) && is_class(defaults[[n]], "POSIXct") && !is.na(user_md[[n]])) {
+      } else if (
+        n %in%
+          names(defaults) &&
+          is_class(defaults[[n]], "POSIXct") &&
+          !is.na(user_md[[n]])
+      ) {
         user_md[[n]] <- anytime::anytime(user_md[[n]])
       }
     }

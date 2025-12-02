@@ -24,10 +24,10 @@ expect_metadata_equal <- function(actual, expected) {
     }
     x
   }
-  
+
   actual_norm <- normalize_datetime(actual)
   expected_norm <- normalize_datetime(expected)
-  
+
   expect_identical(actual_norm, expected_norm)
 }
 
