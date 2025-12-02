@@ -39,8 +39,12 @@ has_position <- function(data, allowed_position_cols) {
 #' @keywords internal
 matching_position_system <- function(data) {
   # Keep only the groups whose required columns are all present
-  if (is_cartesian(data)) {
-    return("cartesian")
+  if (is_cartesian_1d(data)) {
+    return("cartesian_1d")
+  } else if (is_cartesian_2d(data)) {
+    return("cartesian_2d")
+  } else if (is_cartesian_3d(data)) {
+    return("cartesian_3d")
   } else if (is_polar(data)) {
     return("polar")
   } else if (is_cylindrical(data)) {

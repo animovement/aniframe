@@ -19,10 +19,11 @@ LazyData: true
 Depends:
   R (>= 4.1.0)
 Imports: 
-  cli,
-  dplyr,
-  rlang,
-  pillar
+    cli,
+    dplyr,
+    rlang,
+    pillar,
+    anytime
 Suggests: 
   knitr,
   rmarkdown,

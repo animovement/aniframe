@@ -1,3 +1,36 @@
+# Tests for set_metadata()
+#
+# Input methods:
+#   - Works with named arguments (...)
+#   - Works with metadata list parameter
+#   - Errors when both ... and metadata are provided
+#   - Works with empty arguments
+#
+# Factor field conversion:
+#   - Converts character to factor for factor fields (named args)
+#   - Converts character to factor for factor fields (metadata list)
+#   - Errors on invalid factor levels (named args)
+#   - Errors on invalid factor levels (metadata list)
+#   - Preserves factors with correct levels
+#
+# Datetime conversion:
+#   - Converts character datetime strings to POSIXct
+#   - Converts numeric timestamps to POSIXct
+#   - Preserves existing POSIXct objects
+#
+# Metadata management:
+#   - Initializes default metadata if none exists
+#   - Merges with existing metadata
+#   - Overwrites existing values
+#   - Validates metadata
+#
+# Multiple fields:
+#   - Handles multiple fields at once
+#   - Handles mixed character and non-character fields
+#
+# Class preservation:
+#   - Preserves aniframe class
+
 test_that("set_metadata works with named arguments", {
   data <- dplyr::tibble()
 
@@ -193,5 +226,36 @@ test_that("set_metadata validates metadata", {
   # Adjust based on your actual validation rules
   expect_error(
     set_metadata(data, sampling_rate = "not_a_number")
+  )
+})
+
+test_that("set_metadata converts datetime values to POSIXct", {
+  data <- data.frame(
+    time = 1:5,
+    x = runif(5),
+    y = runif(5)
+  ) |>
+    as_aniframe()
+  
+  # Test character datetime conversion
+  data_char <- set_metadata(data, start_datetime = "2024-01-15 14:30:00")
+  expect_s3_class(get_metadata(data_char)$start_datetime, "POSIXct")
+  expect_equal(
+    as.character(get_metadata(data_char)$start_datetime),
+    "2024-01-15 14:30:00"
+  )
+  
+  # Test numeric timestamp conversion
+  timestamp <- as.numeric(as.POSIXct("2024-01-15 14:30:00"))
+  data_numeric <- set_metadata(data, start_datetime = timestamp)
+  expect_s3_class(get_metadata(data_numeric)$start_datetime, "POSIXct")
+  
+  # Test existing POSIXct is preserved (compare as numeric to ignore timezone)
+  dt <- as.POSIXct("2024-01-15 14:30:00")
+  data_posix <- set_metadata(data, start_datetime = dt)
+  expect_s3_class(get_metadata(data_posix)$start_datetime, "POSIXct")
+  expect_equal(
+    as.numeric(get_metadata(data_posix)$start_datetime),
+    as.numeric(dt)
   )
 })

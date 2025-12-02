@@ -21,7 +21,11 @@ as_aniframe <- function(data, metadata = list()) {
     "time"
   )
   coord_system <- matching_position_system(data)
-  if (coord_system == "cartesian") {
+  if (coord_system == "cartesian_1d") {
+    standard_cols <- c(standard_cols, "x", "confidence")
+  } else if (coord_system == "cartesian_2d") {
+    standard_cols <- c(standard_cols, "x", "y", "confidence")
+  } else if (coord_system == "cartesian_3d") {
     standard_cols <- c(standard_cols, "x", "y", "z", "confidence")
   } else if (coord_system == "polar") {
     standard_cols <- c(standard_cols, "rho", "phi", "confidence")
