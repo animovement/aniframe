@@ -95,13 +95,13 @@ set_metadata <- function(data, ..., metadata = NULL) {
             levels = levels(defaults[[n]])
           )
         }
-      } else if (
-        n %in%
-          names(defaults) &&
-          is_class(defaults[[n]], "POSIXct") &&
-          !is.na(user_md[[n]])
-      ) {
-        user_md[[n]] <- anytime::anytime(user_md[[n]])
+      } else if (n %in% names(defaults) && is_class(defaults[[n]], "POSIXct")) {
+        if (length(user_md[[n]]) == 1 && is.na(user_md[[n]])) {
+          # Convert NA to POSIXct NA to maintain correct class
+          user_md[[n]] <- as.POSIXct(NA_character_)
+        } else {
+          user_md[[n]] <- anytime::anytime(user_md[[n]])
+        }
       }
     }
   }

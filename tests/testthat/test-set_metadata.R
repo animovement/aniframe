@@ -239,18 +239,25 @@ test_that("set_metadata converts datetime values to POSIXct", {
 
   # Test character datetime conversion
   data_char <- set_metadata(data, start_datetime = "2024-01-15 14:30:00")
-  expect_s3_class(get_metadata(data_char)$start_datetime, "POSIXct")
-  expect_equal(
-    as.character(get_metadata(data_char)$start_datetime),
-    "2024-01-15 14:30:00"
-  )
+  dt_result <- get_metadata(data_char)$start_datetime
+  expect_s3_class(dt_result, "POSIXct")
+  # Check the datetime components rather than string representation
+  expect_equal(as.POSIXlt(dt_result)$year + 1900, 2024)
+  expect_equal(as.POSIXlt(dt_result)$mon + 1, 1)
+  expect_equal(as.POSIXlt(dt_result)$mday, 15)
+  expect_equal(as.POSIXlt(dt_result)$hour, 14)
+  expect_equal(as.POSIXlt(dt_result)$min, 30)
 
   # Test numeric timestamp conversion
   timestamp <- as.numeric(as.POSIXct("2024-01-15 14:30:00"))
   data_numeric <- set_metadata(data, start_datetime = timestamp)
   expect_s3_class(get_metadata(data_numeric)$start_datetime, "POSIXct")
+  expect_equal(
+    as.numeric(get_metadata(data_numeric)$start_datetime),
+    timestamp
+  )
 
-  # Test existing POSIXct is preserved (compare as numeric to ignore timezone)
+  # Test existing POSIXct is preserved
   dt <- as.POSIXct("2024-01-15 14:30:00")
   data_posix <- set_metadata(data, start_datetime = dt)
   expect_s3_class(get_metadata(data_posix)$start_datetime, "POSIXct")
@@ -258,4 +265,9 @@ test_that("set_metadata converts datetime values to POSIXct", {
     as.numeric(get_metadata(data_posix)$start_datetime),
     as.numeric(dt)
   )
+
+  # Test NA datetime doesn't cause errors
+  data_na <- set_metadata(data, start_datetime = NA)
+  expect_true(is.na(get_metadata(data_na)$start_datetime))
+  expect_s3_class(get_metadata(data_na)$start_datetime, "POSIXct")
 })
