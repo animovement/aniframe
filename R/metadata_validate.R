@@ -62,12 +62,11 @@ check_metadata_fields_are_correct_class <- function(metadata) {
     user_val <- metadata[[nm]]
     default_val <- default_metadata()[[nm]]
 
-    # `identical()` returns a single logical even if class() gives a vector
-    if (!identical(class(user_val), class(default_val))) {
+    # Allow NA for any field (NA values can have any class)
+    if (length(user_val) == 1 && is.na(user_val)) {
+      matches <- c(matches, TRUE)
+    } else if (!identical(class(user_val), class(default_val))) {
       matches <- c(matches, FALSE)
-      # cli::cli_alert_info(
-      #   "Metadata field '{nm}' is of class {class(user_val)}, but it should be of class {class(default_val)}."
-      # )
     } else {
       matches <- c(matches, TRUE)
     }
