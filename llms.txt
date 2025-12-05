@@ -90,8 +90,6 @@ an aniframe.
   : Set the angular unit of an aniframe object
 - [`set_sampling_rate()`](http://animovement.dev/aniframe/reference/set_sampling_rate.md)
   : Set the sampling rate of an aniframe object
-- [`get_trackball_calibration_factor()`](http://animovement.dev/aniframe/reference/get_trackball_calibration_factor.md)
-  : Calculate trackball calibration factor
 - [`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
   : Default metadata structure
 

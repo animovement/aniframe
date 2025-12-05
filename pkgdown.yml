@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   articles/Coordinate-systems: Coordinate-systems.html
-last_built: 2025-12-03T13:56Z
+last_built: 2025-12-05T16:08Z
 urls:
   reference: http://animovement.dev/aniframe/reference
   article: http://animovement.dev/aniframe/articles
