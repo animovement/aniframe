@@ -43,7 +43,6 @@ reference:
       - set_unit_space
       - set_unit_angle
       - set_sampling_rate
-      - get_trackball_calibration_factor
       - default_metadata
 
   - title: "Spatial checks"

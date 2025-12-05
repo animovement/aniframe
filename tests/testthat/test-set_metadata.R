@@ -236,7 +236,7 @@ test_that("set_metadata converts datetime values to POSIXct", {
     y = runif(5)
   ) |>
     as_aniframe()
-  
+
   # Test character datetime conversion
   test_dt_string <- "2024-01-15 14:30:00"
   data_char <- set_metadata(data, start_datetime = test_dt_string)
@@ -245,7 +245,7 @@ test_that("set_metadata converts datetime values to POSIXct", {
   # Compare against a reference datetime created the same way
   reference_dt <- anytime::anytime(test_dt_string)
   expect_equal(as.numeric(dt_result), as.numeric(reference_dt))
-  
+
   # Test numeric timestamp conversion
   timestamp <- as.numeric(as.POSIXct("2024-01-15 14:30:00"))
   data_numeric <- set_metadata(data, start_datetime = timestamp)
@@ -254,7 +254,7 @@ test_that("set_metadata converts datetime values to POSIXct", {
     as.numeric(get_metadata(data_numeric)$start_datetime),
     timestamp
   )
-  
+
   # Test existing POSIXct is preserved
   dt <- as.POSIXct("2024-01-15 14:30:00")
   data_posix <- set_metadata(data, start_datetime = dt)
@@ -263,7 +263,7 @@ test_that("set_metadata converts datetime values to POSIXct", {
     as.numeric(get_metadata(data_posix)$start_datetime),
     as.numeric(dt)
   )
-  
+
   # Test NA datetime doesn't cause errors
   data_na <- set_metadata(data, start_datetime = NA)
   expect_true(is.na(get_metadata(data_na)$start_datetime))
