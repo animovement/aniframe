@@ -30,9 +30,12 @@ default_metadata <- function() {
       levels = c(
         "px",
         "none",
+        "nm",
+        "um",
         "mm",
         "cm",
-        "m"
+        "m",
+        "km"
       )
     ),
     unit_angle = factor(
@@ -47,6 +50,8 @@ default_metadata <- function() {
       levels = c(
         "unknown",
         "frame",
+        "ns",
+        "us",
         "ms",
         "s",
         "m",
