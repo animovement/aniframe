@@ -71,6 +71,7 @@ default_metadata <- function() {
     coordinate_system = factor(
       "cartesian_2d",
       levels = c(
+        "unknown",
         "cartesian_1d",
         "cartesian_2d",
         "cartesian_3d",

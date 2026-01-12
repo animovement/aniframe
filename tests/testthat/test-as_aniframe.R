@@ -340,3 +340,65 @@ test_that("as_aniframe infers coordinate system from spatial variables", {
 #     "Could not infer coordinate system"
 #   )
 # })
+
+test_that("as_aniframe errors when no spatial variables found", {
+  df <- data.frame(
+    time = 1:5,
+    value = 1:5
+  )
+
+  expect_error(
+    as_aniframe(df),
+    "No spatial variables found"
+  )
+})
+
+test_that("as_aniframe errors when specified spatial variables missing", {
+  df <- data.frame(
+    time = 1:5,
+    x = 1:5
+  )
+
+  expect_error(
+    as_aniframe(df, variables_where = c("x", "y", "z")),
+    "Missing spatial variable"
+  )
+})
+
+test_that("as_aniframe warns for unknown coordinate system", {
+  df <- data.frame(
+    time = 1:5,
+    lon = 1:5,
+    lat = 1:5
+  )
+
+  expect_warning(
+    as_aniframe(df, variables_where = c("lon", "lat")),
+    "Could not infer coordinate system"
+  )
+})
+
+test_that("as_aniframe detects polar coordinates", {
+  df <- data.frame(
+    time = 1:5,
+    rho = 1:5,
+    phi = seq(0, pi, length.out = 5)
+  )
+
+  result <- as_aniframe(df)
+
+  expect_s3_class(result, "aniframe")
+  expect_equal(get_metadata(result)$variables_where, c("rho", "phi"))
+  expect_equal(as.character(get_metadata(result)$coordinate_system), "polar")
+})
+
+test_that("detect_variables_where returns NULL when no spatial columns", {
+  df <- data.frame(
+    time = 1:5,
+    value = 1:5
+  )
+
+  result <- detect_variables_where(df)
+
+  expect_null(result)
+})
