@@ -4,12 +4,27 @@
 \alias{as_aniframe}
 \title{Convert a data frame to aniframe}
 \usage{
-as_aniframe(data, metadata = list())
+as_aniframe(
+  data,
+  metadata = list(),
+  variables_what = NULL,
+  variables_when = NULL,
+  variables_where = NULL
+)
 }
 \arguments{
-\item{data}{A data frame with appropriate columns}
+\item{data}{A data frame with movement data.}
 
-\item{metadata}{A list of metadata to attach to the aniframe}
+\item{metadata}{A list of metadata to attach to the aniframe.}
+
+\item{variables_what}{Character vector of identity columns that together
+define a unique entity. Defaults to \code{c("individual", "keypoint")}.}
+
+\item{variables_when}{Character vector of temporal columns that together
+define a unique timepoint. Defaults to \code{"time"}.}
+
+\item{variables_where}{Character vector of spatial columns that together
+define position. If NULL, detected from data.}
 }
 \value{
 An aniframe object

@@ -9,36 +9,57 @@
 aniframe(
   ...,
   metadata = list(),
+  variables_what = NULL,
+  variables_when = NULL,
+  variables_where = NULL,
   .rows = NULL,
   .name_repair = c("check_unique", "unique", "universal", "minimal")
 )
 }
 \arguments{
-\item{...}{Name-value pairs to create columns in the data frame}
+\item{...}{Name-value pairs to create columns in the data frame.}
 
-\item{metadata}{Optional list of metadata}
+\item{metadata}{Optional list of metadata.}
 
-\item{.rows}{Number of rows (passed to tibble)}
+\item{variables_what}{Character vector of identity columns that together
+define a unique entity. Defaults to \code{c("individual", "keypoint")}.}
 
-\item{.name_repair}{How to repair column names (passed to tibble)}
+\item{variables_when}{Character vector of temporal columns that together
+define a unique timepoint. Defaults to \code{"time"}.}
+
+\item{variables_where}{Character vector of spatial columns that together
+define position. Defaults to \code{c("x", "y")}.}
+
+\item{.rows}{Number of rows (passed to tibble).}
+
+\item{.name_repair}{How to repair column names (passed to tibble).}
 }
 \value{
-An aniframe object (tibble with aniframe class)
+An aniframe object (tibble with aniframe class).
 }
 \description{
 An R package providing core data structures for movement data.
 
-Creates a specialized data frame for animal tracking data with required
-columns for positional data (x/y/z) and time, plus optional columns for
-individual, keypoint, trial, and session identifiers.
+Creates a specialized data frame for movement data with columns defining
+entity identity, timepoints, and spatial position.
 }
 \examples{
 aniframe(
   individual = rep(1:2, each = 25),
   time = rep(1:10, 5),
   x = rnorm(50),
-  y = rnorm(50),
-  trial = 1
+  y = rnorm(50)
+)
+
+# Custom variables
+aniframe(
+  track = rep(1:3, each = 10),
+  trial = 1,
+  time = rep(1:10, 3),
+  x = rnorm(30),
+  y = rnorm(30),
+  variables_what = "track",
+  variables_when = c("trial", "time")
 )
 }
 \seealso{
