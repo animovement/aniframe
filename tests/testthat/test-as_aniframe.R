@@ -1,54 +1,41 @@
 # Test outline for as_aniframe():
 #
 # Validation and minimal requirements:
-#   - validates required columns
+#   - errors when no temporal variables found
+#   - errors when spatial variables missing
 #   - works with minimal required columns (time, x, y)
-#   - works with only a z column
+#   - works with custom spatial variables
 #
-# keypoint column handling:
-#   - creates keypoint column with default NA value
-#   - converts existing keypoint to factor
-#
-# individual column handling:
-#   - creates individual column with NA
-#   - converts existing individual to factor
-#
-# model column handling:
-#   - does not create model column when absent
-#   - converts existing model to factor
-#   - converts numeric model to factor
-#   - places model in correct column order
-#   - groups by model when present
-#
-# trial column handling:
-#   - converts numeric trial to integer
-#   - converts character trial to factor
-#
-# session column handling:
-#   - converts numeric session to integer
-#   - converts character session to factor
+# Type standardisation:
+#   - converts character identity variables to factor
+#   - converts character temporal variables to factor
+#   - keeps integer temporal variables as integer
+#   - converts spatial variables to numeric
 #
 # Column ordering and preservation:
-#   - relocates columns to standard order
+#   - relocates columns to standard order (what, when, where)
+#
 #   - preserves non-standard columns
 #
 # Grouping and arrangement:
-#   - groups by appropriate columns
-#   - arranges by groups (time within groups)
+#   - groups by identity and temporal context (excluding time)
+#   - arranges by identity first, then temporal
 #
 # Metadata:
 #   - attaches metadata
+#   - stores variables in metadata
 #
-# Complete functionality:
-#   - works with all standard columns (without model)
-#   - works with model and all standard columns
+# Custom variables:
+#   - respects custom variables_what
+#   - respects custom variables_when
+#   - respects custom variables_where
 
-test_that("as_aniframe validates required columns", {
+test_that("as_aniframe errors when no temporal variables found", {
   df <- data.frame(x = 1:5, y = 1:5)
 
   expect_error(
     as_aniframe(df),
-    "time" # Adjust based on your validate_cols error message
+    "No temporal variables found"
   )
 })
 
@@ -59,128 +46,74 @@ test_that("as_aniframe works with minimal required columns", {
     y = 1:5
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df)
 
   expect_s3_class(result, "aniframe")
-  expect_true("keypoint" %in% names(result))
-  expect_true("individual" %in% names(result))
+  expect_equal(names(result), c("time", "x", "y"))
 })
 
-test_that("as_aniframe works with only a z column", {
+test_that("as_aniframe works with custom spatial variables", {
   df <- data.frame(
     time = 1:5,
     z = 1:5
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df, variables_where = "z")
 
   expect_s3_class(result, "aniframe")
-  expect_true("keypoint" %in% names(result))
-  expect_true("individual" %in% names(result))
+  expect_equal(names(result), c("time", "z"))
 })
 
-test_that("as_aniframe creates keypoint column with default value", {
+test_that("as_aniframe converts character identity variables to factor", {
   df <- data.frame(
+    individual = c("A", "A", "B", "B", "A"),
     time = 1:5,
     x = 1:5,
     y = 1:5
   )
 
-  result <- suppressMessages(as_aniframe(df))
-  expect_true(is.na(result$keypoint[1]))
-  expect_s3_class(result$keypoint, "factor")
-})
-
-test_that("as_aniframe converts existing keypoint to factor", {
-  df <- data.frame(
-    time = 1:5,
-    x = 1:5,
-    y = 1:5,
-    keypoint = c("nose", "nose", "tail", "tail", "nose")
-  )
-
-  result <- suppressMessages(as_aniframe(df))
-
-  expect_s3_class(result$keypoint, "factor")
-  expect_equal(levels(result$keypoint), c("nose", "tail"))
-})
-
-test_that("as_aniframe creates individual column with NA", {
-  df <- data.frame(
-    time = 1:5,
-    x = 1:5,
-    y = 1:5
-  )
-
-  result <- suppressMessages(as_aniframe(df))
-  expect_true(all(is.na(result$individual)))
-  expect_s3_class(result$individual, "factor")
-})
-
-test_that("as_aniframe converts existing individual to factor", {
-  df <- data.frame(
-    time = 1:5,
-    x = 1:5,
-    y = 1:5,
-    individual = c("A", "A", "B", "B", "A")
-  )
-
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df, variables_what = "individual")
 
   expect_s3_class(result$individual, "factor")
   expect_equal(levels(result$individual), c("A", "B"))
 })
 
-test_that("as_aniframe converts numeric trial to integer", {
+test_that("as_aniframe converts character temporal variables to factor", {
   df <- data.frame(
+    trial = c("trial1", "trial1", "trial2", "trial2", "trial1"),
     time = 1:5,
     x = 1:5,
-    y = 1:5,
-    trial = c(1, 1, 2, 2, 3)
+    y = 1:5
   )
 
-  result <- suppressMessages(as_aniframe(df))
-
-  expect_type(result$trial, "integer")
-})
-
-test_that("as_aniframe converts character trial to factor", {
-  df <- data.frame(
-    time = 1:5,
-    x = 1:5,
-    y = 1:5,
-    trial = c("trial1", "trial1", "trial2", "trial2", "trial1")
-  )
-
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df, variables_when = c("trial", "time"))
 
   expect_s3_class(result$trial, "factor")
 })
 
-test_that("as_aniframe converts numeric session to integer", {
+test_that("as_aniframe keeps integer temporal variables as integer", {
   df <- data.frame(
+    trial = c(1L, 1L, 2L, 2L, 3L),
     time = 1:5,
     x = 1:5,
-    y = 1:5,
-    session = c(1, 1, 2, 2, 1)
+    y = 1:5
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df, variables_when = c("trial", "time"))
 
-  expect_type(result$session, "integer")
+  expect_type(result$trial, "integer")
 })
 
-test_that("as_aniframe converts character session to factor", {
+test_that("as_aniframe converts spatial variables to numeric", {
   df <- data.frame(
     time = 1:5,
-    x = 1:5,
-    y = 1:5,
-    session = c("morning", "morning", "evening", "evening", "morning")
+    x = c("1", "2", "3", "4", "5"),
+    y = 1:5
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df)
 
-  expect_s3_class(result$session, "factor")
+  expect_type(result$x, "double")
 })
 
 test_that("as_aniframe relocates columns to standard order", {
@@ -189,25 +122,13 @@ test_that("as_aniframe relocates columns to standard order", {
     x = 1:5,
     time = 1:5,
     y = 1:5,
-    z = 1:5
+    individual = "A"
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df, variables_what = "individual")
 
-  standard_cols <- c(
-    "session",
-    "trial",
-    "individual",
-    "keypoint",
-    "time",
-    "x",
-    "y",
-    "z",
-    "confidence"
-  )
-  present_standard <- standard_cols[standard_cols %in% names(result)]
-
-  expect_equal(names(result)[1:length(present_standard)], present_standard)
+  expect_equal(names(result)[1:4], c("individual", "time", "x", "y"))
+  expect_true("confidence" %in% names(result))
 })
 
 test_that("as_aniframe preserves non-standard columns", {
@@ -218,27 +139,47 @@ test_that("as_aniframe preserves non-standard columns", {
     custom_col = letters[1:5]
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df)
 
   expect_true("custom_col" %in% names(result))
   expect_equal(result$custom_col, letters[1:5])
 })
 
-test_that("as_aniframe groups by appropriate columns", {
+test_that("as_aniframe groups by identity and temporal context", {
   df <- data.frame(
+    individual = c("A", "A", "A", "B", "B", "B"),
+    trial = c(1L, 1L, 1L, 2L, 2L, 2L),
     time = 1:6,
     x = 1:6,
-    y = 1:6,
-    trial = c(1, 1, 1, 2, 2, 2),
-    individual = c("A", "A", "A", "B", "B", "B")
+    y = 1:6
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(
+    df,
+    variables_what = "individual",
+    variables_when = c("trial", "time")
+  )
 
   expect_s3_class(result, "grouped_df")
-  expect_true(all(
-    c("trial", "individual", "keypoint") %in% dplyr::group_vars(result)
-  ))
+  group_vars <- dplyr::group_vars(result)
+  expect_true("individual" %in% group_vars)
+  expect_true("trial" %in% group_vars)
+  expect_false("time" %in% group_vars)
+})
+
+test_that("as_aniframe arranges by identity then temporal", {
+  df <- data.frame(
+    individual = c("B", "A", "B", "A", "B", "A"),
+    time = c(3, 1, 2, 3, 1, 2),
+    x = 1:6,
+    y = 1:6
+  )
+
+  result <- as_aniframe(df, variables_what = "individual")
+
+  # Should be arranged by individual, then by time within individual
+  expect_equal(as.character(result$individual), c("A", "A", "A", "B", "B", "B"))
+  expect_equal(result$time, c(1, 2, 3, 1, 2, 3))
 })
 
 test_that("as_aniframe attaches metadata", {
@@ -249,161 +190,153 @@ test_that("as_aniframe attaches metadata", {
   )
 
   md <- list(sampling_rate = 30, source = "test")
-  result <- suppressMessages(as_aniframe(df, metadata = md))
+  result <- as_aniframe(df, metadata = md)
 
   result_md <- get_metadata(result)
   expect_equal(result_md$sampling_rate, 30)
   expect_equal(result_md$source, "test")
 })
 
-test_that("as_aniframe works with all standard columns", {
+test_that("as_aniframe stores variables in metadata", {
   df <- data.frame(
-    session = c(1, 1, 1, 2, 2, 2),
-    trial = c(1, 1, 2, 1, 1, 2),
-    individual = c("A", "B", "A", "A", "B", "A"),
-    keypoint = rep("nose", 6),
-    time = 1:6,
-    x = 1:6,
-    y = 1:6,
-    z = 1:6,
-    confidence = rep(0.95, 6)
-  )
-
-  result <- as_aniframe(df)
-
-  expect_s3_class(result, "aniframe")
-  expect_equal(
-    names(result)[1:9],
-    c(
-      "session",
-      "trial",
-      "individual",
-      "keypoint",
-      "time",
-      "x",
-      "y",
-      "z",
-      "confidence"
-    )
-  )
-})
-
-test_that("as_aniframe arranges by groups", {
-  df <- data.frame(
-    time = c(3, 1, 2, 6, 4, 5),
-    x = 1:6,
-    y = 1:6,
-    trial = c(1, 1, 1, 2, 2, 2)
-  )
-
-  result <- suppressMessages(as_aniframe(df))
-
-  # Should be arranged by trial, then by time within trial
-  expect_equal(result$trial, c(1, 1, 1, 2, 2, 2))
-  expect_equal(result$time, c(1, 2, 3, 4, 5, 6))
-})
-
-test_that("as_aniframe does not create model column when absent", {
-  df <- data.frame(
+    individual = "A",
+    trial = 1L,
     time = 1:5,
     x = 1:5,
     y = 1:5
   )
 
-  result <- suppressMessages(as_aniframe(df))
-  expect_false("model" %in% names(result))
-})
-
-test_that("as_aniframe converts existing model to factor", {
-  df <- data.frame(
-    time = 1:5,
-    x = 1:5,
-    y = 1:5,
-    model = c("mediapipe", "mediapipe", "yolo", "yolo", "mediapipe")
+  result <- as_aniframe(
+    df,
+    variables_what = "individual",
+    variables_when = c("trial", "time"),
+    variables_where = c("x", "y")
   )
 
-  result <- suppressMessages(as_aniframe(df))
-
-  expect_s3_class(result$model, "factor")
-  expect_equal(levels(result$model), c("mediapipe", "yolo"))
+  result_md <- get_metadata(result)
+  expect_equal(result_md$variables_what, "individual")
+  expect_equal(result_md$variables_when, c("trial", "time"))
+  expect_equal(result_md$variables_where, c("x", "y"))
 })
 
-test_that("as_aniframe converts numeric model to factor", {
+test_that("as_aniframe respects custom variables_what", {
   df <- data.frame(
-    time = 1:5,
-    x = 1:5,
-    y = 1:5,
-    model = c(1, 1, 2, 2, 1)
-  )
-
-  result <- suppressMessages(as_aniframe(df))
-
-  expect_s3_class(result$model, "factor")
-  expect_equal(levels(result$model), c("1", "2"))
-})
-
-test_that("as_aniframe places model in correct column order", {
-  df <- data.frame(
-    time = 1:5,
-    x = 1:5,
-    y = 1:5,
-    individual = "A",
-    model = "mediapipe",
-    keypoint = "nose"
-  )
-
-  result <- suppressMessages(as_aniframe(df))
-
-  # model should come after individual and before keypoint
-  col_positions <- match(c("individual", "model", "keypoint"), names(result))
-  expect_true(all(diff(col_positions) == 1))
-})
-
-test_that("as_aniframe groups by model when present", {
-  df <- data.frame(
-    time = 1:6,
+    track = c(1, 1, 2, 2, 3, 3),
+    time = rep(1:2, 3),
     x = 1:6,
-    y = 1:6,
-    trial = c(1, 1, 1, 2, 2, 2),
-    model = c("mediapipe", "mediapipe", "yolo", "mediapipe", "yolo", "yolo")
+    y = 1:6
   )
 
-  result <- suppressMessages(as_aniframe(df))
+  result <- as_aniframe(df, variables_what = "track")
 
-  expect_s3_class(result, "grouped_df")
-  expect_true("model" %in% dplyr::group_vars(result))
+  expect_equal(names(result)[1], "track")
+  expect_true("track" %in% dplyr::group_vars(result))
 })
 
-test_that("as_aniframe works with model and all standard columns", {
+test_that("as_aniframe respects custom variables_when", {
   df <- data.frame(
-    session = c(1, 1, 1, 2, 2, 2),
-    trial = c(1, 1, 2, 1, 1, 2),
-    individual = c("A", "B", "A", "A", "B", "A"),
-    model = c("mediapipe", "mediapipe", "yolo", "yolo", "mediapipe", "yolo"),
-    keypoint = rep("nose", 6),
-    time = 1:6,
-    x = 1:6,
-    y = 1:6,
-    z = 1:6,
-    confidence = rep(0.95, 6)
+    frame = 1:5,
+    x = 1:5,
+    y = 1:5
   )
 
-  result <- as_aniframe(df)
+  result <- as_aniframe(df, variables_when = "frame")
+
+  expect_s3_class(result, "aniframe")
+  expect_equal(names(result)[1], "frame")
+})
+
+# TODO: We need to handle the coordinate system before including this test
+
+# test_that("as_aniframe respects custom variables_where", {
+#   df <- data.frame(
+#     time = 1:5,
+#     lon = 1:5,
+#     lat = 1:5
+#   )
+
+#   result <- as_aniframe(df, variables_where = c("lon", "lat"))
+
+#   expect_s3_class(result, "aniframe")
+#   expect_true(all(c("lon", "lat") %in% names(result)))
+#   expect_type(result$lon, "double")
+#   expect_type(result$lat, "double")
+# })
+
+test_that("as_aniframe works with full tidy movement data", {
+  df <- data.frame(
+    individual = c("A", "A", "B", "B", "A", "A", "B", "B"),
+    keypoint = rep(c("head", "tail"), 4),
+    session = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L),
+    trial = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L),
+    time = rep(1:2, 4),
+    x = 1:8,
+    y = 1:8,
+    confidence = rep(0.95, 8)
+  )
+
+  result <- as_aniframe(
+    df,
+    variables_what = c("individual", "keypoint"),
+    variables_when = c("session", "trial", "time"),
+    variables_where = c("x", "y")
+  )
 
   expect_s3_class(result, "aniframe")
   expect_equal(
-    names(result)[1:10],
+    names(result)[1:8],
     c(
+      "individual",
+      "keypoint",
       "session",
       "trial",
-      "individual",
-      "model",
-      "keypoint",
       "time",
       "x",
       "y",
-      "z",
       "confidence"
     )
   )
+
+  # Check grouping
+  group_vars <- dplyr::group_vars(result)
+  expect_true(all(
+    c("individual", "keypoint", "session", "trial") %in% group_vars
+  ))
+  expect_false("time" %in% group_vars)
 })
+
+test_that("as_aniframe infers coordinate system from spatial variables", {
+  df_2d <- data.frame(time = 1:5, x = 1:5, y = 1:5)
+  df_3d <- data.frame(time = 1:5, x = 1:5, y = 1:5, z = 1:5)
+  df_polar <- data.frame(time = 1:5, rho = 1:5, phi = 1:5)
+
+  result_2d <- as_aniframe(df_2d)
+  result_3d <- as_aniframe(df_3d, variables_where = c("x", "y", "z"))
+  result_polar <- as_aniframe(df_polar, variables_where = c("rho", "phi"))
+
+  expect_equal(
+    as.character(get_metadata(result_2d)$coordinate_system),
+    "cartesian_2d"
+  )
+  expect_equal(
+    as.character(get_metadata(result_3d)$coordinate_system),
+    "cartesian_3d"
+  )
+  expect_equal(
+    as.character(get_metadata(result_polar)$coordinate_system),
+    "polar"
+  )
+})
+
+# test_that("as_aniframe warns for unknown coordinate system", {
+#   df <- data.frame(
+#     time = 1:5,
+#     lon = 1:5,
+#     lat = 1:5
+#   )
+
+#   expect_warning(
+#     as_aniframe(df, variables_where = c("lon", "lat")),
+#     "Could not infer coordinate system"
+#   )
+# })

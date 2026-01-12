@@ -49,19 +49,17 @@ example_aniframe <- function(
   n_sessions = 1,
   n_dims = 2
 ) {
-  # Max 11 keypoints
   if (n_keypoints > 11) {
-    cli::cli_abort("`example_aniframe` can max handle 11 keypoints.")
+    cli::cli_abort("{.arg n_keypoints} must be at most 11.")
   }
 
-  # Check valid dimensions
   if (!n_dims %in% c(1, 2, 3)) {
-    cli::cli_abort("`n_dims` must be 1, 2, or 3.")
+    cli::cli_abort("{.arg n_dims} must be 1, 2, or 3.")
   }
 
   # Make vector of keypoints
   if (n_keypoints == 1) {
-    keypoints <- c("centroid")
+    keypoints <- "centroid"
   } else {
     keypoints <- c(
       "head",
@@ -75,43 +73,49 @@ example_aniframe <- function(
       "knee_left",
       "foot_right",
       "foot_left"
-    )[1:n_keypoints]
+    )[seq_len(n_keypoints)]
   }
 
   # Create the design matrix with all combinations
   design <- expand.grid(
-    time = seq(1, n_obs),
-    individual = seq(1, n_individuals),
+    time = seq_len(n_obs),
+    individual = seq_len(n_individuals),
     keypoint = keypoints,
-    trial = seq(1, n_trials),
-    session = seq(1, n_sessions)
+    trial = seq_len(n_trials),
+    session = seq_len(n_sessions)
   )
 
-  # Calculate total number of rows
   n_total <- nrow(design)
+
+  # Build spatial variables based on dimensions
+  variables_where <- switch(
+    as.character(n_dims),
+    "1" = "x",
+    "2" = c("x", "y"),
+    "3" = c("x", "y", "z")
+  )
 
   # Create base aniframe arguments
   aniframe_args <- list(
     individual = design$individual,
     keypoint = design$keypoint,
-    time = design$time,
-    trial = design$trial,
     session = design$session,
+    trial = design$trial,
+    time = design$time,
     x = stats::rnorm(n_total),
-    confidence = stats::rbeta(n_total, shape1 = 5, shape2 = 2)
+    confidence = stats::rbeta(n_total, shape1 = 5, shape2 = 2),
+    variables_what = c("individual", "keypoint"),
+    variables_when = c("session", "trial", "time"),
+    variables_where = variables_where
   )
 
-  # Add y coordinate if n_dims >= 2
   if (n_dims >= 2) {
     aniframe_args$y <- stats::rnorm(n_total)
   }
 
-  # Add z coordinate if n_dims == 3
   if (n_dims == 3) {
     aniframe_args$z <- stats::rnorm(n_total)
   }
 
-  # Create the aniframe using do.call
-  a <- do.call(aniframe, aniframe_args)
-  a
+  do.call(aniframe, aniframe_args)
 }

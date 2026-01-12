@@ -25,6 +25,9 @@ default_metadata <- function() {
     filename = as.character(NA),
     sampling_rate = as.numeric(NA),
     start_datetime = as.POSIXct(NA),
+    variables_what = c("individual", "keypoint"),
+    variables_when = c("time"),
+    variables_where = c("x", "y"),
     unit_space = factor(
       "px",
       levels = c(
