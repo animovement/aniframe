@@ -101,6 +101,7 @@ as_aniframe <- function(
 #' Standardize column types for aniframe
 #'
 #' Converts character identity and temporal variables to factors.
+#' Converts numeric identity and temporal variables (except time) to integers.
 #' Spatial variables are converted to numeric.
 #'
 #' @param data Data frame to standardise.
@@ -116,12 +117,15 @@ standardise_aniframe_cols <- function(
   variables_when,
   variables_where
 ) {
-  # Convert character what/when variables to factors
-  # Integers and other types remain unchanged to preserve ordering
-  categorical_vars <- c(variables_what, variables_when)
+  # What and when variables (except time) should be categorical or integer
+  categorical_vars <- c(variables_what, setdiff(variables_when, "time"))
   for (col in categorical_vars) {
-    if (col %in% names(data) && is.character(data[[col]])) {
-      data[[col]] <- factor(data[[col]])
+    if (col %in% names(data)) {
+      if (is.character(data[[col]])) {
+        data[[col]] <- factor(data[[col]])
+      } else if (is.numeric(data[[col]])) {
+        data[[col]] <- as.integer(data[[col]])
+      }
     }
   }
 
