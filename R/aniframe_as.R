@@ -20,9 +20,28 @@ as_aniframe <- function(
 ) {
   defaults <- default_metadata()
 
-  # Resolve variables: use provided or fall back to defaults
-  variables_what <- variables_what %||% defaults$variables_what
-  variables_when <- variables_when %||% defaults$variables_when
+  # Resolve variables_when: detect from data if not specified
+  if (is.null(variables_when)) {
+    # Recognised temporal variable names (time is always required)
+    recognised_when <- c("session", "trial", "time")
+
+    # Only include recognised when variables that are present in data
+    variables_when <- recognised_when[recognised_when %in% names(data)]
+  }
+
+  # Resolve variables_what: detect from data if not specified
+  if (is.null(variables_what)) {
+    # Recognised identity variable names
+    recognised_what <- c("model", "individual", "track", "keypoint")
+
+    # If keypoint column is missing, add it with "centroid"
+    if (!"keypoint" %in% names(data)) {
+      data$keypoint <- "centroid"
+    }
+
+    # Only include recognised what variables that are present in data
+    variables_what <- recognised_what[recognised_what %in% names(data)]
+  }
 
   # For spatial variables: detect from data if not specified
   if (is.null(variables_where)) {
