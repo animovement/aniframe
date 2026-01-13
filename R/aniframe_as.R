@@ -144,13 +144,24 @@ standardise_aniframe_cols <- function(
 #'
 #' @keywords internal
 validate_aniframe_cols <- function(data, variables_when, variables_where) {
-  # At least one temporal variable must exist
-  present_when <- variables_when[variables_when %in% names(data)]
-  if (length(present_when) == 0) {
+  # time column is always required
+  if (!"time" %in% names(data)) {
     cli::cli_abort(
       c(
-        "No temporal variables found in data.",
-        "i" = "Expected at least one of: {.val {variables_when}}."
+        "Column {.val time} is required but not found in data.",
+        "i" = "The {.val time} column must always be present."
+      )
+    )
+  }
+
+  # Check other temporal variables if specified
+  other_when <- setdiff(variables_when, "time")
+  missing_when <- setdiff(other_when, names(data))
+  if (length(missing_when) > 0) {
+    cli::cli_abort(
+      c(
+        "Temporal variable{?s} not found in data: {.val {missing_when}}.",
+        "i" = "Columns specified in {.arg variables_when} must be present."
       )
     )
   }

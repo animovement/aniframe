@@ -30,13 +30,45 @@
 #   - respects custom variables_when
 #   - respects custom variables_where
 
-test_that("as_aniframe errors when no temporal variables found", {
-  df <- data.frame(x = 1:5, y = 1:5)
+test_that("as_aniframe errors when time column missing", {
+  df <- data.frame(
+    frame = 1:5,
+    x = 1:5,
+    y = 1:5
+  )
 
   expect_error(
     as_aniframe(df),
-    "No temporal variables found"
+    "time.*is required"
   )
+})
+
+test_that("as_aniframe errors when other temporal variables missing", {
+  df <- data.frame(
+    time = 1:5,
+    x = 1:5,
+    y = 1:5
+  )
+
+  expect_error(
+    as_aniframe(df, variables_when = c("trial", "time")),
+    "Temporal variable.*not found.*trial"
+  )
+})
+
+test_that("as_aniframe works with additional temporal variables", {
+  df <- data.frame(
+    trial = c(1L, 1L, 2L, 2L, 2L),
+    time = c(1, 2, 1, 2, 3),
+    x = 1:5,
+    y = 1:5
+  )
+
+  result <- as_aniframe(df, variables_when = c("trial", "time"))
+
+  expect_s3_class(result, "aniframe")
+  expect_true("trial" %in% dplyr::group_vars(result))
+  expect_false("time" %in% dplyr::group_vars(result))
 })
 
 test_that("as_aniframe works with minimal required columns", {
@@ -233,17 +265,18 @@ test_that("as_aniframe respects custom variables_what", {
   expect_true("track" %in% dplyr::group_vars(result))
 })
 
-test_that("as_aniframe respects custom variables_when", {
+test_that("as_aniframe respects custom variables_when with time", {
   df <- data.frame(
-    frame = 1:5,
-    x = 1:5,
-    y = 1:5
+    session = c(1L, 1L, 2L, 2L),
+    time = 1:4,
+    x = 1:4,
+    y = 1:4
   )
 
-  result <- as_aniframe(df, variables_when = "frame")
+  result <- as_aniframe(df, variables_when = c("session", "time"))
 
   expect_s3_class(result, "aniframe")
-  expect_equal(names(result)[1], "frame")
+  expect_equal(get_metadata(result)$variables_when, c("session", "time"))
 })
 
 # TODO: We need to handle the coordinate system before including this test
