@@ -81,7 +81,7 @@ test_that("as_aniframe works with minimal required columns", {
   result <- as_aniframe(df)
 
   expect_s3_class(result, "aniframe")
-  expect_equal(names(result), c("time", "x", "y"))
+  expect_equal(names(result), c("keypoint", "time", "x", "y"))
 })
 
 test_that("as_aniframe works with custom spatial variables", {
@@ -93,7 +93,7 @@ test_that("as_aniframe works with custom spatial variables", {
   result <- as_aniframe(df, variables_where = "z")
 
   expect_s3_class(result, "aniframe")
-  expect_equal(names(result), c("time", "z"))
+  expect_equal(names(result), c("keypoint", "time", "z"))
 })
 
 test_that("as_aniframe converts character identity variables to factor", {
