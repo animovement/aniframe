@@ -16,6 +16,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/convert_nan_to_na.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/default_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/deg_to_rad.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/detect_variables_where.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.html</loc></url>
@@ -29,6 +30,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/get_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/group_by.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/index.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/infer_coordinate_system.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/is_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/is_cartesian.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/is_cartesian_1d.html</loc></url>
@@ -57,5 +59,6 @@
 <url><loc>http://animovement.dev/aniframe/reference/subset-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/tbl_sum.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ungroup.aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/validate_aniframe_cols.html</loc></url>
 </urlset>
 
