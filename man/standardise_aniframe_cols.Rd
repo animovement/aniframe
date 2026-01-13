@@ -4,9 +4,27 @@
 \alias{standardise_aniframe_cols}
 \title{Standardize column types for aniframe}
 \usage{
-standardise_aniframe_cols(data)
+standardise_aniframe_cols(
+  data,
+  variables_what,
+  variables_when,
+  variables_where
+)
+}
+\arguments{
+\item{data}{Data frame to standardise.}
+
+\item{variables_what}{Identity variable names.}
+
+\item{variables_when}{Temporal variable names.}
+
+\item{variables_where}{Spatial variable names.}
+}
+\value{
+Data frame with standardised column types.
 }
 \description{
-Standardize column types for aniframe
+Converts character identity and temporal variables to factors.
+Spatial variables are converted to numeric.
 }
 \keyword{internal}
