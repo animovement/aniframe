@@ -80,21 +80,20 @@ aniframe(
   x = rnorm(50),
   y = rnorm(50)
 )
-#> Warning: Unknown or uninitialised column: `keypoint`.
 #> # Individuals: 1, 2
-#> # Keypoints:  
-#>    individual  time      x      y
-#>         <int> <int>  <dbl>  <dbl>
-#>  1          1     1 -0.785  0.122
-#>  2          1     1 -1.40   0.936
-#>  3          1     1  0.449 -0.974
-#>  4          1     2 -1.06  -1.14 
-#>  5          1     2  0.259 -0.309
-#>  6          1     2  1.39   1.27 
-#>  7          1     3 -0.796 -0.558
-#>  8          1     3 -0.442  0.263
-#>  9          1     3  0.427  0.961
-#> 10          1     4 -1.76   1.05 
+#> # Keypoints:   centroid
+#>    individual keypoint  time      x      y
+#>         <int> <fct>    <int>  <dbl>  <dbl>
+#>  1          1 centroid     1 -0.785  0.122
+#>  2          1 centroid     1 -1.40   0.936
+#>  3          1 centroid     1  0.449 -0.974
+#>  4          1 centroid     2 -1.06  -1.14 
+#>  5          1 centroid     2  0.259 -0.309
+#>  6          1 centroid     2  1.39   1.27 
+#>  7          1 centroid     3 -0.796 -0.558
+#>  8          1 centroid     3 -0.442  0.263
+#>  9          1 centroid     3  0.427  0.961
+#> 10          1 centroid     4 -1.76   1.05 
 #> # ℹ 40 more rows
 
 # Custom variables
