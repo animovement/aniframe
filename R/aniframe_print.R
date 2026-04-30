@@ -1,5 +1,12 @@
 #' Custom tibble summary for aniframe
 #'
+#' @description
+#' Builds the print header rows shown above an aniframe. The set of rows is
+#' driven by the metadata: one row per column listed in `variables_what` and
+#' one row per column in `variables_when` (excluding `time`). This means custom
+#' identity/temporal variables (e.g. `track`, `model`, `session`) appear
+#' automatically, and rows are omitted entirely when their column is absent.
+#'
 #' @param x An aniframe object
 #' @param ... Additional arguments (unused)
 #' @return Named character vector with summary information
@@ -8,31 +15,40 @@
 tbl_sum.aniframe <- function(x, ...) {
   default_header <- NextMethod()
 
-  # Initialize new header
-  new_header <- c(
-    "Individuals" = paste(unique(x$individual), collapse = ", "),
-    "Keypoints" = paste(unique(x$keypoint), collapse = ", ")
-  )
+  md <- get_metadata(x)
+  new_header <- character()
 
-  # Add sessions if column exists
-  if ("session" %in% names(x)) {
-    n_sessions <- length(unique(x$session))
-    new_header <- c(new_header, "Sessions" = as.character(n_sessions))
-  }
-
-  # Add trials if column exists
-  if ("trial" %in% names(x)) {
+  identity_vars <- intersect(md$variables_what, names(x))
+  for (col in identity_vars) {
     new_header <- c(
       new_header,
-      "Trials" = paste(unique(x$trial), collapse = ", ")
+      stats::setNames(
+        paste(unique(x[[col]]), collapse = ", "),
+        title_case_pluralised(col)
+      )
     )
   }
 
-  # Add sampling rate if available in metadata
-  sampling_rate <- get_metadata(x)$sampling_rate
+  temporal_vars <- intersect(setdiff(md$variables_when, "time"), names(x))
+  for (col in temporal_vars) {
+    new_header <- c(
+      new_header,
+      stats::setNames(
+        paste(unique(x[[col]]), collapse = ", "),
+        title_case_pluralised(col)
+      )
+    )
+  }
+
+  sampling_rate <- md$sampling_rate
   if (!is.null(sampling_rate) && !is.na(sampling_rate)) {
     new_header <- c(new_header, "Sampling rate" = paste(sampling_rate, "Hz"))
   }
 
   new_header
+}
+
+#' @keywords internal
+title_case_pluralised <- function(x) {
+  paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)), "s")
 }
