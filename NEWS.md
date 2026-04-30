@@ -1,5 +1,8 @@
 # aniframe (development version)
 
+* Added a `connections` metadata field for skeletons and other variable-level networks. Stored as a named list keyed by the relevant identity or temporal variable (typically `keypoint`, but also `individual` for social networks etc.), with each entry being a 2-column `from`/`to` tibble. Order is preserved so downstream code can interpret the table as either directed or undirected. Manage with the new exported functions `set_connections()`, `get_connections()`, `add_connections()` and `remove_connections()`. Endpoints not found in the corresponding column emit a warning (typo-catcher) but are still kept (#6).
+* Internal: `set_metadata()` now replaces list-valued fields top-level rather than letting `utils::modifyList()` recurse into them. This makes list-of-data-frames fields like `connections` round-trip correctly through `set_metadata()` without attempting to merge tibbles row-wise.
+
 * `print.aniframe_metadata()` now renders as a single block — captured via `cli::cli_format_method()` and emitted with `cat()` — so there is no leading newline and no blank lines between entries. This makes the output render cleanly in HTML contexts such as Quarto / R Markdown documents (#48).
 
 * `set_unit_angle()` now automatically converts the spatial angular columns `phi` and `theta` whenever they are present in the data, so polar / cylindrical / spherical coordinates stay consistent with the declared `unit_angle`. Previously these columns were assumed to be in radians and were not affected by `set_unit_angle()`. The argument order is also rearranged to `set_unit_angle(data, to_unit, cols = NULL)` (matching `set_unit_time()`), and `cols` is now optional — pass it only for additional non-spatial angular columns (#21).

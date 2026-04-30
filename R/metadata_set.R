@@ -140,6 +140,16 @@ set_metadata <- function(data, ..., metadata = NULL) {
   # ------------------------------------------------------------------
   # Combine and attach metadata
   # ------------------------------------------------------------------
+  # `utils::modifyList()` recurses into list-valued entries, which means a
+  # field whose value is a list of data.frames (e.g. `connections`) would
+  # be merged row-wise and break. Replace list-valued fields directly,
+  # then merge the rest with `modifyList`.
+  list_valued <- names(user_md)[vapply(user_md, is.list, logical(1))]
+  for (k in list_valued) {
+    new_md[[k]] <- user_md[[k]]
+  }
+  user_md[list_valued] <- NULL
+
   new_md <- utils::modifyList(new_md, user_md)
   ensure_valid_metadata(new_md)
   data <- attach_metadata(data, new_md)

@@ -23,6 +23,12 @@ frame (factor, "bottom_left"). Permitted values: "bottom_left", "top_left".
 \item \code{y_height}: Height of the recording frame in y-axis units (numeric, NA).
 Used by \code{\link[=set_origin]{set_origin()}} to reflect y coordinates when switching origin
 conventions.
+\item \code{connections}: Named list of connection tables, one per identity or
+temporal variable (typically \code{keypoint} for skeletons; could also be
+\code{individual} for social networks). Each entry is a 2-column tibble of
+\code{from}/\code{to} pairs. Default is an empty list. Manage via
+\code{\link[=set_connections]{set_connections()}}, \code{\link[=get_connections]{get_connections()}}, \code{\link[=add_connections]{add_connections()}} and
+\code{\link[=remove_connections]{remove_connections()}}.
 }
 }
 \description{
