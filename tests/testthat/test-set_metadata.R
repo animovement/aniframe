@@ -227,7 +227,7 @@ test_that("set_metadata handles mixed character and non-character fields", {
 test_that("set_metadata validates metadata", {
   data <- dplyr::tibble()
 
-  # This assumes validate_metadata() catches invalid metadata
+  # This assumes ensure_valid_metadata() catches invalid metadata
   # Adjust based on your actual validation rules
   expect_error(
     set_metadata(data, sampling_rate = "not_a_number")

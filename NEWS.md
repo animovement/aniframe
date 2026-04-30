@@ -1,5 +1,6 @@
 # aniframe (development version)
 
+* Internal: rename validators to follow the codebase's `check_/ensure_` and `is_/ensure_is_` conventions: `validate_metadata` → `ensure_valid_metadata`, `validate_aniframe_cols` → `ensure_aniframe_cols`, `check_is_list` → `is_list`. All three are internal — no user-facing change.
 * Added `set_origin()` to convert between `bottom_left` and `top_left` coordinate origin conventions, reflecting y coordinates around the recorded frame height (#52).
 * Added `set_y_height()` to set the y-axis frame height used by `set_origin()`, with validation against the data range.
 * Added `y_height` metadata field. Reader functions (in `aniread`) populate it from the source; `as_aniframe()` falls back to `max(y)` when not supplied. Existing values are never overwritten — use `set_y_height()` to change them.

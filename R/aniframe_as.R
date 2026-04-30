@@ -58,7 +58,7 @@ as_aniframe <- function(
   }
 
   # Validate required columns exist
-  validate_aniframe_cols(data, variables_when, variables_where)
+  ensure_aniframe_cols(data, variables_when, variables_where)
 
   # Standardize column types
   data <- standardise_aniframe_cols(
@@ -179,7 +179,7 @@ standardise_aniframe_cols <- function(
 #' @param variables_where Spatial variables.
 #'
 #' @keywords internal
-validate_aniframe_cols <- function(data, variables_when, variables_where) {
+ensure_aniframe_cols <- function(data, variables_when, variables_where) {
   # time column is always required
   if (!"time" %in% names(data)) {
     cli::cli_abort(
