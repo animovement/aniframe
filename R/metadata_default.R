@@ -8,7 +8,9 @@
 #' @return A named list with the following fields:
 #' * `source`: Data source identifier (character, NA)
 #' * `source_version`: Version of the data source (character, NA)
-#' * `filename`: Original filename (character, NA)
+#' * `filename`: Original filename(s) (character vector, NA). Accepts a
+#'   vector of length 1 or more — readers that load from multiple files
+#'   (e.g. `aniread::read_trackball()`) populate this with all source paths.
 #' * `sampling_rate`: Sampling rate in Hz (numeric, NA)
 #' * `start_datetime`: Start date and time of recording (POSIXct, NA)
 #' * `reference_frame`: Reference frame (factor, "allocentric")

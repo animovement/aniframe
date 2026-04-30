@@ -18,6 +18,9 @@
 #   - Accepts deprecated point_of_reference and maps it to origin (with warning)
 #   - Errors when both point_of_reference and origin are supplied
 #
+# Multi-file metadata:
+#   - Accepts a multi-element filename vector (#34)
+#
 # Datetime conversion:
 #   - Converts character datetime strings to POSIXct
 #   - Converts numeric timestamps to POSIXct
@@ -245,6 +248,17 @@ test_that("set_metadata accepts deprecated point_of_reference and maps to origin
   md <- get_metadata(result)
   expect_equal(as.character(md$origin), "top_left")
   expect_false("point_of_reference" %in% names(md))
+})
+
+test_that("set_metadata accepts a multi-element filename vector (#34)", {
+  data <- dplyr::tibble()
+
+  result <- set_metadata(data, filename = c("a.csv", "b.csv"))
+
+  fn <- get_metadata(result, "filename")
+  expect_type(fn, "character")
+  expect_length(fn, 2)
+  expect_equal(fn, c("a.csv", "b.csv"))
 })
 
 test_that("set_metadata errors when both point_of_reference and origin are supplied", {

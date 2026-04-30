@@ -12,7 +12,8 @@
 #' Default metadata fields include:
 #' * `source`: Data source identifier
 #' * `source_version`: Version of the data source
-#' * `filename`: Original filename
+#' * `filename`: Original filename(s) — accepts a character vector
+#'   (length 1 or more) for readers that load from multiple files
 #' * `sampling_rate`: Sampling rate in Hz
 #' * `start_datetime`: Start date and time of recording
 #' * `reference_frame`: Reference frame (default: "allocentric")
