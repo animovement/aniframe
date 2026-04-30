@@ -256,23 +256,35 @@ infer_coordinate_system <- function(variables_where) {
 
 #' Detect spatial variables from data
 #'
+#' Polar-family detection runs first so that cylindrical data (`rho`, `phi`,
+#' `z`) and spherical data (`rho`, `phi`, `theta`) are not mis-classified as
+#' Cartesian on account of their `z` column. The `rho` + `phi` pair is the
+#' signature of a polar-family system; `z` then distinguishes cylindrical
+#' from polar, and `theta` distinguishes spherical.
+#'
 #' @param data Data frame to check.
 #' @return Character vector of detected spatial variable names, or NULL if none found.
 #' @keywords internal
 detect_variables_where <- function(data) {
-  cartesian <- c("x", "y", "z")
-  polar_spherical <- c("rho", "phi", "theta")
+  has_rho <- "rho" %in% names(data)
+  has_phi <- "phi" %in% names(data)
+  has_theta <- "theta" %in% names(data)
+  has_z <- "z" %in% names(data)
 
-  present_cartesian <- cartesian[cartesian %in% names(data)]
-  present_polar <- polar_spherical[polar_spherical %in% names(data)]
-
-  # Prefer cartesian if any present
-  if (length(present_cartesian) > 0) {
-    return(present_cartesian)
+  if (has_rho && has_phi) {
+    if (has_theta) {
+      return(c("rho", "phi", "theta")) # spherical
+    } else if (has_z) {
+      return(c("rho", "phi", "z")) # cylindrical
+    } else {
+      return(c("rho", "phi")) # polar
+    }
   }
 
-  if (length(present_polar) > 0) {
-    return(present_polar)
+  cartesian <- c("x", "y", "z")
+  present_cartesian <- cartesian[cartesian %in% names(data)]
+  if (length(present_cartesian) > 0) {
+    return(present_cartesian)
   }
 
   NULL
