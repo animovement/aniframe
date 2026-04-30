@@ -11,7 +11,9 @@ A named list with the following fields:
 \itemize{
 \item \code{source}: Data source identifier (character, NA)
 \item \code{source_version}: Version of the data source (character, NA)
-\item \code{filename}: Original filename (character, NA)
+\item \code{filename}: Original filename(s) (character vector, NA). Accepts a
+vector of length 1 or more — readers that load from multiple files
+(e.g. \code{aniread::read_trackball()}) populate this with all source paths.
 \item \code{sampling_rate}: Sampling rate in Hz (numeric, NA)
 \item \code{start_datetime}: Start date and time of recording (POSIXct, NA)
 \item \code{reference_frame}: Reference frame (factor, "allocentric")
