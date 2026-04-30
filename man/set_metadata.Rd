@@ -30,7 +30,8 @@ Default metadata fields include:
 \itemize{
 \item \code{source}: Data source identifier
 \item \code{source_version}: Version of the data source
-\item \code{filename}: Original filename
+\item \code{filename}: Original filename(s) — accepts a character vector
+(length 1 or more) for readers that load from multiple files
 \item \code{sampling_rate}: Sampling rate in Hz
 \item \code{start_datetime}: Start date and time of recording
 \item \code{reference_frame}: Reference frame (default: "allocentric")
