@@ -17,7 +17,11 @@
 #' * `start_datetime`: Start date and time of recording
 #' * `reference_frame`: Reference frame (default: "allocentric")
 #' * `coordinate_system`: Coordinate system (default: "cartesian")
-#' * `point_of_reference`: Point of reference (default: "bottom_left")
+#' * `origin`: Location of the (0,0) coordinate (default: "bottom_left")
+#' * `y_height`: Height of the recording frame in y-axis units (default: NA)
+#'
+#' For backwards compatibility, the deprecated field `point_of_reference` is
+#' accepted as an alias for `origin` and emits a deprecation warning.
 #'
 #' @param data An aniframe object
 #' @param ... Named metadata values (e.g., `sampling_rate = 30, source = "sleap"`)
@@ -57,6 +61,23 @@ set_metadata <- function(data, ..., metadata = NULL) {
     user_md <- dot_args
   } else {
     user_md <- list()
+  }
+
+  # ------------------------------------------------------------------
+  # Backwards-compat: `point_of_reference` was renamed to `origin`
+  # ------------------------------------------------------------------
+  if ("point_of_reference" %in% names(user_md)) {
+    if ("origin" %in% names(user_md)) {
+      cli::cli_abort(
+        "Cannot specify both {.field point_of_reference} (deprecated) and {.field origin}."
+      )
+    }
+    cli::cli_warn(c(
+      "Metadata field {.field point_of_reference} is deprecated; use {.field origin} instead.",
+      "i" = "The supplied value will be applied to {.field origin}."
+    ))
+    user_md$origin <- user_md$point_of_reference
+    user_md$point_of_reference <- NULL
   }
 
   # ------------------------------------------------------------------

@@ -113,6 +113,19 @@ as_aniframe <- function(
     coordinate_system = factor(coord_system)
   )
 
+  # Fall back y_height to max(y) when not supplied and y is present.
+  # Never overwrite a value that's already set — only `set_y_height()` /
+  # `set_origin()` should mutate it post-construction.
+  if ("y" %in% present_where) {
+    current_y_height <- get_metadata(data, "y_height")
+    if (length(current_y_height) == 0 || is.na(current_y_height)) {
+      max_y <- suppressWarnings(max(data$y, na.rm = TRUE))
+      if (is.finite(max_y)) {
+        data <- set_metadata(data, y_height = max_y)
+      }
+    }
+  }
+
   data
 }
 
