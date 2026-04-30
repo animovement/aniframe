@@ -25,10 +25,53 @@
 #   - attaches metadata
 #   - stores variables in metadata
 #
+# y_height fallback:
+#   - falls back to max(y) when not supplied and y is present
+#   - does not overwrite a user-supplied y_height
+#   - leaves y_height NA when y is absent from data
+#
 # Custom variables:
 #   - respects custom variables_what
 #   - respects custom variables_when
 #   - respects custom variables_where
+
+test_that("as_aniframe falls back y_height to max(y) when not supplied", {
+  df <- data.frame(
+    individual = 1L,
+    time = 1:4,
+    x = c(0, 1, 2, 3),
+    y = c(10, 50, 200, 1000)
+  )
+
+  data <- as_aniframe(df)
+
+  expect_equal(get_metadata(data, "y_height"), 1000)
+})
+
+test_that("as_aniframe does not overwrite a user-supplied y_height", {
+  df <- data.frame(
+    individual = 1L,
+    time = 1:3,
+    x = c(0, 1, 2),
+    y = c(10, 50, 200)
+  )
+
+  data <- as_aniframe(df, metadata = list(y_height = 1080))
+
+  expect_equal(get_metadata(data, "y_height"), 1080)
+})
+
+test_that("as_aniframe leaves y_height NA when y is absent from data", {
+  df <- data.frame(
+    individual = 1L,
+    time = 1:3,
+    x = c(0, 1, 2)
+  )
+
+  data <- as_aniframe(df, variables_where = "x")
+
+  expect_true(is.na(get_metadata(data, "y_height")))
+})
 
 test_that("as_aniframe errors when time column missing", {
   df <- data.frame(

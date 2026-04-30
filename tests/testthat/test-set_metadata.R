@@ -12,6 +12,11 @@
 #   - Errors on invalid factor levels (named args)
 #   - Errors on invalid factor levels (metadata list)
 #   - Preserves factors with correct levels
+#   - Locks origin to permitted levels (bottom_left, top_left)
+#
+# Backwards compatibility:
+#   - Accepts deprecated point_of_reference and maps it to origin (with warning)
+#   - Errors when both point_of_reference and origin are supplied
 #
 # Datetime conversion:
 #   - Converts character datetime strings to POSIXct
@@ -227,6 +232,45 @@ test_that("set_metadata validates metadata", {
   expect_error(
     set_metadata(data, sampling_rate = "not_a_number")
   )
+})
+
+test_that("set_metadata accepts deprecated point_of_reference and maps to origin", {
+  data <- dplyr::tibble()
+
+  expect_warning(
+    result <- set_metadata(data, point_of_reference = "top_left"),
+    "deprecated"
+  )
+
+  md <- get_metadata(result)
+  expect_equal(as.character(md$origin), "top_left")
+  expect_false("point_of_reference" %in% names(md))
+})
+
+test_that("set_metadata errors when both point_of_reference and origin are supplied", {
+  data <- dplyr::tibble()
+
+  expect_error(
+    suppressWarnings(set_metadata(
+      data,
+      point_of_reference = "top_left",
+      origin = "bottom_left"
+    )),
+    "Cannot specify both"
+  )
+})
+
+test_that("set_metadata locks origin to permitted levels", {
+  data <- dplyr::tibble()
+
+  expect_error(
+    set_metadata(data, origin = "middle"),
+    "can only be"
+  )
+
+  result <- set_metadata(data, origin = "top_left")
+  expect_s3_class(get_metadata(result)$origin, "factor")
+  expect_equal(as.character(get_metadata(result)$origin), "top_left")
 })
 
 test_that("set_metadata converts datetime values to POSIXct", {
