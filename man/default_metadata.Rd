@@ -16,7 +16,11 @@ A named list with the following fields:
 \item \code{start_datetime}: Start date and time of recording (POSIXct, NA)
 \item \code{reference_frame}: Reference frame (factor, "allocentric")
 \item \code{coordinate_system}: Coordinate system (factor, "cartesian")
-\item \code{point_of_reference}: Point of reference (factor, "bottom_left")
+\item \code{origin}: Location of the (0,0) coordinate relative to the recording
+frame (factor, "bottom_left"). Permitted values: "bottom_left", "top_left".
+\item \code{y_height}: Height of the recording frame in y-axis units (numeric, NA).
+Used by \code{\link[=set_origin]{set_origin()}} to reflect y coordinates when switching origin
+conventions.
 }
 }
 \description{
