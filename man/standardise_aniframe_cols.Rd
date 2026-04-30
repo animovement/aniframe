@@ -25,6 +25,7 @@ Data frame with standardised column types.
 }
 \description{
 Converts character identity and temporal variables to factors.
+Converts numeric identity and temporal variables (except time) to integers.
 Spatial variables are converted to numeric.
 }
 \keyword{internal}

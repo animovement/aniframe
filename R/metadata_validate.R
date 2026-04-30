@@ -1,4 +1,4 @@
-validate_metadata <- function(metadata) {
+ensure_valid_metadata <- function(metadata) {
   ensure_is_list(metadata)
   ensure_all_metadata_fields_present(metadata)
   ensure_metadata_fields_are_correct_class(metadata)
@@ -22,12 +22,12 @@ ensure_metadata_exists <- function(data) {
 # ------------------------------------------------------------------
 # Is the "metadata" attribute a list?
 # ------------------------------------------------------------------
-check_is_list <- function(x) {
+is_list <- function(x) {
   is.list(x) && !is.data.frame(x) |> invisible()
 }
 
 ensure_is_list <- function(x) {
-  if (!check_is_list(x)) {
+  if (!is_list(x)) {
     cli::cli_abort(
       "Metadata should be a list, but it is of class {class(metadata)}."
     )
