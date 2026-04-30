@@ -34,6 +34,99 @@
 #   - respects custom variables_what
 #   - respects custom variables_when
 #   - respects custom variables_where
+#
+# Coordinate-system auto-detection:
+#   - cylindrical data (rho, phi, z) is detected as cylindrical, not
+#     cartesian_1d (regression for #44)
+#   - cylindrical spatial columns are ordered rho, phi, z (regression for #43)
+#   - spherical data (rho, phi, theta) is detected as spherical
+#   - polar data (rho, phi) is detected as polar
+
+test_that("as_aniframe detects cylindrical data (rho, phi, z), not cartesian_1d", {
+  # Regression test for #44: previously the cartesian-first detection saw
+  # the `z` column and returned c("z"), giving coordinate_system = cartesian_1d.
+  df <- data.frame(
+    individual = 1L,
+    time = 1:5,
+    rho = 1:5,
+    phi = seq(0, pi, length.out = 5),
+    z = 1:5
+  )
+
+  data <- as_aniframe(df)
+
+  expect_equal(
+    as.character(get_metadata(data, "coordinate_system")),
+    "cylindrical"
+  )
+  expect_equal(
+    get_metadata(data, "variables_where"),
+    c("rho", "phi", "z")
+  )
+})
+
+test_that("as_aniframe orders cylindrical spatial columns as rho, phi, z (#43)", {
+  # Regression test for #43: previously z appeared before rho and phi
+  # because rho/phi were pushed to "other cols" when only z was detected
+  # as a where-variable.
+  df <- data.frame(
+    individual = 1L,
+    time = 1:3,
+    rho = 1:3,
+    phi = c(0, 1, 2),
+    z = 1:3
+  )
+
+  data <- as_aniframe(df)
+
+  spatial_idx <- match(c("rho", "phi", "z"), names(data))
+  expect_equal(spatial_idx, sort(spatial_idx))
+  expect_equal(
+    names(data)[spatial_idx[1]:spatial_idx[3]],
+    c("rho", "phi", "z")
+  )
+})
+
+test_that("as_aniframe detects spherical data (rho, phi, theta)", {
+  df <- data.frame(
+    individual = 1L,
+    time = 1:5,
+    rho = 1:5,
+    phi = seq(0, pi, length.out = 5),
+    theta = seq(0, pi, length.out = 5)
+  )
+
+  data <- as_aniframe(df)
+
+  expect_equal(
+    as.character(get_metadata(data, "coordinate_system")),
+    "spherical"
+  )
+  expect_equal(
+    get_metadata(data, "variables_where"),
+    c("rho", "phi", "theta")
+  )
+})
+
+test_that("as_aniframe detects polar data (rho, phi)", {
+  df <- data.frame(
+    individual = 1L,
+    time = 1:5,
+    rho = 1:5,
+    phi = seq(0, pi, length.out = 5)
+  )
+
+  data <- as_aniframe(df)
+
+  expect_equal(
+    as.character(get_metadata(data, "coordinate_system")),
+    "polar"
+  )
+  expect_equal(
+    get_metadata(data, "variables_where"),
+    c("rho", "phi")
+  )
+})
 
 test_that("as_aniframe falls back y_height to max(y) when not supplied", {
   df <- data.frame(

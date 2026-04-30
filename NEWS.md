@@ -1,5 +1,6 @@
 # aniframe (development version)
 
+* Fixed `as_aniframe()` mis-classifying cylindrical (`rho`, `phi`, `z`) and spherical (`rho`, `phi`, `theta`) data as Cartesian (#44). The auto-detection now recognises the `rho` + `phi` signature first, so cylindrical data is no longer reduced to `cartesian_1d` because of its `z` column. As a side effect, cylindrical spatial columns are now ordered `rho, phi, z` rather than `z` ending up before `rho`/`phi` (#43).
 * Internal: rename validators to follow the codebase's `check_/ensure_` and `is_/ensure_is_` conventions: `validate_metadata` → `ensure_valid_metadata`, `validate_aniframe_cols` → `ensure_aniframe_cols`, `check_is_list` → `is_list`. All three are internal — no user-facing change.
 * Added `set_origin()` to convert between `bottom_left` and `top_left` coordinate origin conventions, reflecting y coordinates around the recorded frame height (#52).
 * Added `set_y_height()` to set the y-axis frame height used by `set_origin()`, with validation against the data range.

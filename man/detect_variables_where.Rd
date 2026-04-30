@@ -13,6 +13,10 @@ detect_variables_where(data)
 Character vector of detected spatial variable names, or NULL if none found.
 }
 \description{
-Detect spatial variables from data
+Polar-family detection runs first so that cylindrical data (\code{rho}, \code{phi},
+\code{z}) and spherical data (\code{rho}, \code{phi}, \code{theta}) are not mis-classified as
+Cartesian on account of their \code{z} column. The \code{rho} + \code{phi} pair is the
+signature of a polar-family system; \code{z} then distinguishes cylindrical
+from polar, and \code{theta} distinguishes spherical.
 }
 \keyword{internal}
