@@ -45,10 +45,10 @@ tbl_sum.aniframe <- function(x, ...) {
     new_header <- c(new_header, "Sampling rate" = paste(sampling_rate, "Hz"))
   }
 
-  new_header
-}
+  interval_row <- format_time_interval(x, md)
+  if (!is.null(interval_row)) {
+    new_header <- c(new_header, interval_row)
+  }
 
-#' @keywords internal
-title_case_pluralised <- function(x) {
-  paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)), "s")
+  new_header
 }

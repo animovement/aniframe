@@ -5,6 +5,11 @@
 #   - includes "Keypoints" only when the keypoint column is present
 #   - includes "Sessions" / "Trials" only when those columns are present
 #   - includes "Sampling rate" only when set in metadata
+#   - includes "Time" interval (HH:MM:SS) when unit_time is convertible to
+#     seconds (issue #50)
+#   - "Time" interval becomes absolute datetimes when start_datetime is set
+#   - "Time" row is omitted when unit_time = "frame" without sampling_rate
+#     (or unit_time = "unknown")
 #
 # Regression:
 #   - does not warn "Unknown or uninitialised column" when `individual` is
@@ -69,4 +74,128 @@ test_that("tbl_sum includes Sampling rate only when set in metadata", {
   result_with_sr <- pillar::tbl_sum(data_with_sr)
   expect_true("Sampling rate" %in% names(result_with_sr))
   expect_equal(unname(result_with_sr["Sampling rate"]), "60 Hz")
+})
+
+test_that("tbl_sum omits Time row when unit_time = 'frame' and no sampling rate", {
+  data <- example_aniframe(n_obs = 10) # default unit_time is "frame", no sr
+
+  result <- pillar::tbl_sum(data)
+
+  expect_false("Time" %in% names(result))
+})
+
+test_that("tbl_sum includes Time row when unit_time = 'frame' and sampling rate set", {
+  # 90 frames @ 30 Hz -> 0..89 frames -> 0..2.9667s -> rounds to 00:00:00 / 00:00:03
+  data <- example_aniframe(n_obs = 90)
+  data <- set_metadata(data, sampling_rate = 30)
+
+  result <- pillar::tbl_sum(data)
+
+  expect_true("Time" %in% names(result))
+  expect_equal(unname(result["Time"]), "00:00:00 to 00:00:03")
+})
+
+test_that("tbl_sum formats Time interval as HH:MM:SS for unit_time = 's'", {
+  df <- data.frame(
+    individual = 1L,
+    time = seq(0, 3725, length.out = 10), # 1h 02m 05s span
+    x = 1:10,
+    y = 1:10
+  )
+  data <- as_aniframe(df)
+  data <- set_metadata(data, unit_time = "s")
+
+  result <- pillar::tbl_sum(data)
+
+  expect_true("Time" %in% names(result))
+  expect_equal(unname(result["Time"]), "00:00:00 to 01:02:05")
+})
+
+test_that("tbl_sum formats Time as absolute datetimes when start_datetime is set", {
+  df <- data.frame(
+    individual = 1L,
+    time = seq(0, 90, length.out = 5), # 90 seconds
+    x = 1:5,
+    y = 1:5
+  )
+  data <- as_aniframe(df)
+  data <- set_metadata(
+    data,
+    unit_time = "s",
+    start_datetime = "2024-01-15 14:30:00"
+  )
+
+  result <- pillar::tbl_sum(data)
+
+  expect_true("Time" %in% names(result))
+  # The expected start datetime is the literal value passed; the end is
+  # 90 seconds later. Format uses "%Y-%m-%d %H:%M:%S" with system tz.
+  start_dt <- anytime::anytime("2024-01-15 14:30:00")
+  expected <- paste(
+    format(start_dt, "%Y-%m-%d %H:%M:%S"),
+    "to",
+    format(start_dt + 90, "%Y-%m-%d %H:%M:%S")
+  )
+  expect_equal(unname(result["Time"]), expected)
+})
+
+test_that("format_seconds_as_hms produces expected integer formats", {
+  expect_equal(format_seconds_as_hms(0), "00:00:00")
+  expect_equal(format_seconds_as_hms(59), "00:00:59")
+  expect_equal(format_seconds_as_hms(60), "00:01:00")
+  expect_equal(format_seconds_as_hms(3725), "01:02:05")
+  expect_equal(format_seconds_as_hms(3600 * 25), "25:00:00") # > 24h is fine
+})
+
+test_that("format_seconds_as_hms produces expected fractional (ms) formats", {
+  expect_equal(format_seconds_as_hms(0, fractional = TRUE), "00:00:00.000")
+  expect_equal(format_seconds_as_hms(0.088, fractional = TRUE), "00:00:00.088")
+  expect_equal(format_seconds_as_hms(0.5, fractional = TRUE), "00:00:00.500")
+  expect_equal(format_seconds_as_hms(60, fractional = TRUE), "00:01:00.000")
+  expect_equal(
+    format_seconds_as_hms(3725.123, fractional = TRUE),
+    "01:02:05.123"
+  )
+})
+
+test_that("tbl_sum Time row uses millisecond precision when span is sub-second", {
+  # Recording lasts only 88 ms
+  df <- data.frame(
+    individual = 1L,
+    time = c(0, 50, 88),
+    x = 1:3,
+    y = 1:3
+  )
+  data <- as_aniframe(df) |> set_metadata(unit_time = "ms")
+
+  result <- pillar::tbl_sum(data)
+
+  expect_true("Time" %in% names(result))
+  expect_equal(unname(result["Time"]), "00:00:00.000 to 00:00:00.088")
+})
+
+test_that("tbl_sum Time row uses integer precision when span >= 1 second", {
+  df <- data.frame(
+    individual = 1L,
+    time = c(0, 1500),
+    x = 1:2,
+    y = 1:2
+  )
+  data <- as_aniframe(df) |> set_metadata(unit_time = "ms")
+
+  result <- pillar::tbl_sum(data)
+
+  # 0 ms .. 1500 ms span = 1.5 s, not sub-second -> integer hms
+  expect_equal(unname(result["Time"]), "00:00:00 to 00:00:02")
+})
+
+test_that("seconds_per_time_unit returns expected multipliers", {
+  expect_equal(seconds_per_time_unit("s", NA), 1)
+  expect_equal(seconds_per_time_unit("ms", NA), 1e-3)
+  expect_equal(seconds_per_time_unit("m", NA), 60)
+  expect_equal(seconds_per_time_unit("h", NA), 3600)
+  expect_equal(seconds_per_time_unit("frame", 30), 1 / 30)
+  expect_true(is.na(seconds_per_time_unit("frame", NA)))
+  expect_true(is.na(seconds_per_time_unit("frame", 0)))
+  expect_true(is.na(seconds_per_time_unit("unknown", 30)))
 })
