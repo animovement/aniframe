@@ -54,7 +54,7 @@ get_metadata(data)
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
 #> origin            (factor)    : "bottom_left"
 #>                                 [levels: bottom_left, top_left]
-#> y_height          (numeric)   : 3.36749
+#> y_height          (numeric)   : 2.631256
 #> connections       (list)      :
 ```
 
