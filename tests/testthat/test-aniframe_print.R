@@ -192,10 +192,57 @@ test_that("tbl_sum Time row uses integer precision when span >= 1 second", {
 test_that("seconds_per_time_unit returns expected multipliers", {
   expect_equal(seconds_per_time_unit("s", NA), 1)
   expect_equal(seconds_per_time_unit("ms", NA), 1e-3)
+  expect_equal(seconds_per_time_unit("us", NA), 1e-6)
+  expect_equal(seconds_per_time_unit("ns", NA), 1e-9)
   expect_equal(seconds_per_time_unit("m", NA), 60)
   expect_equal(seconds_per_time_unit("h", NA), 3600)
   expect_equal(seconds_per_time_unit("frame", 30), 1 / 30)
   expect_true(is.na(seconds_per_time_unit("frame", NA)))
   expect_true(is.na(seconds_per_time_unit("frame", 0)))
   expect_true(is.na(seconds_per_time_unit("unknown", 30)))
+})
+
+test_that("format_seconds_as_hms handles negative seconds with a leading minus", {
+  expect_equal(format_seconds_as_hms(-30), "-00:00:30")
+  expect_equal(format_seconds_as_hms(-3725), "-01:02:05")
+  expect_equal(
+    format_seconds_as_hms(-0.5, fractional = TRUE),
+    "-00:00:00.500"
+  )
+})
+
+test_that("format_time_interval returns NULL when time column is absent", {
+  data <- example_aniframe()
+  md <- get_metadata(data)
+  data$time <- NULL
+  expect_null(format_time_interval(data, md))
+})
+
+test_that("format_time_interval returns NULL when time has no finite values", {
+  data <- example_aniframe()
+  md <- get_metadata(data)
+  data$time <- rep(NA_real_, nrow(data))
+  expect_null(format_time_interval(data, md))
+})
+
+test_that("tbl_sum Time row uses sub-second datetime format with start_datetime", {
+  # Sub-second span + start_datetime exercises the "%Y-%m-%d %H:%M:%OS3"
+  # format branch.
+  df <- data.frame(
+    individual = 1L,
+    time = c(0, 22, 88),
+    x = 1:3,
+    y = 1:3
+  )
+  data <- as_aniframe(df) |>
+    set_metadata(
+      unit_time = "ms",
+      start_datetime = "2024-01-15 14:30:00"
+    )
+
+  result <- pillar::tbl_sum(data)
+
+  expect_true("Time" %in% names(result))
+  # Output includes ".XXX" millisecond fragment in both endpoints
+  expect_match(unname(result["Time"]), "\\.\\d{3}.* to .*\\.\\d{3}")
 })
