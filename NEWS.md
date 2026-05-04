@@ -1,6 +1,6 @@
 # aniframe (development version)
 
-* Added a "The aniframe data structure" article to the documentation site, covering the tidy-movement-data shape (`what` / `when` / `where` slots, coordinate systems) and the metadata attribute (units, origin, connections, etc.). Available at `articles/aniframe-spec.html`.
+* Added three articles to the documentation site introducing the `aniframe` data structure ("The aniframe data structure", "Metadata on an aniframe", and "Connections"), available under the **Articles** menu of the package website.
 * `set_origin()` and `set_y_height()` are now listed in the pkgdown reference index.
 * Added `covr` and `pkgdown` to `Suggests` (already used in CI; this makes the dev dependency explicit).
 

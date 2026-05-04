@@ -1,0 +1,162 @@
+---
+title: "Metadata on an aniframe"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aniframe)
+```
+
+## Why an attribute, not columns?
+
+Every `aniframe` carries a metadata list as an R attribute alongside
+the data columns. The metadata records the things that are true of the
+recording as a whole rather than of any single observation: the source
+software, the sampling rate, what units the spatial coordinates are
+in, where the coordinate origin sits, and so on.
+
+Keeping this information attached to the object — rather than living
+in a separate file or being passed around as extra arguments — is what
+lets the rest of the _animovement_ ecosystem stay loosely coupled.
+A reader (in _aniread_) populates the metadata at load time, and any
+downstream tool can read it back without a hand-off.
+
+This article covers the metadata attribute and the functions that read
+and update it. For the data-column structure see
+[The aniframe data structure](aniframe-structure.html); for the
+`connections` field specifically see
+[Connections](aniframe-connections.html).
+
+## The metadata attribute
+
+You can see the full metadata by printing it directly:
+
+```{r}
+data <- example_aniframe()
+get_metadata(data)
+```
+
+The fields and their defaults are defined in one place,
+`default_metadata()` — that's the canonical source of truth for what
+an `aniframe`'s metadata looks like.
+
+```{r}
+str(default_metadata(), max.level = 1)
+```
+
+The fields fall into a few groups:
+
+| Group              | Fields                                                              |
+|--------------------|---------------------------------------------------------------------|
+| **Provenance**     | `source`, `source_version`, `filename`, `start_datetime`            |
+| **Sampling**       | `sampling_rate`                                                     |
+| **Units**          | `unit_space`, `unit_time`, `unit_angle`                             |
+| **Frame of reference** | `reference_frame`, `coordinate_system`, `origin`, `y_height`    |
+| **Slot vocabulary**| `variables_what`, `variables_when`, `variables_where`               |
+| **Relationships**  | `connections`                                                       |
+
+`filename` accepts a character vector — readers like
+`aniread::read_trackball()` populate it with all source paths.
+
+## Reading and writing metadata
+
+`get_metadata()` and `set_metadata()` are the workhorses.
+
+```{r}
+get_metadata(data, "sampling_rate")
+
+data <- set_metadata(data, sampling_rate = 30, source = "deeplabcut")
+get_metadata(data, "sampling_rate")
+get_metadata(data, "source")
+```
+
+`set_metadata()` validates the input — factor fields are checked
+against their permitted levels, and unknown fields are rejected.
+
+For fields whose update has side effects on the data columns (or on
+related fields), prefer the dedicated setters listed below.
+
+| Setter                | Touches                                                        |
+|-----------------------|----------------------------------------------------------------|
+| `set_unit_space()`    | converts `x`/`y`/`z` between length units                      |
+| `set_unit_time()`     | converts `time` between time units                             |
+| `set_unit_angle()`    | converts `phi`/`theta` (auto) and any extra `cols` you supply  |
+| `set_sampling_rate()` | flips `unit_time` from frames to seconds and rescales `time`   |
+| `set_origin()`        | flips the y-axis around `y_height` when changing convention    |
+| `set_y_height()`      | sets the recorded frame height used by `set_origin()`          |
+
+## Coordinate origin
+
+For 2D image-derived data there's an annoying convention split: most
+image / video tooling uses the **top-left** corner as `(0, 0)` (y
+increases downward), while plotting and most maths uses the
+**bottom-left** corner (y increases upward). `aniframe` records which
+one your data uses in the `origin` field, with permitted values
+`c("bottom_left", "top_left")`.
+
+`set_origin()` does the actual flip when you change convention. It
+needs the frame height to compute `y_new = y_height - y_old`, so
+`y_height` must be set first. Readers populate it automatically; for
+manually-constructed `aniframe` objects, `as_aniframe()` falls back to
+`max(y)`, and `set_y_height()` lets you override that with the true
+value.
+
+```{r}
+img <- aniframe(
+  individual = 1L, time = 1:4,
+  x = c(0, 10, 20, 30),
+  y = c(50, 100, 150, 200)
+) |>
+  set_y_height(1080)
+
+img$y
+img <- set_origin(img, "top_left")
+img$y # reflected: 1080 - original y
+```
+
+## Units
+
+Spatial, temporal, and angular units each have their own setter.
+Conversions between standard units are automatic; conversions from
+unknown / `frame` / `px` units require an explicit calibration factor
+(or, for time, a `sampling_rate`).
+
+```{r}
+data <- example_aniframe(n_dims = 2) |>
+  set_metadata(unit_space = "mm")
+
+data_cm <- set_unit_space(data, to_unit = "cm")
+get_metadata(data_cm, "unit_space")
+```
+
+```{r}
+data <- example_aniframe() # default unit_time = "frame"
+data_s <- set_sampling_rate(data, sampling_rate = 30)
+get_metadata(data_s, "unit_time") # now "s"
+range(data_s$time) # frames divided by fps
+```
+
+Spatial angular columns (`phi`, `theta`) are converted automatically
+by `set_unit_angle()` whenever they're present. Pass `cols` only for
+non-spatial angular columns (e.g. heading direction).
+
+```{r}
+pol <- aniframe(
+  individual = 1L, time = 1:3,
+  rho = c(1, 1, 1), phi = c(0, pi / 2, pi)
+)
+pol$phi
+pol_deg <- set_unit_angle(pol, to_unit = "deg")
+pol_deg$phi
+```
