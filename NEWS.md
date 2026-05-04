@@ -1,5 +1,9 @@
 # aniframe (development version)
 
+* Added a "The aniframe data structure" article to the documentation site, covering the tidy-movement-data shape (`what` / `when` / `where` slots, coordinate systems) and the metadata attribute (units, origin, connections, etc.). Available at `articles/aniframe-spec.html`.
+* `set_origin()` and `set_y_height()` are now listed in the pkgdown reference index.
+* Added `covr` and `pkgdown` to `Suggests` (already used in CI; this makes the dev dependency explicit).
+
 * Added a `connections` metadata field for skeletons and other variable-level networks. Stored as a named list keyed by the relevant identity or temporal variable (typically `keypoint`, but also `individual` for social networks etc.), with each entry being a 2-column `from`/`to` tibble. Order is preserved so downstream code can interpret the table as either directed or undirected. Manage with the new exported functions `set_connections()`, `get_connections()`, `add_connections()` and `remove_connections()`. Endpoints not found in the corresponding column emit a warning (typo-catcher) but are still kept (#6).
 * Internal: `set_metadata()` now replaces list-valued fields top-level rather than letting `utils::modifyList()` recurse into them. This makes list-of-data-frames fields like `connections` round-trip correctly through `set_metadata()` without attempting to merge tibbles row-wise.
 

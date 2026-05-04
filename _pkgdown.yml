@@ -15,6 +15,7 @@ navbar:
     left:
       - intro
       - reference
+      - articles
       - news
     right:
       - search
@@ -43,6 +44,8 @@ reference:
       - set_unit_space
       - set_unit_angle
       - set_sampling_rate
+      - set_origin
+      - set_y_height
       - default_metadata
 
   - title: "Connections"
