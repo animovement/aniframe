@@ -1,5 +1,7 @@
 # aniframe (development version)
 
+* `print.aniframe_metadata()` now aligns field names and types into fixed-width columns so values line up vertically (similar to `str()`), and the `[levels: ...]` line for factor fields is indented to match the value column.
+
 * Added three articles to the documentation site introducing the `aniframe` data structure ("The aniframe data structure", "Metadata on an aniframe", and "Connections"), available under the **Articles** menu of the package website.
 * `set_origin()` and `set_y_height()` are now listed in the pkgdown reference index.
 * Added `covr` and `pkgdown` to `Suggests` (already used in CI; this makes the dev dependency explicit).

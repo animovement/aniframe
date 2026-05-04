@@ -30,8 +30,8 @@ a small family of functions for managing it. This article covers that
 field and those functions.
 
 For the rest of the metadata see
-[Metadata on an aniframe](aniframe_metadata.html); for the data-column
-structure see [The aniframe data structure](aniframe_structure.html).
+[Metadata on an aniframe](aniframe-metadata.html); for the data-column
+structure see [The aniframe data structure](aniframe-structure.html).
 
 ## Storage shape
 

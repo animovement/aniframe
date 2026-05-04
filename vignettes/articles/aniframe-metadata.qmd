@@ -34,9 +34,9 @@ downstream tool can read it back without a hand-off.
 
 This article covers the metadata attribute and the functions that read
 and update it. For the data-column structure see
-[The aniframe data structure](aniframe_structure.html); for the
+[The aniframe data structure](aniframe-structure.html); for the
 `connections` field specifically see
-[Connections](aniframe_connections.html).
+[Connections](aniframe-connections.html).
 
 ## The metadata attribute
 

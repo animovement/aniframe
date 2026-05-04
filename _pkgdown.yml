@@ -26,9 +26,9 @@ articles:
   - title: "Get started"
     navbar: ~
     contents:
-      - articles/aniframe_structure
-      - articles/aniframe_metadata
-      - articles/aniframe_connections
+      - articles/aniframe-structure
+      - articles/aniframe-metadata
+      - articles/aniframe-connections
 
 reference:
   - title: "Creating and converting aniframe objects"
