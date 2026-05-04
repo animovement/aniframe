@@ -33,8 +33,8 @@ three semantic slots that answer **what** is moving, **when**, and
 **where**.
 
 This article covers the data shape. Companion articles cover the
-[metadata attribute](aniframe-metadata.html) and the
-[connections field](aniframe-connections.html) for skeletons and
+[metadata attribute](aniframe_metadata.html) and the
+[connections field](aniframe_connections.html) for skeletons and
 networks.
 
 ## Anatomy at a glance
@@ -174,9 +174,9 @@ is_cartesian_2d(cart)
 
 ## Where to next?
 
-- [The metadata attribute](aniframe-metadata.html) — units, origin,
+- [The metadata attribute](aniframe_metadata.html) — units, origin,
   sampling rate, and the setters that keep them consistent with the
   data.
-- [Connections](aniframe-connections.html) — recording skeleton edges
+- [Connections](aniframe_connections.html) — recording skeleton edges
   or other relationships between values of an identity / temporal
   variable.
