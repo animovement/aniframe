@@ -8,6 +8,7 @@
 #' @param x An `aniframe_metadata` list.
 #' @param ... Unused.
 #' @return `x`, invisibly.
+#' @keywords internal
 #' @export
 print.aniframe_metadata <- function(x, ...) {
   out <- cli::cli_format_method({
