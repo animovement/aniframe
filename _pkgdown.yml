@@ -20,7 +20,13 @@ navbar:
     right:
       - search
       - github
+      - zulip
       - lightswitch
+  components:
+    zulip:
+      icon: fa-comments
+      href: https://animovement.zulipchat.com
+      aria-label: Chat on Zulip
 
 articles:
   - title: "Get started"

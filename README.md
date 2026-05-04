@@ -11,6 +11,8 @@
 badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.r-universe.dev)
 [![Codecov test
 coverage](https://codecov.io/gh/animovement/aniframe/graph/badge.svg)](https://app.codecov.io/gh/animovement/aniframe)
+[![Chat on
+Zulip](https://img.shields.io/badge/chat-Zulip-6492FE?logo=zulip&logoColor=white)](https://animovement.zulipchat.com)
 <!-- badges: end -->
 
 *An R package providing core data structures for movement data*
