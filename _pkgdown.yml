@@ -15,11 +15,20 @@ navbar:
     left:
       - intro
       - reference
+      - articles
       - news
     right:
       - search
       - github
       - lightswitch
+
+articles:
+  - title: "Get started"
+    navbar: ~
+    contents:
+      - articles/aniframe-structure
+      - articles/aniframe-metadata
+      - articles/aniframe-connections
 
 reference:
   - title: "Creating and converting aniframe objects"
@@ -43,6 +52,8 @@ reference:
       - set_unit_space
       - set_unit_angle
       - set_sampling_rate
+      - set_origin
+      - set_y_height
       - default_metadata
 
   - title: "Connections"

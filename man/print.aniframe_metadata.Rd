@@ -20,3 +20,4 @@ Renders the metadata as a single block — captured via
 leading newline and no blank lines between entries. This makes the
 output render cleanly in HTML contexts such as Quarto / R Markdown.
 }
+\keyword{internal}

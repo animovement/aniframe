@@ -80,6 +80,28 @@ test_that("print renders multi-element character vectors comma-separated (#34)",
   expect_true(any(grepl("a.csv, b.csv", out, fixed = TRUE)))
 })
 
+test_that("print wraps single-element character values in quotes", {
+  data <- example_aniframe() |>
+    set_metadata(source = "deeplabcut")
+  md <- get_metadata(data)
+
+  out <- capture_md_print(md)
+
+  expect_true(any(grepl('"deeplabcut"', out, fixed = TRUE)))
+})
+
+test_that("print formats single-element non-character values without quotes", {
+  data <- example_aniframe() |>
+    set_metadata(sampling_rate = 30)
+  md <- get_metadata(data)
+
+  out <- capture_md_print(md)
+
+  expect_true(any(grepl("sampling_rate", out, fixed = TRUE)))
+  # Numeric value rendered without surrounding quotes
+  expect_true(any(grepl(": 30$", out)))
+})
+
 test_that("print returns input invisibly", {
   data <- example_aniframe()
   md <- get_metadata(data)
