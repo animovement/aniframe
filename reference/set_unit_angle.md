@@ -1,16 +1,18 @@
 # Set the angular unit of an aniframe object
 
-Converts angular measurements (e.g., headings, orientations) stored in
-an aniframe object from one unit to another. The function supports
-conversion between degrees (`"deg"`) and radians (`"rad"`). It validates
-the requested target unit, checks that the supplied columns exist and
-contain numeric data, performs the conversion, and updates the object's
-metadata.
+Converts angular columns in an aniframe between degrees (`"deg"`) and
+radians (`"rad"`), and updates the `unit_angle` metadata to match.
+
+Spatial angular columns (`phi`, `theta`) are converted automatically
+whenever they are present in the data, so polar/cylindrical/spherical
+coordinates always stay consistent with the declared unit. Additional
+angular columns (e.g. heading or orientation columns named outside the
+polar family) can be supplied via `cols`.
 
 ## Usage
 
 ``` r
-set_unit_angle(data, cols, to_unit)
+set_unit_angle(data, to_unit, cols = NULL)
 ```
 
 ## Arguments
@@ -19,56 +21,40 @@ set_unit_angle(data, cols, to_unit)
 
   An aniframe object containing angular data.
 
-- cols:
-
-  Character vector of column names that hold the angular values to be
-  converted. All listed columns must be present in `data` and be
-  numeric.
-
 - to_unit:
 
   Character string specifying the target angular unit. Must be one of
-  the permitted units defined in `default_metadata()$unit_angle`
-  (typically `"deg"` or `"rad"`).
+  `c("rad", "deg")` (the levels of `default_metadata()$unit_angle`).
+
+- cols:
+
+  Optional character vector of additional angular column names to
+  convert. The spatial angular columns `phi` and `theta` are detected
+  automatically and need not be listed; pass `cols` only for non-spatial
+  angular columns (e.g. `"heading"`). All listed columns must be present
+  and numeric.
 
 ## Value
 
-An aniframe object with the selected angular columns converted to the
-specified unit and with its `unit_angle` metadata updated accordingly.
+An aniframe object with the relevant angular columns converted to the
+specified unit and `unit_angle` metadata updated accordingly.
 
 ## Details
 
-The function proceeds through the following steps:  
-• Verifies that `to_unit` is a permitted angular unit.  
-• Confirms that each name in `cols` exists in `data` and that the
-corresponding columns are numeric.  
-• Retrieves the current angular unit from the object's metadata.  
-• If the current unit already matches `to_unit`, an informational
-message is displayed and the data are returned unchanged.  
-• Otherwise, the appropriate conversion function is applied to each
-column:
-
-- [`rad_to_deg()`](http://animovement.dev/aniframe/reference/rad_to_deg.md)
-  when converting from radians to degrees.  
-
-- [`deg_to_rad()`](http://animovement.dev/aniframe/reference/deg_to_rad.md)
-  when converting from degrees to radians.  
-  • Finally, the object's metadata are updated with the new
-  `unit_angle`.
+If the current `unit_angle` already matches `to_unit`, an informational
+message is shown and the data are returned unchanged (apart from the
+metadata round-trip).
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Assume `df` is an aniframe with heading angles stored in columns
-# "head_left" and "head_right" measured in radians
-df_deg <- set_unit_angle(df,
-                          cols = c("head_left", "head_right"),
-                          to_unit = "deg")
+# Polar data: phi is converted automatically
+df <- data.frame(time = 1:3, rho = 1:3, phi = c(0, pi / 2, pi))
+anif <- as_aniframe(df)
+anif_deg <- set_unit_angle(anif, to_unit = "deg")
 
-# Convert back to radians
-df_rad <- set_unit_angle(df_deg,
-                          cols = c("head_left", "head_right"),
-                          to_unit = "rad")
+# Custom angular columns alongside the spatial ones
+anif2 <- set_unit_angle(anif, to_unit = "deg", cols = "heading")
 } # }
 ```

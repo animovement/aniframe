@@ -1,7 +1,8 @@
 # Standardize column types for aniframe
 
-Converts character identity and temporal variables to factors. Spatial
-variables are converted to numeric.
+Converts character identity and temporal variables to factors. Converts
+numeric identity and temporal variables (except time) to integers.
+Spatial variables are converted to numeric.
 
 ## Usage
 

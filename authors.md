@@ -12,7 +12,7 @@ Source:
 
 Roald-Arbøl M (2026). “aniframe: An R package providing core data
 structures for movement data.”
-[doi:10.5281/zenodo.17344598](https://doi.org/10.5281/zenodo.17344598),
+[doi:10.5281/zenodo.17344598](https://doi.org/10.5281/zenodo.17344598).
 <http://animovement.dev/aniframe/>.
 
     @Misc{aniframe,

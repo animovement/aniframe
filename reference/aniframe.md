@@ -84,16 +84,16 @@ aniframe(
 #> # Keypoints:   centroid
 #>    individual keypoint  time      x      y
 #>         <int> <fct>    <int>  <dbl>  <dbl>
-#>  1          1 centroid     1 -0.785  0.122
-#>  2          1 centroid     1 -1.40   0.936
-#>  3          1 centroid     1  0.449 -0.974
-#>  4          1 centroid     2 -1.06  -1.14 
-#>  5          1 centroid     2  0.259 -0.309
-#>  6          1 centroid     2  1.39   1.27 
-#>  7          1 centroid     3 -0.796 -0.558
-#>  8          1 centroid     3 -0.442  0.263
-#>  9          1 centroid     3  0.427  0.961
-#> 10          1 centroid     4 -1.76   1.05 
+#>  1          1 centroid     1 -0.387  0.429
+#>  2          1 centroid     1 -0.209 -1.90 
+#>  3          1 centroid     1  2.04  -0.103
+#>  4          1 centroid     2 -0.785  0.122
+#>  5          1 centroid     2 -1.40   0.936
+#>  6          1 centroid     2  0.449 -0.974
+#>  7          1 centroid     3 -1.06  -1.14 
+#>  8          1 centroid     3  0.259 -0.309
+#>  9          1 centroid     3  1.39   1.27 
+#> 10          1 centroid     4 -0.796 -0.558
 #> # ℹ 40 more rows
 
 # Custom variables
@@ -106,22 +106,19 @@ aniframe(
   variables_what = "track",
   variables_when = c("trial", "time")
 )
-#> Warning: Unknown or uninitialised column: `individual`.
-#> Warning: Unknown or uninitialised column: `keypoint`.
-#> # Individuals:
-#> # Keypoints:  
-#> # Trials:      1
+#> # Tracks: 1, 2, 3
+#> # Trials: 1
 #>    track trial  time       x      y
 #>    <int> <int> <int>   <dbl>  <dbl>
-#>  1     1     1     1 -1.43   -0.222
-#>  2     1     1     2 -0.0103 -1.01 
-#>  3     1     1     3 -0.212   0.481
-#>  4     1     1     4 -0.906   1.60 
-#>  5     1     1     5 -2.10   -1.52 
-#>  6     1     1     6  1.89   -1.42 
-#>  7     1     1     7 -0.968   0.877
-#>  8     1     1     8 -0.103   0.624
-#>  9     1     1     9  0.240   2.11 
-#> 10     1     1    10  0.0609 -0.356
+#>  1     1     1     1  0.150  -0.174
+#>  2     1     1     2 -1.43   -0.222
+#>  3     1     1     3 -0.0103 -1.01 
+#>  4     1     1     4 -0.212   0.481
+#>  5     1     1     5 -0.906   1.60 
+#>  6     1     1     6 -2.10   -1.52 
+#>  7     1     1     7  1.89   -1.42 
+#>  8     1     1     8 -0.968   0.877
+#>  9     1     1     9 -0.103   0.624
+#> 10     1     1    10  0.240   2.11 
 #> # ℹ 20 more rows
 ```

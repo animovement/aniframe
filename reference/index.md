@@ -33,8 +33,27 @@ an aniframe.
   : Set the angular unit of an aniframe object
 - [`set_sampling_rate()`](http://animovement.dev/aniframe/reference/set_sampling_rate.md)
   : Set the sampling rate of an aniframe object
+- [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md)
+  : Set the coordinate origin
+- [`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md)
+  : Set the y-axis frame height
 - [`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
   : Default metadata structure
+
+## Connections
+
+Manage connections between identity or temporal variables (e.g. skeleton
+edges between keypoints, or social-network edges between individuals).
+Stored as a named list of `from`/`to` tibbles in `metadata$connections`.
+
+- [`set_connections()`](http://animovement.dev/aniframe/reference/set_connections.md)
+  **\[experimental\]** : Set the connections for a variable
+- [`get_connections()`](http://animovement.dev/aniframe/reference/get_connections.md)
+  **\[experimental\]** : Get connections from an aniframe
+- [`add_connections()`](http://animovement.dev/aniframe/reference/add_connections.md)
+  **\[experimental\]** : Add connections to an aniframe
+- [`remove_connections()`](http://animovement.dev/aniframe/reference/remove_connections.md)
+  **\[experimental\]** : Remove connections from an aniframe
 
 ## Spatial checks
 

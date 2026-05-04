@@ -14,7 +14,8 @@ Default metadata fields include:
 
 - `source_version`: Version of the data source
 
-- `filename`: Original filename
+- `filename`: Original filename(s) — accepts a character vector (length
+  1 or more) for readers that load from multiple files
 
 - `sampling_rate`: Sampling rate in Hz
 
@@ -24,7 +25,13 @@ Default metadata fields include:
 
 - `coordinate_system`: Coordinate system (default: "cartesian")
 
-- `point_of_reference`: Point of reference (default: "bottom_left")
+- `origin`: Location of the (0,0) coordinate (default: "bottom_left")
+
+- `y_height`: Height of the recording frame in y-axis units (default:
+  NA)
+
+For backwards compatibility, the deprecated field `point_of_reference`
+is accepted as an alias for `origin` and emits a deprecation warning.
 
 ## Usage
 
