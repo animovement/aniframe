@@ -261,6 +261,18 @@ test_that("set_metadata accepts a multi-element filename vector (#34)", {
   expect_equal(fn, c("a.csv", "b.csv"))
 })
 
+test_that("set_metadata errors when a factor input has an invalid level", {
+  # Pre-built factor (not character) with a value outside the permitted
+  # levels exercises the factor-already-a-factor branch in set_metadata.
+  data <- dplyr::tibble()
+  bad <- factor("nope", levels = c("nope", "still_no"))
+
+  expect_error(
+    set_metadata(data, unit_space = bad),
+    "can only be"
+  )
+})
+
 test_that("set_metadata errors when both point_of_reference and origin are supplied", {
   data <- dplyr::tibble()
 
