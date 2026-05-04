@@ -11,6 +11,8 @@
 badge](https://animovement.r-universe.dev/badges/aniframe)](https://animovement.r-universe.dev)
 [![Codecov test
 coverage](https://codecov.io/gh/animovement/aniframe/graph/badge.svg)](https://app.codecov.io/gh/animovement/aniframe)
+[![Chat on
+Zulip](https://img.shields.io/badge/chat-Zulip-6492FE?logo=zulip&logoColor=white)](https://animovement.zulipchat.com)
 <!-- badges: end -->
 
 *An R package providing core data structures for movement data*
@@ -32,13 +34,6 @@ Once you have installed the package, you can load it with:
 library("aniframe")
 ```
 
-## Status
-
-> **Warning**
->
-> 🏗️ The package is currently in early development and the interface is
-> subject to change. Feel free to play around and provide feedback.
-
 ## Citation
 
 If you enjoy the package, please make sure to cite it. If you find a
@@ -50,7 +45,7 @@ To cite *aniframe* in publications use:
 citation("aniframe")
 #> To cite aniframe in publications use:
 #> 
-#>   Roald-Arbøl M (2025). "aniframe: An R package providing core data
+#>   Roald-Arbøl M (2026). "aniframe: An R package providing core data
 #>   structures for movement data." doi:10.5281/zenodo.17344598
 #>   <https://doi.org/10.5281/zenodo.17344598>,
 #>   <http://animovement.dev/aniframe/>.
@@ -61,9 +56,9 @@ citation("aniframe")
 #>     doi = {10.5281/zenodo.17344598},
 #>     title = {aniframe: An R package providing core data structures for movement data},
 #>     author = {Mikkel Roald-Arbøl},
-#>     year = {2025},
+#>     year = {2026},
 #>     url = {http://animovement.dev/aniframe/},
 #>     abstract = {An R package providing core data structures for movement data.},
-#>     version = {0.2.0},
+#>     version = {0.4.1},
 #>   }
 ```

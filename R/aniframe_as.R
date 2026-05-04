@@ -58,7 +58,7 @@ as_aniframe <- function(
   }
 
   # Validate required columns exist
-  validate_aniframe_cols(data, variables_when, variables_where)
+  ensure_aniframe_cols(data, variables_when, variables_where)
 
   # Standardize column types
   data <- standardise_aniframe_cols(
@@ -113,6 +113,19 @@ as_aniframe <- function(
     coordinate_system = factor(coord_system)
   )
 
+  # Fall back y_height to max(y) when not supplied and y is present.
+  # Never overwrite a value that's already set — only `set_y_height()` /
+  # `set_origin()` should mutate it post-construction.
+  if ("y" %in% present_where) {
+    current_y_height <- get_metadata(data, "y_height")
+    if (length(current_y_height) == 0 || is.na(current_y_height)) {
+      max_y <- suppressWarnings(max(data$y, na.rm = TRUE))
+      if (is.finite(max_y)) {
+        data <- set_metadata(data, y_height = max_y)
+      }
+    }
+  }
+
   data
 }
 
@@ -166,7 +179,7 @@ standardise_aniframe_cols <- function(
 #' @param variables_where Spatial variables.
 #'
 #' @keywords internal
-validate_aniframe_cols <- function(data, variables_when, variables_where) {
+ensure_aniframe_cols <- function(data, variables_when, variables_where) {
   # time column is always required
   if (!"time" %in% names(data)) {
     cli::cli_abort(
@@ -243,23 +256,35 @@ infer_coordinate_system <- function(variables_where) {
 
 #' Detect spatial variables from data
 #'
+#' Polar-family detection runs first so that cylindrical data (`rho`, `phi`,
+#' `z`) and spherical data (`rho`, `phi`, `theta`) are not mis-classified as
+#' Cartesian on account of their `z` column. The `rho` + `phi` pair is the
+#' signature of a polar-family system; `z` then distinguishes cylindrical
+#' from polar, and `theta` distinguishes spherical.
+#'
 #' @param data Data frame to check.
 #' @return Character vector of detected spatial variable names, or NULL if none found.
 #' @keywords internal
 detect_variables_where <- function(data) {
-  cartesian <- c("x", "y", "z")
-  polar_spherical <- c("rho", "phi", "theta")
+  has_rho <- "rho" %in% names(data)
+  has_phi <- "phi" %in% names(data)
+  has_theta <- "theta" %in% names(data)
+  has_z <- "z" %in% names(data)
 
-  present_cartesian <- cartesian[cartesian %in% names(data)]
-  present_polar <- polar_spherical[polar_spherical %in% names(data)]
-
-  # Prefer cartesian if any present
-  if (length(present_cartesian) > 0) {
-    return(present_cartesian)
+  if (has_rho && has_phi) {
+    if (has_theta) {
+      return(c("rho", "phi", "theta")) # spherical
+    } else if (has_z) {
+      return(c("rho", "phi", "z")) # cylindrical
+    } else {
+      return(c("rho", "phi")) # polar
+    }
   }
 
-  if (length(present_polar) > 0) {
-    return(present_polar)
+  cartesian <- c("x", "y", "z")
+  present_cartesian <- cartesian[cartesian %in% names(data)]
+  if (length(present_cartesian) > 0) {
+    return(present_cartesian)
   }
 
   NULL

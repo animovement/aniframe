@@ -11,12 +11,24 @@ A named list with the following fields:
 \itemize{
 \item \code{source}: Data source identifier (character, NA)
 \item \code{source_version}: Version of the data source (character, NA)
-\item \code{filename}: Original filename (character, NA)
+\item \code{filename}: Original filename(s) (character vector, NA). Accepts a
+vector of length 1 or more — readers that load from multiple files
+(e.g. \code{aniread::read_trackball()}) populate this with all source paths.
 \item \code{sampling_rate}: Sampling rate in Hz (numeric, NA)
 \item \code{start_datetime}: Start date and time of recording (POSIXct, NA)
 \item \code{reference_frame}: Reference frame (factor, "allocentric")
 \item \code{coordinate_system}: Coordinate system (factor, "cartesian")
-\item \code{point_of_reference}: Point of reference (factor, "bottom_left")
+\item \code{origin}: Location of the (0,0) coordinate relative to the recording
+frame (factor, "bottom_left"). Permitted values: "bottom_left", "top_left".
+\item \code{y_height}: Height of the recording frame in y-axis units (numeric, NA).
+Used by \code{\link[=set_origin]{set_origin()}} to reflect y coordinates when switching origin
+conventions.
+\item \code{connections}: Named list of connection tables, one per identity or
+temporal variable (typically \code{keypoint} for skeletons; could also be
+\code{individual} for social networks). Each entry is a 2-column tibble of
+\code{from}/\code{to} pairs. Default is an empty list. Manage via
+\code{\link[=set_connections]{set_connections()}}, \code{\link[=get_connections]{get_connections()}}, \code{\link[=add_connections]{add_connections()}} and
+\code{\link[=remove_connections]{remove_connections()}}.
 }
 }
 \description{

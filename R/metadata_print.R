@@ -1,33 +1,85 @@
+#' Print method for aniframe metadata
+#'
+#' Renders the metadata as a single block, captured via
+#' [cli::cli_format_method()] and emitted with [cat()]. Field names
+#' and types are padded to fixed widths so the values line up in
+#' aligned columns, similar to [str()].
+#'
+#' @param x An `aniframe_metadata` list.
+#' @param ... Unused.
+#' @return `x`, invisibly.
+#' @keywords internal
 #' @export
 print.aniframe_metadata <- function(x, ...) {
-  cli::cli_h1("aniframe metadata")
+  out <- cli::cli_format_method({
+    cli::cli_h1("aniframe metadata")
 
-  if (length(x) == 0) {
-    cli::cli_alert_info("No metadata available")
-    return(invisible(x))
-  }
-
-  for (name in names(x)) {
-    value <- x[[name]]
-    value_class <- class(value)[1] # Get the first class
-
-    # Format the value based on type
-    if (length(value) == 1 && is.na(value)) {
-      cli::cli_text("{.field {name}} {.emph ({value_class})}: {.emph <NA>}")
-    } else if (is.factor(value)) {
-      levels_str <- paste(levels(value), collapse = ", ")
-      cli::cli_text(
-        "{.field {name}} {.emph ({value_class})}: {.val {as.character(value)}}"
-      )
-      cli::cli_text("  {.emph [levels: {levels_str}]}")
-    } else if (length(value) > 1) {
-      cli::cli_text(
-        "{.field {name}} {.emph ({value_class})}: {.val {paste(value, collapse = ', ')}}"
-      )
+    if (length(x) == 0) {
+      cli::cli_alert_info("No metadata available")
     } else {
-      cli::cli_text("{.field {name}} {.emph ({value_class})}: {.val {value}}")
-    }
-  }
+      nm <- names(x)
+      types <- vapply(x, function(v) class(v)[1], character(1))
+      name_w <- max(nchar(nm))
+      type_w <- max(nchar(types)) + 3 # for the wrapping "(...)"
+      indent <- strrep(" ", name_w + 1 + type_w + 2) # value column
 
+      for (i in seq_along(x)) {
+        name <- nm[i]
+        value <- x[[i]]
+        value_class <- types[i]
+
+        padded_name <- format(name, width = name_w)
+        padded_type <- format(
+          paste0("(", value_class, ")"),
+          width = type_w
+        )
+
+        if (length(value) == 0) {
+          cli::cli_verbatim(paste0(padded_name, " ", padded_type, ": "))
+        } else if (length(value) == 1 && is.na(value)) {
+          cli::cli_verbatim(paste0(padded_name, " ", padded_type, ": <NA>"))
+        } else if (is.factor(value)) {
+          cli::cli_verbatim(paste0(
+            padded_name,
+            " ",
+            padded_type,
+            ': "',
+            as.character(value),
+            '"'
+          ))
+          cli::cli_verbatim(paste0(
+            indent,
+            "[levels: ",
+            paste(levels(value), collapse = ", "),
+            "]"
+          ))
+        } else if (length(value) > 1) {
+          cli::cli_verbatim(paste0(
+            padded_name,
+            " ",
+            padded_type,
+            ': "',
+            paste(value, collapse = ", "),
+            '"'
+          ))
+        } else {
+          val_str <- if (is.character(value)) {
+            paste0('"', value, '"')
+          } else {
+            format(value)
+          }
+          cli::cli_verbatim(paste0(
+            padded_name,
+            " ",
+            padded_type,
+            ": ",
+            val_str
+          ))
+        }
+      }
+    }
+  })
+
+  cat(trimws(paste(out, collapse = "\n")), "\n", sep = "")
   invisible(x)
 }

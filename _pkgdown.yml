@@ -15,11 +15,26 @@ navbar:
     left:
       - intro
       - reference
+      - articles
       - news
     right:
       - search
       - github
+      - zulip
       - lightswitch
+  components:
+    zulip:
+      icon: fa-comments
+      href: https://animovement.zulipchat.com
+      aria-label: Chat on Zulip
+
+articles:
+  - title: "Get started"
+    navbar: ~
+    contents:
+      - articles/aniframe-structure
+      - articles/aniframe-metadata
+      - articles/aniframe-connections
 
 reference:
   - title: "Creating and converting aniframe objects"
@@ -43,7 +58,21 @@ reference:
       - set_unit_space
       - set_unit_angle
       - set_sampling_rate
+      - set_origin
+      - set_y_height
       - default_metadata
+
+  - title: "Connections"
+    desc: >
+      Manage connections between identity or temporal variables (e.g.
+      skeleton edges between keypoints, or social-network edges between
+      individuals). Stored as a named list of `from`/`to` tibbles in
+      `metadata$connections`.
+    contents:
+      - set_connections
+      - get_connections
+      - add_connections
+      - remove_connections
 
   - title: "Spatial checks"
     desc: |

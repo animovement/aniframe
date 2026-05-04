@@ -169,10 +169,15 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
+  # Defensive: tibble's `[[` returns a vector for normal column extracts
+  # and a list (or list element) for list-columns; it doesn't return a
+  # data.frame in any path we've found. Kept in case a future tibble
+  # release changes that.
   if (is.data.frame(x)) {
+    # nocov start
     x <- new_aniframe(x)
     x <- set_metadata(x, metadata = md)
-  }
+  } # nocov end
   x
 }
 

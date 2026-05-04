@@ -12,12 +12,17 @@
 #' Default metadata fields include:
 #' * `source`: Data source identifier
 #' * `source_version`: Version of the data source
-#' * `filename`: Original filename
+#' * `filename`: Original filename(s) — accepts a character vector
+#'   (length 1 or more) for readers that load from multiple files
 #' * `sampling_rate`: Sampling rate in Hz
 #' * `start_datetime`: Start date and time of recording
 #' * `reference_frame`: Reference frame (default: "allocentric")
 #' * `coordinate_system`: Coordinate system (default: "cartesian")
-#' * `point_of_reference`: Point of reference (default: "bottom_left")
+#' * `origin`: Location of the (0,0) coordinate (default: "bottom_left")
+#' * `y_height`: Height of the recording frame in y-axis units (default: NA)
+#'
+#' For backwards compatibility, the deprecated field `point_of_reference` is
+#' accepted as an alias for `origin` and emits a deprecation warning.
 #'
 #' @param data An aniframe object
 #' @param ... Named metadata values (e.g., `sampling_rate = 30, source = "sleap"`)
@@ -57,6 +62,23 @@ set_metadata <- function(data, ..., metadata = NULL) {
     user_md <- dot_args
   } else {
     user_md <- list()
+  }
+
+  # ------------------------------------------------------------------
+  # Backwards-compat: `point_of_reference` was renamed to `origin`
+  # ------------------------------------------------------------------
+  if ("point_of_reference" %in% names(user_md)) {
+    if ("origin" %in% names(user_md)) {
+      cli::cli_abort(
+        "Cannot specify both {.field point_of_reference} (deprecated) and {.field origin}."
+      )
+    }
+    cli::cli_warn(c(
+      "Metadata field {.field point_of_reference} is deprecated; use {.field origin} instead.",
+      "i" = "The supplied value will be applied to {.field origin}."
+    ))
+    user_md$origin <- user_md$point_of_reference
+    user_md$point_of_reference <- NULL
   }
 
   # ------------------------------------------------------------------
@@ -118,8 +140,18 @@ set_metadata <- function(data, ..., metadata = NULL) {
   # ------------------------------------------------------------------
   # Combine and attach metadata
   # ------------------------------------------------------------------
+  # `utils::modifyList()` recurses into list-valued entries, which means a
+  # field whose value is a list of data.frames (e.g. `connections`) would
+  # be merged row-wise and break. Replace list-valued fields directly,
+  # then merge the rest with `modifyList`.
+  list_valued <- names(user_md)[vapply(user_md, is.list, logical(1))]
+  for (k in list_valued) {
+    new_md[[k]] <- user_md[[k]]
+  }
+  user_md[list_valued] <- NULL
+
   new_md <- utils::modifyList(new_md, user_md)
-  validate_metadata(new_md)
+  ensure_valid_metadata(new_md)
   data <- attach_metadata(data, new_md)
 
   # TODO: Figure out whether it makes sense to include these special cases in the aniframe package

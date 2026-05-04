@@ -115,3 +115,96 @@ test_that("non‑numeric columns raise an informative error", {
     "All provided columns must be numeric."
   )
 })
+
+# ------------------------------------------------------------
+# Spatial angular columns (phi, theta) are auto-converted (#21)
+# ------------------------------------------------------------
+
+test_that("set_unit_angle auto-converts phi for polar data (rad -> deg)", {
+  df <- data.frame(
+    time = 1:3,
+    rho = 1:3,
+    phi = c(0, pi / 2, pi)
+  )
+  anif <- as_aniframe(df) |> set_metadata(unit_angle = "rad")
+
+  out <- set_unit_angle(anif, to_unit = "deg")
+
+  expect_equal(get_metadata(out, "unit_angle") |> as.character(), "deg")
+  expect_equal(out$phi, c(0, 90, 180))
+  expect_equal(out$rho, df$rho) # rho is not angular
+})
+
+test_that("set_unit_angle auto-converts phi and z-agnostic for cylindrical (rad -> deg)", {
+  df <- data.frame(
+    time = 1:3,
+    rho = 1:3,
+    phi = c(0, pi / 4, pi / 2),
+    z = c(10, 20, 30)
+  )
+  anif <- as_aniframe(df) |> set_metadata(unit_angle = "rad")
+
+  out <- set_unit_angle(anif, to_unit = "deg")
+
+  expect_equal(out$phi, c(0, 45, 90))
+  expect_equal(out$z, df$z) # z is spatial, not angular
+})
+
+test_that("set_unit_angle auto-converts phi and theta for spherical (rad -> deg)", {
+  df <- data.frame(
+    time = 1:3,
+    rho = 1:3,
+    phi = c(0, pi / 2, pi),
+    theta = c(0, pi / 4, pi / 2)
+  )
+  anif <- as_aniframe(df) |> set_metadata(unit_angle = "rad")
+
+  out <- set_unit_angle(anif, to_unit = "deg")
+
+  expect_equal(out$phi, c(0, 90, 180))
+  expect_equal(out$theta, c(0, 45, 90))
+})
+
+test_that("set_unit_angle round-trips deg -> rad for spatial angular columns", {
+  df <- data.frame(
+    time = 1:3,
+    rho = 1:3,
+    phi = c(0, pi / 2, pi),
+    theta = c(0, pi / 4, pi / 2)
+  )
+  anif <- as_aniframe(df) |> set_metadata(unit_angle = "rad")
+
+  out <- set_unit_angle(anif, to_unit = "deg") |>
+    set_unit_angle(to_unit = "rad")
+
+  expect_equal(out$phi, df$phi)
+  expect_equal(out$theta, df$theta)
+  expect_equal(get_metadata(out, "unit_angle") |> as.character(), "rad")
+})
+
+test_that("set_unit_angle combines spatial auto-detect with user cols", {
+  df <- data.frame(
+    time = 1:3,
+    rho = 1:3,
+    phi = c(0, pi / 2, pi),
+    heading = c(0, pi / 4, pi / 3)
+  )
+  anif <- as_aniframe(df) |> set_metadata(unit_angle = "rad")
+
+  out <- set_unit_angle(anif, to_unit = "deg", cols = "heading")
+
+  expect_equal(out$phi, c(0, 90, 180))
+  expect_equal(out$heading, rad_to_deg(c(0, pi / 4, pi / 3)))
+})
+
+test_that("set_unit_angle is a no-op for non-angular spatial cols (cartesian)", {
+  df <- data.frame(time = 1:3, x = 1:3, y = 1:3)
+  anif <- as_aniframe(df) |> set_metadata(unit_angle = "rad")
+
+  out <- set_unit_angle(anif, to_unit = "deg")
+
+  # Cartesian columns are not converted; metadata still updates
+  expect_equal(out$x, df$x)
+  expect_equal(out$y, df$y)
+  expect_equal(get_metadata(out, "unit_angle") |> as.character(), "deg")
+})

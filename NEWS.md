@@ -1,3 +1,41 @@
+# aniframe 0.5.0 (2026-05-04)
+
+## New features
+
+* Added `set_origin()` to convert between `bottom_left` and `top_left` coordinate origin conventions, reflecting `y` around the recorded frame height (#52).
+* Added `set_y_height()` for setting the y-axis frame height used by `set_origin()`, with validation against the data range.
+* Added a `y_height` metadata field. Reader functions (in `aniread`) populate it from the source; `as_aniframe()` falls back to `max(y)` when missing. Existing values are never overwritten — use `set_y_height()` to change them.
+* Added a `connections` metadata field for skeletons and other variable-level networks (#6). Stored as a named list keyed by the relevant identity or temporal variable (typically `keypoint`, but also `individual` for social networks). Each entry is a 2-column `from`/`to` tibble; the order is preserved so downstream code can treat the table as either directed or undirected. Manage with the new exported functions `set_connections()`, `get_connections()`, `add_connections()`, `remove_connections()`. Endpoints not found in the corresponding column emit a warning (typo-catcher) but are still kept.
+* Added a "Time" row to the print summary showing the tracked interval as `HH:MM:SS to HH:MM:SS`, or as absolute datetimes when `start_datetime` is set in metadata. Sub-second runs use millisecond precision (`HH:MM:SS.fff`). The row is omitted when the interval cannot be expressed in seconds (#50).
+
+## Improvements
+
+* `set_unit_angle()` now automatically converts the spatial angular columns `phi` and `theta` whenever they are present, so polar / cylindrical / spherical coordinates stay consistent with the declared `unit_angle`. Previously these columns were assumed to be in radians and were not affected by `set_unit_angle()`. The argument order is also rearranged to `set_unit_angle(data, to_unit, cols = NULL)` (matching `set_unit_time()`), and `cols` is now optional — pass it only for additional non-spatial angular columns (#21).
+* `tbl_sum.aniframe()` (the print summary) is now driven by the `variables_what` and `variables_when` metadata fields rather than hard-coding `individual` / `keypoint` / `session` / `trial`. Custom identity and temporal variables (e.g. `track`, `model`) appear automatically, and rows are omitted when their column is absent — fixing the "Unknown or uninitialised column: `individual`" warning emitted by single-track readers (#51).
+* `print.aniframe_metadata()` renders as a single block (no leading newline, no blank lines between entries), and field names and types are now padded to fixed widths so values line up vertically (similar to `str()`). The `[levels: ...]` line for factor fields is indented to match the value column (#48).
+* The `filename` metadata field now explicitly supports a character vector of length >= 1, for readers that load from multiple source files (e.g. `aniread::read_trackball()`) (#34).
+
+## Bug fixes
+
+* Fixed `as_aniframe()` mis-classifying cylindrical (`rho`, `phi`, `z`) and spherical (`rho`, `phi`, `theta`) data as Cartesian (#44). The auto-detection now recognises the `rho` + `phi` signature first, so cylindrical data is no longer reduced to `cartesian_1d` because of its `z` column. As a side effect, cylindrical spatial columns are now ordered `rho, phi, z` rather than `z` ending up before `rho` / `phi` (#43).
+
+## Breaking changes
+
+* Renamed the `point_of_reference` metadata field to `origin` and locked its permitted values to `c("bottom_left", "top_left")`. The old name is still accepted by `set_metadata()` for backwards compatibility, with a deprecation warning.
+* `set_unit_angle()` argument order changed from `(data, cols, to_unit)` to `(data, to_unit, cols = NULL)` — non-breaking for callers using named arguments (which all existing examples do); positional callers will need to swap.
+
+## Documentation
+
+* New pkgdown articles introducing the `aniframe` data structure: "The aniframe data structure", "Metadata on an aniframe", and "Connections", available under **Articles** on the package website.
+* `set_origin()` and `set_y_height()` added to the pkgdown reference index.
+
+## Internal
+
+* `set_metadata()` now replaces list-valued fields top-level rather than letting `utils::modifyList()` recurse into them, so list-of-data-frames fields like `connections` round-trip correctly without attempting to merge tibbles row-wise.
+* Renamed validators to follow the codebase's `check_/ensure_` and `is_/ensure_is_` conventions: `validate_metadata` → `ensure_valid_metadata`, `validate_aniframe_cols` → `ensure_aniframe_cols`, `check_is_list` → `is_list`. All three are internal — no user-facing change.
+* Added `covr`, `pkgdown`, and `quarto` to CI workflow dependencies.
+* Test coverage at 100% (586 tests).
+
 # aniframe 0.4.0
 
 * Adopt tidy movement data logic, using what, when and where variables. This adds `variables_what`, `variables_when` and `variables_where` arguments to `as_aniframe` and `example_aniframe`. These are written into the *aniframe*'s metadata.

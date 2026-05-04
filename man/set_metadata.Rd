@@ -30,13 +30,18 @@ Default metadata fields include:
 \itemize{
 \item \code{source}: Data source identifier
 \item \code{source_version}: Version of the data source
-\item \code{filename}: Original filename
+\item \code{filename}: Original filename(s) — accepts a character vector
+(length 1 or more) for readers that load from multiple files
 \item \code{sampling_rate}: Sampling rate in Hz
 \item \code{start_datetime}: Start date and time of recording
 \item \code{reference_frame}: Reference frame (default: "allocentric")
 \item \code{coordinate_system}: Coordinate system (default: "cartesian")
-\item \code{point_of_reference}: Point of reference (default: "bottom_left")
+\item \code{origin}: Location of the (0,0) coordinate (default: "bottom_left")
+\item \code{y_height}: Height of the recording frame in y-axis units (default: NA)
 }
+
+For backwards compatibility, the deprecated field \code{point_of_reference} is
+accepted as an alias for \code{origin} and emits a deprecation warning.
 }
 \examples{
 \dontrun{
