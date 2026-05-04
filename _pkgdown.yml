@@ -26,9 +26,7 @@ articles:
   - title: "Get started"
     navbar: ~
     contents:
-      - "aniframe-structure"
-      - "aniframe-metadata"
-      - "aniframe-connections"
+      - any_of(c("aniframe-structure", "aniframe-metadata", "aniframe-connections"))
 
 reference:
   - title: "Creating and converting aniframe objects"
