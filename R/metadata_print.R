@@ -40,8 +40,12 @@ print.aniframe_metadata <- function(x, ...) {
           cli::cli_verbatim(paste0(padded_name, " ", padded_type, ": <NA>"))
         } else if (is.factor(value)) {
           cli::cli_verbatim(paste0(
-            padded_name, " ", padded_type, ': "',
-            as.character(value), '"'
+            padded_name,
+            " ",
+            padded_type,
+            ': "',
+            as.character(value),
+            '"'
           ))
           cli::cli_verbatim(paste0(
             indent,
@@ -51,8 +55,12 @@ print.aniframe_metadata <- function(x, ...) {
           ))
         } else if (length(value) > 1) {
           cli::cli_verbatim(paste0(
-            padded_name, " ", padded_type, ': "',
-            paste(value, collapse = ", "), '"'
+            padded_name,
+            " ",
+            padded_type,
+            ': "',
+            paste(value, collapse = ", "),
+            '"'
           ))
         } else {
           val_str <- if (is.character(value)) {
@@ -61,7 +69,11 @@ print.aniframe_metadata <- function(x, ...) {
             format(value)
           }
           cli::cli_verbatim(paste0(
-            padded_name, " ", padded_type, ": ", val_str
+            padded_name,
+            " ",
+            padded_type,
+            ": ",
+            val_str
           ))
         }
       }
