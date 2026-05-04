@@ -20,6 +20,12 @@
 #' * `y_height`: Height of the recording frame in y-axis units (numeric, NA).
 #'   Used by [set_origin()] to reflect y coordinates when switching origin
 #'   conventions.
+#' * `connections`: Named list of connection tables, one per identity or
+#'   temporal variable (typically `keypoint` for skeletons; could also be
+#'   `individual` for social networks). Each entry is a 2-column tibble of
+#'   `from`/`to` pairs. Default is an empty list. Manage via
+#'   [set_connections()], [get_connections()], [add_connections()] and
+#'   [remove_connections()].
 #'
 #' @seealso [set_metadata()], [get_metadata()]
 #'
@@ -93,7 +99,8 @@ default_metadata <- function() {
         "top_left"
       )
     ),
-    y_height = as.numeric(NA)
+    y_height = as.numeric(NA),
+    connections = list()
   )
 
   class(metadata) <- "aniframe_metadata"
