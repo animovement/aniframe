@@ -138,10 +138,10 @@ ae_with_mods |>
   dplyr::filter(variable == "behaviour")
 ```
 
-A future `expand_modifiers()` helper (next slice) will widen this
-list-column into one logical column per distinct modifier value,
-making it straightforward to filter or facet on individual modifier
-values.
+A helper to widen this list-column into one logical column per
+distinct modifier value (so filtering or faceting on a single
+modifier value is straightforward) is planned but not yet
+implemented.
 
 ## Validation
 
@@ -172,23 +172,30 @@ The two structures are pivot-duals of each other. An `aniframe`'s
 event columns (declared in `variables_event`) hold one label per
 frame, wide; an `anievent` holds one record per bout, long.
 
+::: callout-note
+## Planned, not yet available
+
 Conversions between the two are the natural next step:
 
-- `as_anievent(aniframe)` will run-length-encode the wide event
-  columns into long bouts.
-- `add_events(aniframe, anievent)` will broadcast bouts back onto a
+- run-length-encoding the wide per-frame event columns of an
+  `aniframe` into the long bout form of an `anievent`,
+- broadcasting an `anievent`'s bouts back onto an `aniframe`'s
   per-frame grid.
 
-Both verbs live in `aniframe` (since they own both classes); they
-will land in the next slice along with the BORIS reader (in
-`aniread`).
+Both directions will live in `aniframe`, since the package owns both
+classes. A BORIS reader (producing an `anievent` directly) is planned
+for `aniread`. None of these are implemented yet.
+:::
 
 ## Where things live in the ecosystem
 
-| Concern                              | Package      |
-|--------------------------------------|--------------|
-| The `anievent` class + conversions   | `aniframe`   |
-| Readers (BORIS, Solomon, …)          | `aniread`    |
-| Bout-summary metrics                 | `animetric`  |
-| Plots (state band, point marker)     | `anivis`     |
-| Segmentation models that produce events | `anisegment` |
+Only the `anievent` class itself ships today; everything else is
+planned for follow-up work in the respective packages.
+
+| Concern                                 | Planned home | Status     |
+|-----------------------------------------|--------------|------------|
+| The `anievent` class                    | `aniframe`   | ✅ implemented |
+| Conversions to / from `aniframe`        | `aniframe`   | planned    |
+| Readers (BORIS, Solomon, …)             | `aniread`    | planned    |
+| Bout-summary metrics                    | `animetric`  | planned    |
+| Plots (state band, point marker)        | `anivis`     | planned    |
