@@ -35,6 +35,7 @@ articles:
       - articles/aniframe-structure
       - articles/aniframe-metadata
       - articles/aniframe-connections
+      - articles/anievent-structure
 
 reference:
   - title: "Creating and converting aniframe objects"
@@ -48,9 +49,21 @@ reference:
       - is_aniframe
       - ensure_is_aniframe
 
+  - title: "Creating and converting anievent objects"
+    desc: >
+      Functions that create an anievent (long-format behavioural event
+      records) or coerce other objects to anievent.
+    contents:
+      - as_anievent
+      - anievent
+      - is_anievent
+      - ensure_is_anievent
+      - validate_anievent
+
   - title: "Metadata handling"
     desc: >
-      Functions for reading, setting, and retrieving the metadata attached to an aniframe.
+      Functions for reading, setting, and retrieving the metadata
+      attached to aniframe or anievent objects.
     contents:
       - get_metadata
       - set_metadata
@@ -100,7 +113,7 @@ reference:
     - deg_to_rad
     - convert_nan_to_na
 
-  - title: "Data manipulation (dplyr‑style verbs)"
+  - title: "Data manipulation (dplyr‑style verbs) – aniframe"
     desc: >
       S3 methods that mirror dplyr verbs for aniframe objects.
     contents:
@@ -112,10 +125,10 @@ reference:
       - rename.aniframe
       - select.aniframe
       - slice.aniframe
-      - tbl_sum.aniframe   # (or tbl_sum.aniframe if that’s the name)
+      - tbl_sum.aniframe
       - ungroup.aniframe
 
-  - title: "Conversion helpers"
+  - title: "Conversion helpers – aniframe"
     desc: |
       Methods that let you treat aniframe objects like regular data frames.
     contents:
@@ -126,4 +139,32 @@ reference:
       - "[<-.aniframe"
       - "$<-.aniframe"
       - "$.aniframe"
-      - names<-.aniframe    # if you expose the setter for names
+      - names<-.aniframe
+
+  - title: "Data manipulation (dplyr‑style verbs) – anievent"
+    desc: >
+      S3 methods that mirror dplyr verbs for anievent objects.
+    contents:
+      - arrange.anievent
+      - filter.anievent
+      - group_by.anievent
+      - mutate.anievent
+      - relocate.anievent
+      - rename.anievent
+      - select.anievent
+      - slice.anievent
+      - tbl_sum.anievent
+      - ungroup.anievent
+
+  - title: "Conversion helpers – anievent"
+    desc: |
+      Methods that let you treat anievent objects like regular data frames.
+    contents:
+      - as.data.frame.anievent
+      - "[.anievent"
+      - "[[.anievent"
+      - "[[<-.anievent"
+      - "[<-.anievent"
+      - "$<-.anievent"
+      - "$.anievent"
+      - names<-.anievent

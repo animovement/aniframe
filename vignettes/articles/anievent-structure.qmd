@@ -1,0 +1,185 @@
+---
+title: "The anievent data structure"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aniframe)
+```
+
+## What is an `anievent`?
+
+`anievent` is the sibling of [`aniframe`](aniframe-structure.html) for
+**behavioural events**: sleep bouts, vocalisations, manual scoring from
+BORIS, the output of segmentation models. Where an `aniframe` records
+position frame-by-frame, an `anievent` records intervals
+(`start` → `stop`) or instants (`start == stop`) of labelled behaviour.
+
+The class is a true sibling — it does **not** inherit from `aniframe`,
+but it shares the metadata substrate, so `get_metadata()`,
+`set_metadata()`, and the rest of the metadata API work on both.
+
+## Anatomy at a glance
+
+```{r}
+ae <- anievent(
+  individual = c(1L, 1L, 1L, 2L),
+  variable = c("behaviour", "behaviour", "call", "behaviour"),
+  value = c("REM", "wake", "alarm", "REM"),
+  start = c(3, 14, 4.5, 1),
+  stop = c(9, 19, 4.5, 6)
+)
+ae
+```
+
+Two things to spot:
+
+1. The **header rows** prefixed with `#` come from the metadata
+   attribute — identity columns and the event channels carried by the
+   `variable` column.
+2. The **data columns** are the long-format event records: one row per
+   bout (or instant), with the channel name in `variable` and the
+   label in `value`.
+
+## Required schema
+
+An `anievent` has four mandatory columns plus identity columns that
+travel via `variables_what`:
+
+| Column        | Type      | Role                                         |
+|---------------|-----------|----------------------------------------------|
+| `variable`    | character | which event channel / column                 |
+| `value`       | factor    | the label                                    |
+| `start`       | numeric   | bout start (or instant)                      |
+| `stop`        | numeric   | bout stop (equals `start` for point events)  |
+| `individual`* | as source | identity (default; rename via `variables_what`) |
+| `modifiers`*  | list      | optional per-event values (BORIS-style)      |
+
+\* optional.
+
+Identity columns are auto-detected from a known list
+(`model`, `individual`, `track`, `subject`), or you can supply any
+name via `variables_what`. An `anievent` with no identity column at
+all is fine for single-subject experiments.
+
+## State vs point events
+
+Two temporal kinds:
+
+- **State events** — interval-valued, durative (`stop > start`). A
+  sleep bout, a grooming bout.
+- **Point events** — instantaneous (`stop == start`). A startle, a
+  vocalisation onset.
+
+The `anievent` class is intentionally **type-agnostic**: it does not
+require you to declare which channels are state and which are point.
+The `variable` column already names the channels, and the duration of
+each row tells you everything the class needs.
+
+Type only becomes load-bearing at conversion / plotting / metric time:
+
+- when converting an `anievent` to a per-frame `aniframe` (so the
+  conversion knows whether to fill the whole interval or just a single
+  frame),
+- when plotting (state → coloured band; point → marker),
+- when computing metrics that differ by type.
+
+Those operations live in companion packages (`animetric`, `anivis`)
+and will accept type declarations at call time. The metadata field
+`variables_event = list(state = ..., point = ...)` exists on the
+shared metadata substrate for callers that want to record the
+distinction explicitly, but the `anievent` class itself does not
+enforce it.
+
+## Modifiers
+
+A **modifier** is a per-event attribute set at coding time — in BORIS,
+the values chosen from a behaviour's modifier sets. Examples:
+
+- `parts_moved = c("limb", "whisker", "tail")` on a movement bout
+- `intensity = "high"` on an alarm call
+
+Modifiers are stored as an optional `modifiers` list-column, where
+each cell is a **character vector** (length zero, one, or many). This
+matches the BORIS export format: one event row carries a flat list
+of selected modifier values.
+
+```{r}
+ae_with_mods <- anievent(
+  individual = c(1L, 1L, 1L),
+  variable = c("behaviour", "behaviour", "call"),
+  value = c("REM", "REM", "alarm"),
+  start = c(3, 14, 4.5),
+  stop = c(9, 19, 4.5),
+  modifiers = list(
+    c("limb", "whisker"),
+    "tail",
+    character()
+  )
+)
+ae_with_mods
+```
+
+Standard dplyr verbs round-trip the list-column without further
+ceremony:
+
+```{r}
+ae_with_mods |>
+  dplyr::filter(variable == "behaviour")
+```
+
+A future `expand_modifiers()` helper (next slice) will turn this
+list-column into one-hot logical columns for analysis.
+
+## Validation
+
+`validate_anievent()` re-checks the structural invariants on demand:
+
+```{r}
+validate_anievent(ae_with_mods)
+```
+
+The validator confirms required columns are present with the right
+types, that `stop >= start` for every row, and that any `modifiers`
+column is well-formed. It deliberately does **not** check
+type-linked invariants (e.g. point rows having `start == stop`) —
+those belong to the conversion code that knows which channels are
+typed as what.
+
+## Relationship to `aniframe`
+
+The two structures are pivot-duals of each other. An `aniframe`'s
+event columns (declared in `variables_event`) hold one label per
+frame, wide; an `anievent` holds one record per bout, long.
+
+Conversions between the two are the natural next step:
+
+- `as_anievent(aniframe)` will run-length-encode the wide event
+  columns into long bouts.
+- `add_events(aniframe, anievent)` will broadcast bouts back onto a
+  per-frame grid.
+
+Both verbs live in `aniframe` (since they own both classes); they
+will land in the next slice along with the BORIS reader (in
+`aniread`).
+
+## Where things live in the ecosystem
+
+| Concern                              | Package      |
+|--------------------------------------|--------------|
+| The `anievent` class + conversions   | `aniframe`   |
+| Readers (BORIS, Solomon, …)          | `aniread`    |
+| Bout-summary metrics                 | `animetric`  |
+| Plots (state band, point marker)     | `anivis`     |
+| Segmentation models that produce events | `anisegment` |
