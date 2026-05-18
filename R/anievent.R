@@ -8,7 +8,9 @@
 #' Mandatory columns: `variable`, `value`, `start`, `stop`. Identity
 #' columns (e.g. `individual`, `subject`, `track`) are optional and
 #' declared via `variables_what`. A `modifiers` list-column may carry
-#' per-event named-list attributes (e.g. BORIS modifier sets).
+#' per-event modifier values — each cell a character vector (matching
+#' the BORIS export format, where one event can have zero or more
+#' modifier values selected from the ethogram).
 #'
 #' @param ... Name-value pairs to create columns in the data frame.
 #' @param metadata Optional list of metadata.

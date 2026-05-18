@@ -31,3 +31,22 @@ rad_to_deg <- function(x) {
 deg_to_rad <- function(x) {
   (x * pi) / 180
 }
+
+#' Re-clothe a dispatched result with its animovement class and metadata
+#'
+#' After a generic strips a result down to a plain tibble (via
+#' `NextMethod()`), restore the animovement class (`aniframe` or
+#' `anievent`) and re-attach the metadata captured from the original
+#' input.
+#'
+#' @param x The bare result returned by `NextMethod()`.
+#' @param md Metadata captured before dispatch via [get_metadata()].
+#' @param constructor Internal class constructor — `new_aniframe` or
+#'   `new_anievent`.
+#'
+#' @return `x` with the animovement class and metadata restored.
+#' @keywords internal
+preserve_animovement_class <- function(x, md, constructor) {
+  x <- constructor(x)
+  set_metadata(x, metadata = md)
+}

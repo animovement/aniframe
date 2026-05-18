@@ -42,7 +42,9 @@ event-bout records rather than per-frame movement data.
 Mandatory columns: \code{variable}, \code{value}, \code{start}, \code{stop}. Identity
 columns (e.g. \code{individual}, \code{subject}, \code{track}) are optional and
 declared via \code{variables_what}. A \code{modifiers} list-column may carry
-per-event named-list attributes (e.g. BORIS modifier sets).
+per-event modifier values — each cell a character vector (matching
+the BORIS export format, where one event can have zero or more
+modifier values selected from the ethogram).
 }
 \examples{
 anievent(

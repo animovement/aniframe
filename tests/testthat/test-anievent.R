@@ -138,14 +138,14 @@ test_that("optional modifiers list-column is preserved", {
     start = c(3, 14),
     stop = c(9, 19),
     modifiers = list(
-      list(parts_moved = c("limb", "whisker")),
-      list(parts_moved = "tail")
+      c("limb", "whisker"),
+      "tail"
     )
   )
 
   expect_true("modifiers" %in% names(ae))
   expect_type(ae$modifiers, "list")
-  expect_equal(ae$modifiers[[1]]$parts_moved, c("limb", "whisker"))
+  expect_equal(ae$modifiers[[1]], c("limb", "whisker"))
 })
 
 # ---- Validation ---------------------------------------------------------
@@ -196,22 +196,12 @@ test_that("validate_anievent rejects malformed modifiers", {
     start = c(3, 14),
     stop = c(9, 19),
     modifiers = list(
-      "not a list",
-      list()
+      1:3,
+      character()
     )
   )
 
-  expect_error(validate_anievent(ae), "must be a list")
-
-  ae2 <- anievent(
-    individual = 1L,
-    variable = "behaviour",
-    value = "REM",
-    start = 3,
-    stop = 9,
-    modifiers = list(list("limb"))
-  )
-  expect_error(validate_anievent(ae2), "named lists")
+  expect_error(validate_anievent(ae), "character vector")
 })
 
 test_that("validate_anievent returns the input invisibly on success", {

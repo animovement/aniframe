@@ -1,10 +1,11 @@
 #' Convert a data frame to an anievent
 #'
 #' Builds an `anievent` from a data frame holding behavioural events in
-#' long format (one row per bout or instant). The five mandatory columns
-#' are `individual`, `variable`, `value`, `start`, and `stop`. An
-#' optional `modifiers` list-column may carry per-event attributes (a
-#' named list per row).
+#' long format (one row per bout or instant). The four mandatory columns
+#' are `variable`, `value`, `start`, and `stop`; identity columns travel
+#' via `variables_what`. An optional `modifiers` list-column may carry
+#' per-event modifier values (each cell a character vector, matching the
+#' BORIS export format).
 #'
 #' @param data A data frame with the required columns.
 #' @param metadata Optional list of metadata.

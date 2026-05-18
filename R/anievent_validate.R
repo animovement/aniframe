@@ -5,8 +5,9 @@
 #'   with the expected types; identity columns travel via
 #'   `variables_what` and are not part of the required set;
 #' * `stop >= start` for every row;
-#' * `modifiers`, if present, is a list-column of named lists (or empty
-#'   lists).
+#' * `modifiers`, if present, is a list-column whose cells are
+#'   character vectors (the values picked from BORIS modifier sets at
+#'   coding time; an empty vector when the event has no modifiers).
 #'
 #' Type-linked invariants (which `variable` values are state vs point
 #' events; the zero-duration requirement on point events) belong with
@@ -74,20 +75,11 @@ ensure_anievent_modifiers_shape <- function(data) {
   }
   for (i in seq_along(mods)) {
     cell <- mods[[i]]
-    if (!is.list(cell)) {
+    if (!(is.character(cell) || (is.atomic(cell) && length(cell) == 0))) {
       cli::cli_abort(c(
-        "Every cell of {.field modifiers} must be a list.",
+        "Every cell of {.field modifiers} must be a character vector.",
         "x" = "Row {.val {i}} is of type {.cls {class(cell)}}."
       ))
-    }
-    if (length(cell) > 0) {
-      nm <- names(cell)
-      if (is.null(nm) || any(nm == "" | is.na(nm))) {
-        cli::cli_abort(c(
-          "Non-empty {.field modifiers} cells must be named lists.",
-          "x" = "Row {.val {i}} has unnamed entries."
-        ))
-      }
     }
   }
   invisible(TRUE)
