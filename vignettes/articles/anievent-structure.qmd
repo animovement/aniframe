@@ -57,16 +57,14 @@ Two things to spot:
 An `anievent` has four mandatory columns plus identity columns that
 travel via `variables_what`:
 
-| Column        | Type      | Role                                         |
-|---------------|-----------|----------------------------------------------|
-| `variable`    | character | which event channel / column                 |
-| `value`       | factor    | the label                                    |
-| `start`       | numeric   | bout start (or instant)                      |
-| `stop`        | numeric   | bout stop (equals `start` for point events)  |
-| `individual`* | as source | identity (default; rename via `variables_what`) |
-| `modifiers`*  | list      | optional per-event values (BORIS-style)      |
-
-\* optional.
+| Column       | Type      | Required? | Role                                       |
+|--------------|-----------|-----------|--------------------------------------------|
+| `variable`   | character | yes       | which event channel                        |
+| `value`      | factor    | yes       | the label                                  |
+| `start`      | numeric   | yes       | bout start (or instant)                    |
+| `stop`       | numeric   | yes       | bout stop (equals `start` for point events) |
+| identity     | as source | optional  | e.g. `individual`, `track`, `subject`      |
+| `modifiers`  | list-column of `character` | optional | flat per-event modifier values |
 
 Identity columns are auto-detected from a known list
 (`model`, `individual`, `track`, `subject`), or you can supply any
@@ -105,15 +103,16 @@ enforce it.
 ## Modifiers
 
 A **modifier** is a per-event attribute set at coding time — in BORIS,
-the values chosen from a behaviour's modifier sets. Examples:
-
-- `parts_moved = c("limb", "whisker", "tail")` on a movement bout
-- `intensity = "high"` on an alarm call
+the values chosen from a behaviour's modifier sets. A grooming bout
+might carry the values `"limb"` and `"whisker"`; an alarm call might
+carry `"high"`.
 
 Modifiers are stored as an optional `modifiers` list-column, where
-each cell is a **character vector** (length zero, one, or many). This
-matches the BORIS export format: one event row carries a flat list
-of selected modifier values.
+each cell is a **flat character vector** (length zero, one, or many).
+This matches how BORIS exports modifier data: the set-to-value
+structure from the ethogram is collapsed into a single bag of values
+per event, so a modifier cell is just the values picked, with no
+set-key wrapping.
 
 ```{r}
 ae_with_mods <- anievent(
@@ -139,15 +138,25 @@ ae_with_mods |>
   dplyr::filter(variable == "behaviour")
 ```
 
-A future `expand_modifiers()` helper (next slice) will turn this
-list-column into one-hot logical columns for analysis.
+A future `expand_modifiers()` helper (next slice) will widen this
+list-column into one logical column per distinct modifier value,
+making it straightforward to filter or facet on individual modifier
+values.
 
 ## Validation
 
-`validate_anievent()` re-checks the structural invariants on demand:
+`validate_anievent()` re-checks the structural invariants on demand,
+returning the input invisibly on success and erroring otherwise:
 
 ```{r}
+#| error: true
+# Happy path: returns invisibly, no output
 validate_anievent(ae_with_mods)
+
+# Negative interval is caught
+bad <- ae_with_mods
+bad$stop[1] <- bad$start[1] - 1
+validate_anievent(bad)
 ```
 
 The validator confirms required columns are present with the right
