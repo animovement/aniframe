@@ -17,8 +17,10 @@
 #' @param variables_what Character vector of identity columns that together
 #'   define a unique entity. When `NULL` (default), auto-detected from a
 #'   known list (`model`, `individual`, `track`, `subject`).
-#' @param variables_when Character vector of temporal columns. Defaults to
-#'   `c("start", "stop")`.
+#' @param variables_when Character vector of temporal columns. When
+#'   `NULL` (default), auto-detected from a known grouping list
+#'   (`observation`, `session`, `trial`) and concatenated with the
+#'   required temporal endpoints `c("start", "stop")`.
 #' @param .rows Number of rows (passed to tibble).
 #' @param .name_repair How to repair column names (passed to tibble).
 #'

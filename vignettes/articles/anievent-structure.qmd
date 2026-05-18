@@ -71,6 +71,34 @@ Identity columns are auto-detected from a known list
 name via `variables_what`. An `anievent` with no identity column at
 all is fine for single-subject experiments.
 
+### Multiple observations / trials / sessions
+
+Behavioural coding often spans several clips or trials, each with its
+own time origin (`start = 0` means "the start of *this* clip", not "the
+start of the experiment"). To carry that context, add an `observation`,
+`session`, or `trial` column — those three names are auto-detected
+into `variables_when` alongside `start` and `stop`, and the column is
+coerced to factor / integer the same way aniframe does it:
+
+```{r}
+ae_multi <- anievent(
+  individual = c(1L, 1L, 1L, 1L),
+  observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
+  variable = c("behaviour", "behaviour", "behaviour", "behaviour"),
+  value = c("REM", "wake", "REM", "wake"),
+  start = c(3, 14, 1, 7),
+  stop = c(9, 19, 5, 12)
+)
+get_metadata(ae_multi, "variables_when")
+ae_multi
+```
+
+The `start`/`stop` values are local to each observation — both clips
+have an event starting near the beginning, but those are separate
+moments in real time. Anything downstream that needs to combine clips
+onto a shared timeline (plots, cross-clip metrics) will need an
+observation-level offset table; the class itself just carries the key.
+
 ## State vs point events
 
 Two temporal kinds:

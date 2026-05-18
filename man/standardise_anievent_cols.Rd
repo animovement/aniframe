@@ -4,19 +4,23 @@
 \alias{standardise_anievent_cols}
 \title{Standardise column types for an anievent}
 \usage{
-standardise_anievent_cols(data, variables_what)
+standardise_anievent_cols(data, variables_what, variables_when)
 }
 \arguments{
 \item{data}{Data frame to standardise.}
 
 \item{variables_what}{Identity variable names.}
+
+\item{variables_when}{Temporal variable names — grouping columns
+(everything except \code{start}/\code{stop}) are coerced like identity
+columns; \code{start} and \code{stop} are forced numeric.}
 }
 \value{
 Data frame with standardised column types.
 }
 \description{
-Coerces identity columns to factor/integer (mirroring the aniframe
-convention), \code{variable} to character, \code{value} to factor, and
-\code{start}/\code{stop} to numeric.
+Coerces identity and temporal-grouping columns to factor/integer
+(mirroring the aniframe convention), \code{variable} to character,
+\code{value} to factor, and \code{start}/\code{stop} to numeric.
 }
 \keyword{internal}

@@ -415,6 +415,23 @@ test_that("as_aniframe respects custom variables_when with time", {
   expect_equal(get_metadata(result)$variables_when, c("session", "time"))
 })
 
+test_that("as_aniframe auto-detects observation as a temporal grouping column", {
+  df <- data.frame(
+    individual = 1L,
+    observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
+    time = c(1, 2, 1, 2),
+    x = 1:4,
+    y = 1:4
+  )
+
+  result <- as_aniframe(df)
+
+  expect_equal(
+    get_metadata(result, "variables_when"),
+    c("observation", "time")
+  )
+})
+
 # TODO: We need to handle the coordinate system before including this test
 
 # test_that("as_aniframe respects custom variables_where", {

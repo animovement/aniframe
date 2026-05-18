@@ -39,8 +39,11 @@ used. Pass an explicit value to use any other column name(s) as
 identity. An anievent with no identity column is permitted (e.g. a
 single-subject experiment).}
 
-\item{variables_when}{Character vector of temporal columns. Defaults
-to \code{c("start", "stop")}.}
+\item{variables_when}{Character vector of temporal columns. When
+\code{NULL} (default), auto-detected from a known grouping list
+(\code{observation}, \code{session}, \code{trial}) and concatenated with the
+required temporal endpoints \code{c("start", "stop")}. Pass explicitly
+to use other names for the grouping context.}
 }
 \value{
 An anievent object.

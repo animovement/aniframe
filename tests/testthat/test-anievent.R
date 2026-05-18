@@ -143,6 +143,65 @@ test_that("anievent works with no identity column", {
   expect_length(get_metadata(ae, "variables_what"), 0)
 })
 
+test_that("anievent auto-detects observation / session / trial into variables_when", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L, 1L),
+    observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
+    trial = c(1L, 1L, 2L, 2L),
+    variable = c("behaviour", "behaviour", "behaviour", "behaviour"),
+    value = c("REM", "wake", "REM", "wake"),
+    start = c(3, 14, 1, 7),
+    stop = c(9, 19, 5, 12)
+  )
+
+  expect_equal(
+    get_metadata(ae, "variables_when"),
+    c("observation", "trial", "start", "stop")
+  )
+})
+
+test_that("anievent coerces auto-detected grouping columns to factor / integer", {
+  ae <- anievent(
+    individual = 1L,
+    observation = c("clip_a", "clip_a"),
+    trial = c(1L, 2L),
+    variable = c("behaviour", "behaviour"),
+    value = c("REM", "wake"),
+    start = c(3, 14),
+    stop = c(9, 19)
+  )
+
+  expect_s3_class(ae$observation, "factor")
+  expect_type(ae$trial, "integer")
+})
+
+test_that("anievent column ordering mirrors aniframe (what, when incl start/stop, payload)", {
+  ae <- anievent(
+    individual = 1L,
+    observation = "clip_a",
+    trial = 1L,
+    modifiers = list(character()),
+    variable = "behaviour",
+    value = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  expect_equal(
+    names(ae),
+    c(
+      "individual",
+      "observation",
+      "trial",
+      "start",
+      "stop",
+      "variable",
+      "value",
+      "modifiers"
+    )
+  )
+})
+
 test_that("optional modifiers list-column is preserved", {
   ae <- anievent(
     individual = c(1L, 1L),

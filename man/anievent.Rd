@@ -22,8 +22,10 @@ anievent(
 define a unique entity. When \code{NULL} (default), auto-detected from a
 known list (\code{model}, \code{individual}, \code{track}, \code{subject}).}
 
-\item{variables_when}{Character vector of temporal columns. Defaults to
-\code{c("start", "stop")}.}
+\item{variables_when}{Character vector of temporal columns. When
+\code{NULL} (default), auto-detected from a known grouping list
+(\code{observation}, \code{session}, \code{trial}) and concatenated with the
+required temporal endpoints \code{c("start", "stop")}.}
 
 \item{.rows}{Number of rows (passed to tibble).}
 
