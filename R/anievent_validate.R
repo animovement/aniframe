@@ -1,7 +1,7 @@
 #' Validate an anievent
 #'
 #' Re-runs the structural invariants of an `anievent` object on demand:
-#' * required columns (`variable`, `value`, `start`, `stop`) are present
+#' * required columns (`channel`, `value`, `start`, `stop`) are present
 #'   with the expected types; identity columns travel via
 #'   `variables_what` and are not part of the required set;
 #' * `stop >= start` for every row;
@@ -9,11 +9,11 @@
 #'   character vectors (the values picked from BORIS modifier sets at
 #'   coding time; an empty vector when the event has no modifiers).
 #'
-#' Type-linked invariants (which `variable` values are state vs point
-#' events; the zero-duration requirement on point events) belong with
-#' the aniframe ↔ anievent conversion code and are checked there. The
-#' `anievent` class itself stays type-agnostic — `variable` and `value`
-#' carry the channel information the class needs.
+#' Type-linked invariants (which channels are state vs point events;
+#' the zero-duration requirement on point events) belong with the
+#' aniframe ↔ anievent conversion code and are checked there. The
+#' `anievent` class itself stays type-agnostic — `channel` and `value`
+#' carry all the information the class needs.
 #'
 #' Errors are raised through `cli::cli_abort()`; on success the object
 #' is returned invisibly.
@@ -34,8 +34,8 @@ validate_anievent <- function(data) {
 
 #' @keywords internal
 ensure_anievent_col_types <- function(data) {
-  if (!is.character(data[["variable"]])) {
-    cli::cli_abort("{.field variable} must be character.")
+  if (!is.character(data[["channel"]])) {
+    cli::cli_abort("{.field channel} must be character.")
   }
   if (!is.factor(data[["value"]])) {
     cli::cli_abort("{.field value} must be a factor.")

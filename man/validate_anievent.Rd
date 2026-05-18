@@ -15,7 +15,7 @@ The input \code{data}, invisibly.
 \description{
 Re-runs the structural invariants of an \code{anievent} object on demand:
 \itemize{
-\item required columns (\code{variable}, \code{value}, \code{start}, \code{stop}) are present
+\item required columns (\code{channel}, \code{value}, \code{start}, \code{stop}) are present
 with the expected types; identity columns travel via
 \code{variables_what} and are not part of the required set;
 \item \code{stop >= start} for every row;
@@ -25,11 +25,11 @@ coding time; an empty vector when the event has no modifiers).
 }
 }
 \details{
-Type-linked invariants (which \code{variable} values are state vs point
-events; the zero-duration requirement on point events) belong with
-the aniframe ↔ anievent conversion code and are checked there. The
-\code{anievent} class itself stays type-agnostic — \code{variable} and \code{value}
-carry the channel information the class needs.
+Type-linked invariants (which channels are state vs point events;
+the zero-duration requirement on point events) belong with the
+aniframe ↔ anievent conversion code and are checked there. The
+\code{anievent} class itself stays type-agnostic — \code{channel} and \code{value}
+carry all the information the class needs.
 
 Errors are raised through \code{cli::cli_abort()}; on success the object
 is returned invisibly.

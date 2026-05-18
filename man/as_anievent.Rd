@@ -51,7 +51,7 @@ An anievent object.
 \description{
 Builds an \code{anievent} from a data frame holding behavioural events in
 long format (one row per bout or instant). The four mandatory columns
-are \code{variable}, \code{value}, \code{start}, and \code{stop}; identity columns travel
+are \code{channel}, \code{value}, \code{start}, and \code{stop}; identity columns travel
 via \code{variables_what}. An optional \code{modifiers} list-column may carry
 per-event modifier values (each cell a character vector, matching the
 BORIS export format).

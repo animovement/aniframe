@@ -41,7 +41,9 @@ sibling of \code{\link[=aniframe]{aniframe()}} — it shares the metadata substr
 event-bout records rather than per-frame movement data.
 }
 \details{
-Mandatory columns: \code{variable}, \code{value}, \code{start}, \code{stop}. Identity
+Mandatory columns: \code{channel}, \code{value}, \code{start}, \code{stop}. A "channel"
+is one mutually-exclusive categorical track of behaviour — at any
+moment, a subject can only have one \code{value} per channel. Identity
 columns (e.g. \code{individual}, \code{subject}, \code{track}) are optional and
 declared via \code{variables_what}. A \code{modifiers} list-column may carry
 per-event modifier values — each cell a character vector (matching
@@ -51,7 +53,7 @@ modifier values selected from the ethogram).
 \examples{
 anievent(
   individual = c(1L, 1L, 1L),
-  variable = c("behaviour", "behaviour", "call"),
+  channel = c("behaviour", "behaviour", "call"),
   value = c("REM", "wake", "alarm"),
   start = c(3, 14, 4.5),
   stop = c(9, 19, 4.5)

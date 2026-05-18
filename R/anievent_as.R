@@ -2,7 +2,7 @@
 #'
 #' Builds an `anievent` from a data frame holding behavioural events in
 #' long format (one row per bout or instant). The four mandatory columns
-#' are `variable`, `value`, `start`, and `stop`; identity columns travel
+#' are `channel`, `value`, `start`, and `stop`; identity columns travel
 #' via `variables_what`. An optional `modifiers` list-column may carry
 #' per-event modifier values (each cell a character vector, matching the
 #' BORIS export format).
@@ -68,7 +68,7 @@ as_anievent.data.frame <- function(
 
   present_what <- intersect(variables_what, names(data))
   present_when <- intersect(variables_when, names(data))
-  event_cols <- c("variable", "value")
+  event_cols <- c("channel", "value")
   if ("modifiers" %in% names(data)) {
     event_cols <- c(event_cols, "modifiers")
   }
@@ -102,7 +102,7 @@ as_anievent.data.frame <- function(
 #' @param data Data frame to validate.
 #' @keywords internal
 ensure_anievent_cols <- function(data) {
-  required <- c("variable", "value", "start", "stop")
+  required <- c("channel", "value", "start", "stop")
   missing <- setdiff(required, names(data))
   if (length(missing) > 0) {
     cli::cli_abort(c(
@@ -118,7 +118,7 @@ ensure_anievent_cols <- function(data) {
 #' Standardise column types for an anievent
 #'
 #' Coerces identity and temporal-grouping columns to factor/integer
-#' (mirroring the aniframe convention), `variable` to character,
+#' (mirroring the aniframe convention), `channel` to character,
 #' `value` to factor, and `start`/`stop` to numeric.
 #'
 #' @param data Data frame to standardise.
@@ -144,8 +144,8 @@ standardise_anievent_cols <- function(data, variables_what, variables_when) {
     }
   }
 
-  if (!is.character(data[["variable"]])) {
-    data[["variable"]] <- as.character(data[["variable"]])
+  if (!is.character(data[["channel"]])) {
+    data[["channel"]] <- as.character(data[["channel"]])
   }
   if (!is.factor(data[["value"]])) {
     data[["value"]] <- factor(data[["value"]])

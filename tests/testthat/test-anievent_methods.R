@@ -12,7 +12,7 @@
 make_anievent <- function() {
   ae <- anievent(
     individual = c(1L, 1L, 2L, 2L),
-    variable = c("behaviour", "behaviour", "behaviour", "call"),
+    channel =c("behaviour", "behaviour", "behaviour", "call"),
     value = c("REM", "wake", "REM", "alarm"),
     start = c(3, 14, 1, 7.5),
     stop = c(9, 19, 6, 7.5)
@@ -63,12 +63,12 @@ test_that("relocate preserves anievent class and metadata", {
 
 test_that("rename preserves anievent class and metadata", {
   ae <- make_anievent()
-  expect_anievent_with_md(dplyr::rename(ae, channel = "variable"))
+  expect_anievent_with_md(dplyr::rename(ae, chan = "channel"))
 })
 
 test_that("select preserves anievent class and metadata", {
   ae <- make_anievent()
-  expect_anievent_with_md(dplyr::select(ae, "variable", "start", "stop"))
+  expect_anievent_with_md(dplyr::select(ae, "channel", "start", "stop"))
 })
 
 test_that("slice preserves anievent class and metadata", {
@@ -119,10 +119,10 @@ test_that("$<- preserves anievent class and metadata", {
 test_that("names<- preserves anievent class and metadata", {
   ae <- make_anievent()
   nm <- names(ae)
-  nm[nm == "variable"] <- "channel"
+  nm[nm == "channel"] <- "chan"
   names(ae) <- nm
   expect_anievent_with_md(ae)
-  expect_true("channel" %in% names(ae))
+  expect_true("chan" %in% names(ae))
 })
 
 # ---- Modifier list-column round-trip ------------------------------------
@@ -130,7 +130,7 @@ test_that("names<- preserves anievent class and metadata", {
 test_that("dplyr verbs round-trip a modifiers list-column", {
   ae <- anievent(
     individual = c(1L, 1L, 1L),
-    variable = c("behaviour", "behaviour", "call"),
+    channel =c("behaviour", "behaviour", "call"),
     value = c("REM", "wake", "alarm"),
     start = c(3, 14, 4.5),
     stop = c(9, 19, 4.5),
@@ -141,7 +141,7 @@ test_that("dplyr verbs round-trip a modifiers list-column", {
     )
   )
 
-  result <- dplyr::filter(ae, .data$variable == "behaviour")
+  result <- dplyr::filter(ae, .data$channel == "behaviour")
   expect_s3_class(result, "anievent")
   expect_type(result$modifiers, "list")
   expect_equal(result$modifiers[[1]], c("limb", "whisker"))

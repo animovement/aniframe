@@ -20,7 +20,7 @@ Data frame with standardised column types.
 }
 \description{
 Coerces identity and temporal-grouping columns to factor/integer
-(mirroring the aniframe convention), \code{variable} to character,
+(mirroring the aniframe convention), \code{channel} to character,
 \code{value} to factor, and \code{start}/\code{stop} to numeric.
 }
 \keyword{internal}

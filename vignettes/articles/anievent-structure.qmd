@@ -30,12 +30,27 @@ The class is a true sibling — it does **not** inherit from `aniframe`,
 but it shares the metadata substrate, so `get_metadata()`,
 `set_metadata()`, and the rest of the metadata API work on both.
 
+## Channels
+
+A **channel** is a single mutually-exclusive categorical track of
+behaviour. Within one channel, a subject can carry only one label at
+a time: a sleep-state channel is either `REM` or `wake`, never both
+simultaneously. If two behaviours **can** co-occur — say grooming
+while walking — they belong on **separate channels**, not as two
+values of the same channel. That mutual-exclusivity constraint is
+what makes a channel a channel.
+
+This means how you design your channels is a modelling choice. BORIS
+calls them "behavioural categories" in the ethogram; segmentation
+pipelines call them "label streams"; we call them channels in this
+package.
+
 ## Anatomy at a glance
 
 ```{r}
 ae <- anievent(
   individual = c(1L, 1L, 1L, 2L),
-  variable = c("behaviour", "behaviour", "call", "behaviour"),
+  channel = c("behaviour", "behaviour", "call", "behaviour"),
   value = c("REM", "wake", "alarm", "REM"),
   start = c(3, 14, 4.5, 1),
   stop = c(9, 19, 4.5, 6)
@@ -47,9 +62,9 @@ Two things to spot:
 
 1. The **header rows** prefixed with `#` come from the metadata
    attribute — identity columns and the event channels carried by the
-   `variable` column.
+   `channel` column.
 2. The **data columns** are the long-format event records: one row per
-   bout (or instant), with the channel name in `variable` and the
+   bout (or instant), with the channel name in `channel` and the
    label in `value`.
 
 ## Required schema
@@ -59,7 +74,7 @@ travel via `variables_what`:
 
 | Column       | Type      | Required? | Role                                       |
 |--------------|-----------|-----------|--------------------------------------------|
-| `variable`   | character | yes       | which event channel                        |
+| `channel`    | character | yes       | which event channel                        |
 | `value`      | factor    | yes       | the label                                  |
 | `start`      | numeric   | yes       | bout start (or instant)                    |
 | `stop`       | numeric   | yes       | bout stop (equals `start` for point events) |
@@ -84,7 +99,7 @@ coerced to factor / integer the same way aniframe does it:
 ae_multi <- anievent(
   individual = c(1L, 1L, 1L, 1L),
   observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
-  variable = c("behaviour", "behaviour", "behaviour", "behaviour"),
+  channel =c("behaviour", "behaviour", "behaviour", "behaviour"),
   value = c("REM", "wake", "REM", "wake"),
   start = c(3, 14, 1, 7),
   stop = c(9, 19, 5, 12)
@@ -110,7 +125,7 @@ Two temporal kinds:
 
 The `anievent` class is intentionally **type-agnostic**: it does not
 require you to declare which channels are state and which are point.
-The `variable` column already names the channels, and the duration of
+The `channel` column already names the channels, and the duration of
 each row tells you everything the class needs.
 
 Type only becomes load-bearing at conversion / plotting / metric time:
@@ -145,7 +160,7 @@ set-key wrapping.
 ```{r}
 ae_with_mods <- anievent(
   individual = c(1L, 1L, 1L),
-  variable = c("behaviour", "behaviour", "call"),
+  channel =c("behaviour", "behaviour", "call"),
   value = c("REM", "REM", "alarm"),
   start = c(3, 14, 4.5),
   stop = c(9, 19, 4.5),
@@ -163,7 +178,7 @@ ceremony:
 
 ```{r}
 ae_with_mods |>
-  dplyr::filter(variable == "behaviour")
+  dplyr::filter(channel == "behaviour")
 ```
 
 A helper to widen this list-column into one logical column per
@@ -194,7 +209,7 @@ type-linked invariants (e.g. point rows having `start == stop`) —
 those belong to the conversion code that knows which channels are
 typed as what.
 
-## Relationship to `aniframe`
+<!-- ## Relationship to `aniframe`
 
 The two structures are pivot-duals of each other. An `aniframe`'s
 event columns (declared in `variables_event`) hold one label per
@@ -226,4 +241,4 @@ planned for follow-up work in the respective packages.
 | Conversions to / from `aniframe`        | `aniframe`   | planned    |
 | Readers (BORIS, Solomon, …)             | `aniread`    | planned    |
 | Bout-summary metrics                    | `animetric`  | planned    |
-| Plots (state band, point marker)        | `anivis`     | planned    |
+| Plots (state band, point marker)        | `anivis`     | planned    | -->

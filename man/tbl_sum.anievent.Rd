@@ -17,7 +17,7 @@ Named character vector with summary information.
 \description{
 Builds the print header rows shown above an \code{anievent}. Shows identity
 columns (\code{variables_what}), the unique event channels carried by the
-\code{variable} column, and the standard sampling-rate row inherited from
+\code{channel} column, and the standard sampling-rate row inherited from
 the metadata substrate.
 }
 \keyword{internal}

@@ -2,7 +2,7 @@
 #'
 #' Builds the print header rows shown above an `anievent`. Shows identity
 #' columns (`variables_what`), the unique event channels carried by the
-#' `variable` column, and the standard sampling-rate row inherited from
+#' `channel` column, and the standard sampling-rate row inherited from
 #' the metadata substrate.
 #'
 #' @param x An anievent object.
@@ -29,8 +29,8 @@ tbl_sum.anievent <- function(x, ...) {
     )
   }
 
-  if ("variable" %in% names(x) && nrow(x) > 0) {
-    channels <- unique(x[["variable"]])
+  if ("channel" %in% names(x) && nrow(x) > 0) {
+    channels <- unique(x[["channel"]])
     new_header <- c(
       new_header,
       "Event channels" = paste(channels, collapse = ", ")

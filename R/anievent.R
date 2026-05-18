@@ -5,7 +5,9 @@
 #' sibling of [aniframe()] — it shares the metadata substrate but holds
 #' event-bout records rather than per-frame movement data.
 #'
-#' Mandatory columns: `variable`, `value`, `start`, `stop`. Identity
+#' Mandatory columns: `channel`, `value`, `start`, `stop`. A "channel"
+#' is one mutually-exclusive categorical track of behaviour — at any
+#' moment, a subject can only have one `value` per channel. Identity
 #' columns (e.g. `individual`, `subject`, `track`) are optional and
 #' declared via `variables_what`. A `modifiers` list-column may carry
 #' per-event modifier values — each cell a character vector (matching
@@ -30,7 +32,7 @@
 #' @examples
 #' anievent(
 #'   individual = c(1L, 1L, 1L),
-#'   variable = c("behaviour", "behaviour", "call"),
+#'   channel = c("behaviour", "behaviour", "call"),
 #'   value = c("REM", "wake", "alarm"),
 #'   start = c(3, 14, 4.5),
 #'   stop = c(9, 19, 4.5)
