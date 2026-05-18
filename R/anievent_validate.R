@@ -84,5 +84,3 @@ ensure_anievent_modifiers_shape <- function(data) {
   }
   invisible(TRUE)
 }
-
-
