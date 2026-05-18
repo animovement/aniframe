@@ -12,7 +12,7 @@
 make_anievent <- function() {
   ae <- anievent(
     individual = c(1L, 1L, 2L, 2L),
-    channel =c("behaviour", "behaviour", "behaviour", "call"),
+    channel = c("behaviour", "behaviour", "behaviour", "call"),
     value = c("REM", "wake", "REM", "alarm"),
     start = c(3, 14, 1, 7.5),
     stop = c(9, 19, 6, 7.5)
@@ -130,7 +130,7 @@ test_that("names<- preserves anievent class and metadata", {
 test_that("dplyr verbs round-trip a modifiers list-column", {
   ae <- anievent(
     individual = c(1L, 1L, 1L),
-    channel =c("behaviour", "behaviour", "call"),
+    channel = c("behaviour", "behaviour", "call"),
     value = c("REM", "wake", "alarm"),
     start = c(3, 14, 4.5),
     stop = c(9, 19, 4.5),

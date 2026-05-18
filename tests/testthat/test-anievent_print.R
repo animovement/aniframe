@@ -9,7 +9,7 @@
 test_that("tbl_sum.anievent shows class name and identity row", {
   ae <- anievent(
     individual = c(1L, 1L, 2L),
-    channel =c("behaviour", "call", "behaviour"),
+    channel = c("behaviour", "call", "behaviour"),
     value = c("REM", "alarm", "wake"),
     start = c(3, 4.5, 14),
     stop = c(9, 4.5, 19)
@@ -24,7 +24,7 @@ test_that("tbl_sum.anievent shows class name and identity row", {
 test_that("tbl_sum.anievent surfaces event channels from the channel column", {
   ae <- anievent(
     individual = c(1L, 1L),
-    channel =c("behaviour", "call"),
+    channel = c("behaviour", "call"),
     value = c("REM", "alarm"),
     start = c(3, 4.5),
     stop = c(9, 4.5)
@@ -39,7 +39,7 @@ test_that("tbl_sum.anievent surfaces event channels from the channel column", {
 test_that("tbl_sum.anievent surfaces sampling rate when set", {
   ae <- anievent(
     individual = 1L,
-    channel ="behaviour",
+    channel = "behaviour",
     value = "REM",
     start = 3,
     stop = 9
@@ -54,7 +54,7 @@ test_that("tbl_sum.anievent surfaces sampling rate when set", {
 test_that("tbl_sum.anievent omits event channels row on a zero-row object", {
   ae <- anievent(
     individual = integer(),
-    channel =character(),
+    channel = character(),
     value = factor(character()),
     start = numeric(),
     stop = numeric()
