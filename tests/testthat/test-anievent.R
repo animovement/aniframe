@@ -49,6 +49,19 @@ test_that("as_anievent() coerces a plain data.frame", {
   expect_s3_class(ae, "anievent")
 })
 
+test_that("anievent() accepts a single data.frame as its only argument", {
+  df <- dplyr::tibble(
+    individual = 1L,
+    variable = "behaviour",
+    value = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  ae <- anievent(df)
+  expect_s3_class(ae, "anievent")
+})
+
 test_that("as_anievent() on an existing anievent is a no-op", {
   ae <- anievent(
     individual = 1L,
@@ -171,9 +184,21 @@ test_that("validate_anievent rejects wrong column types", {
     start = 3,
     stop = 9
   )
-  ae$value <- as.character(ae$value)
+  bad_variable <- ae
+  bad_variable$variable <- factor(bad_variable$variable)
+  expect_error(validate_anievent(bad_variable), "must be character")
 
-  expect_error(validate_anievent(ae), "must be a factor")
+  bad_value <- ae
+  bad_value$value <- as.character(bad_value$value)
+  expect_error(validate_anievent(bad_value), "must be a factor")
+
+  bad_start <- ae
+  bad_start$start <- as.character(bad_start$start)
+  expect_error(validate_anievent(bad_start), "start must be numeric")
+
+  bad_stop <- ae
+  bad_stop$stop <- as.character(bad_stop$stop)
+  expect_error(validate_anievent(bad_stop), "stop must be numeric")
 })
 
 test_that("validate_anievent rejects negative intervals", {
@@ -202,6 +227,36 @@ test_that("validate_anievent rejects malformed modifiers", {
   )
 
   expect_error(validate_anievent(ae), "character vector")
+})
+
+test_that("validate_anievent rejects a modifiers column that isn't a list", {
+  ae <- anievent(
+    individual = 1L,
+    variable = "behaviour",
+    value = "REM",
+    start = 3,
+    stop = 9
+  )
+  ae$modifiers <- "not a list"
+
+  expect_error(validate_anievent(ae), "must be a list-column")
+})
+
+test_that("validate_anievent accepts well-formed modifiers", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    variable = c("behaviour", "behaviour", "call"),
+    value = c("REM", "REM", "alarm"),
+    start = c(3, 14, 4.5),
+    stop = c(9, 19, 4.5),
+    modifiers = list(
+      c("limb", "whisker"),
+      "tail",
+      character()
+    )
+  )
+
+  expect_no_error(validate_anievent(ae))
 })
 
 test_that("validate_anievent returns the input invisibly on success", {

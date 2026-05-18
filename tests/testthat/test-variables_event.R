@@ -85,6 +85,10 @@ test_that("ensure_valid_metadata() tolerates metadata missing variables_event", 
   expect_no_error(ensure_valid_metadata(md))
 })
 
+test_that("ensure_valid_variables_event() returns invisibly on NULL", {
+  expect_no_error(ensure_valid_variables_event(NULL))
+})
+
 test_that("tbl_sum.aniframe surfaces state and point variables in the header", {
   af <- aniframe(
     individual = rep(1L, 4),
