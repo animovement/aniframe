@@ -26,6 +26,12 @@
 #'   `from`/`to` pairs. Default is an empty list. Manage via
 #'   [set_connections()], [get_connections()], [add_connections()] and
 #'   [remove_connections()].
+#' * `spec_version`: Named list of semantic version strings, one per class
+#'   in the animovement ecosystem (currently `aniframe` and `anievent`).
+#'   Versions the full data contract of each class (mandatory columns,
+#'   validator, and the metadata fields the class uses), independently of
+#'   the package version. Objects serialised before this field existed are
+#'   tolerated by [ensure_valid_metadata()]; new objects always get it.
 #'
 #' @seealso [set_metadata()], [get_metadata()]
 #'
@@ -100,7 +106,11 @@ default_metadata <- function() {
       )
     ),
     y_height = as.numeric(NA),
-    connections = list()
+    connections = list(),
+    spec_version = list(
+      aniframe = "1.0.0",
+      anievent = "0.1.0"
+    )
   )
 
   class(metadata) <- "aniframe_metadata"

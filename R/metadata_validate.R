@@ -4,6 +4,13 @@ ensure_valid_metadata <- function(metadata) {
   ensure_metadata_fields_are_correct_class(metadata)
 }
 
+# Fields added after the initial schema. Their absence is tolerated on
+# read so previously serialised objects continue to validate; new objects
+# always have them via `default_metadata()`.
+optional_metadata_fields <- function() {
+  c("spec_version")
+}
+
 # ------------------------------------------------------------------
 # Does the object have a "metadata" attribute?
 # ------------------------------------------------------------------
@@ -38,7 +45,10 @@ ensure_is_list <- function(x) {
 # Are all the necessary metadata fields present?
 # ------------------------------------------------------------------
 check_all_metadata_fields_present <- function(metadata) {
-  mandatory_metadata_fields <- names(default_metadata())
+  mandatory_metadata_fields <- setdiff(
+    names(default_metadata()),
+    optional_metadata_fields()
+  )
   all(mandatory_metadata_fields %in% names(metadata)) |>
     invisible()
 }
