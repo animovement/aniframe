@@ -7,12 +7,12 @@
 get_metadata(data, fields = NULL)
 }
 \arguments{
-\item{data}{aniframe}
+\item{data}{An aniframe or anievent object.}
 
 \item{fields}{If only specific metadata fields should be returned.}
 }
 \value{
-the metadata associated with the aniframe
+The metadata associated with the object.
 }
 \description{
 Get metadata

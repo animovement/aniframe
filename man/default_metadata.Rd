@@ -46,8 +46,10 @@ tolerated by the metadata validator; new objects always get it.
 }
 \description{
 Returns a list containing the default metadata fields and their initial
-values for an aniframe object. Most fields are initialized as \code{NA} and
-should be set appropriately for your data.
+values. The same metadata substrate is shared by both \code{\link[=aniframe]{aniframe()}} and
+\code{\link[=anievent]{anievent()}} objects; per-class data contracts are versioned via
+\code{spec_version}. Most fields are initialized as \code{NA} and should be set
+appropriately for your data.
 }
 \seealso{
 \code{\link[=set_metadata]{set_metadata()}}, \code{\link[=get_metadata]{get_metadata()}}

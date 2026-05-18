@@ -1,9 +1,9 @@
 #' Get metadata
 #'
-#' @param data aniframe
+#' @param data An aniframe or anievent object.
 #' @param fields If only specific metadata fields should be returned.
 #'
-#' @return the metadata associated with the aniframe
+#' @return The metadata associated with the object.
 #' @export
 get_metadata <- function(data, fields = NULL) {
   ensure_metadata_exists(data)

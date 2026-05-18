@@ -2,8 +2,10 @@
 #'
 #' @description
 #' Returns a list containing the default metadata fields and their initial
-#' values for an aniframe object. Most fields are initialized as `NA` and
-#' should be set appropriately for your data.
+#' values. The same metadata substrate is shared by both [aniframe()] and
+#' [anievent()] objects; per-class data contracts are versioned via
+#' `spec_version`. Most fields are initialized as `NA` and should be set
+#' appropriately for your data.
 #'
 #' @return A named list with the following fields:
 #' * `source`: Data source identifier (character, NA)

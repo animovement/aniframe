@@ -1,10 +1,10 @@
-#' Set metadata for an aniframe
+#' Set metadata
 #'
 #' @description
-#' Sets or updates metadata for an aniframe object. Metadata can be provided
-#' either as named arguments or as a list. If the aniframe already has metadata,
-#' the new values will be merged with existing values, with new values taking
-#' precedence.
+#' Sets or updates metadata for an aniframe or anievent object. Metadata can
+#' be provided either as named arguments or as a list. If the object already
+#' has metadata, the new values will be merged with existing values, with new
+#' values taking precedence.
 #'
 #' Character values for factor fields will be automatically converted to factors
 #' if they match allowed levels.
@@ -24,12 +24,12 @@
 #' For backwards compatibility, the deprecated field `point_of_reference` is
 #' accepted as an alias for `origin` and emits a deprecation warning.
 #'
-#' @param data An aniframe object
+#' @param data An aniframe or anievent object.
 #' @param ... Named metadata values (e.g., `sampling_rate = 30, source = "sleap"`)
 #' @param metadata Alternatively, a named list of metadata. Cannot be used
 #'   simultaneously with `...`
 #'
-#' @return The aniframe object with updated metadata
+#' @return The object with updated metadata.
 #'
 #' @seealso [get_metadata()], [default_metadata()]
 #'

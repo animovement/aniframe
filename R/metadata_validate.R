@@ -49,7 +49,7 @@ check_metadata_exists <- function(data) {
 ensure_metadata_exists <- function(data) {
   if (!check_metadata_exists(data)) {
     cli::cli_abort(
-      "Metadata hasn't been initiated. Initialise it with `set_metadata`."
+      "Metadata hasn't been initiated. Initialise it with {.fn set_metadata}."
     )
   }
 }
@@ -84,7 +84,7 @@ check_all_metadata_fields_present <- function(metadata) {
 ensure_all_metadata_fields_present <- function(metadata) {
   if (!check_all_metadata_fields_present(metadata)) {
     cli::cli_abort(
-      "The dataframe does not have the mandatory 'metadata' fields."
+      "The object does not have the mandatory metadata fields."
     )
   }
 }

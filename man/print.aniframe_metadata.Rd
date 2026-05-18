@@ -2,7 +2,7 @@
 % Please edit documentation in R/metadata_print.R
 \name{print.aniframe_metadata}
 \alias{print.aniframe_metadata}
-\title{Print method for aniframe metadata}
+\title{Print method for animovement metadata}
 \usage{
 \method{print}{aniframe_metadata}(x, ...)
 }
@@ -19,5 +19,10 @@ Renders the metadata as a single block, captured via
 \code{\link[cli:cli_format_method]{cli::cli_format_method()}} and emitted with \code{\link[=cat]{cat()}}. Field names
 and types are padded to fixed widths so the values line up in
 aligned columns, similar to \code{\link[=str]{str()}}.
+}
+\details{
+The S3 class is named \code{aniframe_metadata} for historical reasons,
+but the metadata substrate is shared by both \code{\link[=aniframe]{aniframe()}} and
+\code{\link[=anievent]{anievent()}} objects.
 }
 \keyword{internal}

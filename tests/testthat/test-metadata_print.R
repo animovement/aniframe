@@ -6,7 +6,7 @@
 #   - last line is the trailing newline emitted by cat()
 #
 # Content:
-#   - includes the "aniframe metadata" header
+#   - includes the "animovement metadata" header
 #   - lists every metadata field name
 #   - shows "(character)" / "(factor)" type annotation per field
 #   - empty metadata renders the "No metadata available" message
@@ -47,7 +47,7 @@ test_that("print includes the metadata header", {
 
   out <- capture_md_print(md)
 
-  expect_true(any(grepl("aniframe metadata", out)))
+  expect_true(any(grepl("animovement metadata", out)))
 })
 
 test_that("print lists every metadata field name", {
