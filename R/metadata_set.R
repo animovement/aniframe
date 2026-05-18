@@ -152,6 +152,7 @@ set_metadata <- function(data, ..., metadata = NULL) {
 
   new_md <- utils::modifyList(new_md, user_md)
   ensure_valid_metadata(new_md)
+  ensure_valid_variables_event(new_md$variables_event)
   data <- attach_metadata(data, new_md)
 
   # TODO: Figure out whether it makes sense to include these special cases in the aniframe package

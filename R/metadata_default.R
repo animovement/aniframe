@@ -26,6 +26,13 @@
 #'   `from`/`to` pairs. Default is an empty list. Manage via
 #'   [set_connections()], [get_connections()], [add_connections()] and
 #'   [remove_connections()].
+#' * `variables_event`: Named list with two entries, `state` and `point`,
+#'   each a character vector naming columns that carry per-frame
+#'   categorical event labels. `state` columns are interval-valued
+#'   (durative behaviours, ordered coarse to fine to encode nesting);
+#'   `point` columns are instantaneous (zero-duration events). Foundation
+#'   for the `anievent` class and downstream event-handling utilities.
+#'   Default is an empty list for each.
 #' * `spec_version`: Named list of semantic version strings, one per class
 #'   in the animovement ecosystem (currently `aniframe` and `anievent`).
 #'   Versions the full data contract of each class (mandatory columns,
@@ -46,6 +53,10 @@ default_metadata <- function() {
     variables_what = c("individual", "keypoint"),
     variables_when = c("time"),
     variables_where = c("x", "y"),
+    variables_event = list(
+      state = character(),
+      point = character()
+    ),
     unit_space = factor(
       "px",
       levels = c(

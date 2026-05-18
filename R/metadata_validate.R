@@ -8,7 +8,35 @@ ensure_valid_metadata <- function(metadata) {
 # read so previously serialised objects continue to validate; new objects
 # always have them via `default_metadata()`.
 optional_metadata_fields <- function() {
-  c("spec_version")
+  c("spec_version", "variables_event")
+}
+
+# Structural check for `variables_event`: must be a list with character
+# vectors at `$state` and `$point`, and the two sets must not overlap (a
+# column cannot be both state and point).
+ensure_valid_variables_event <- function(x) {
+  if (is.null(x)) {
+    return(invisible())
+  }
+  if (!is.list(x) || !all(c("state", "point") %in% names(x))) {
+    cli::cli_abort(c(
+      "{.field variables_event} must be a list with entries {.val state} and {.val point}.",
+      "i" = "Got names: {.val {names(x)}}."
+    ))
+  }
+  if (!is.character(x$state) || !is.character(x$point)) {
+    cli::cli_abort(
+      "Both {.field variables_event$state} and {.field variables_event$point} must be character vectors."
+    )
+  }
+  overlap <- intersect(x$state, x$point)
+  if (length(overlap) > 0) {
+    cli::cli_abort(c(
+      "A column cannot be both a state and a point event variable.",
+      "x" = "Overlapping: {.val {overlap}}."
+    ))
+  }
+  invisible()
 }
 
 # ------------------------------------------------------------------
