@@ -17,3 +17,4 @@ A grouped anievent.
 \description{
 Group an anievent
 }
+\keyword{internal}

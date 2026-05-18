@@ -21,3 +21,4 @@ one row per column in \code{variables_when} (excluding \code{time}). This means 
 identity/temporal variables (e.g. \code{track}, \code{model}, \code{session}) appear
 automatically, and rows are omitted entirely when their column is absent.
 }
+\keyword{internal}

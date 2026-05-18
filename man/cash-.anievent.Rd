@@ -17,3 +17,4 @@ A vector.
 \description{
 Extract column from anievent with $
 }
+\keyword{internal}

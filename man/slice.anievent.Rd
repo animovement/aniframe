@@ -19,3 +19,4 @@ A sliced anievent.
 \description{
 Slice rows from an anievent
 }
+\keyword{internal}

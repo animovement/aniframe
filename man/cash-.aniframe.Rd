@@ -17,3 +17,4 @@ A vector
 \description{
 Extract column from aniframe with $
 }
+\keyword{internal}

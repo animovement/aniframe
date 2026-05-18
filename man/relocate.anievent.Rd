@@ -17,3 +17,4 @@ An anievent with relocated columns.
 \description{
 Relocate columns in an anievent
 }
+\keyword{internal}

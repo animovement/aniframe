@@ -11,6 +11,7 @@
 #' @param ... Additional arguments (unused)
 #' @return Named character vector with summary information
 #' @importFrom pillar tbl_sum
+#' @keywords internal
 #' @export
 tbl_sum.aniframe <- function(x, ...) {
   default_header <- NextMethod()

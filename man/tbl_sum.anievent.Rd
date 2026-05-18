@@ -20,3 +20,4 @@ columns (\code{variables_what}), the unique event channels carried by the
 \code{variable} column, and the standard sampling-rate row inherited from
 the metadata substrate.
 }
+\keyword{internal}

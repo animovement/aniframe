@@ -17,3 +17,4 @@ An aniframe with selected columns
 \description{
 Select columns from an aniframe
 }
+\keyword{internal}

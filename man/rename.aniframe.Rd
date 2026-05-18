@@ -17,3 +17,4 @@ An aniframe with renamed columns
 \description{
 Rename columns in an aniframe
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ An anievent with renamed columns.
 \description{
 Rename columns in an anievent
 }
+\keyword{internal}

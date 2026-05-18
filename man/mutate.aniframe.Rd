@@ -17,3 +17,4 @@ An aniframe with modified columns
 \description{
 Mutate columns in an aniframe
 }
+\keyword{internal}

@@ -17,3 +17,4 @@ An aniframe with relocated columns
 \description{
 Relocate columns in an aniframe
 }
+\keyword{internal}

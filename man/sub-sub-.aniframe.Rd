@@ -19,3 +19,4 @@ A vector or data frame
 \description{
 Extract single column from aniframe with [[
 }
+\keyword{internal}
