@@ -1,3 +1,28 @@
+# aniframe 0.6.0 (development version)
+
+## New features
+
+* Added the `anievent` class for behavioural events in long format — one row per bout (state event) or instant (point event). Sibling of `aniframe`: shares the metadata substrate but does not inherit from it. Required columns: `channel`, `value`, `start`, `stop`; identity columns travel via `variables_what`; an optional `modifiers` list-column carries per-event modifier values as flat character vectors (matching the BORIS export format). The class is intentionally type-agnostic — the state-vs-point distinction is only load-bearing at conversion / plotting / metric time and is left to companion packages (#67).
+* New exported API around the class: `anievent()` and `as_anievent()` for construction, `is_anievent()` / `ensure_is_anievent()` for predicates, and `validate_anievent()` for re-checking structural invariants on demand. Class-preserving dplyr verbs and base-R extraction / assignment methods are registered (`mutate.anievent`, `filter.anievent`, `[.anievent`, etc.) so the class round-trips through tidyverse pipelines (#68).
+* Added a `variables_event` metadata field — a named list `list(state, point)` declaring which `aniframe` columns hold per-frame categorical event labels. State columns are interval-valued (ordered coarse to fine for nesting); point columns are instantaneous. Foundation for downstream conversions; the `aniframe` print header surfaces "State event variables" / "Point event variables" rows when populated (#66).
+* Added a `spec_version` metadata field — a named list keyed by class, e.g. `list(aniframe = "1.0.0", anievent = "0.1.0")` — so the data contract of each class can evolve independently of the package version. Older serialised objects missing the field continue to validate (#65).
+* `as_aniframe()` now auto-detects `observation` as a temporal grouping column, alongside the existing `session` and `trial`. Lays the groundwork for importing behavioural-event data from BORIS where each observation has its own time origin.
+
+## Improvements
+
+* The `print.aniframe_metadata()` heading now reads "animovement metadata" to reflect that the metadata substrate is shared by both `aniframe` and `anievent`. The S3 class name `aniframe_metadata` is unchanged for backwards compatibility with previously serialised objects (#69).
+* `get_metadata()`, `set_metadata()`, and `default_metadata()` documentation generalised — these operate on either `aniframe` or `anievent` objects via the shared metadata substrate (#69).
+
+## Documentation
+
+* New pkgdown article "The anievent data structure" walks through the class, the channel concept (one mutually-exclusive categorical track of behaviour), state vs point events, modifiers, validation, and multi-observation handling (#70).
+* New pkgdown reference section "Creating and converting anievent objects" indexes the user-facing anievent API; the class-preserving S3 methods are marked `@keywords internal` (still exported and dispatched) so they don't clutter the reference index, matching the tibble subsetting-family convention.
+
+## Internal
+
+* Factored the strip-class / `NextMethod` / rebuild / re-attach pattern shared by `aniframe_methods.R` and `anievent_methods.R` into `preserve_animovement_class()` in `utils.R`.
+* Test coverage at 100% (703 tests).
+
 # aniframe 0.5.0 (2026-05-04)
 
 ## New features
