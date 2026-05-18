@@ -38,7 +38,7 @@
 #'   Versions the full data contract of each class (mandatory columns,
 #'   validator, and the metadata fields the class uses), independently of
 #'   the package version. Objects serialised before this field existed are
-#'   tolerated by [ensure_valid_metadata()]; new objects always get it.
+#'   tolerated by the metadata validator; new objects always get it.
 #'
 #' @seealso [set_metadata()], [get_metadata()]
 #'

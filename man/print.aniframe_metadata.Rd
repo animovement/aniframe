@@ -15,9 +15,9 @@
 \code{x}, invisibly.
 }
 \description{
-Renders the metadata as a single block — captured via
-\code{\link[cli:cli_format_method]{cli::cli_format_method()}} and emitted with \code{\link[=cat]{cat()}} — so there's no
-leading newline and no blank lines between entries. This makes the
-output render cleanly in HTML contexts such as Quarto / R Markdown.
+Renders the metadata as a single block, captured via
+\code{\link[cli:cli_format_method]{cli::cli_format_method()}} and emitted with \code{\link[=cat]{cat()}}. Field names
+and types are padded to fixed widths so the values line up in
+aligned columns, similar to \code{\link[=str]{str()}}.
 }
 \keyword{internal}

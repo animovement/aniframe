@@ -29,6 +29,19 @@ temporal variable (typically \code{keypoint} for skeletons; could also be
 \code{from}/\code{to} pairs. Default is an empty list. Manage via
 \code{\link[=set_connections]{set_connections()}}, \code{\link[=get_connections]{get_connections()}}, \code{\link[=add_connections]{add_connections()}} and
 \code{\link[=remove_connections]{remove_connections()}}.
+\item \code{variables_event}: Named list with two entries, \code{state} and \code{point},
+each a character vector naming columns that carry per-frame
+categorical event labels. \code{state} columns are interval-valued
+(durative behaviours, ordered coarse to fine to encode nesting);
+\code{point} columns are instantaneous (zero-duration events). Foundation
+for the \code{anievent} class and downstream event-handling utilities.
+Default is an empty list for each.
+\item \code{spec_version}: Named list of semantic version strings, one per class
+in the animovement ecosystem (currently \code{aniframe} and \code{anievent}).
+Versions the full data contract of each class (mandatory columns,
+validator, and the metadata fields the class uses), independently of
+the package version. Objects serialised before this field existed are
+tolerated by the metadata validator; new objects always get it.
 }
 }
 \description{
