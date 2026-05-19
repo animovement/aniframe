@@ -92,7 +92,16 @@ test_that("per-individual grouping isolates bouts", {
     time = c(1:4, 1:4),
     x = rnorm(8),
     y = rnorm(8),
-    behaviour = factor(c("REM", "REM", "wake", "wake", "wake", "wake", "REM", "REM"))
+    behaviour = factor(c(
+      "REM",
+      "REM",
+      "wake",
+      "wake",
+      "wake",
+      "wake",
+      "REM",
+      "REM"
+    ))
   )
   af <- set_metadata(
     af,
@@ -112,7 +121,16 @@ test_that("observation grouping isolates bouts across clips", {
     time = c(1:4, 1:4),
     x = rnorm(8),
     y = rnorm(8),
-    behaviour = factor(c("REM", "REM", "wake", "wake", "REM", "REM", "REM", "wake"))
+    behaviour = factor(c(
+      "REM",
+      "REM",
+      "wake",
+      "wake",
+      "REM",
+      "REM",
+      "REM",
+      "wake"
+    ))
   )
   af <- set_metadata(
     af,

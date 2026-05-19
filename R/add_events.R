@@ -71,7 +71,10 @@ add_events <- function(data, events) {
 
   host_what <- intersect(host_md$variables_what, names(data))
   events_what <- intersect(events_md$variables_what, names(events))
-  host_grouping <- intersect(setdiff(host_md$variables_when, "time"), names(data))
+  host_grouping <- intersect(
+    setdiff(host_md$variables_when, "time"),
+    names(data)
+  )
   events_grouping <- intersect(
     setdiff(events_md$variables_when, c("start", "stop")),
     names(events)
@@ -95,7 +98,8 @@ add_events <- function(data, events) {
 
   data <- interval_join_channels(data, events, channel_names, join_keys)
 
-  declared <- host_md$variables_event %||% list(state = character(), point = character())
+  declared <- host_md$variables_event %||%
+    list(state = character(), point = character())
   declared$state <- unique(c(
     declared$state,
     channel_names[channel_type == "state"]

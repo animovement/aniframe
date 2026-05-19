@@ -88,7 +88,9 @@ ensure_anievent_channels_disjoint <- function(data) {
     dplyr::across(dplyr::all_of(c(group_cols, "channel")))
   )
   for (sub in dplyr::group_split(groups)) {
-    if (nrow(sub) < 2) next
+    if (nrow(sub) < 2) {
+      next
+    }
     sub <- sub[order(sub$start), ]
     overlaps <- sub$start[-1] < sub$stop[-nrow(sub)]
     if (any(overlaps)) {

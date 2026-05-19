@@ -100,8 +100,14 @@ test_that("per-individual matching keeps events on the right subject", {
   )
 
   result <- add_events(af, ae)
-  expect_equal(as.character(result$behaviour[result$individual == 1])[1:3], rep("REM", 3))
-  expect_equal(as.character(result$behaviour[result$individual == 2])[1:3], rep("wake", 3))
+  expect_equal(
+    as.character(result$behaviour[result$individual == 1])[1:3],
+    rep("REM", 3)
+  )
+  expect_equal(
+    as.character(result$behaviour[result$individual == 2])[1:3],
+    rep("wake", 3)
+  )
 })
 
 test_that("per-observation matching isolates clips", {
@@ -257,7 +263,12 @@ test_that("identical unit_time bypasses conversion", {
 })
 
 test_that("frame -> non-second SI host conversion works", {
-  af <- aniframe(individual = 1L, time = c(0, 50, 100, 150, 200), x = 1:5, y = 1:5)
+  af <- aniframe(
+    individual = 1L,
+    time = c(0, 50, 100, 150, 200),
+    x = 1:5,
+    y = 1:5
+  )
   af <- set_metadata(af, unit_time = "ms")
   ae <- anievent(
     individual = 1L,
