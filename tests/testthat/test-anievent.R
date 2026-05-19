@@ -260,7 +260,7 @@ test_that("validate_anievent rejects wrong column types", {
   expect_error(validate_anievent(bad_stop), "stop must be numeric")
 })
 
-test_that("validate_anievent rejects overlapping bouts in the same channel for the same subject", {
+test_that("validate_anievent warns (by default) on overlapping bouts in the same channel for the same subject", {
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
@@ -269,7 +269,22 @@ test_that("validate_anievent rejects overlapping bouts in the same channel for t
     stop = c(8, 10)
   )
 
-  expect_error(validate_anievent(ae), "overlap")
+  expect_warning(validate_anievent(ae), "overlap")
+})
+
+test_that("validate_anievent(channels_strict = TRUE) escalates channel overlap to an error", {
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    value = c("REM", "wake"),
+    start = c(3, 5),
+    stop = c(8, 10)
+  )
+
+  expect_error(
+    validate_anievent(ae, channels_strict = TRUE),
+    "overlap"
+  )
 })
 
 test_that("validate_anievent accepts overlapping bouts on different channels", {

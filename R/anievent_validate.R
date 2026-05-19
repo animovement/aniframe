@@ -9,8 +9,12 @@
 #'   character vectors (the values picked from BORIS modifier sets at
 #'   coding time; an empty vector when the event has no modifiers);
 #' * within each `(identity + temporal-grouping)` group, two bouts of
-#'   the same `channel` never overlap — channels are mutually
-#'   exclusive by definition.
+#'   the same `channel` never overlap. Channels are conventionally
+#'   mutually exclusive, but some coding tools (BORIS in particular)
+#'   permit overlap, so the default is to **warn** rather than error.
+#'   Pass `channels_strict = TRUE` to escalate to a hard error — this
+#'   is what downstream conversions (`add_events()`) and plotting
+#'   verbs need.
 #'
 #' Type-linked invariants (which channels are state vs point events;
 #' the zero-duration requirement on point events) belong with the
@@ -22,16 +26,24 @@
 #' is returned invisibly.
 #'
 #' @param data An anievent object.
+#' @param channels_strict If `TRUE`, overlapping bouts in the same
+#'   channel for the same subject raise an error; otherwise (default)
+#'   they raise a warning. Downstream verbs that depend on mutual
+#'   exclusion (`add_events()`, plotting) call with `TRUE`.
 #'
 #' @return The input `data`, invisibly.
 #' @export
-validate_anievent <- function(data) {
+validate_anievent <- function(data, channels_strict = FALSE) {
   ensure_is_anievent(data)
   ensure_anievent_cols(data)
   ensure_anievent_col_types(data)
   ensure_anievent_intervals_nonnegative(data)
   ensure_anievent_modifiers_shape(data)
-  ensure_anievent_channels_disjoint(data)
+  if (channels_strict) {
+    ensure_anievent_channels_disjoint(data)
+  } else {
+    warn_anievent_channels_overlap(data)
+  }
   invisible(data)
 }
 
@@ -68,10 +80,16 @@ ensure_anievent_intervals_nonnegative <- function(data) {
 }
 
 
+#' Find the first overlapping bout pair within any (identity +
+#' temporal-grouping + channel) group of an anievent.
+#'
+#' Returns `NULL` when no overlap exists; otherwise a small named list
+#' identifying the channel and offending row.
+#'
 #' @keywords internal
-ensure_anievent_channels_disjoint <- function(data) {
+find_anievent_channel_overlap <- function(data) {
   if (nrow(data) < 2) {
-    return(invisible(TRUE))
+    return(NULL)
   }
 
   md <- get_metadata(data)
@@ -95,13 +113,36 @@ ensure_anievent_channels_disjoint <- function(data) {
     overlaps <- sub$start[-1] < sub$stop[-nrow(sub)]
     if (any(overlaps)) {
       bad_row <- which(overlaps)[1] + 1
-      ch <- sub$channel[bad_row]
-      cli::cli_abort(c(
-        "Two bouts of the same channel overlap for the same subject.",
-        "x" = "Channel {.val {ch}} has overlapping bouts at row {.val {bad_row}}.",
-        "i" = "Channels are mutually exclusive: only one value can be active at a time per subject."
-      ))
+      return(list(channel = sub$channel[bad_row], row = bad_row))
     }
+  }
+  NULL
+}
+
+
+#' @keywords internal
+warn_anievent_channels_overlap <- function(data) {
+  hit <- find_anievent_channel_overlap(data)
+  if (!is.null(hit)) {
+    cli::cli_warn(c(
+      "Two bouts of the same channel overlap for the same subject.",
+      "x" = "Channel {.val {hit$channel}} has overlapping bouts at row {.val {hit$row}}.",
+      "i" = "Channels are conventionally mutually exclusive. Downstream conversions ({.fn add_events}) and plotting verbs will error on overlap."
+    ))
+  }
+  invisible(TRUE)
+}
+
+
+#' @keywords internal
+ensure_anievent_channels_disjoint <- function(data) {
+  hit <- find_anievent_channel_overlap(data)
+  if (!is.null(hit)) {
+    cli::cli_abort(c(
+      "Two bouts of the same channel overlap for the same subject.",
+      "x" = "Channel {.val {hit$channel}} has overlapping bouts at row {.val {hit$row}}.",
+      "i" = "Channels are mutually exclusive: only one value can be active at a time per subject."
+    ))
   }
   invisible(TRUE)
 }

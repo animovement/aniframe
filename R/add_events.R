@@ -53,7 +53,7 @@
 add_events <- function(data, events) {
   ensure_is_aniframe(data)
   ensure_is_anievent(events)
-  validate_anievent(events)
+  validate_anievent(events, channels_strict = TRUE)
 
   events <- reconcile_unit_time(data, events)
 

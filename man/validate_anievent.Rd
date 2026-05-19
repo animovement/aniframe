@@ -4,10 +4,15 @@
 \alias{validate_anievent}
 \title{Validate an anievent}
 \usage{
-validate_anievent(data)
+validate_anievent(data, channels_strict = FALSE)
 }
 \arguments{
 \item{data}{An anievent object.}
+
+\item{channels_strict}{If \code{TRUE}, overlapping bouts in the same
+channel for the same subject raise an error; otherwise (default)
+they raise a warning. Downstream verbs that depend on mutual
+exclusion (\code{add_events()}, plotting) call with \code{TRUE}.}
 }
 \value{
 The input \code{data}, invisibly.
@@ -23,8 +28,12 @@ with the expected types; identity columns travel via
 character vectors (the values picked from BORIS modifier sets at
 coding time; an empty vector when the event has no modifiers);
 \item within each \code{(identity + temporal-grouping)} group, two bouts of
-the same \code{channel} never overlap — channels are mutually
-exclusive by definition.
+the same \code{channel} never overlap. Channels are conventionally
+mutually exclusive, but some coding tools (BORIS in particular)
+permit overlap, so the default is to \strong{warn} rather than error.
+Pass \code{channels_strict = TRUE} to escalate to a hard error — this
+is what downstream conversions (\code{add_events()}) and plotting
+verbs need.
 }
 }
 \details{
