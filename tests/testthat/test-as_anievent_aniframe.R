@@ -282,7 +282,10 @@ test_that("singleton identity columns are preserved (single individual aniframe 
   ae <- as_anievent(af)
   expect_true("individual" %in% names(ae))
   expect_true("keypoint" %in% names(ae)) # auto-added centroid, also a singleton
-  expect_setequal(get_metadata(ae, "variables_what"), c("individual", "keypoint"))
+  expect_setequal(
+    get_metadata(ae, "variables_what"),
+    c("individual", "keypoint")
+  )
 })
 
 test_that("temporal-grouping columns (observation / session / trial) are always carried over regardless of variation", {
