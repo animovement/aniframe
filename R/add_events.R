@@ -174,15 +174,28 @@ reconcile_unit_time <- function(data, events) {
 #'
 #' For each channel, adds a column to `data` whose value, for each
 #' frame, is the `value` of the bout active at that frame within the
-#' matching join-key group; `NA` outside any bout.
+#' matching join-key group; `NA` outside any bout. If the anievent
+#' carries non-empty modifiers for a channel, a parallel
+#' `<channel>_modifiers` list-column is added, broadcasting each
+#' bout's modifier vector across its frames.
 #'
 #' @keywords internal
 interval_join_channels <- function(data, events, channel_names, join_keys) {
   events <- dplyr::as_tibble(events)
+  events_has_modifiers <- "modifiers" %in% names(events)
 
   for (ch in channel_names) {
     bouts <- events[events$channel == ch, , drop = FALSE]
     new_col <- factor(rep(NA, nrow(data)), levels = levels(bouts$value))
+
+    channel_has_modifiers <- events_has_modifiers &&
+      any(lengths(bouts$modifiers) > 0)
+    if (channel_has_modifiers) {
+      new_mod_col <- vector("list", nrow(data))
+      for (j in seq_len(nrow(data))) {
+        new_mod_col[[j]] <- character()
+      }
+    }
 
     if (length(join_keys) > 0) {
       host_key <- do.call(
@@ -203,9 +216,20 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
         data$time >= bouts$start[i] &
         data$time <= bouts$stop[i]
       new_col[mask] <- bouts$value[i]
+      if (channel_has_modifiers) {
+        mods <- bouts$modifiers[[i]]
+        if (length(mods) > 0) {
+          for (j in which(mask)) {
+            new_mod_col[[j]] <- mods
+          }
+        }
+      }
     }
 
     data[[ch]] <- new_col
+    if (channel_has_modifiers) {
+      data[[paste0(ch, "_modifiers")]] <- new_mod_col
+    }
   }
 
   data

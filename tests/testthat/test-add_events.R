@@ -336,6 +336,112 @@ test_that("add_events works when host has no identity columns", {
   )
 })
 
+test_that("modifiers on the events broadcast to <channel>_modifiers on the host", {
+  af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    value = c("REM", "wake"),
+    start = c(1, 5),
+    stop = c(4, 10),
+    modifiers = list(
+      c("limb", "whisker"),
+      "tail"
+    )
+  )
+
+  result <- add_events(af, ae)
+  expect_true("behaviour_modifiers" %in% names(result))
+  expect_type(result$behaviour_modifiers, "list")
+
+  # Frames 1-4: REM bout -> c("limb", "whisker")
+  for (i in 1:4) {
+    expect_equal(result$behaviour_modifiers[[i]], c("limb", "whisker"))
+  }
+  # Frames 5-10: wake bout -> "tail"
+  for (i in 5:10) {
+    expect_equal(result$behaviour_modifiers[[i]], "tail")
+  }
+})
+
+test_that("channels without any non-empty modifiers don't add a <channel>_modifiers column", {
+  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    value = "REM",
+    start = 1,
+    stop = 4,
+    modifiers = list(character()) # explicitly empty
+  )
+
+  result <- add_events(af, ae)
+  expect_false("behaviour_modifiers" %in% names(result))
+})
+
+test_that("mixed-channel modifiers add a column only for the channel that has them", {
+  af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "call"),
+    value = c("REM", "alarm"),
+    start = c(1, 3),
+    stop = c(4, 3),
+    modifiers = list(
+      c("limb", "whisker"), # behaviour has modifiers
+      character()           # call doesn't
+    )
+  )
+
+  result <- add_events(af, ae)
+  expect_true("behaviour_modifiers" %in% names(result))
+  expect_false("call_modifiers" %in% names(result))
+})
+
+test_that("frames outside any bout get an empty character() in <channel>_modifiers", {
+  af <- aniframe(individual = 1L, time = 1:6, x = 1:6, y = 1:6)
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    value = "REM",
+    start = 2,
+    stop = 4,
+    modifiers = list(c("limb"))
+  )
+
+  result <- add_events(af, ae)
+  expect_equal(result$behaviour_modifiers[[1]], character())
+  expect_equal(result$behaviour_modifiers[[5]], character())
+  expect_equal(result$behaviour_modifiers[[6]], character())
+})
+
+test_that("anievent -> aniframe -> anievent round-trips modifiers", {
+  af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    value = c("REM", "wake", "alarm"),
+    start = c(1, 5, 3),
+    stop = c(4, 10, 3),
+    modifiers = list(
+      c("limb", "whisker"),
+      "tail",
+      "high"
+    )
+  )
+
+  af_back <- add_events(af, ae)
+  ae_back <- as_anievent(af_back)
+
+  expect_true("modifiers" %in% names(ae_back))
+  rem_row <- which(ae_back$channel == "behaviour" & ae_back$value == "REM")
+  expect_equal(ae_back$modifiers[[rem_row]], c("limb", "whisker"))
+  wake_row <- which(ae_back$channel == "behaviour" & ae_back$value == "wake")
+  expect_equal(ae_back$modifiers[[wake_row]], "tail")
+  alarm_row <- which(ae_back$channel == "call")
+  expect_equal(ae_back$modifiers[[alarm_row]], "high")
+})
+
 test_that("add_events accumulates into an existing variables_event", {
   af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
   af <- set_metadata(

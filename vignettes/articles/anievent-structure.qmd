@@ -293,6 +293,33 @@ Unit reconciliation happens transparently when host and events differ:
 SI ↔ SI is auto-converted; crossing the `"frame"` ↔ SI boundary needs
 a `sampling_rate` on either side (errors otherwise).
 
+### Modifiers round-trip
+
+If the anievent carries a `modifiers` list-column, `add_events()`
+broadcasts each bout's modifier vector across its frames as a
+parallel `<channel>_modifiers` list-column on the host. Channels
+without any non-empty modifier cells don't add a column.
+
+`as_anievent()` reverses the operation: a `<channel>_modifiers`
+column on the source aniframe is gathered back into the resulting
+anievent's `modifiers` cells, one per row.
+
+```{r}
+ae_with_mods <- anievent(
+  individual = c(1L, 1L),
+  channel = c("behaviour", "behaviour"),
+  value = c("REM", "wake"),
+  start = c(1, 5),
+  stop = c(4, 10),
+  modifiers = list(c("limb", "whisker"), "tail")
+)
+af_with_mods <- add_events(
+  aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10),
+  ae_with_mods
+)
+af_with_mods |> dplyr::select(time, behaviour, behaviour_modifiers)
+```
+
 ## Where things live in the ecosystem
 
 | Concern                                 | Planned home | Status     |

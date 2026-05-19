@@ -10,6 +10,8 @@
 * `set_unit_time()` and `set_sampling_rate()` are now S3 generics with methods for both `aniframe` and `anievent`. On an anievent the calibration factor is applied to `start` and `stop` (instead of `time` on an aniframe); the rest of the contract is identical. Lets anievent data round-trip between frame, millisecond, and SI units the same way aniframe does.
 * Added `as_anievent.aniframe()` — converts an `aniframe` with declared `variables_event` columns into an `anievent`. For each column in `variables_event$state`, contiguous runs of the same label are run-length-encoded into bouts within each `(individual, observation, …)` group; each `variables_event$point` column becomes one row per non-`NA` frame with `start == stop`. `unit_time` and `sampling_rate` are inherited from the host.
 * Added `add_events()` — host-first verb that joins an `anievent` onto an `aniframe`'s per-frame grid, adding one factor-valued column per channel. State vs point is auto-detected from the bouts (a channel is `point` iff every bout has `start == stop`). Unit reconciliation is automatic for SI ↔ SI; crossing the `"frame"`/SI boundary needs a `sampling_rate` on either side. Channel-name collisions with existing host columns error out; frames outside any bout get `NA`.
+* Modifiers round-trip across the two verbs. `add_events()` broadcasts each bout's `modifiers` cell across the bout's frames as a parallel `<channel>_modifiers` list-column on the host (only when a channel has at least one non-empty modifier vector). `as_anievent.aniframe()` reverses the operation: a `<channel>_modifiers` column on the source aniframe is gathered back into the resulting anievent's `modifiers` cells.
+* `as_anievent.aniframe()` auto-detects each event channel's "scope" — the minimal subset of identity / grouping columns the value varies across — so a `behaviour` column constant across `keypoint` no longer produces duplicate bouts per keypoint. Channels with disagreeing scopes (e.g. an individual-level and a keypoint-level channel together) error with a message pointing to `variables_what` as the explicit override.
 * `validate_anievent()` now also checks that two bouts of the same `channel` never overlap within the same `(identity + temporal-grouping)` group — that's the structural property defining a channel.
 
 ## Improvements
@@ -26,7 +28,7 @@
 
 * Factored the strip-class / `NextMethod` / rebuild / re-attach pattern shared by `aniframe_methods.R` and `anievent_methods.R` into `preserve_animovement_class()` in `utils.R`.
 * `resolve_unit_time_calibration()` factors out the shared unit-validation and conversion-factor logic between `set_unit_time.aniframe` and `set_unit_time.anievent`.
-* Test coverage at 100% (778 tests).
+* Test coverage at 100% (822 tests).
 
 # aniframe 0.5.0 (2026-05-04)
 

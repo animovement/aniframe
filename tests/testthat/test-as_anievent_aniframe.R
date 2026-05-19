@@ -167,6 +167,32 @@ test_that("as_anievent.aniframe errors when a declared column is missing", {
   expect_error(as_anievent(af), "not present in the data")
 })
 
+test_that("as_anievent.aniframe picks up <channel>_modifiers list-columns", {
+  af <- aniframe(
+    individual = rep(1L, 5),
+    time = 1:5,
+    x = rnorm(5),
+    y = rnorm(5),
+    behaviour = factor(c("REM", "REM", "wake", "wake", "wake")),
+    behaviour_modifiers = I(list(
+      c("limb", "whisker"),
+      c("limb", "whisker"),
+      "tail",
+      "tail",
+      "tail"
+    ))
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "behaviour", point = character())
+  )
+
+  ae <- as_anievent(af)
+  expect_true("modifiers" %in% names(ae))
+  expect_equal(ae$modifiers[[1]], c("limb", "whisker"))
+  expect_equal(ae$modifiers[[2]], "tail")
+})
+
 test_that("as_anievent.aniframe handles an aniframe with no identity columns", {
   af <- as_aniframe(
     dplyr::tibble(

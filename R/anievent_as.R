@@ -256,6 +256,11 @@ rle_state_column <- function(data, col, group_cols) {
     stop = data$time[last_idx]
   )
 
+  mod_col <- paste0(col, "_modifiers")
+  if (mod_col %in% names(data)) {
+    out$modifiers <- data[[mod_col]][first_idx]
+  }
+
   if (length(group_cols) > 0) {
     grp_first <- data[first_idx, group_cols, drop = FALSE]
     out <- dplyr::bind_cols(grp_first, out)
@@ -268,7 +273,11 @@ rle_state_column <- function(data, col, group_cols) {
 #'
 #' @keywords internal
 pick_point_column <- function(data, col, group_cols) {
-  data <- data[!is.na(data[[col]]), , drop = FALSE]
+  mod_col <- paste0(col, "_modifiers")
+  has_modifiers <- mod_col %in% names(data)
+
+  keep <- !is.na(data[[col]])
+  data <- data[keep, , drop = FALSE]
   if (nrow(data) == 0) {
     return(make_empty_bout_df(group_cols, col))
   }
@@ -279,6 +288,11 @@ pick_point_column <- function(data, col, group_cols) {
     start = data$time,
     stop = data$time
   )
+
+  if (has_modifiers) {
+    out$modifiers <- data[[mod_col]]
+  }
+
   if (length(group_cols) > 0) {
     out <- dplyr::bind_cols(data[, group_cols, drop = FALSE], out)
   }
