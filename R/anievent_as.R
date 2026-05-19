@@ -69,16 +69,53 @@ as_anievent.aniframe <- function(
     ))
   }
 
-  if (is.null(variables_what)) {
-    variables_what <- intersect(md$variables_what, names(data))
-  }
+  host_what <- intersect(md$variables_what, names(data))
   grouping_when <- intersect(setdiff(md$variables_when, "time"), names(data))
-  group_cols <- c(variables_what, grouping_when)
+  candidate_cols <- c(host_what, grouping_when)
 
-  bouts <- list()
   bare <- dplyr::as_tibble(data)
   bare <- dplyr::ungroup(bare)
 
+  # Auto-detect the scope of each event channel — the minimal subset of
+  # identity / grouping columns the value actually varies across. A
+  # `behaviour` column constant across `keypoint`, for example, drops
+  # keypoint from the bout grouping.
+  channel_scopes <- list()
+  for (col in declared) {
+    channel_scopes[[col]] <- detect_event_scope(bare, col, candidate_cols)
+  }
+
+  # All channels must agree on scope. Different scopes mean the user is
+  # mixing granularities (e.g. an individual-level "behaviour" with a
+  # keypoint-level "limb_extended"); ask them to hand-pick
+  # `variables_what` or split into multiple anievents.
+  unique_scopes <- unique(channel_scopes)
+  if (length(unique_scopes) > 1) {
+    scope_lines <- vapply(
+      names(channel_scopes),
+      function(nm) {
+        sc <- channel_scopes[[nm]]
+        sc_str <- if (length(sc) == 0) "<none>" else paste(sc, collapse = ", ")
+        paste0(nm, " -> ", sc_str)
+      },
+      character(1)
+    )
+    cli::cli_abort(c(
+      "Declared event columns disagree on their identity scope.",
+      "i" = "Detected scopes per channel:",
+      stats::setNames(scope_lines, rep("*", length(scope_lines))),
+      "i" = "Pass {.arg variables_what} explicitly or split the channels into separate {.cls anievent}s."
+    ))
+  }
+
+  detected_scope <- unique_scopes[[1]]
+  if (is.null(variables_what)) {
+    variables_what <- intersect(detected_scope, host_what)
+  }
+  grouping_when <- intersect(detected_scope, grouping_when)
+  group_cols <- c(variables_what, grouping_when)
+
+  bouts <- list()
   if (length(ve$state) > 0) {
     for (col in ve$state) {
       bouts[[col]] <- rle_state_column(bare, col, group_cols)
@@ -124,6 +161,57 @@ as_anievent.aniframe <- function(
     variables_what = variables_what,
     variables_when = variables_when
   )
+}
+
+
+#' Detect the identity / grouping scope of one event column
+#'
+#' Returns the minimal subset of `candidate_cols` that the value of
+#' `event_col` varies across (given `time`). A column is "redundant"
+#' for an event channel when, after removing it from the candidate
+#' set, `(remaining + time)` still uniquely determines the event value
+#' on every non-`NA` row.
+#'
+#' Used by `as_anievent.aniframe()` so that, e.g., a `behaviour` column
+#' that is constant across keypoints for each `(individual, time)`
+#' drops `keypoint` from the resulting `anievent`'s grouping — instead
+#' of emitting one identical bout per keypoint.
+#'
+#' The detection is greedy: at each iteration, drop any column whose
+#' removal still leaves the event value uniquely determined; stop when
+#' no further removal is possible.
+#'
+#' @keywords internal
+detect_event_scope <- function(data, event_col, candidate_cols) {
+  # All-NA channels carry no information; treat their scope as empty.
+  if (all(is.na(data[[event_col]]))) {
+    return(character())
+  }
+
+  scope <- candidate_cols
+  changed <- TRUE
+  while (changed) {
+    changed <- FALSE
+    for (col in scope) {
+      smaller <- setdiff(scope, col)
+      # Count `NA` as a distinct value: an event present on some
+      # identities but absent on others is genuinely identity-scoped.
+      grouped <- data |>
+        dplyr::group_by(
+          dplyr::across(dplyr::all_of(c(smaller, "time")))
+        ) |>
+        dplyr::summarise(
+          n = dplyr::n_distinct(.data[[event_col]]),
+          .groups = "drop"
+        )
+      if (all(grouped$n <= 1)) {
+        scope <- smaller
+        changed <- TRUE
+        break
+      }
+    }
+  }
+  scope
 }
 
 

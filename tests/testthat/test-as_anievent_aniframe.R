@@ -188,6 +188,163 @@ test_that("as_anievent.aniframe handles an aniframe with no identity columns", {
   expect_equal(ae$stop, c(2, 5))
 })
 
+test_that("redundant identity columns (e.g. keypoint when behaviour is constant across keypoints) are dropped from bouts", {
+  # behaviour is constant across keypoint within (individual, time)
+  af <- aniframe(
+    individual = rep(1L, 6),
+    keypoint = rep(c("head", "tail"), each = 3),
+    time = rep(1:3, 2),
+    x = rnorm(6),
+    y = rnorm(6),
+    behaviour = factor(
+      c("REM", "REM", "wake", "REM", "REM", "wake"),
+      levels = c("REM", "wake")
+    )
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "behaviour", point = character())
+  )
+
+  ae <- as_anievent(af)
+
+  # Should be 2 bouts (REM 1-2, wake 3-3), not 4 (duplicated per keypoint)
+  expect_equal(nrow(ae), 2)
+  expect_false("keypoint" %in% names(ae))
+  expect_false("keypoint" %in% get_metadata(ae, "variables_what"))
+  expect_equal(ae$start, c(1, 3))
+  expect_equal(ae$stop, c(2, 3))
+})
+
+test_that("non-redundant identity columns (e.g. behaviour varying by keypoint) are kept", {
+  af <- aniframe(
+    individual = rep(1L, 6),
+    keypoint = rep(c("head", "tail"), each = 3),
+    time = rep(1:3, 2),
+    x = rnorm(6),
+    y = rnorm(6),
+    # head: always REM; tail: always wake -> varies by keypoint
+    behaviour = factor(
+      c("REM", "REM", "REM", "wake", "wake", "wake"),
+      levels = c("REM", "wake")
+    )
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "behaviour", point = character())
+  )
+
+  ae <- as_anievent(af)
+  expect_true("keypoint" %in% names(ae))
+  expect_true("keypoint" %in% get_metadata(ae, "variables_what"))
+  expect_equal(nrow(ae), 2) # one bout per keypoint
+})
+
+test_that("scope is collapsed to nothing when an event is constant for everyone at each time", {
+  af <- aniframe(
+    individual = c(1L, 1L, 2L, 2L),
+    time = c(1:2, 1:2),
+    x = rnorm(4),
+    y = rnorm(4),
+    epoch = factor(c("A", "B", "A", "B")) # same value for both individuals at each time
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "epoch", point = character())
+  )
+
+  ae <- as_anievent(af)
+  expect_false("individual" %in% names(ae))
+  expect_length(get_metadata(ae, "variables_what"), 0)
+  expect_equal(nrow(ae), 2) # one A bout, one B bout
+})
+
+test_that("channels with disagreeing scopes error with a helpful message", {
+  af <- aniframe(
+    individual = rep(1L, 6),
+    keypoint = rep(c("head", "tail"), each = 3),
+    time = rep(1:3, 2),
+    x = rnorm(6),
+    y = rnorm(6),
+    # behaviour: individual-scope (constant across keypoint)
+    behaviour = factor(rep(c("REM", "REM", "wake"), 2)),
+    # limb_extended: keypoint-scope (varies by keypoint)
+    limb_extended = factor(rep(c("yes", "no"), each = 3))
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(
+      state = c("behaviour", "limb_extended"),
+      point = character()
+    )
+  )
+
+  expect_error(as_anievent(af), "disagree on their identity scope")
+})
+
+test_that("point channel keeps identity columns when the scope detection requires it", {
+  af <- aniframe(
+    individual = rep(c(1L, 2L), each = 4),
+    time = rep(1:4, 2),
+    x = rnorm(8),
+    y = rnorm(8),
+    # individual 1 has alarm only at t=2; individual 2 has alarm only at t=3
+    call = factor(
+      c(NA, "alarm", NA, NA, NA, NA, "alarm", NA),
+      levels = "alarm"
+    )
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = character(), point = "call")
+  )
+
+  ae <- as_anievent(af)
+  expect_true("individual" %in% names(ae))
+  expect_equal(nrow(ae), 2)
+  expect_equal(sort(ae$individual), c(1L, 2L))
+})
+
+test_that("empty-rows path keeps identity columns when forced via variables_what", {
+  # All-NA event with an explicit variables_what override -> empty bout df
+  # is produced with the (forced) identity column present.
+  af <- aniframe(
+    individual = c(1L, 2L),
+    time = c(1, 2),
+    x = c(1, 2),
+    y = c(1, 2),
+    call = factor(c(NA, NA), levels = "alarm")
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = character(), point = "call")
+  )
+
+  ae <- as_anievent(af, variables_what = "individual")
+  expect_equal(nrow(ae), 0)
+  expect_true("individual" %in% names(ae))
+})
+
+test_that("explicit variables_what overrides scope detection", {
+  af <- aniframe(
+    individual = rep(1L, 6),
+    keypoint = rep(c("head", "tail"), each = 3),
+    time = rep(1:3, 2),
+    x = rnorm(6),
+    y = rnorm(6),
+    behaviour = factor(rep(c("REM", "REM", "wake"), 2))
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "behaviour", point = character())
+  )
+
+  # Force keypoint to be kept even though it's redundant
+  ae <- as_anievent(af, variables_what = c("individual", "keypoint"))
+  expect_true("keypoint" %in% names(ae))
+  expect_equal(nrow(ae), 4) # duplicate per keypoint
+})
+
 test_that("as_anievent.aniframe returns an empty anievent when all event rows are NA", {
   af <- aniframe(
     individual = rep(1L, 3),
