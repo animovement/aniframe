@@ -21,7 +21,10 @@ with the expected types; identity columns travel via
 \item \code{stop >= start} for every row;
 \item \code{modifiers}, if present, is a list-column whose cells are
 character vectors (the values picked from BORIS modifier sets at
-coding time; an empty vector when the event has no modifiers).
+coding time; an empty vector when the event has no modifiers);
+\item within each \code{(identity + temporal-grouping)} group, two bouts of
+the same \code{channel} never overlap — channels are mutually
+exclusive by definition.
 }
 }
 \details{

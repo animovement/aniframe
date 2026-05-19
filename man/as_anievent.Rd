@@ -3,6 +3,7 @@
 \name{as_anievent}
 \alias{as_anievent}
 \alias{as_anievent.anievent}
+\alias{as_anievent.aniframe}
 \alias{as_anievent.data.frame}
 \title{Convert a data frame to an anievent}
 \usage{
@@ -14,6 +15,13 @@ as_anievent(
 )
 
 \method{as_anievent}{anievent}(
+  data,
+  metadata = list(),
+  variables_what = NULL,
+  variables_when = NULL
+)
+
+\method{as_anievent}{aniframe}(
   data,
   metadata = list(),
   variables_what = NULL,

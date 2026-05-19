@@ -8,6 +8,9 @@
 * Added a `spec_version` metadata field — a named list keyed by class, e.g. `list(aniframe = "1.0.0", anievent = "0.1.0")` — so the data contract of each class can evolve independently of the package version. Older serialised objects missing the field continue to validate (#65).
 * `as_aniframe()` now auto-detects `observation` as a temporal grouping column, alongside the existing `session` and `trial`. Lays the groundwork for importing behavioural-event data from BORIS where each observation has its own time origin.
 * `set_unit_time()` and `set_sampling_rate()` are now S3 generics with methods for both `aniframe` and `anievent`. On an anievent the calibration factor is applied to `start` and `stop` (instead of `time` on an aniframe); the rest of the contract is identical. Lets anievent data round-trip between frame, millisecond, and SI units the same way aniframe does.
+* Added `as_anievent.aniframe()` — converts an `aniframe` with declared `variables_event` columns into an `anievent`. For each column in `variables_event$state`, contiguous runs of the same label are run-length-encoded into bouts within each `(individual, observation, …)` group; each `variables_event$point` column becomes one row per non-`NA` frame with `start == stop`. `unit_time` and `sampling_rate` are inherited from the host.
+* Added `add_events()` — host-first verb that joins an `anievent` onto an `aniframe`'s per-frame grid, adding one factor-valued column per channel. State vs point is auto-detected from the bouts (a channel is `point` iff every bout has `start == stop`). Unit reconciliation is automatic for SI ↔ SI; crossing the `"frame"`/SI boundary needs a `sampling_rate` on either side. Channel-name collisions with existing host columns error out; frames outside any bout get `NA`.
+* `validate_anievent()` now also checks that two bouts of the same `channel` never overlap within the same `(identity + temporal-grouping)` group — that's the structural property defining a channel.
 
 ## Improvements
 
@@ -23,7 +26,7 @@
 
 * Factored the strip-class / `NextMethod` / rebuild / re-attach pattern shared by `aniframe_methods.R` and `anievent_methods.R` into `preserve_animovement_class()` in `utils.R`.
 * `resolve_unit_time_calibration()` factors out the shared unit-validation and conversion-factor logic between `set_unit_time.aniframe` and `set_unit_time.anievent`.
-* Test coverage at 100% (721 tests).
+* Test coverage at 100% (778 tests).
 
 # aniframe 0.5.0 (2026-05-04)
 

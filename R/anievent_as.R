@@ -45,6 +45,178 @@ as_anievent.anievent <- function(
 
 #' @rdname as_anievent
 #' @export
+as_anievent.aniframe <- function(
+  data,
+  metadata = list(),
+  variables_what = NULL,
+  variables_when = NULL
+) {
+  md <- get_metadata(data)
+  ve <- md$variables_event
+  if (is.null(ve) || (length(ve$state) == 0 && length(ve$point) == 0)) {
+    cli::cli_abort(c(
+      "The host {.cls aniframe} has no event columns declared.",
+      "i" = "Populate {.field variables_event$state} and/or {.field variables_event$point} in metadata before conversion."
+    ))
+  }
+
+  declared <- c(ve$state, ve$point)
+  missing_cols <- setdiff(declared, names(data))
+  if (length(missing_cols) > 0) {
+    cli::cli_abort(c(
+      "Some declared event columns are not present in the data: {.val {missing_cols}}.",
+      "i" = "Either remove them from {.field variables_event} or add the columns."
+    ))
+  }
+
+  if (is.null(variables_what)) {
+    variables_what <- intersect(md$variables_what, names(data))
+  }
+  grouping_when <- intersect(setdiff(md$variables_when, "time"), names(data))
+  group_cols <- c(variables_what, grouping_when)
+
+  bouts <- list()
+  bare <- dplyr::as_tibble(data)
+  bare <- dplyr::ungroup(bare)
+
+  if (length(ve$state) > 0) {
+    for (col in ve$state) {
+      bouts[[col]] <- rle_state_column(bare, col, group_cols)
+    }
+  }
+  if (length(ve$point) > 0) {
+    for (col in ve$point) {
+      bouts[[col]] <- pick_point_column(bare, col, group_cols)
+    }
+  }
+
+  out <- dplyr::bind_rows(bouts)
+  # Coerce value back to a factor with the union of levels across channels
+  if (!is.factor(out$value)) {
+    out$value <- factor(out$value)
+  }
+
+  if (is.null(variables_when)) {
+    variables_when <- c(grouping_when, "start", "stop")
+  }
+
+  inherited_metadata <- md[
+    setdiff(
+      names(md),
+      c(
+        "variables_what",
+        "variables_when",
+        "variables_where",
+        "variables_event",
+        "spec_version",
+        "y_height",
+        "origin",
+        "coordinate_system",
+        "connections"
+      )
+    )
+  ]
+  metadata <- utils::modifyList(inherited_metadata, metadata)
+
+  as_anievent(
+    out,
+    metadata = metadata,
+    variables_what = variables_what,
+    variables_when = variables_when
+  )
+}
+
+
+#' Run-length encode one state event column into bouts
+#'
+#' Within each `(group_cols)` partition, emit one row per maximal run
+#' of identical non-`NA` values in `col`. `start` is the `time` of the
+#' first frame in the run; `stop` is the `time` of the last frame.
+#'
+#' @keywords internal
+rle_state_column <- function(data, col, group_cols) {
+  data <- data[!is.na(data[[col]]), , drop = FALSE]
+  if (nrow(data) == 0) {
+    return(make_empty_bout_df(group_cols, col))
+  }
+
+  if (length(group_cols) > 0) {
+    data <- data[
+      do.call(order, c(data[group_cols], list(data$time))),
+      ,
+      drop = FALSE
+    ]
+    key <- do.call(paste, c(data[group_cols], list(sep = "\r")))
+  } else {
+    data <- data[order(data$time), , drop = FALSE]
+    key <- rep("", nrow(data))
+  }
+
+  vals <- as.character(data[[col]])
+  prev_key <- c("", key[-length(key)])
+  prev_val <- c("", vals[-length(vals)])
+  run_start <- key != prev_key | vals != prev_val
+  run_id <- cumsum(run_start)
+
+  first_idx <- !duplicated(run_id)
+  last_idx <- !duplicated(run_id, fromLast = TRUE)
+
+  out <- dplyr::tibble(
+    channel = col,
+    value = vals[first_idx],
+    start = data$time[first_idx],
+    stop = data$time[last_idx]
+  )
+
+  if (length(group_cols) > 0) {
+    grp_first <- data[first_idx, group_cols, drop = FALSE]
+    out <- dplyr::bind_cols(grp_first, out)
+  }
+  out
+}
+
+
+#' Emit one row per non-`NA` frame of a point event column
+#'
+#' @keywords internal
+pick_point_column <- function(data, col, group_cols) {
+  data <- data[!is.na(data[[col]]), , drop = FALSE]
+  if (nrow(data) == 0) {
+    return(make_empty_bout_df(group_cols, col))
+  }
+
+  out <- dplyr::tibble(
+    channel = col,
+    value = as.character(data[[col]]),
+    start = data$time,
+    stop = data$time
+  )
+  if (length(group_cols) > 0) {
+    out <- dplyr::bind_cols(data[, group_cols, drop = FALSE], out)
+  }
+  out
+}
+
+
+#' @keywords internal
+make_empty_bout_df <- function(group_cols, col) {
+  out <- dplyr::tibble(
+    channel = character(),
+    value = character(),
+    start = numeric(),
+    stop = numeric()
+  )
+  if (length(group_cols) > 0) {
+    for (g in group_cols) {
+      out[[g]] <- character()
+    }
+    out <- out[, c(group_cols, "channel", "value", "start", "stop")]
+  }
+  out
+}
+
+#' @rdname as_anievent
+#' @export
 as_anievent.data.frame <- function(
   data,
   metadata = list(),

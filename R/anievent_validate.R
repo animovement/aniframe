@@ -7,7 +7,10 @@
 #' * `stop >= start` for every row;
 #' * `modifiers`, if present, is a list-column whose cells are
 #'   character vectors (the values picked from BORIS modifier sets at
-#'   coding time; an empty vector when the event has no modifiers).
+#'   coding time; an empty vector when the event has no modifiers);
+#' * within each `(identity + temporal-grouping)` group, two bouts of
+#'   the same `channel` never overlap — channels are mutually
+#'   exclusive by definition.
 #'
 #' Type-linked invariants (which channels are state vs point events;
 #' the zero-duration requirement on point events) belong with the
@@ -28,6 +31,7 @@ validate_anievent <- function(data) {
   ensure_anievent_col_types(data)
   ensure_anievent_intervals_nonnegative(data)
   ensure_anievent_modifiers_shape(data)
+  ensure_anievent_channels_disjoint(data)
   invisible(data)
 }
 
@@ -59,6 +63,43 @@ ensure_anievent_intervals_nonnegative <- function(data) {
       "{.field stop} must be greater than or equal to {.field start} for every row.",
       "x" = "Row{?s} violating the invariant: {.val {bad}}."
     ))
+  }
+  invisible(TRUE)
+}
+
+
+#' @keywords internal
+ensure_anievent_channels_disjoint <- function(data) {
+  if (nrow(data) < 2) {
+    return(invisible(TRUE))
+  }
+
+  md <- get_metadata(data)
+  group_cols <- intersect(
+    c(md$variables_what, setdiff(md$variables_when, c("start", "stop"))),
+    names(data)
+  )
+
+  # Work on a bare tibble so dplyr verbs don't trigger the
+  # `ungroup.anievent` "use with care" warning during validation.
+  bare <- dplyr::as_tibble(data)
+  groups <- dplyr::group_by(
+    bare,
+    dplyr::across(dplyr::all_of(c(group_cols, "channel")))
+  )
+  for (sub in dplyr::group_split(groups)) {
+    if (nrow(sub) < 2) next
+    sub <- sub[order(sub$start), ]
+    overlaps <- sub$start[-1] < sub$stop[-nrow(sub)]
+    if (any(overlaps)) {
+      bad_row <- which(overlaps)[1] + 1
+      ch <- sub$channel[bad_row]
+      cli::cli_abort(c(
+        "Two bouts of the same channel overlap for the same subject.",
+        "x" = "Channel {.val {ch}} has overlapping bouts at row {.val {bad_row}}.",
+        "i" = "Channels are mutually exclusive: only one value can be active at a time per subject."
+      ))
+    }
   }
   invisible(TRUE)
 }

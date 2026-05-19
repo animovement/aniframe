@@ -230,36 +230,75 @@ type-linked invariants (e.g. point rows having `start == stop`) —
 those belong to the conversion code that knows which channels are
 typed as what.
 
-<!-- ## Relationship to `aniframe`
+## Conversions to and from `aniframe`
 
 The two structures are pivot-duals of each other. An `aniframe`'s
 event columns (declared in `variables_event`) hold one label per
-frame, wide; an `anievent` holds one record per bout, long.
+frame, wide; an `anievent` holds one record per bout, long. Two
+verbs go between them.
 
-::: callout-note
-## Planned, not yet available
+### `as_anievent()` — `aniframe` → `anievent`
 
-Conversions between the two are the natural next step:
+For each column listed in `variables_event$state`, contiguous runs of
+the same label within each `(individual, observation, …)` group are
+run-length-encoded into bouts. For each column in `variables_event$point`,
+every non-`NA` frame becomes a single row with `start == stop`.
 
-- run-length-encoding the wide per-frame event columns of an
-  `aniframe` into the long bout form of an `anievent`,
-- broadcasting an `anievent`'s bouts back onto an `aniframe`'s
-  per-frame grid.
+```{r}
+af <- aniframe(
+  individual = rep(1L, 8),
+  time = 1:8,
+  x = 1:8,
+  y = 1:8,
+  behaviour = factor(
+    c("REM", "REM", "REM", "wake", "wake", "REM", "REM", NA),
+    levels = c("REM", "wake")
+  )
+)
+af <- set_metadata(
+  af,
+  variables_event = list(state = "behaviour", point = character())
+)
+as_anievent(af)
+```
 
-Both directions will live in `aniframe`, since the package owns both
-classes. A BORIS reader (producing an `anievent` directly) is planned
-for `aniread`. None of these are implemented yet.
-:::
+The resulting anievent inherits `unit_time` and `sampling_rate` from
+the host. `stop` is the time of the last frame of each bout (inclusive,
+frame-aligned).
+
+### `add_events()` — `anievent` → `aniframe` (host-first)
+
+Joins an `anievent` onto an `aniframe`'s per-frame grid, adding one
+column per channel. For each row of the host, the new column carries
+the `value` of the active bout for the matching subject (and
+observation, etc.); `NA` outside any bout.
+
+```{r}
+af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
+ae <- anievent(
+  individual = 1L,
+  channel = c("behaviour", "behaviour", "call"),
+  value = c("REM", "wake", "alarm"),
+  start = c(1, 5, 3),
+  stop = c(4, 10, 3)
+)
+add_events(af, ae)
+```
+
+State vs point is auto-detected from the bouts (a channel is `point`
+iff every bout has `start == stop`). The resulting aniframe's
+`variables_event` is updated accordingly.
+
+Unit reconciliation happens transparently when host and events differ:
+SI ↔ SI is auto-converted; crossing the `"frame"` ↔ SI boundary needs
+a `sampling_rate` on either side (errors otherwise).
 
 ## Where things live in the ecosystem
-
-Only the `anievent` class itself ships today; everything else is
-planned for follow-up work in the respective packages.
 
 | Concern                                 | Planned home | Status     |
 |-----------------------------------------|--------------|------------|
 | The `anievent` class                    | `aniframe`   | ✅ implemented |
-| Conversions to / from `aniframe`        | `aniframe`   | planned    |
+| Conversions to / from `aniframe`        | `aniframe`   | ✅ implemented |
 | Readers (BORIS, Solomon, …)             | `aniread`    | planned    |
 | Bout-summary metrics                    | `animetric`  | planned    |
 | Plots (state band, point marker)        | `anivis`     | planned    | -->
