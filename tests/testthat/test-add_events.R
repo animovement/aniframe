@@ -389,7 +389,7 @@ test_that("mixed-channel modifiers add a column only for the channel that has th
     stop = c(4, 3),
     modifiers = list(
       c("limb", "whisker"), # behaviour has modifiers
-      character()           # call doesn't
+      character() # call doesn't
     )
   )
 
