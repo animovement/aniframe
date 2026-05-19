@@ -9,6 +9,9 @@ interval_join_channels(data, events, channel_names, join_keys)
 \description{
 For each channel, adds a column to \code{data} whose value, for each
 frame, is the \code{value} of the bout active at that frame within the
-matching join-key group; \code{NA} outside any bout.
+matching join-key group; \code{NA} outside any bout. If the anievent
+carries non-empty modifiers for a channel, a parallel
+\verb{<channel>_modifiers} list-column is added, broadcasting each
+bout's modifier vector across its frames.
 }
 \keyword{internal}

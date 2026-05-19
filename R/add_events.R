@@ -184,8 +184,13 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
   events <- dplyr::as_tibble(events)
   events_has_modifiers <- "modifiers" %in% names(events)
 
+  unmatched_acc <- list()
+  total_bouts <- 0L
+  total_unmatched <- 0L
+
   for (ch in channel_names) {
     bouts <- events[events$channel == ch, , drop = FALSE]
+    total_bouts <- total_bouts + nrow(bouts)
     new_col <- factor(rep(NA, nrow(data)), levels = levels(bouts$value))
 
     channel_has_modifiers <- events_has_modifiers &&
@@ -206,6 +211,15 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
         paste,
         c(bouts[join_keys], list(sep = "\r"))
       )
+      matched <- ev_key %in% unique(host_key)
+      if (any(!matched)) {
+        total_unmatched <- total_unmatched + sum(!matched)
+        unmatched_acc[[length(unmatched_acc) + 1L]] <- bouts[
+          !matched,
+          join_keys,
+          drop = FALSE
+        ]
+      }
     } else {
       host_key <- rep("", nrow(data))
       ev_key <- rep("", nrow(bouts))
@@ -232,7 +246,53 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
     }
   }
 
+  report_unmatched_events(unmatched_acc, total_bouts, total_unmatched)
   data
+}
+
+
+#' Report event bouts whose identity / temporal-grouping keys don't
+#' exist in the host
+#'
+#' Emits an informational message when *some* bouts were dropped
+#' because their join keys were not in the host, and a warning when
+#' *all* bouts were dropped (no matched events at all — almost
+#' certainly a user error).
+#'
+#' @keywords internal
+report_unmatched_events <- function(unmatched_acc, total_bouts, total_unmatched) {
+  if (total_unmatched == 0L) {
+    return(invisible())
+  }
+
+  unmatched_df <- dplyr::distinct(dplyr::bind_rows(unmatched_acc))
+  formatted <- vapply(
+    seq_len(nrow(unmatched_df)),
+    function(i) {
+      paste(
+        vapply(
+          names(unmatched_df),
+          function(c) paste0(c, "=", unmatched_df[[c]][i]),
+          character(1)
+        ),
+        collapse = ", "
+      )
+    },
+    character(1)
+  )
+
+  if (total_unmatched == total_bouts) {
+    cli::cli_warn(c(
+      "{.fn add_events}: no event bouts matched the host's identity / temporal context.",
+      "x" = "{total_unmatched} bout{?s} dropped; the resulting event column{?s} {?is/are} entirely {.val NA}.",
+      "i" = "Unmatched key{?s}: {.val {formatted}}."
+    ))
+  } else {
+    cli::cli_inform(c(
+      "i" = "{.fn add_events}: {total_unmatched} of {total_bouts} bout{?s} dropped because their key{?s} {?is/are} not in the host.",
+      "*" = "Unmatched: {.val {formatted}}."
+    ))
+  }
 }
 
 

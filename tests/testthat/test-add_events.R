@@ -442,6 +442,81 @@ test_that("anievent -> aniframe -> anievent round-trips modifiers", {
   expect_equal(ae_back$modifiers[[alarm_row]], "high")
 })
 
+test_that("partial mismatch (some event bouts have identities not in host) emits an informational message", {
+  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+  ae <- anievent(
+    individual = c(1L, 2L),
+    channel = c("behaviour", "behaviour"),
+    value = c("REM", "wake"),
+    start = c(1, 1),
+    stop = c(3, 3)
+  )
+
+  expect_message(
+    result <- add_events(af, ae),
+    "1 of 2 bouts dropped"
+  )
+  # The matched bout (individual = 1) still fills correctly.
+  expect_equal(
+    as.character(result$behaviour),
+    c("REM", "REM", "REM", NA, NA)
+  )
+})
+
+test_that("total mismatch (no event bouts match the host) emits a warning", {
+  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+  ae <- anievent(
+    individual = 2L,
+    channel = "behaviour",
+    value = "REM",
+    start = 1,
+    stop = 3
+  )
+
+  expect_warning(
+    result <- add_events(af, ae),
+    "no event bouts matched"
+  )
+  expect_true(all(is.na(result$behaviour)))
+})
+
+test_that("no mismatch -> no message", {
+  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    value = "REM",
+    start = 1,
+    stop = 3
+  )
+
+  expect_no_message(add_events(af, ae))
+  expect_no_warning(add_events(af, ae))
+})
+
+test_that("partial mismatch on multi-key (individual + observation) lists the unmatched tuples", {
+  af <- aniframe(
+    individual = rep(1L, 4),
+    observation = rep("clip_a", 4),
+    time = 1:4,
+    x = 1:4,
+    y = 1:4
+  )
+  ae <- anievent(
+    individual = c(1L, 1L),
+    observation = c("clip_a", "clip_b"),
+    channel = c("behaviour", "behaviour"),
+    value = c("REM", "wake"),
+    start = c(1, 1),
+    stop = c(2, 2)
+  )
+
+  expect_message(
+    result <- add_events(af, ae),
+    "clip_b"
+  )
+})
+
 test_that("add_events accumulates into an existing variables_event", {
   af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
   af <- set_metadata(
