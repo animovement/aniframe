@@ -260,7 +260,11 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
 #' certainly a user error).
 #'
 #' @keywords internal
-report_unmatched_events <- function(unmatched_acc, total_bouts, total_unmatched) {
+report_unmatched_events <- function(
+  unmatched_acc,
+  total_bouts,
+  total_unmatched
+) {
   if (total_unmatched == 0L) {
     return(invisible())
   }
