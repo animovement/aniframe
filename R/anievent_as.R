@@ -71,18 +71,19 @@ as_anievent.aniframe <- function(
 
   host_what <- intersect(md$variables_what, names(data))
   grouping_when <- intersect(setdiff(md$variables_when, "time"), names(data))
-  candidate_cols <- c(host_what, grouping_when)
 
   bare <- dplyr::as_tibble(data)
   bare <- dplyr::ungroup(bare)
 
-  # Auto-detect the scope of each event channel — the minimal subset of
-  # identity / grouping columns the value actually varies across. A
-  # `behaviour` column constant across `keypoint`, for example, drops
-  # keypoint from the bout grouping.
+  # Auto-detect scope on **identity** columns (`variables_what`) only.
+  # Temporal-grouping columns (observation / session / trial) carry
+  # distinct contexts and are passed through unconditionally — scope
+  # detection must not merge them. Identity columns that are themselves
+  # singletons are protected inside `detect_event_scope()` for
+  # traceability.
   channel_scopes <- list()
   for (col in declared) {
-    channel_scopes[[col]] <- detect_event_scope(bare, col, candidate_cols)
+    channel_scopes[[col]] <- detect_event_scope(bare, col, host_what)
   }
 
   # All channels must agree on scope. Different scopes mean the user is
@@ -110,9 +111,8 @@ as_anievent.aniframe <- function(
 
   detected_scope <- unique_scopes[[1]]
   if (is.null(variables_what)) {
-    variables_what <- intersect(detected_scope, host_what)
+    variables_what <- detected_scope
   }
-  grouping_when <- intersect(detected_scope, grouping_when)
   group_cols <- c(variables_what, grouping_when)
 
   bouts <- list()
@@ -193,6 +193,12 @@ detect_event_scope <- function(data, event_col, candidate_cols) {
   while (changed) {
     changed <- FALSE
     for (col in scope) {
+      # Singleton columns (one unique value) carry identity / traceability
+      # information without producing duplicate bouts, so leave them
+      # alone — there's nothing to "reduce".
+      if (dplyr::n_distinct(data[[col]]) <= 1) {
+        next
+      }
       smaller <- setdiff(scope, col)
       # Count `NA` as a distinct value: an event present on some
       # identities but absent on others is genuinely identity-scoped.

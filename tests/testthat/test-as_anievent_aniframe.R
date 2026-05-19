@@ -266,7 +266,52 @@ test_that("non-redundant identity columns (e.g. behaviour varying by keypoint) a
   expect_equal(nrow(ae), 2) # one bout per keypoint
 })
 
-test_that("scope is collapsed to nothing when an event is constant for everyone at each time", {
+test_that("singleton identity columns are preserved (single individual aniframe carries individual through)", {
+  af <- aniframe(
+    individual = rep(1L, 5),
+    time = 1:5,
+    x = rnorm(5),
+    y = rnorm(5),
+    behaviour = factor(c("REM", "REM", "wake", "wake", "wake"))
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "behaviour", point = character())
+  )
+
+  ae <- as_anievent(af)
+  expect_true("individual" %in% names(ae))
+  expect_true("keypoint" %in% names(ae)) # auto-added centroid, also a singleton
+  expect_setequal(get_metadata(ae, "variables_what"), c("individual", "keypoint"))
+})
+
+test_that("temporal-grouping columns (observation / session / trial) are always carried over regardless of variation", {
+  # Two observations with the SAME behaviour pattern. The old aggressive
+  # rule would drop observation; the new rule keeps temporal grouping
+  # unconditionally because clips are distinct contexts.
+  af <- aniframe(
+    individual = rep(1L, 8),
+    observation = c(rep("clip_a", 4), rep("clip_b", 4)),
+    time = c(1:4, 1:4),
+    x = rnorm(8),
+    y = rnorm(8),
+    behaviour = factor(rep(c("REM", "REM", "wake", "wake"), 2))
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "behaviour", point = character())
+  )
+
+  ae <- as_anievent(af)
+  expect_true("observation" %in% names(ae))
+  expect_true("observation" %in% get_metadata(ae, "variables_when"))
+  # 4 bouts: REM clip_a, wake clip_a, REM clip_b, wake clip_b
+  expect_equal(nrow(ae), 4)
+})
+
+test_that("multi-value identity columns are dropped when the event is constant across them, while singleton columns are preserved", {
+  # individual: 2 values, epoch constant per time -> dropped.
+  # keypoint: auto-added "centroid" (singleton) -> kept for traceability.
   af <- aniframe(
     individual = c(1L, 1L, 2L, 2L),
     time = c(1:2, 1:2),
@@ -281,7 +326,8 @@ test_that("scope is collapsed to nothing when an event is constant for everyone 
 
   ae <- as_anievent(af)
   expect_false("individual" %in% names(ae))
-  expect_length(get_metadata(ae, "variables_what"), 0)
+  expect_true("keypoint" %in% names(ae))
+  expect_equal(get_metadata(ae, "variables_what"), "keypoint")
   expect_equal(nrow(ae), 2) # one A bout, one B bout
 })
 
