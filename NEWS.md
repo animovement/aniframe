@@ -7,6 +7,7 @@
 * Added a `variables_event` metadata field — a named list `list(state, point)` declaring which `aniframe` columns hold per-frame categorical event labels. State columns are interval-valued (ordered coarse to fine for nesting); point columns are instantaneous. Foundation for downstream conversions; the `aniframe` print header surfaces "State event variables" / "Point event variables" rows when populated (#66).
 * Added a `spec_version` metadata field — a named list keyed by class, e.g. `list(aniframe = "1.0.0", anievent = "0.1.0")` — so the data contract of each class can evolve independently of the package version. Older serialised objects missing the field continue to validate (#65).
 * `as_aniframe()` now auto-detects `observation` as a temporal grouping column, alongside the existing `session` and `trial`. Lays the groundwork for importing behavioural-event data from BORIS where each observation has its own time origin.
+* `set_unit_time()` and `set_sampling_rate()` are now S3 generics with methods for both `aniframe` and `anievent`. On an anievent the calibration factor is applied to `start` and `stop` (instead of `time` on an aniframe); the rest of the contract is identical. Lets anievent data round-trip between frame, millisecond, and SI units the same way aniframe does.
 
 ## Improvements
 
@@ -21,7 +22,8 @@
 ## Internal
 
 * Factored the strip-class / `NextMethod` / rebuild / re-attach pattern shared by `aniframe_methods.R` and `anievent_methods.R` into `preserve_animovement_class()` in `utils.R`.
-* Test coverage at 100% (703 tests).
+* `resolve_unit_time_calibration()` factors out the shared unit-validation and conversion-factor logic between `set_unit_time.aniframe` and `set_unit_time.anievent`.
+* Test coverage at 100% (721 tests).
 
 # aniframe 0.5.0 (2026-05-04)
 

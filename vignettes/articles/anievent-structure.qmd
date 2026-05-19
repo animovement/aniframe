@@ -114,6 +114,27 @@ moments in real time. Anything downstream that needs to combine clips
 onto a shared timeline (plots, cross-clip metrics) will need an
 observation-level offset table; the class itself just carries the key.
 
+### Time unit
+
+`unit_time` is carried in the shared metadata substrate, so an
+`anievent` declares the unit of its `start`/`stop` values just like
+an `aniframe` declares the unit of its `time` column (`"frame"`,
+`"ms"`, `"s"`, `"m"`, `"h"`, …). `set_unit_time()` and
+`set_sampling_rate()` dispatch on both classes — on an anievent they
+scale `start` and `stop` instead of `time`:
+
+```{r}
+ae_frames <- anievent(
+  individual = 1L,
+  channel = c("behaviour", "behaviour"),
+  value = c("REM", "wake"),
+  start = c(30, 150),
+  stop = c(60, 300)
+)
+ae_seconds <- set_sampling_rate(ae_frames, sampling_rate = 30)
+ae_seconds
+```
+
 ## State vs point events
 
 Two temporal kinds:

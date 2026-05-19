@@ -2,48 +2,39 @@
 % Please edit documentation in R/unit_set_time.R
 \name{set_sampling_rate}
 \alias{set_sampling_rate}
-\title{Set the sampling rate of an aniframe object}
+\alias{set_sampling_rate.aniframe}
+\alias{set_sampling_rate.anievent}
+\title{Set the sampling rate of an aniframe or anievent}
 \usage{
 set_sampling_rate(data, sampling_rate)
+
+\method{set_sampling_rate}{aniframe}(data, sampling_rate)
+
+\method{set_sampling_rate}{anievent}(data, sampling_rate)
 }
 \arguments{
-\item{data}{An aniframe object containing time data.}
+\item{data}{An aniframe or anievent.}
 
-\item{sampling_rate}{Numeric value specifying the sampling rate in Hz
-(samples per second). For example, a sampling rate of 30 means 30 frames
-per second.}
+\item{sampling_rate}{Numeric value in Hz (samples per second).}
 }
 \value{
-An aniframe object with updated sampling_rate metadata and, if
-applicable, time values converted from frames to seconds.
+The input object with \code{sampling_rate} metadata updated and,
+where applicable, temporal columns converted to seconds.
 }
 \description{
-Sets the sampling rate (in Hz) for an aniframe object and optionally converts
-time values from frames to seconds. If the data is already in SI time units,
-only the metadata is updated without modifying the time values.
-}
-\details{
-The function performs the following operations:
-\itemize{
-\item Checks the current unit_time in the object's metadata
-\item If unit_time is "frame" or "unknown", converts time values to seconds
-using the formula: time_in_seconds = time_in_frames / sampling_rate
-\item If unit_time is already an SI unit (ms, s, m, h), leaves time values
-unchanged and issues an informational message
-\item Updates the sampling_rate in the object's metadata regardless of the
-current unit_time
-}
-
-This function is particularly useful when working with motion capture or
-video data where time is initially recorded as frame numbers.
+Sets the sampling rate (in Hz) on an \code{\link[=aniframe]{aniframe()}} or \code{\link[=anievent]{anievent()}} and,
+if the object's \code{unit_time} is currently \code{"frame"} or \code{"unknown"},
+converts the temporal columns from frames to seconds using
+\code{1 / sampling_rate}. If \code{unit_time} is already an SI unit, only the
+metadata is updated.
 }
 \examples{
 \dontrun{
-# Set sampling rate for data in frames (converts to seconds)
-data_with_rate <- set_sampling_rate(data, sampling_rate = 30)
+# aniframe in frames -> seconds at 30 fps
+data_s <- set_sampling_rate(data, sampling_rate = 30)
 
-# Set sampling rate for data already in SI units (updates metadata only)
-data_with_rate <- set_sampling_rate(data, sampling_rate = 100)
+# anievent: same call shape
+ae_s <- set_sampling_rate(ae, sampling_rate = 30)
 }
 
 }
