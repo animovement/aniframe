@@ -15,7 +15,7 @@ make_frame_anievent <- function(sampling_unit = "frame") {
   ae <- anievent(
     individual = 1L,
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(30, 150),
     stop = c(60, 300)
   )
@@ -26,7 +26,7 @@ make_seconds_anievent <- function() {
   ae <- anievent(
     individual = 1L,
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 5),
     stop = c(2, 10)
   )

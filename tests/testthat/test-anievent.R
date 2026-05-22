@@ -25,7 +25,7 @@ test_that("anievent() builds an object with the expected class chain", {
   ae <- anievent(
     individual = c(1L, 1L, 1L),
     channel = c("behaviour", "behaviour", "call"),
-    label =c("REM", "wake", "alarm"),
+    label = c("REM", "wake", "alarm"),
     start = c(3, 14, 4.5),
     stop = c(9, 19, 4.5)
   )
@@ -39,7 +39,7 @@ test_that("as_anievent() coerces a plain data.frame", {
   df <- data.frame(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9,
     stringsAsFactors = FALSE
@@ -53,7 +53,7 @@ test_that("anievent() accepts a single data.frame as its only argument", {
   df <- dplyr::tibble(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -66,7 +66,7 @@ test_that("as_anievent() on an existing anievent is a no-op", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -78,7 +78,7 @@ test_that("anievent standardises column types", {
   ae <- anievent(
     individual = c("a", "b"),
     channel = factor(c("behaviour", "call")),
-    label =c("REM", "alarm"),
+    label = c("REM", "alarm"),
     start = c(3L, 4L),
     stop = c(9L, 4L)
   )
@@ -94,7 +94,7 @@ test_that("anievent metadata gets anievent-flavoured defaults", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -109,7 +109,7 @@ test_that("anievent auto-detects recognised identity columns", {
   ae <- anievent(
     subject = c("a", "b"),
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(3, 14),
     stop = c(9, 19)
   )
@@ -121,7 +121,7 @@ test_that("anievent accepts an explicit non-default identity column", {
   ae <- anievent(
     rat = c("a", "b"),
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(3, 14),
     stop = c(9, 19),
     variables_what = "rat"
@@ -134,7 +134,7 @@ test_that("anievent accepts an explicit non-default identity column", {
 test_that("anievent works with no identity column", {
   ae <- anievent(
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(3, 14),
     stop = c(9, 19)
   )
@@ -149,7 +149,7 @@ test_that("anievent auto-detects observation / session / trial into variables_wh
     observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
     trial = c(1L, 1L, 2L, 2L),
     channel = c("behaviour", "behaviour", "behaviour", "behaviour"),
-    label =c("REM", "wake", "REM", "wake"),
+    label = c("REM", "wake", "REM", "wake"),
     start = c(3, 14, 1, 7),
     stop = c(9, 19, 5, 12)
   )
@@ -166,7 +166,7 @@ test_that("anievent coerces auto-detected grouping columns to factor / integer",
     observation = c("clip_a", "clip_a"),
     trial = c(1L, 2L),
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(3, 14),
     stop = c(9, 19)
   )
@@ -182,7 +182,7 @@ test_that("anievent column ordering mirrors aniframe (what, when incl start/stop
     trial = 1L,
     modifiers = list(character()),
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -207,7 +207,7 @@ test_that("optional modifiers list-column is preserved", {
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "REM"),
+    label = c("REM", "REM"),
     start = c(3, 14),
     stop = c(9, 19),
     modifiers = list(
@@ -227,7 +227,7 @@ test_that("validate_anievent rejects missing required columns", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -240,7 +240,7 @@ test_that("validate_anievent rejects wrong column types", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -265,7 +265,7 @@ test_that("validate_anievent rejects negative intervals", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 9,
     stop = 3
   )
@@ -277,7 +277,7 @@ test_that("validate_anievent rejects malformed modifiers", {
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
-    label =c("REM", "REM"),
+    label = c("REM", "REM"),
     start = c(3, 14),
     stop = c(9, 19),
     modifiers = list(
@@ -293,7 +293,7 @@ test_that("validate_anievent rejects a modifiers column that isn't a list", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -306,7 +306,7 @@ test_that("validate_anievent accepts well-formed modifiers", {
   ae <- anievent(
     individual = c(1L, 1L, 1L),
     channel = c("behaviour", "behaviour", "call"),
-    label =c("REM", "REM", "alarm"),
+    label = c("REM", "REM", "alarm"),
     start = c(3, 14, 4.5),
     stop = c(9, 19, 4.5),
     modifiers = list(
@@ -323,7 +323,7 @@ test_that("type auto-derives from start/stop when not supplied", {
   ae <- anievent(
     individual = c(1L, 1L, 1L),
     channel = c("behaviour", "behaviour", "call"),
-    label =c("REM", "wake", "alarm"),
+    label = c("REM", "wake", "alarm"),
     start = c(3, 14, 4.5),
     stop = c(9, 19, 4.5) # middle bout (after arrange): start == stop -> point
   )
@@ -343,7 +343,7 @@ test_that("type auto-derive is per (channel, label) — mixed-duration group is 
   ae <- anievent(
     individual = c(1L, 1L, 1L),
     channel = c("behaviour", "behaviour", "call"),
-    label =c("REM", "REM", "alarm"),
+    label = c("REM", "REM", "alarm"),
     start = c(3, 14, 4.5),
     stop = c(9, 14, 4.5)
   )
@@ -362,7 +362,7 @@ test_that("type override wins over auto-derive", {
   ae <- anievent(
     individual = 1L,
     channel = "motif",
-    label ="M1",
+    label = "M1",
     start = 1,
     stop = 1,
     type = "state"
@@ -375,7 +375,7 @@ test_that("type rejects values outside state/point", {
     anievent(
       individual = 1L,
       channel = "behaviour",
-      label ="REM",
+      label = "REM",
       start = 1,
       stop = 3,
       type = "transient"
@@ -388,7 +388,7 @@ test_that("validate_anievent rejects wrong type levels", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -404,7 +404,7 @@ test_that("validate_anievent rejects non-factor type", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -419,7 +419,7 @@ test_that("validate_anievent returns the input invisibly on success", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -433,7 +433,7 @@ test_that("is_anievent / ensure_is_anievent work as expected", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    label ="REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
