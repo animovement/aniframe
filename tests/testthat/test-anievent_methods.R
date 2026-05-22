@@ -13,7 +13,7 @@ make_anievent <- function() {
   ae <- anievent(
     individual = c(1L, 1L, 2L, 2L),
     channel = c("behaviour", "behaviour", "behaviour", "call"),
-    value = c("REM", "wake", "REM", "alarm"),
+    label =c("REM", "wake", "REM", "alarm"),
     start = c(3, 14, 1, 7.5),
     stop = c(9, 19, 6, 7.5)
   )
@@ -100,7 +100,7 @@ test_that("$ returns a vector", {
 
 test_that("[<- preserves anievent class and metadata", {
   ae <- make_anievent()
-  ae[1, "value"] <- factor("REM", levels = levels(ae$value))
+  ae[1, "label"] <- factor("REM", levels = levels(ae$label))
   expect_anievent_with_md(ae)
 })
 
@@ -131,7 +131,7 @@ test_that("dplyr verbs round-trip a modifiers list-column", {
   ae <- anievent(
     individual = c(1L, 1L, 1L),
     channel = c("behaviour", "behaviour", "call"),
-    value = c("REM", "wake", "alarm"),
+    label =c("REM", "wake", "alarm"),
     start = c(3, 14, 4.5),
     stop = c(9, 19, 4.5),
     modifiers = list(

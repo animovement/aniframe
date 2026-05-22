@@ -5,14 +5,16 @@
 #' sibling of [aniframe()] — it shares the metadata substrate but holds
 #' event-bout records rather than per-frame movement data.
 #'
-#' Mandatory columns: `channel`, `value`, `start`, `stop`. A "channel"
-#' is one mutually-exclusive categorical track of behaviour — at any
-#' moment, a subject can only have one `value` per channel. Identity
-#' columns (e.g. `individual`, `subject`, `track`) are optional and
-#' declared via `variables_what`. A `modifiers` list-column may carry
-#' per-event modifier values — each cell a character vector (matching
-#' the BORIS export format, where one event can have zero or more
-#' modifier values selected from the ethogram).
+#' Mandatory columns: `channel`, `type`, `label`, `start`, `stop`. A
+#' "channel" is one mutually-exclusive categorical track of behaviour —
+#' at any moment, a subject can only have one `label` active per
+#' channel. `type` is `"state"` (durative, `stop > start`) or `"point"`
+#' (instant, `start == stop`). Identity columns (e.g. `individual`,
+#' `subject`, `track`) are optional and declared via `variables_what`.
+#' A `modifiers` list-column may carry per-event modifier values — each
+#' cell a character vector (matching the BORIS export format, where one
+#' event can have zero or more modifier values selected from the
+#' ethogram).
 #'
 #' @param ... Name-value pairs to create columns in the data frame.
 #' @param metadata Optional list of metadata.
@@ -33,7 +35,7 @@
 #' anievent(
 #'   individual = c(1L, 1L, 1L),
 #'   channel = c("behaviour", "behaviour", "call"),
-#'   value = c("REM", "wake", "alarm"),
+#'   label = c("REM", "wake", "alarm"),
 #'   start = c(3, 14, 4.5),
 #'   stop = c(9, 19, 4.5)
 #' )

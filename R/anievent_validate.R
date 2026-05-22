@@ -1,10 +1,10 @@
 #' Validate an anievent
 #'
 #' Re-runs the structural invariants of an `anievent` object on demand:
-#' * required columns (`channel`, `event_type`, `value`, `start`,
+#' * required columns (`channel`, `type`, `label`, `start`,
 #'   `stop`) are present with the expected types; identity columns
 #'   travel via `variables_what` and are not part of the required set;
-#' * `event_type` is a factor with levels `c("state", "point")`,
+#' * `type` is a factor with levels `c("state", "point")`,
 #'   classifying each row as either a state event (durative) or a
 #'   point event (instant);
 #' * `stop >= start` for every row;
@@ -34,18 +34,18 @@ ensure_anievent_col_types <- function(data) {
   if (!is.character(data[["channel"]])) {
     cli::cli_abort("{.field channel} must be character.")
   }
-  if (!is.factor(data[["event_type"]])) {
+  if (!is.factor(data[["type"]])) {
     cli::cli_abort(
-      "{.field event_type} must be a factor with levels {.val state} and {.val point}."
+      "{.field type} must be a factor with levels {.val state} and {.val point}."
     )
   }
-  if (!identical(levels(data[["event_type"]]), c("state", "point"))) {
+  if (!identical(levels(data[["type"]]), c("state", "point"))) {
     cli::cli_abort(
-      "{.field event_type} must have levels exactly {.val state} and {.val point}."
+      "{.field type} must have levels exactly {.val state} and {.val point}."
     )
   }
-  if (!is.factor(data[["value"]])) {
-    cli::cli_abort("{.field value} must be a factor.")
+  if (!is.factor(data[["label"]])) {
+    cli::cli_abort("{.field label} must be a factor.")
   }
   if (!is.numeric(data[["start"]])) {
     cli::cli_abort("{.field start} must be numeric.")

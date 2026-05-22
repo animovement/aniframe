@@ -18,13 +18,20 @@ knitr::opts_chunk$set(
 library(aniframe)
 ```
 
-## What is an `anievent`?
+## At a glance
 
-`anievent` is the sibling of [`aniframe`](aniframe-structure.html) for
-**behavioural events**: sleep bouts, vocalisations, manual scoring from
-BORIS, the output of segmentation models. Where an `aniframe` records
-position frame-by-frame, an `anievent` records intervals
-(`start` → `stop`) or instants (`start == stop`) of labelled behaviour.
+An `anievent` is the sibling of [`aniframe`](aniframe-structure.html)
+for **behavioural events**: sleep bouts, vocalisations, manual scoring
+from BORIS, the output of segmentation models.
+
+Each row is one **event**. An event sits in a **channel** (where it
+is, as a soft convention, mutually exclusive with other events on the
+same channel), has a **type** — either `"state"` (durative) or
+`"point"` (instant) — and carries a **label** identifying which event
+it is. Each event has a **start** and a **stop** time (identical for
+point events). Just like an `aniframe`, the event is *performed by
+something* (identity columns, declared via `variables_what`) at *some
+time* (temporal-grouping columns, declared via `variables_when`).
 
 The class is a true sibling — it does **not** inherit from `aniframe`,
 but it shares the metadata substrate, so `get_metadata()`,
@@ -51,7 +58,7 @@ package.
 ae <- anievent(
   individual = c(1L, 1L, 1L, 2L),
   channel = c("behaviour", "behaviour", "call", "behaviour"),
-  value = c("REM", "wake", "alarm", "REM"),
+  label =c("REM", "wake", "alarm", "REM"),
   start = c(3, 14, 4.5, 1),
   stop = c(9, 19, 4.5, 6)
 )
@@ -65,7 +72,7 @@ Two things to spot:
    `channel` column.
 2. The **data columns** are the long-format event records: one row per
    bout (or instant), with the channel name in `channel` and the
-   label in `value`.
+   label in `label`.
 
 ## Required schema
 
@@ -75,8 +82,8 @@ travel via `variables_what`:
 | Column       | Type      | Required? | Role                                       |
 |--------------|-----------|-----------|--------------------------------------------|
 | `channel`    | character | yes       | which event channel                        |
-| `event_type` | factor    | yes       | `"state"` (durative) or `"point"` (instant) |
-| `value`      | factor    | yes       | the label                                  |
+| `type`       | factor    | yes       | `"state"` (durative) or `"point"` (instant) |
+| `label`      | factor    | yes       | which event (the categorical label)        |
 | `start`      | numeric   | yes       | bout start (or instant)                    |
 | `stop`       | numeric   | yes       | bout stop (equals `start` for point events) |
 | identity     | as source | optional  | e.g. `individual`, `track`, `subject`      |
@@ -87,12 +94,12 @@ Identity columns are auto-detected from a known list
 name via `variables_what`. An `anievent` with no identity column at
 all is fine for single-subject experiments.
 
-`event_type` is auto-derived from `start`/`stop` at construction.
-Classification is **per `(channel, value)` group**, not per row: a
+`type` is auto-derived from `start`/`stop` at construction.
+Classification is **per `(channel, label)` group**, not per row: a
 group is labelled `"point"` only when *all* of its bouts have
 `start == stop`. If even one bout in the group is durative, the
 whole group is `"state"` — so the same behaviour stays consistently
-typed across its occurrences. Pass `event_type` explicitly to
+typed across its occurrences. Pass `type` explicitly to
 override this default.
 
 ### Multiple observations / trials / sessions
@@ -109,7 +116,7 @@ ae_multi <- anievent(
   individual = c(1L, 1L, 1L, 1L),
   observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
   channel =c("behaviour", "behaviour", "behaviour", "behaviour"),
-  value = c("REM", "wake", "REM", "wake"),
+  label =c("REM", "wake", "REM", "wake"),
   start = c(3, 14, 1, 7),
   stop = c(9, 19, 5, 12)
 )
@@ -136,7 +143,7 @@ scale `start` and `stop` instead of `time`:
 ae_frames <- anievent(
   individual = 1L,
   channel = c("behaviour", "behaviour"),
-  value = c("REM", "wake"),
+  label =c("REM", "wake"),
   start = c(30, 150),
   stop = c(60, 300)
 )
@@ -191,7 +198,7 @@ set-key wrapping.
 ae_with_mods <- anievent(
   individual = c(1L, 1L, 1L),
   channel =c("behaviour", "behaviour", "call"),
-  value = c("REM", "REM", "alarm"),
+  label =c("REM", "REM", "alarm"),
   start = c(3, 14, 4.5),
   stop = c(9, 19, 4.5),
   modifiers = list(

@@ -15,10 +15,10 @@ The input \code{data}, invisibly.
 \description{
 Re-runs the structural invariants of an \code{anievent} object on demand:
 \itemize{
-\item required columns (\code{channel}, \code{event_type}, \code{value}, \code{start},
+\item required columns (\code{channel}, \code{type}, \code{label}, \code{start},
 \code{stop}) are present with the expected types; identity columns
 travel via \code{variables_what} and are not part of the required set;
-\item \code{event_type} is a factor with levels \code{c("state", "point")},
+\item \code{type} is a factor with levels \code{c("state", "point")},
 classifying each row as either a state event (durative) or a
 point event (instant);
 \item \code{stop >= start} for every row;
