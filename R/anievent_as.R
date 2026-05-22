@@ -115,15 +115,29 @@ as_anievent.aniframe <- function(
   }
   group_cols <- c(variables_what, grouping_when)
 
+  # Bundle suffixed sub-columns (`<channel>_2`, `<channel>_3`, ...)
+  # back under their base channel name when both are declared. This
+  # reverses the splitting that `add_events()` does on overlap.
+  state_bundles <- bundle_event_columns(ve$state)
+  point_bundles <- bundle_event_columns(ve$point)
+
   bouts <- list()
-  if (length(ve$state) > 0) {
-    for (col in ve$state) {
-      bouts[[col]] <- rle_state_column(bare, col, group_cols)
+  for (base_ch in names(state_bundles)) {
+    for (col in state_bundles[[base_ch]]) {
+      sub <- rle_state_column(bare, col, group_cols)
+      if (nrow(sub) > 0) {
+        sub$channel <- base_ch
+      }
+      bouts[[paste0("state__", col)]] <- sub
     }
   }
-  if (length(ve$point) > 0) {
-    for (col in ve$point) {
-      bouts[[col]] <- pick_point_column(bare, col, group_cols)
+  for (base_ch in names(point_bundles)) {
+    for (col in point_bundles[[base_ch]]) {
+      sub <- pick_point_column(bare, col, group_cols)
+      if (nrow(sub) > 0) {
+        sub$channel <- base_ch
+      }
+      bouts[[paste0("point__", col)]] <- sub
     }
   }
 
@@ -161,6 +175,38 @@ as_anievent.aniframe <- function(
     variables_what = variables_what,
     variables_when = variables_when
   )
+}
+
+
+#' Bundle suffixed event sub-columns back under their base channel
+#'
+#' `add_events()` splits an anievent channel with overlapping bouts
+#' into numbered sub-columns on the aniframe (`<channel>`,
+#' `<channel>_2`, `<channel>_3`, ...). This helper does the inverse:
+#' given a flat character vector of declared event-column names, it
+#' returns a named list mapping each logical base channel to the
+#' physical columns it includes.
+#'
+#' A column is recognised as a sub-column of `<base>` only when both
+#' the suffix matches `_<n>` (positive integer ≥ 2) and `<base>`
+#' itself is also declared. A standalone `behaviour_2` (without a
+#' sibling `behaviour`) stays its own logical channel.
+#'
+#' @param declared Character vector of declared event-column names.
+#' @return Named list keyed by base channel name; each element is a
+#'   character vector of physical column names that belong to it.
+#' @keywords internal
+bundle_event_columns <- function(declared) {
+  bundles <- list()
+  for (col in declared) {
+    base <- sub("_\\d+$", "", col)
+    if (base != col && base %in% declared) {
+      bundles[[base]] <- c(bundles[[base]] %||% base, col)
+    } else if (is.null(bundles[[col]])) {
+      bundles[[col]] <- col
+    }
+  }
+  bundles
 }
 
 

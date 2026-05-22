@@ -287,11 +287,31 @@ add_events(af, ae)
 
 State vs point is auto-detected from the bouts (a channel is `point`
 iff every bout has `start == stop`). The resulting aniframe's
-`variables_event` is updated accordingly.
+`variables_event` is updated accordingly. The auto-detect rule can be
+overridden — pass `variables_event = list(state = ..., point = ...)`
+to `add_events()` or set it on the `events`' own metadata. This is
+important when a state channel happens to have only single-frame
+bouts (e.g. flapping VAME motifs) and would otherwise be misread as
+point.
 
 Unit reconciliation happens transparently when host and events differ:
 SI ↔ SI is auto-converted; crossing the `"frame"` ↔ SI boundary needs
 a `sampling_rate` on either side (errors otherwise).
+
+### Splitting and bundling
+
+An `anievent` can have overlapping bouts on the same channel — that's
+allowed at the long-form layer. An `aniframe`'s factor column can't
+hold two values at the same frame, so `add_events()` greedy-splits
+overlapping bouts into numbered sub-columns: track 1 stays as
+`<channel>`, track 2 becomes `<channel>_2`, and so on. Each output
+column is itself mutually exclusive.
+
+`as_anievent.aniframe()` reverses the split — when both `<channel>`
+and `<channel>_<n>` columns are declared in `variables_event`, they're
+bundled back under one logical channel on the resulting anievent. So
+the round-trip preserves the original channel grouping, even though
+the dense form temporarily uses multiple columns.
 
 ### Modifiers round-trip
 

@@ -4,15 +4,10 @@
 \alias{validate_anievent}
 \title{Validate an anievent}
 \usage{
-validate_anievent(data, channels_strict = FALSE)
+validate_anievent(data)
 }
 \arguments{
 \item{data}{An anievent object.}
-
-\item{channels_strict}{If \code{TRUE}, overlapping bouts in the same
-channel for the same subject raise an error; otherwise (default)
-they raise a warning. Downstream verbs that depend on mutual
-exclusion (\code{add_events()}, plotting) call with \code{TRUE}.}
 }
 \value{
 The input \code{data}, invisibly.
@@ -21,28 +16,17 @@ The input \code{data}, invisibly.
 Re-runs the structural invariants of an \code{anievent} object on demand:
 \itemize{
 \item required columns (\code{channel}, \code{value}, \code{start}, \code{stop}) are present
-with the expected types; identity columns travel via
-\code{variables_what} and are not part of the required set;
-\item \code{stop >= start} for every row;
+with the expected types — these are hard errors;
+\item \code{stop >= start} for every row — hard error;
 \item \code{modifiers}, if present, is a list-column whose cells are
-character vectors (the values picked from BORIS modifier sets at
-coding time; an empty vector when the event has no modifiers);
+character vectors — hard error;
 \item within each \code{(identity + temporal-grouping)} group, two bouts of
-the same \code{channel} never overlap. Channels are conventionally
-mutually exclusive, but some coding tools (BORIS in particular)
-permit overlap, so the default is to \strong{warn} rather than error.
-Pass \code{channels_strict = TRUE} to escalate to a hard error — this
-is what downstream conversions (\code{add_events()}) and plotting
-verbs need.
+the same \code{channel} should not overlap — \strong{warning} only.
+Overlapping bouts within a channel are permitted on the
+\code{anievent} side; this is the form the data takes from coding
+tools that allow non-mutually-exclusive coding (e.g. BORIS
+without strict ethogram). \code{add_events()} splits them into
+numbered sub-columns at the boundary into \code{aniframe}, where
+mutual exclusion is structurally enforced.
 }
-}
-\details{
-Type-linked invariants (which channels are state vs point events;
-the zero-duration requirement on point events) belong with the
-aniframe ↔ anievent conversion code and are checked there. The
-\code{anievent} class itself stays type-agnostic — \code{channel} and \code{value}
-carry all the information the class needs.
-
-Errors are raised through \code{cli::cli_abort()}; on success the object
-is returned invisibly.
 }

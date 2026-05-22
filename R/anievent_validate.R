@@ -2,49 +2,46 @@
 #'
 #' Re-runs the structural invariants of an `anievent` object on demand:
 #' * required columns (`channel`, `value`, `start`, `stop`) are present
-#'   with the expected types; identity columns travel via
-#'   `variables_what` and are not part of the required set;
-#' * `stop >= start` for every row;
+#'   with the expected types — these are hard errors;
+#' * `stop >= start` for every row — hard error;
 #' * `modifiers`, if present, is a list-column whose cells are
-#'   character vectors (the values picked from BORIS modifier sets at
-#'   coding time; an empty vector when the event has no modifiers);
+#'   character vectors — hard error;
 #' * within each `(identity + temporal-grouping)` group, two bouts of
-#'   the same `channel` never overlap. Channels are conventionally
-#'   mutually exclusive, but some coding tools (BORIS in particular)
-#'   permit overlap, so the default is to **warn** rather than error.
-#'   Pass `channels_strict = TRUE` to escalate to a hard error — this
-#'   is what downstream conversions (`add_events()`) and plotting
-#'   verbs need.
-#'
-#' Type-linked invariants (which channels are state vs point events;
-#' the zero-duration requirement on point events) belong with the
-#' aniframe ↔ anievent conversion code and are checked there. The
-#' `anievent` class itself stays type-agnostic — `channel` and `value`
-#' carry all the information the class needs.
-#'
-#' Errors are raised through `cli::cli_abort()`; on success the object
-#' is returned invisibly.
+#'   the same `channel` should not overlap — **warning** only.
+#'   Overlapping bouts within a channel are permitted on the
+#'   `anievent` side; this is the form the data takes from coding
+#'   tools that allow non-mutually-exclusive coding (e.g. BORIS
+#'   without strict ethogram). `add_events()` splits them into
+#'   numbered sub-columns at the boundary into `aniframe`, where
+#'   mutual exclusion is structurally enforced.
 #'
 #' @param data An anievent object.
-#' @param channels_strict If `TRUE`, overlapping bouts in the same
-#'   channel for the same subject raise an error; otherwise (default)
-#'   they raise a warning. Downstream verbs that depend on mutual
-#'   exclusion (`add_events()`, plotting) call with `TRUE`.
 #'
 #' @return The input `data`, invisibly.
 #' @export
-validate_anievent <- function(data, channels_strict = FALSE) {
+validate_anievent <- function(data) {
   ensure_is_anievent(data)
+  ensure_anievent_structural(data)
+  warn_anievent_channels_overlap(data)
+  invisible(data)
+}
+
+
+#' Structural checks for an anievent (no overlap warning)
+#'
+#' Bundles the hard checks `validate_anievent()` runs: required
+#' columns, column types, non-negative intervals, modifier shape.
+#' Callers that already handle channel overlap (e.g. `add_events()`,
+#' which splits into numbered sub-columns) call this directly to
+#' avoid the redundant overlap warning.
+#'
+#' @keywords internal
+ensure_anievent_structural <- function(data) {
   ensure_anievent_cols(data)
   ensure_anievent_col_types(data)
   ensure_anievent_intervals_nonnegative(data)
   ensure_anievent_modifiers_shape(data)
-  if (channels_strict) {
-    ensure_anievent_channels_disjoint(data)
-  } else {
-    warn_anievent_channels_overlap(data)
-  }
-  invisible(data)
+  invisible(TRUE)
 }
 
 
@@ -127,21 +124,7 @@ warn_anievent_channels_overlap <- function(data) {
     cli::cli_warn(c(
       "Two bouts of the same channel overlap for the same subject.",
       "x" = "Channel {.val {hit$channel}} has overlapping bouts at row {.val {hit$row}}.",
-      "i" = "Channels are conventionally mutually exclusive. Downstream conversions ({.fn add_events}) and plotting verbs will error on overlap."
-    ))
-  }
-  invisible(TRUE)
-}
-
-
-#' @keywords internal
-ensure_anievent_channels_disjoint <- function(data) {
-  hit <- find_anievent_channel_overlap(data)
-  if (!is.null(hit)) {
-    cli::cli_abort(c(
-      "Two bouts of the same channel overlap for the same subject.",
-      "x" = "Channel {.val {hit$channel}} has overlapping bouts at row {.val {hit$row}}.",
-      "i" = "Channels are mutually exclusive: only one value can be active at a time per subject."
+      "i" = "Overlap is permitted on the {.cls anievent}. {.fn add_events} will split into numbered sub-columns when converting to {.cls aniframe}."
     ))
   }
   invisible(TRUE)

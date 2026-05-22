@@ -218,18 +218,35 @@ test_that("collision between channel name and existing host column errors", {
   expect_error(add_events(af, ae), "collide")
 })
 
-test_that("overlapping bouts in the same channel for the same subject error", {
+test_that("overlapping bouts in the same channel split into numbered sub-columns", {
   af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
-  ae <- dplyr::tibble(
-    individual = c(1L, 1L),
-    channel = c("behaviour", "behaviour"),
-    value = factor(c("REM", "wake")),
-    start = c(1, 3),
-    stop = c(5, 7)
-  ) |>
-    as_anievent()
+  ae <- suppressWarnings(
+    dplyr::tibble(
+      individual = c(1L, 1L),
+      channel = c("behaviour", "behaviour"),
+      value = factor(c("REM", "wake")),
+      start = c(1, 3),
+      stop = c(5, 7)
+    ) |>
+      as_anievent()
+  )
 
-  expect_error(add_events(af, ae), "overlap")
+  result <- add_events(af, ae)
+  expect_true("behaviour" %in% names(result))
+  expect_true("behaviour_2" %in% names(result))
+  # Track 1: first bout (1..5) on "behaviour"
+  expect_equal(
+    as.character(result$behaviour),
+    c("REM", "REM", "REM", "REM", "REM", NA, NA, NA, NA, NA)
+  )
+  # Track 2: second bout (3..7) on "behaviour_2"
+  expect_equal(
+    as.character(result$behaviour_2),
+    c(NA, NA, "wake", "wake", "wake", "wake", "wake", NA, NA, NA)
+  )
+  # Both tracks declared in variables_event
+  ve <- get_metadata(result, "variables_event")
+  expect_setequal(ve$state, c("behaviour", "behaviour_2"))
 })
 
 test_that("non-aniframe / non-anievent inputs error", {
@@ -515,6 +532,127 @@ test_that("partial mismatch on multi-key (individual + observation) lists the un
     result <- add_events(af, ae),
     "clip_b"
   )
+})
+
+test_that("non-overlapping bouts in the same channel stay on one column (no suffix)", {
+  af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    value = c("REM", "wake"),
+    start = c(1, 6),
+    stop = c(5, 10)
+  )
+  result <- add_events(af, ae)
+
+  expect_true("behaviour" %in% names(result))
+  expect_false("behaviour_2" %in% names(result))
+  expect_equal(
+    as.character(result$behaviour),
+    c(rep("REM", 5), rep("wake", 5))
+  )
+})
+
+test_that("split happens per identity-group — overlap on subject 1 doesn't suffix subject 2's column", {
+  af <- aniframe(
+    individual = rep(c(1L, 2L), each = 5),
+    time = rep(1:5, 2),
+    x = rnorm(10),
+    y = rnorm(10)
+  )
+  ae <- suppressWarnings(
+    anievent(
+      individual = c(1L, 1L, 2L),
+      channel = c("behaviour", "behaviour", "behaviour"),
+      value = c("REM", "wake", "REM"),
+      start = c(1, 2, 1),
+      stop = c(3, 4, 3)
+    )
+  )
+  result <- add_events(af, ae)
+
+  expect_true("behaviour" %in% names(result))
+  expect_true("behaviour_2" %in% names(result))
+  # Subject 2's bout is on track 1 (no overlap), so it lives on "behaviour"
+  expect_equal(
+    as.character(result$behaviour[result$individual == 2])[1:3],
+    rep("REM", 3)
+  )
+  # Subject 2 has no track-2 bout
+  expect_true(all(is.na(result$behaviour_2[result$individual == 2])))
+})
+
+test_that("variables_event arg on add_events overrides auto-detect (state)", {
+  # All bouts have start == stop, so auto-detect would say "point".
+  # Override forces "state".
+  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+  ae <- anievent(
+    individual = 1L,
+    channel = "motif",
+    value = "M1",
+    start = 1,
+    stop = 1
+  )
+
+  result <- add_events(af, ae, variables_event = list(state = "motif", point = character()))
+  ve <- get_metadata(result, "variables_event")
+  expect_true("motif" %in% ve$state)
+  expect_false("motif" %in% ve$point)
+})
+
+test_that("variables_event arg on add_events overrides auto-detect (point)", {
+  # All bouts have stop > start, so auto-detect would say "state".
+  # Override forces "point".
+  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+  ae <- anievent(
+    individual = 1L,
+    channel = "ping",
+    value = "P1",
+    start = 1,
+    stop = 3
+  )
+
+  result <- add_events(af, ae, variables_event = list(state = character(), point = "ping"))
+  ve <- get_metadata(result, "variables_event")
+  expect_true("ping" %in% ve$point)
+  expect_false("ping" %in% ve$state)
+})
+
+test_that("events' own variables_event metadata wins over auto-detect when no override", {
+  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+  ae <- anievent(
+    individual = 1L,
+    channel = "motif",
+    value = "M1",
+    start = 1,
+    stop = 1
+  )
+  ae <- set_metadata(ae, variables_event = list(state = "motif", point = character()))
+
+  result <- add_events(af, ae)
+  ve <- get_metadata(result, "variables_event")
+  expect_true("motif" %in% ve$state)
+})
+
+test_that("round-trip bundles split sub-columns back under base channel", {
+  # Build an aniframe with two overlapping bouts -> split into 2 cols,
+  # then convert back -> one channel "behaviour" again.
+  af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
+  ae <- suppressWarnings(
+    anievent(
+      individual = c(1L, 1L),
+      channel = c("behaviour", "behaviour"),
+      value = c("REM", "wake"),
+      start = c(1, 3),
+      stop = c(5, 7)
+    )
+  )
+
+  af2 <- add_events(af, ae)
+  ae_back <- as_anievent(af2)
+  # All bouts back under one channel
+  expect_setequal(unique(ae_back$channel), "behaviour")
+  expect_equal(nrow(ae_back), 2)
 })
 
 test_that("add_events accumulates into an existing variables_event", {

@@ -13,7 +13,10 @@
 * Modifiers round-trip across the two verbs. `add_events()` broadcasts each bout's `modifiers` cell across the bout's frames as a parallel `<channel>_modifiers` list-column on the host (only when a channel has at least one non-empty modifier vector). `as_anievent.aniframe()` reverses the operation: a `<channel>_modifiers` column on the source aniframe is gathered back into the resulting anievent's `modifiers` cells.
 * `add_events()` now surfaces unmatched event bouts. When *some* bouts have identity / temporal-grouping keys not present in the host they're dropped silently as before, but an informational message lists the offending tuples. When *no* bouts match (almost certainly a user error — wrong anievent, typo in a subject id), a warning is emitted instead.
 * `as_anievent.aniframe()` auto-detects each event channel's "scope" — the minimal subset of `variables_what` the value varies across — so a `behaviour` column constant across `keypoint` no longer produces duplicate bouts per keypoint. Singleton identity columns (a single unique value) are preserved for traceability rather than collapsed away. Temporal-grouping columns (`observation`, `session`, `trial`) are always carried through unconditionally — they represent distinct contexts and must not be merged. Channels with disagreeing scopes (e.g. an individual-level and a keypoint-level channel together) error with a message pointing to `variables_what` as the explicit override.
-* `validate_anievent()` now also checks that two bouts of the same `channel` never overlap within the same `(identity + temporal-grouping)` group. Channels are conventionally mutually exclusive, but some coding tools (BORIS in particular) permit overlap, so the default is to **warn** rather than error. Pass `channels_strict = TRUE` to escalate to a hard error — which is what downstream conversions like `add_events()` (and future plotting verbs) require.
+* `validate_anievent()` now also checks that two bouts of the same `channel` never overlap within the same `(identity + temporal-grouping)` group. The check is a **warning** — overlap is permitted on the `anievent` side (BORIS without strict ethogram produces it as normal output, and the long-form representation handles it natively).
+* `add_events()` now **splits overlapping bouts into numbered sub-columns** on the destination aniframe. Track 1 stays as `<channel>`; subsequent tracks emit `<channel>_2`, `<channel>_3`, etc. Each output column is itself mutually exclusive, matching the aniframe's structural requirement. Splitting is per-identity-group, so overlap on subject 1 doesn't pollute subject 2's column.
+* `as_anievent.aniframe()` reverses the split — when both `<channel>` and `<channel>_<n>` columns are declared in `variables_event`, they're bundled back under one logical channel on the resulting anievent.
+* `add_events()` gains an optional `variables_event` argument to override the auto-detected state-vs-point classification per channel. Resolution priority: explicit argument → events' own `variables_event` metadata → auto-detect by bout duration. Fixes the edge case where a state channel with only single-frame bouts (e.g. flapping VAME motifs) would be auto-detected as point.
 
 ## Improvements
 
@@ -29,7 +32,7 @@
 
 * Factored the strip-class / `NextMethod` / rebuild / re-attach pattern shared by `aniframe_methods.R` and `anievent_methods.R` into `preserve_animovement_class()` in `utils.R`.
 * `resolve_unit_time_calibration()` factors out the shared unit-validation and conversion-factor logic between `set_unit_time.aniframe` and `set_unit_time.anievent`.
-* Test coverage at 100% (829 tests).
+* Test coverage at 100% (854 tests).
 
 # aniframe 0.5.0 (2026-05-04)
 

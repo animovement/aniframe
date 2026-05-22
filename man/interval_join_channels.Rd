@@ -7,11 +7,22 @@
 interval_join_channels(data, events, channel_names, join_keys)
 }
 \description{
-For each channel, adds a column to \code{data} whose value, for each
-frame, is the \code{value} of the bout active at that frame within the
-matching join-key group; \code{NA} outside any bout. If the anievent
-carries non-empty modifiers for a channel, a parallel
-\verb{<channel>_modifiers} list-column is added, broadcasting each
-bout's modifier vector across its frames.
+For each channel, adds one or more factor columns to \code{data}:
+\itemize{
+\item \strong{No overlap within an identity-group}: a single column
+\verb{<channel>} whose value at each frame is the bout \code{value} active
+there (\code{NA} outside any bout).
+\item \strong{Overlap within an identity-group}: the bouts are greedy
+interval-coloured into the smallest set of disjoint tracks.
+Track 1 stays as \verb{<channel>}; tracks 2.. are emitted as
+\verb{<channel>_2}, \verb{<channel>_3}, ... Each output column is itself
+mutually exclusive, matching the structural invariant the
+\code{aniframe} side requires.
+}
+}
+\details{
+If the anievent carries non-empty modifiers for a channel, parallel
+\verb{<channel>_modifiers} (and \verb{<channel>_2_modifiers} etc.)
+list-columns are added.
 }
 \keyword{internal}

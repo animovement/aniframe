@@ -272,21 +272,6 @@ test_that("validate_anievent warns (by default) on overlapping bouts in the same
   expect_warning(validate_anievent(ae), "overlap")
 })
 
-test_that("validate_anievent(channels_strict = TRUE) escalates channel overlap to an error", {
-  ae <- anievent(
-    individual = c(1L, 1L),
-    channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
-    start = c(3, 5),
-    stop = c(8, 10)
-  )
-
-  expect_error(
-    validate_anievent(ae, channels_strict = TRUE),
-    "overlap"
-  )
-})
-
 test_that("validate_anievent accepts overlapping bouts on different channels", {
   ae <- anievent(
     individual = c(1L, 1L),

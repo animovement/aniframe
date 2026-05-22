@@ -4,12 +4,22 @@
 \alias{add_events}
 \title{Add events from an anievent onto an aniframe host}
 \usage{
-add_events(data, events)
+add_events(data, events, variables_event = NULL)
 }
 \arguments{
 \item{data}{An aniframe — the host whose time grid receives the events.}
 
 \item{events}{An anievent.}
+
+\item{variables_event}{Optional \code{list(state = ..., point = ...)}
+declaring how to classify each channel on the resulting aniframe's
+\code{variables_event} metadata. Resolution priority: this argument
+(when supplied) overrides everything else; otherwise the events'
+own \code{variables_event} metadata is used; any channels still
+unclassified are auto-detected from the bouts (a channel is
+\code{point} iff every bout has \code{start == stop}, else \code{state}). Set
+this argument when the auto-detect rule would mislabel, e.g. a
+state channel where every bout happens to be single-frame.}
 }
 \value{
 The host aniframe with one new column per channel of
