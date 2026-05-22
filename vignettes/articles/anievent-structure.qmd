@@ -69,12 +69,13 @@ Two things to spot:
 
 ## Required schema
 
-An `anievent` has four mandatory columns plus identity columns that
+An `anievent` has five mandatory columns plus identity columns that
 travel via `variables_what`:
 
 | Column       | Type      | Required? | Role                                       |
 |--------------|-----------|-----------|--------------------------------------------|
 | `channel`    | character | yes       | which event channel                        |
+| `event_type` | factor    | yes       | `"state"` (durative) or `"point"` (instant) |
 | `value`      | factor    | yes       | the label                                  |
 | `start`      | numeric   | yes       | bout start (or instant)                    |
 | `stop`       | numeric   | yes       | bout stop (equals `start` for point events) |
@@ -85,6 +86,14 @@ Identity columns are auto-detected from a known list
 (`model`, `individual`, `track`, `subject`), or you can supply any
 name via `variables_what`. An `anievent` with no identity column at
 all is fine for single-subject experiments.
+
+`event_type` is auto-derived from `start`/`stop` at construction.
+Classification is **per `(channel, value)` group**, not per row: a
+group is labelled `"point"` only when *all* of its bouts have
+`start == stop`. If even one bout in the group is durative, the
+whole group is `"state"` — so the same behaviour stays consistently
+typed across its occurrences. Pass `event_type` explicitly to
+override this default.
 
 ### Multiple observations / trials / sessions
 
@@ -285,14 +294,12 @@ ae <- anievent(
 add_events(af, ae)
 ```
 
-State vs point is auto-detected from the bouts (a channel is `point`
-iff every bout has `start == stop`). The resulting aniframe's
-`variables_event` is updated accordingly. The auto-detect rule can be
-overridden — pass `variables_event = list(state = ..., point = ...)`
-to `add_events()` or set it on the `events`' own metadata. This is
-important when a state channel happens to have only single-frame
-bouts (e.g. flapping VAME motifs) and would otherwise be misread as
-point.
+Type classification uses the anievent's per-row `event_type` column.
+A channel carrying only one event_type becomes a single bare
+`<channel>` column on the aniframe. A channel that carries both
+state and point bouts is split — `<channel>_state` for state bouts,
+`<channel>_point` for point. The resulting aniframe's
+`variables_event` is populated accordingly.
 
 Unit reconciliation happens transparently when host and events differ:
 SI ↔ SI is auto-converted; crossing the `"frame"` ↔ SI boundary needs
@@ -300,18 +307,25 @@ a `sampling_rate` on either side (errors otherwise).
 
 ### Splitting and bundling
 
-An `anievent` can have overlapping bouts on the same channel — that's
-allowed at the long-form layer. An `aniframe`'s factor column can't
-hold two values at the same frame, so `add_events()` greedy-splits
-overlapping bouts into numbered sub-columns: track 1 stays as
-`<channel>`, track 2 becomes `<channel>_2`, and so on. Each output
-column is itself mutually exclusive.
+Two suffix conventions, used independently and composable:
 
-`as_anievent.aniframe()` reverses the split — when both `<channel>`
-and `<channel>_<n>` columns are declared in `variables_event`, they're
-bundled back under one logical channel on the resulting anievent. So
-the round-trip preserves the original channel grouping, even though
-the dense form temporarily uses multiple columns.
+- **Type suffix** (`_state` / `_point`): when a channel carries both
+  state and point bouts, `add_events()` writes them to separate
+  factor columns on the aniframe.
+- **Track suffix** (`_2`, `_3`, …): when bouts within a `(channel,
+  event_type)` group overlap, greedy interval-colouring splits them
+  into tracks. Track 1 keeps the base name; tracks 2.. get the
+  numerical suffix.
+
+Both can apply: `behaviour_state_2` is the second track of a state
+group on a mixed-type channel.
+
+`as_anievent.aniframe()` reverses both suffixes — declared columns
+are bundled back under their base channel name, with `event_type`
+set per row from the side of `variables_event` the source column
+was declared in. The round-trip preserves the original channel
+grouping and per-bout type, even though the dense form may use
+several columns to keep mutual exclusion intact.
 
 ### Modifiers round-trip
 

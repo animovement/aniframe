@@ -1,8 +1,10 @@
 #' Validate an anievent
 #'
 #' Re-runs the structural invariants of an `anievent` object on demand:
-#' * required columns (`channel`, `value`, `start`, `stop`) are present
-#'   with the expected types — these are hard errors;
+#' * required columns (`channel`, `event_type`, `value`, `start`,
+#'   `stop`) are present with the expected types — hard errors;
+#' * `event_type` is a factor with levels `c("state", "point")` —
+#'   hard error;
 #' * `stop >= start` for every row — hard error;
 #' * `modifiers`, if present, is a list-column whose cells are
 #'   character vectors — hard error;
@@ -49,6 +51,16 @@ ensure_anievent_structural <- function(data) {
 ensure_anievent_col_types <- function(data) {
   if (!is.character(data[["channel"]])) {
     cli::cli_abort("{.field channel} must be character.")
+  }
+  if (!is.factor(data[["event_type"]])) {
+    cli::cli_abort(
+      "{.field event_type} must be a factor with levels {.val state} and {.val point}."
+    )
+  }
+  if (!identical(levels(data[["event_type"]]), c("state", "point"))) {
+    cli::cli_abort(
+      "{.field event_type} must have levels exactly {.val state} and {.val point}."
+    )
   }
   if (!is.factor(data[["value"]])) {
     cli::cli_abort("{.field value} must be a factor.")

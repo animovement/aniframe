@@ -1,35 +1,31 @@
 #' Add events from an anievent onto an aniframe host
 #'
 #' Joins an [anievent()] onto the per-frame time grid of an [aniframe()]
-#' host, adding one column per `channel` of the anievent. For each row
-#' of the host, the new column carries the `value` of the active bout
-#' on that channel for the matching subject (and observation /
-#' session / trial, if those are present on both sides); `NA` where no
-#' bout is active.
+#' host, adding one factor column per `(channel, event_type)` group in
+#' the anievent. For each row of the host, the new column carries the
+#' `value` of the active bout on that group for the matching subject
+#' (and observation / session / trial, if those are present on both
+#' sides); `NA` where no bout is active.
 #'
 #' @param data An aniframe — the host whose time grid receives the events.
 #' @param events An anievent.
-#' @param variables_event Optional `list(state = ..., point = ...)`
-#'   declaring how to classify each channel on the resulting aniframe's
-#'   `variables_event` metadata. Resolution priority: this argument
-#'   (when supplied) overrides everything else; otherwise the events'
-#'   own `variables_event` metadata is used; any channels still
-#'   unclassified are auto-detected from the bouts (a channel is
-#'   `point` iff every bout has `start == stop`, else `state`). Set
-#'   this argument when the auto-detect rule would mislabel, e.g. a
-#'   state channel where every bout happens to be single-frame.
 #'
-#' @return The host aniframe with one new column per channel of
-#'   `events`. The new columns are factor-valued and `NA` outside any
-#'   bout. Each channel is registered in
-#'   `metadata$variables_event$state` or `$point` according to its
-#'   bouts (a channel is `point` iff every bout has `start == stop`,
-#'   otherwise `state`).
+#' @return The host aniframe with one new column per `(channel,
+#'   event_type)` group on the events. The new columns are
+#'   factor-valued and `NA` outside any bout. Each column is
+#'   registered in `metadata$variables_event$state` or `$point`
+#'   according to the row's `event_type`.
 #'
 #' @details
-#' Before joining, the events are validated (`validate_anievent()`) —
-#' this catches overlapping bouts in the same channel for the same
-#' subject, since channels are mutually exclusive by definition.
+#' Column naming uses suffix conventions on collisions:
+#' * If a channel carries only one `event_type`, the column is
+#'   `<channel>` (no suffix).
+#' * If a channel carries both state and point, the columns are
+#'   `<channel>_state` and `<channel>_point`.
+#' * If bouts within a `(channel, event_type)` group overlap, greedy
+#'   interval colouring splits them into tracks: track 1 keeps the
+#'   base name, tracks 2.. add `_2`, `_3`, … (so a state channel with
+#'   overlap might become `<channel>_state` plus `<channel>_state_2`).
 #'
 #' Time-unit handling:
 #' * If both objects share `unit_time`, the join uses the values as-is.
@@ -59,14 +55,12 @@
 #' }
 #'
 #' @export
-add_events <- function(data, events, variables_event = NULL) {
+add_events <- function(data, events) {
   ensure_is_aniframe(data)
   ensure_is_anievent(events)
   ensure_anievent_structural(events)
 
   events <- reconcile_unit_time(data, events)
-
-  channel_names <- unique(events$channel)
 
   host_md <- get_metadata(data)
   events_md <- get_metadata(events)
@@ -87,31 +81,52 @@ add_events <- function(data, events, variables_event = NULL) {
     intersect(host_grouping, events_grouping)
   )
 
-  channel_type <- resolve_channel_type(
-    channel_names,
-    events,
-    variables_event %||% events_md$variables_event
-  )
+  channel_groups <- compute_channel_groups(events)
 
-  data <- interval_join_channels(data, events, channel_names, join_keys)
-  emitted <- attr(data, ".emitted_per_channel")
-  attr(data, ".emitted_per_channel") <- NULL
-
-  state_channels <- channel_names[channel_type == "state"]
-  point_channels <- channel_names[channel_type == "point"]
+  data <- interval_join_channels(data, events, channel_groups, join_keys)
+  emitted <- attr(data, ".emitted_per_group")
+  attr(data, ".emitted_per_group") <- NULL
 
   declared <- host_md$variables_event %||%
     list(state = character(), point = character())
+  state_rows <- as.character(channel_groups$event_type) == "state"
+  point_rows <- as.character(channel_groups$event_type) == "point"
   declared$state <- unique(c(
     declared$state,
-    unlist(emitted[state_channels], use.names = FALSE)
+    unlist(emitted[state_rows], use.names = FALSE)
   ))
   declared$point <- unique(c(
     declared$point,
-    unlist(emitted[point_channels], use.names = FALSE)
+    unlist(emitted[point_rows], use.names = FALSE)
   ))
 
   set_metadata(data, variables_event = declared)
+}
+
+
+#' Compute (channel, event_type) groups with their base aniframe
+#' column names
+#'
+#' For each unique `(channel, event_type)` pair in `events`, the
+#' base column name on the resulting aniframe is:
+#' * `<channel>` when the channel carries only one event_type;
+#' * `<channel>_<event_type>` when the channel carries both state and
+#'   point bouts (so they need separate columns and the disambiguating
+#'   suffix tells them apart on the aniframe side).
+#'
+#' @keywords internal
+compute_channel_groups <- function(events) {
+  groups <- unique(
+    dplyr::as_tibble(events)[, c("channel", "event_type")]
+  )
+  type_counts_per_channel <- table(as.character(groups$channel))
+  needs_suffix <- type_counts_per_channel[as.character(groups$channel)] > 1L
+  groups$column_base <- ifelse(
+    needs_suffix,
+    paste0(groups$channel, "_", as.character(groups$event_type)),
+    as.character(groups$channel)
+  )
+  groups
 }
 
 
@@ -172,38 +187,50 @@ reconcile_unit_time <- function(data, events) {
 }
 
 
-#' Interval-join channels from an anievent onto the host time grid
+#' Interval-join channel groups from an anievent onto the host time grid
 #'
-#' For each channel, adds one or more factor columns to `data`:
-#' * **No overlap within an identity-group**: a single column
-#'   `<channel>` whose value at each frame is the bout `value` active
-#'   there (`NA` outside any bout).
+#' Iterates over `(channel, event_type)` groups (one row of
+#' `channel_groups` per group). For each group, adds one or more
+#' factor columns to `data`:
+#' * **No overlap within an identity-group**: a single column whose
+#'   value at each frame is the bout `value` active there (`NA`
+#'   outside any bout).
 #' * **Overlap within an identity-group**: the bouts are greedy
 #'   interval-coloured into the smallest set of disjoint tracks.
-#'   Track 1 stays as `<channel>`; tracks 2.. are emitted as
-#'   `<channel>_2`, `<channel>_3`, ... Each output column is itself
-#'   mutually exclusive, matching the structural invariant the
-#'   `aniframe` side requires.
+#'   Track 1 keeps the base name; tracks 2.. add `_2`, `_3`, …
+#'   suffixes. Each output column is itself mutually exclusive.
 #'
-#' If the anievent carries non-empty modifiers for a channel, parallel
-#' `<channel>_modifiers` (and `<channel>_2_modifiers` etc.)
-#' list-columns are added.
+#' Base column name comes from `channel_groups$column_base`, which is
+#' the bare channel name when the channel has only one event_type, or
+#' `<channel>_<event_type>` when the channel carries both state and
+#' point bouts.
+#'
+#' If the anievent carries non-empty modifiers for a group, parallel
+#' `_modifiers` list-columns are added alongside each emitted column.
 #'
 #' @keywords internal
-interval_join_channels <- function(data, events, channel_names, join_keys) {
+interval_join_channels <- function(data, events, channel_groups, join_keys) {
   events <- dplyr::as_tibble(events)
   events_has_modifiers <- "modifiers" %in% names(events)
 
   unmatched_acc <- list()
   total_bouts <- 0L
   total_unmatched <- 0L
-  emitted_per_channel <- list()
+  emitted_per_group <- vector("list", nrow(channel_groups))
 
-  for (ch in channel_names) {
-    bouts <- events[events$channel == ch, , drop = FALSE]
+  for (gi in seq_len(nrow(channel_groups))) {
+    ch <- channel_groups$channel[gi]
+    et <- as.character(channel_groups$event_type[gi])
+    col_base <- channel_groups$column_base[gi]
+    bouts <- events[
+      events$channel == ch &
+        as.character(events$event_type) == et,
+      ,
+      drop = FALSE
+    ]
     total_bouts <- total_bouts + nrow(bouts)
 
-    channel_has_modifiers <- events_has_modifiers &&
+    group_has_modifiers <- events_has_modifiers &&
       any(lengths(bouts$modifiers) > 0)
 
     if (length(join_keys) > 0) {
@@ -234,7 +261,7 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
     emitted <- character(n_tracks)
 
     for (t in seq_len(n_tracks)) {
-      col_name <- if (t == 1L) ch else paste0(ch, "_", t)
+      col_name <- if (t == 1L) col_base else paste0(col_base, "_", t)
       if (col_name %in% names(data)) {
         cli::cli_abort(c(
           "Channel column would collide with existing host column: {.val {col_name}}.",
@@ -244,7 +271,7 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
       emitted[t] <- col_name
 
       new_col <- factor(rep(NA, nrow(data)), levels = levels(bouts$value))
-      if (channel_has_modifiers) {
+      if (group_has_modifiers) {
         new_mod_col <- vector("list", nrow(data))
         for (j in seq_len(nrow(data))) {
           new_mod_col[[j]] <- character()
@@ -257,7 +284,7 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
           data$time >= bouts$start[i] &
           data$time <= bouts$stop[i]
         new_col[mask] <- bouts$value[i]
-        if (channel_has_modifiers) {
+        if (group_has_modifiers) {
           mods <- bouts$modifiers[[i]]
           if (length(mods) > 0) {
             for (j in which(mask)) {
@@ -268,16 +295,16 @@ interval_join_channels <- function(data, events, channel_names, join_keys) {
       }
 
       data[[col_name]] <- new_col
-      if (channel_has_modifiers) {
+      if (group_has_modifiers) {
         data[[paste0(col_name, "_modifiers")]] <- new_mod_col
       }
     }
 
-    emitted_per_channel[[ch]] <- emitted
+    emitted_per_group[[gi]] <- emitted
   }
 
   report_unmatched_events(unmatched_acc, total_bouts, total_unmatched)
-  attr(data, ".emitted_per_channel") <- emitted_per_channel
+  attr(data, ".emitted_per_group") <- emitted_per_group
   data
 }
 
@@ -374,35 +401,6 @@ report_unmatched_events <- function(
       "*" = "Unmatched: {.val {formatted}}."
     ))
   }
-}
-
-
-#' Resolve state vs point per channel
-#'
-#' Priority: explicit `declared` argument → auto-detect by duration
-#' (point iff every bout has `start == stop`, else state). A channel
-#' present in both `declared$state` and `declared$point` is resolved
-#' as state (state wins on tie — overlap of declarations is most
-#' likely a user error and state is the more conservative choice).
-#'
-#' @keywords internal
-resolve_channel_type <- function(channel_names, events, declared) {
-  declared_state <- declared$state %||% character()
-  declared_point <- declared$point %||% character()
-  vapply(
-    channel_names,
-    function(ch) {
-      if (ch %in% declared_state) {
-        return("state")
-      }
-      if (ch %in% declared_point) {
-        return("point")
-      }
-      sub <- events[events$channel == ch, , drop = FALSE]
-      if (all(sub$start == sub$stop)) "point" else "state"
-    },
-    character(1)
-  )
 }
 
 

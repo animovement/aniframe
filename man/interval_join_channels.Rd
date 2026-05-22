@@ -2,27 +2,31 @@
 % Please edit documentation in R/add_events.R
 \name{interval_join_channels}
 \alias{interval_join_channels}
-\title{Interval-join channels from an anievent onto the host time grid}
+\title{Interval-join channel groups from an anievent onto the host time grid}
 \usage{
-interval_join_channels(data, events, channel_names, join_keys)
+interval_join_channels(data, events, channel_groups, join_keys)
 }
 \description{
-For each channel, adds one or more factor columns to \code{data}:
+Iterates over \verb{(channel, event_type)} groups (one row of
+\code{channel_groups} per group). For each group, adds one or more
+factor columns to \code{data}:
 \itemize{
-\item \strong{No overlap within an identity-group}: a single column
-\verb{<channel>} whose value at each frame is the bout \code{value} active
-there (\code{NA} outside any bout).
+\item \strong{No overlap within an identity-group}: a single column whose
+value at each frame is the bout \code{value} active there (\code{NA}
+outside any bout).
 \item \strong{Overlap within an identity-group}: the bouts are greedy
 interval-coloured into the smallest set of disjoint tracks.
-Track 1 stays as \verb{<channel>}; tracks 2.. are emitted as
-\verb{<channel>_2}, \verb{<channel>_3}, ... Each output column is itself
-mutually exclusive, matching the structural invariant the
-\code{aniframe} side requires.
+Track 1 keeps the base name; tracks 2.. add \verb{_2}, \verb{_3}, …
+suffixes. Each output column is itself mutually exclusive.
 }
 }
 \details{
-If the anievent carries non-empty modifiers for a channel, parallel
-\verb{<channel>_modifiers} (and \verb{<channel>_2_modifiers} etc.)
-list-columns are added.
+Base column name comes from \code{channel_groups$column_base}, which is
+the bare channel name when the channel has only one event_type, or
+\verb{<channel>_<event_type>} when the channel carries both state and
+point bouts.
+
+If the anievent carries non-empty modifiers for a group, parallel
+\verb{_modifiers} list-columns are added alongside each emitted column.
 }
 \keyword{internal}

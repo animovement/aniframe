@@ -14,17 +14,23 @@ Named list keyed by base channel name; each element is a
 character vector of physical column names that belong to it.
 }
 \description{
-\code{add_events()} splits an anievent channel with overlapping bouts
-into numbered sub-columns on the aniframe (\verb{<channel>},
-\verb{<channel>_2}, \verb{<channel>_3}, ...). This helper does the inverse:
-given a flat character vector of declared event-column names, it
-returns a named list mapping each logical base channel to the
-physical columns it includes.
+\code{add_events()} emits aniframe columns using two suffix conventions:
+\itemize{
+\item \verb{<channel>_state} / \verb{<channel>_point} when a channel carries
+both state and point bouts;
+\item \verb{<channel>_<n>} (positive integer ≥ 2) when bouts overlap and
+are split into separate tracks.
+}
 }
 \details{
-A column is recognised as a sub-column of \verb{<base>} only when both
-the suffix matches \verb{_<n>} (positive integer ≥ 2) and \verb{<base>}
-itself is also declared. A standalone \code{behaviour_2} (without a
-sibling \code{behaviour}) stays its own logical channel.
+The two can combine: \verb{<channel>_state_2} is the second track of a
+state group on a mixed-type channel.
+
+This helper does the inverse — strip both suffix kinds in turn to
+recover the base channel name, and groups physical columns under
+it. The bundled column list is what \code{as_anievent.aniframe()} walks
+to reconstruct one anievent row per bout, with the row's
+\code{event_type} set from which side of \code{variables_event} the column
+was declared in.
 }
 \keyword{internal}

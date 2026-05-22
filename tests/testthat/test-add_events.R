@@ -582,56 +582,82 @@ test_that("split happens per identity-group — overlap on subject 1 doesn't suf
   expect_true(all(is.na(result$behaviour_2[result$individual == 2])))
 })
 
-test_that("variables_event arg on add_events overrides auto-detect (state)", {
-  # All bouts have start == stop, so auto-detect would say "point".
-  # Override forces "state".
+test_that("explicit event_type='state' on anievent overrides duration-based auto-derive", {
+  # All bouts have start == stop, so auto-derive would say "point".
+  # Explicit event_type forces "state".
   af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
   ae <- anievent(
     individual = 1L,
     channel = "motif",
     value = "M1",
     start = 1,
-    stop = 1
+    stop = 1,
+    event_type = "state"
   )
 
-  result <- add_events(af, ae, variables_event = list(state = "motif", point = character()))
+  result <- add_events(af, ae)
   ve <- get_metadata(result, "variables_event")
   expect_true("motif" %in% ve$state)
   expect_false("motif" %in% ve$point)
 })
 
-test_that("variables_event arg on add_events overrides auto-detect (point)", {
-  # All bouts have stop > start, so auto-detect would say "state".
-  # Override forces "point".
+test_that("explicit event_type='point' on anievent overrides duration-based auto-derive", {
   af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
   ae <- anievent(
     individual = 1L,
     channel = "ping",
     value = "P1",
     start = 1,
-    stop = 3
+    stop = 3,
+    event_type = "point"
   )
 
-  result <- add_events(af, ae, variables_event = list(state = character(), point = "ping"))
+  result <- add_events(af, ae)
   ve <- get_metadata(result, "variables_event")
   expect_true("ping" %in% ve$point)
   expect_false("ping" %in% ve$state)
 })
 
-test_that("events' own variables_event metadata wins over auto-detect when no override", {
-  af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
+test_that("a channel carrying both state and point rows produces two suffixed columns", {
+  af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
   ae <- anievent(
-    individual = 1L,
-    channel = "motif",
-    value = "M1",
-    start = 1,
-    stop = 1
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    value = c("Awake", "WakeMicromovement"),
+    start = c(1, 3),
+    stop = c(8, 3),
+    event_type = c("state", "point")
   )
-  ae <- set_metadata(ae, variables_event = list(state = "motif", point = character()))
 
   result <- add_events(af, ae)
+  expect_true("behaviour_state" %in% names(result))
+  expect_true("behaviour_point" %in% names(result))
+  expect_false("behaviour" %in% names(result))
   ve <- get_metadata(result, "variables_event")
-  expect_true("motif" %in% ve$state)
+  expect_true("behaviour_state" %in% ve$state)
+  expect_true("behaviour_point" %in% ve$point)
+})
+
+test_that("round-trip preserves mixed state/point on a single channel via _state and _point suffixes", {
+  af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    value = c("Awake", "WakeMicromovement"),
+    start = c(1, 3),
+    stop = c(8, 3),
+    event_type = c("state", "point")
+  )
+
+  af2 <- add_events(af, ae)
+  ae_back <- as_anievent(af2)
+  # Channel "behaviour" recovered from both sub-columns
+  expect_setequal(unique(ae_back$channel), "behaviour")
+  expect_equal(nrow(ae_back), 2)
+  expect_setequal(
+    as.character(ae_back$event_type),
+    c("state", "point")
+  )
 })
 
 test_that("round-trip bundles split sub-columns back under base channel", {
