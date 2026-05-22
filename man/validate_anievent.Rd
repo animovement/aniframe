@@ -15,9 +15,12 @@ The input \code{data}, invisibly.
 \description{
 Re-runs the structural invariants of an \code{anievent} object on demand:
 \itemize{
-\item required columns (\code{channel}, \code{value}, \code{start}, \code{stop}) are present
-with the expected types; identity columns travel via
-\code{variables_what} and are not part of the required set;
+\item required columns (\code{channel}, \code{event_type}, \code{value}, \code{start},
+\code{stop}) are present with the expected types; identity columns
+travel via \code{variables_what} and are not part of the required set;
+\item \code{event_type} is a factor with levels \code{c("state", "point")},
+classifying each row as either a state event (durative) or a
+point event (instant);
 \item \code{stop >= start} for every row;
 \item \code{modifiers}, if present, is a list-column whose cells are
 character vectors (the values picked from BORIS modifier sets at
@@ -25,12 +28,6 @@ coding time; an empty vector when the event has no modifiers).
 }
 }
 \details{
-Type-linked invariants (which channels are state vs point events;
-the zero-duration requirement on point events) belong with the
-aniframe ↔ anievent conversion code and are checked there. The
-\code{anievent} class itself stays type-agnostic — \code{channel} and \code{value}
-carry all the information the class needs.
-
 Errors are raised through \code{cli::cli_abort()}; on success the object
 is returned invisibly.
 }

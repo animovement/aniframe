@@ -36,6 +36,36 @@ test_that("tbl_sum.anievent surfaces event channels from the channel column", {
   expect_match(unname(header["Event channels"]), "call")
 })
 
+test_that("tbl_sum.anievent surfaces an event-type breakdown when both kinds are present", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    value = c("REM", "wake", "alarm"),
+    start = c(1, 5, 3),
+    stop = c(4, 10, 3) # 2 state bouts + 1 point bout
+  )
+
+  header <- pillar::tbl_sum(ae)
+  expect_true("Event types" %in% names(header))
+  expect_match(unname(header["Event types"]), "2 state")
+  expect_match(unname(header["Event types"]), "1 point")
+})
+
+test_that("tbl_sum.anievent shows just one event-type kind when only one is present", {
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    value = c("REM", "wake"),
+    start = c(1, 5),
+    stop = c(4, 10)
+  )
+
+  header <- pillar::tbl_sum(ae)
+  expect_true("Event types" %in% names(header))
+  expect_match(unname(header["Event types"]), "2 state")
+  expect_false(grepl("point", unname(header["Event types"])))
+})
+
 test_that("tbl_sum.anievent surfaces sampling rate when set", {
   ae <- anievent(
     individual = 1L,

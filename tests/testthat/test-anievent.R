@@ -196,6 +196,7 @@ test_that("anievent column ordering mirrors aniframe (what, when incl start/stop
       "start",
       "stop",
       "channel",
+      "event_type",
       "value",
       "modifiers"
     )
@@ -316,6 +317,102 @@ test_that("validate_anievent accepts well-formed modifiers", {
   )
 
   expect_no_error(validate_anievent(ae))
+})
+
+test_that("event_type auto-derives from start/stop when not supplied", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    value = c("REM", "wake", "alarm"),
+    start = c(3, 14, 4.5),
+    stop = c(9, 19, 4.5) # middle bout (after arrange): start == stop -> point
+  )
+  expect_s3_class(ae$event_type, "factor")
+  expect_equal(levels(ae$event_type), c("state", "point"))
+  # arrange-by-start reorders to (3, 4.5, 14); the start==stop bout sits second
+  expect_equal(
+    as.character(ae$event_type),
+    c("state", "point", "state")
+  )
+})
+
+test_that("event_type auto-derive is per (channel, value) — mixed-duration group is uniformly state", {
+  # (behaviour, REM) has two bouts: one durative (3-9), one single-frame
+  # (14-14). With the "any durative -> state" rule, both stay state.
+  # (call, alarm) is the only point group (start == stop).
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    value = c("REM", "REM", "alarm"),
+    start = c(3, 14, 4.5),
+    stop = c(9, 14, 4.5)
+  )
+  # arrange-by-start reorders rows
+  by_key <- split(
+    as.character(ae$event_type),
+    paste(ae$channel, as.character(ae$value), sep = "/")
+  )
+  expect_setequal(by_key[["behaviour/REM"]], "state")
+  expect_setequal(by_key[["call/alarm"]], "point")
+})
+
+test_that("event_type override wins over auto-derive", {
+  # All bouts have start == stop, auto-derive would say "point".
+  # Explicit override forces "state".
+  ae <- anievent(
+    individual = 1L,
+    channel = "motif",
+    value = "M1",
+    start = 1,
+    stop = 1,
+    event_type = "state"
+  )
+  expect_equal(as.character(ae$event_type), "state")
+})
+
+test_that("event_type rejects values outside state/point", {
+  expect_error(
+    anievent(
+      individual = 1L,
+      channel = "behaviour",
+      value = "REM",
+      start = 1,
+      stop = 3,
+      event_type = "transient"
+    ),
+    "must be"
+  )
+})
+
+test_that("validate_anievent rejects wrong event_type levels", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    value = "REM",
+    start = 1,
+    stop = 3
+  )
+  # Mutate event_type to a factor with wrong levels
+  ae$event_type <- factor("state", levels = c("state", "point", "extra"))
+  expect_error(
+    validate_anievent(ae),
+    "levels exactly"
+  )
+})
+
+test_that("validate_anievent rejects non-factor event_type", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    value = "REM",
+    start = 1,
+    stop = 3
+  )
+  ae$event_type <- as.character(ae$event_type)
+  expect_error(
+    validate_anievent(ae),
+    "factor with levels"
+  )
 })
 
 test_that("validate_anievent returns the input invisibly on success", {

@@ -37,6 +37,23 @@ tbl_sum.anievent <- function(x, ...) {
     )
   }
 
+  if ("event_type" %in% names(x) && nrow(x) > 0) {
+    counts <- table(as.character(x[["event_type"]]))
+    parts <- character()
+    if ("state" %in% names(counts)) {
+      parts <- c(parts, paste0(counts[["state"]], " state"))
+    }
+    if ("point" %in% names(counts)) {
+      parts <- c(parts, paste0(counts[["point"]], " point"))
+    }
+    if (length(parts) > 0) {
+      new_header <- c(
+        new_header,
+        "Event types" = paste(parts, collapse = ", ")
+      )
+    }
+  }
+
   sampling_rate <- md$sampling_rate
   if (!is.null(sampling_rate) && !is.na(sampling_rate)) {
     new_header <- c(new_header, "Sampling rate" = paste(sampling_rate, "Hz"))

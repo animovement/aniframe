@@ -63,12 +63,41 @@ as_anievent.data.frame <- function(
     variables_when <- c(detected_when, "start", "stop")
   }
 
+  # Auto-derive `event_type` from bout duration if the caller didn't
+  # supply it. Classification is per `(channel, value)` group, not
+  # per row: a (channel, value) pair is "point" only when *all* of
+  # its bouts have `start == stop`. If even one bout is durative, the
+  # whole group is "state" — keeping the kind of event consistent
+  # across its occurrences. Users who know better (e.g. a state
+  # channel that happens to have only single-frame bouts) can pass
+  # `event_type` explicitly to override.
+  if (
+    !"event_type" %in% names(data) &&
+      all(c("start", "stop", "channel", "value") %in% names(data))
+  ) {
+    key <- paste(
+      as.character(data[["channel"]]),
+      as.character(data[["value"]]),
+      sep = "\r"
+    )
+    is_point_per_key <- tapply(
+      data[["start"]] == data[["stop"]],
+      key,
+      all
+    )
+    data[["event_type"]] <- ifelse(
+      is_point_per_key[key],
+      "point",
+      "state"
+    )
+  }
+
   ensure_anievent_cols(data)
   data <- standardise_anievent_cols(data, variables_what, variables_when)
 
   present_what <- intersect(variables_what, names(data))
   present_when <- intersect(variables_when, names(data))
-  event_cols <- c("channel", "value")
+  event_cols <- c("channel", "event_type", "value")
   if ("modifiers" %in% names(data)) {
     event_cols <- c(event_cols, "modifiers")
   }
@@ -102,12 +131,13 @@ as_anievent.data.frame <- function(
 #' @param data Data frame to validate.
 #' @keywords internal
 ensure_anievent_cols <- function(data) {
-  required <- c("channel", "value", "start", "stop")
+  required <- c("channel", "event_type", "value", "start", "stop")
   missing <- setdiff(required, names(data))
   if (length(missing) > 0) {
     cli::cli_abort(c(
       "Missing required column{?s} for an anievent: {.val {missing}}.",
       "i" = "An anievent requires {.val {required}}.",
+      "i" = "{.field event_type} must be {.val state} or {.val point} per row.",
       "i" = "Identity columns (e.g. {.val individual}) are recognised via {.arg variables_what} but are not required."
     ))
   }
@@ -147,6 +177,18 @@ standardise_anievent_cols <- function(data, variables_what, variables_when) {
   if (!is.character(data[["channel"]])) {
     data[["channel"]] <- as.character(data[["channel"]])
   }
+
+  permitted_types <- c("state", "point")
+  raw_type <- as.character(data[["event_type"]])
+  bad_type <- setdiff(unique(raw_type), c(permitted_types, NA_character_))
+  if (length(bad_type) > 0) {
+    cli::cli_abort(c(
+      "{.field event_type} must be {.val state} or {.val point}.",
+      "x" = "Got: {.val {bad_type}}."
+    ))
+  }
+  data[["event_type"]] <- factor(raw_type, levels = permitted_types)
+
   if (!is.factor(data[["value"]])) {
     data[["value"]] <- factor(data[["value"]])
   }
