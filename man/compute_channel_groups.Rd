@@ -2,17 +2,17 @@
 % Please edit documentation in R/add_events.R
 \name{compute_channel_groups}
 \alias{compute_channel_groups}
-\title{Compute (channel, event_type) groups with their base aniframe
+\title{Compute (channel, type) groups with their base aniframe
 column names}
 \usage{
 compute_channel_groups(events)
 }
 \description{
-For each unique \verb{(channel, event_type)} pair in \code{events}, the
+For each unique \verb{(channel, type)} pair in \code{events}, the
 base column name on the resulting aniframe is:
 \itemize{
-\item \verb{<channel>} when the channel carries only one event_type;
-\item \verb{<channel>_<event_type>} when the channel carries both state and
+\item \verb{<channel>} when the channel carries only one type;
+\item \verb{<channel>_<type>} when the channel carries both state and
 point bouts (so they need separate columns and the disambiguating
 suffix tells them apart on the aniframe side).
 }

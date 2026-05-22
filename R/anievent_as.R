@@ -1,11 +1,11 @@
 #' Convert a data frame to an anievent
 #'
 #' Builds an `anievent` from a data frame holding behavioural events in
-#' long format (one row per bout or instant). The four mandatory columns
-#' are `channel`, `value`, `start`, and `stop`; identity columns travel
-#' via `variables_what`. An optional `modifiers` list-column may carry
-#' per-event modifier values (each cell a character vector, matching the
-#' BORIS export format).
+#' long format (one row per bout or instant). The five mandatory columns
+#' are `channel`, `type`, `label`, `start`, and `stop`;
+#' identity columns travel via `variables_what`. An optional `modifiers`
+#' list-column may carry per-event modifier values (each cell a character
+#' vector, matching the BORIS export format).
 #'
 #' @param data A data frame with the required columns.
 #' @param metadata Optional list of metadata.
@@ -127,7 +127,7 @@ as_anievent.aniframe <- function(
       sub <- rle_state_column(bare, col, group_cols)
       if (nrow(sub) > 0) {
         sub$channel <- base_ch
-        sub$event_type <- "state"
+        sub$type <- "state"
       }
       bouts[[paste0("state__", col)]] <- sub
     }
@@ -137,7 +137,7 @@ as_anievent.aniframe <- function(
       sub <- pick_point_column(bare, col, group_cols)
       if (nrow(sub) > 0) {
         sub$channel <- base_ch
-        sub$event_type <- "point"
+        sub$type <- "point"
       }
       bouts[[paste0("point__", col)]] <- sub
     }
@@ -145,8 +145,8 @@ as_anievent.aniframe <- function(
 
   out <- dplyr::bind_rows(bouts)
   # Coerce value back to a factor with the union of levels across channels
-  if (!is.factor(out$value)) {
-    out$value <- factor(out$value)
+  if (!is.factor(out$label)) {
+    out$label <- factor(out$label)
   }
 
   if (is.null(variables_when)) {
@@ -195,7 +195,7 @@ as_anievent.aniframe <- function(
 #' recover the base channel name, and groups physical columns under
 #' it. The bundled column list is what `as_anievent.aniframe()` walks
 #' to reconstruct one anievent row per bout, with the row's
-#' `event_type` set from which side of `variables_event` the column
+#' `type` set from which side of `variables_event` the column
 #' was declared in.
 #'
 #' @param declared Character vector of declared event-column names.
@@ -309,7 +309,7 @@ rle_state_column <- function(data, col, group_cols) {
 
   out <- dplyr::tibble(
     channel = col,
-    value = vals[first_idx],
+    label = vals[first_idx],
     start = data$time[first_idx],
     stop = data$time[last_idx]
   )
@@ -342,7 +342,7 @@ pick_point_column <- function(data, col, group_cols) {
 
   out <- dplyr::tibble(
     channel = col,
-    value = as.character(data[[col]]),
+    label = as.character(data[[col]]),
     start = data$time,
     stop = data$time
   )
@@ -362,7 +362,7 @@ pick_point_column <- function(data, col, group_cols) {
 make_empty_bout_df <- function(group_cols, col) {
   out <- dplyr::tibble(
     channel = character(),
-    value = character(),
+    label = character(),
     start = numeric(),
     stop = numeric()
   )
@@ -370,7 +370,7 @@ make_empty_bout_df <- function(group_cols, col) {
     for (g in group_cols) {
       out[[g]] <- character()
     }
-    out <- out[, c(group_cols, "channel", "value", "start", "stop")]
+    out <- out[, c(group_cols, "channel", "label", "start", "stop")]
   }
   out
 }
@@ -395,21 +395,21 @@ as_anievent.data.frame <- function(
     variables_when <- c(detected_when, "start", "stop")
   }
 
-  # Auto-derive `event_type` from bout duration if the caller didn't
-  # supply it. Classification is per `(channel, value)` group, not
-  # per row: a (channel, value) pair is "point" only when *all* of
-  # its bouts have `start == stop`. If even one bout is durative, the
-  # whole group is "state" — keeping the kind of event consistent
-  # across its occurrences. Users who know better (e.g. a state
-  # channel that happens to have only single-frame bouts) can pass
-  # `event_type` explicitly to override.
+  # Auto-derive `type` from bout duration if the caller didn't
+  # supply it. Classification is per `(channel, label)` group,
+  # not per row: a (channel, label) pair is "point" only when
+  # *all* of its bouts have `start == stop`. If even one bout is
+  # durative, the whole group is "state" — keeping the kind of event
+  # consistent across its occurrences. Users who know better (e.g. a
+  # state channel that happens to have only single-frame bouts) can
+  # pass `type` explicitly to override.
   if (
-    !"event_type" %in% names(data) &&
-      all(c("start", "stop", "channel", "value") %in% names(data))
+    !"type" %in% names(data) &&
+      all(c("start", "stop", "channel", "label") %in% names(data))
   ) {
     key <- paste(
       as.character(data[["channel"]]),
-      as.character(data[["value"]]),
+      as.character(data[["label"]]),
       sep = "\r"
     )
     is_point_per_key <- tapply(
@@ -417,7 +417,7 @@ as_anievent.data.frame <- function(
       key,
       all
     )
-    data[["event_type"]] <- ifelse(
+    data[["type"]] <- ifelse(
       is_point_per_key[key],
       "point",
       "state"
@@ -429,7 +429,7 @@ as_anievent.data.frame <- function(
 
   present_what <- intersect(variables_what, names(data))
   present_when <- intersect(variables_when, names(data))
-  event_cols <- c("channel", "event_type", "value")
+  event_cols <- c("channel", "type", "label")
   if ("modifiers" %in% names(data)) {
     event_cols <- c(event_cols, "modifiers")
   }
@@ -463,13 +463,13 @@ as_anievent.data.frame <- function(
 #' @param data Data frame to validate.
 #' @keywords internal
 ensure_anievent_cols <- function(data) {
-  required <- c("channel", "event_type", "value", "start", "stop")
+  required <- c("channel", "type", "label", "start", "stop")
   missing <- setdiff(required, names(data))
   if (length(missing) > 0) {
     cli::cli_abort(c(
       "Missing required column{?s} for an anievent: {.val {missing}}.",
       "i" = "An anievent requires {.val {required}}.",
-      "i" = "{.field event_type} must be {.val state} or {.val point} per row.",
+      "i" = "{.field type} must be {.val state} or {.val point} per row.",
       "i" = "Identity columns (e.g. {.val individual}) are recognised via {.arg variables_what} but are not required."
     ))
   }
@@ -481,7 +481,7 @@ ensure_anievent_cols <- function(data) {
 #'
 #' Coerces identity and temporal-grouping columns to factor/integer
 #' (mirroring the aniframe convention), `channel` to character,
-#' `value` to factor, and `start`/`stop` to numeric.
+#' `label` to factor, and `start`/`stop` to numeric.
 #'
 #' @param data Data frame to standardise.
 #' @param variables_what Identity variable names.
@@ -511,18 +511,18 @@ standardise_anievent_cols <- function(data, variables_what, variables_when) {
   }
 
   permitted_types <- c("state", "point")
-  raw_type <- as.character(data[["event_type"]])
+  raw_type <- as.character(data[["type"]])
   bad_type <- setdiff(unique(raw_type), c(permitted_types, NA_character_))
   if (length(bad_type) > 0) {
     cli::cli_abort(c(
-      "{.field event_type} must be {.val state} or {.val point}.",
+      "{.field type} must be {.val state} or {.val point}.",
       "x" = "Got: {.val {bad_type}}."
     ))
   }
-  data[["event_type"]] <- factor(raw_type, levels = permitted_types)
+  data[["type"]] <- factor(raw_type, levels = permitted_types)
 
-  if (!is.factor(data[["value"]])) {
-    data[["value"]] <- factor(data[["value"]])
+  if (!is.factor(data[["label"]])) {
+    data[["label"]] <- factor(data[["label"]])
   }
   data[["start"]] <- as.numeric(data[["start"]])
   data[["stop"]] <- as.numeric(data[["stop"]])

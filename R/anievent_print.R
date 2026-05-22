@@ -37,8 +37,8 @@ tbl_sum.anievent <- function(x, ...) {
     )
   }
 
-  if ("event_type" %in% names(x) && nrow(x) > 0) {
-    counts <- table(as.character(x[["event_type"]]))
+  if ("type" %in% names(x) && nrow(x) > 0) {
+    counts <- table(as.character(x[["type"]]))
     parts <- character()
     if ("state" %in% names(counts)) {
       parts <- c(parts, paste0(counts[["state"]], " state"))

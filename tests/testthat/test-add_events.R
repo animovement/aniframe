@@ -27,7 +27,7 @@ test_that("state channel fills frames within bouts and NA outside", {
   ae <- anievent(
     individual = 1L,
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 5),
     stop = c(4, 10)
   )
@@ -45,7 +45,7 @@ test_that("point channel only fills the matching frame", {
   ae <- anievent(
     individual = 1L,
     channel = "call",
-    value = "alarm",
+    label = "alarm",
     start = 3,
     stop = 3
   )
@@ -59,7 +59,7 @@ test_that("multiple channels are added in one call", {
   ae <- anievent(
     individual = 1L,
     channel = c("behaviour", "call"),
-    value = c("REM", "alarm"),
+    label = c("REM", "alarm"),
     start = c(1, 3),
     stop = c(4, 3)
   )
@@ -73,7 +73,7 @@ test_that("auto-detects state vs point and registers in variables_event", {
   ae <- anievent(
     individual = 1L,
     channel = c("behaviour", "call"),
-    value = c("REM", "alarm"),
+    label = c("REM", "alarm"),
     start = c(1, 3),
     stop = c(4, 3)
   )
@@ -94,7 +94,7 @@ test_that("per-individual matching keeps events on the right subject", {
   ae <- anievent(
     individual = c(1L, 2L),
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 1),
     stop = c(3, 3)
   )
@@ -122,7 +122,7 @@ test_that("per-observation matching isolates clips", {
     individual = c(1L, 1L),
     observation = c("clip_a", "clip_b"),
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 1),
     stop = c(2, 2)
   )
@@ -144,7 +144,7 @@ test_that("SI <-> SI unit conversion happens automatically", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1000,
     stop = 4000
   )
@@ -160,7 +160,7 @@ test_that("frame -> SI conversion uses sampling_rate from events", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 30,
     stop = 120
   )
@@ -176,7 +176,7 @@ test_that("frame <-> SI without sampling_rate errors", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 4
   )
@@ -192,7 +192,7 @@ test_that("SI -> frame conversion uses sampling_rate to invert", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -210,7 +210,7 @@ test_that("collision between channel name and existing host column errors", {
   ae <- anievent(
     individual = 1L,
     channel = "x", # collides with spatial column on host
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -224,7 +224,7 @@ test_that("overlapping bouts in the same channel split into numbered sub-columns
     dplyr::tibble(
       individual = c(1L, 1L),
       channel = c("behaviour", "behaviour"),
-      value = factor(c("REM", "wake")),
+      label = factor(c("REM", "wake")),
       start = c(1, 3),
       stop = c(5, 7)
     ) |>
@@ -254,7 +254,7 @@ test_that("non-aniframe / non-anievent inputs error", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -269,7 +269,7 @@ test_that("identical unit_time bypasses conversion", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -290,7 +290,7 @@ test_that("frame -> non-second SI host conversion works", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 5
   )
@@ -308,7 +308,7 @@ test_that("non-second SI events -> frame host conversion works", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1000,
     stop = 3000
   )
@@ -326,7 +326,7 @@ test_that("frame <-> unknown unit reconciliation is a no-op on values", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -341,7 +341,7 @@ test_that("add_events works when host has no identity columns", {
   af <- set_metadata(af, variables_what = character())
   ae <- anievent(
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 4),
     stop = c(3, 5)
   )
@@ -358,7 +358,7 @@ test_that("modifiers on the events broadcast to <channel>_modifiers on the host"
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 5),
     stop = c(4, 10),
     modifiers = list(
@@ -386,7 +386,7 @@ test_that("channels without any non-empty modifiers don't add a <channel>_modifi
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 4,
     modifiers = list(character()) # explicitly empty
@@ -401,7 +401,7 @@ test_that("mixed-channel modifiers add a column only for the channel that has th
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "call"),
-    value = c("REM", "alarm"),
+    label = c("REM", "alarm"),
     start = c(1, 3),
     stop = c(4, 3),
     modifiers = list(
@@ -420,7 +420,7 @@ test_that("frames outside any bout get an empty character() in <channel>_modifie
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 2,
     stop = 4,
     modifiers = list(c("limb"))
@@ -437,7 +437,7 @@ test_that("anievent -> aniframe -> anievent round-trips modifiers", {
   ae <- anievent(
     individual = c(1L, 1L, 1L),
     channel = c("behaviour", "behaviour", "call"),
-    value = c("REM", "wake", "alarm"),
+    label = c("REM", "wake", "alarm"),
     start = c(1, 5, 3),
     stop = c(4, 10, 3),
     modifiers = list(
@@ -451,9 +451,9 @@ test_that("anievent -> aniframe -> anievent round-trips modifiers", {
   ae_back <- as_anievent(af_back)
 
   expect_true("modifiers" %in% names(ae_back))
-  rem_row <- which(ae_back$channel == "behaviour" & ae_back$value == "REM")
+  rem_row <- which(ae_back$channel == "behaviour" & ae_back$label == "REM")
   expect_equal(ae_back$modifiers[[rem_row]], c("limb", "whisker"))
-  wake_row <- which(ae_back$channel == "behaviour" & ae_back$value == "wake")
+  wake_row <- which(ae_back$channel == "behaviour" & ae_back$label == "wake")
   expect_equal(ae_back$modifiers[[wake_row]], "tail")
   alarm_row <- which(ae_back$channel == "call")
   expect_equal(ae_back$modifiers[[alarm_row]], "high")
@@ -464,7 +464,7 @@ test_that("partial mismatch (some event bouts have identities not in host) emits
   ae <- anievent(
     individual = c(1L, 2L),
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 1),
     stop = c(3, 3)
   )
@@ -485,7 +485,7 @@ test_that("total mismatch (no event bouts match the host) emits a warning", {
   ae <- anievent(
     individual = 2L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -502,7 +502,7 @@ test_that("no mismatch -> no message", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 3
   )
@@ -523,7 +523,7 @@ test_that("partial mismatch on multi-key (individual + observation) lists the un
     individual = c(1L, 1L),
     observation = c("clip_a", "clip_b"),
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 1),
     stop = c(2, 2)
   )
@@ -539,7 +539,7 @@ test_that("non-overlapping bouts in the same channel stay on one column (no suff
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 6),
     stop = c(5, 10)
   )
@@ -564,7 +564,7 @@ test_that("split happens per identity-group — overlap on subject 1 doesn't suf
     anievent(
       individual = c(1L, 1L, 2L),
       channel = c("behaviour", "behaviour", "behaviour"),
-      value = c("REM", "wake", "REM"),
+      label = c("REM", "wake", "REM"),
       start = c(1, 2, 1),
       stop = c(3, 4, 3)
     )
@@ -582,17 +582,17 @@ test_that("split happens per identity-group — overlap on subject 1 doesn't suf
   expect_true(all(is.na(result$behaviour_2[result$individual == 2])))
 })
 
-test_that("explicit event_type='state' on anievent overrides duration-based auto-derive", {
+test_that("explicit type='state' on anievent overrides duration-based auto-derive", {
   # All bouts have start == stop, so auto-derive would say "point".
-  # Explicit event_type forces "state".
+  # Explicit type forces "state".
   af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
   ae <- anievent(
     individual = 1L,
     channel = "motif",
-    value = "M1",
+    label = "M1",
     start = 1,
     stop = 1,
-    event_type = "state"
+    type = "state"
   )
 
   result <- add_events(af, ae)
@@ -601,15 +601,15 @@ test_that("explicit event_type='state' on anievent overrides duration-based auto
   expect_false("motif" %in% ve$point)
 })
 
-test_that("explicit event_type='point' on anievent overrides duration-based auto-derive", {
+test_that("explicit type='point' on anievent overrides duration-based auto-derive", {
   af <- aniframe(individual = 1L, time = 1:5, x = 1:5, y = 1:5)
   ae <- anievent(
     individual = 1L,
     channel = "ping",
-    value = "P1",
+    label = "P1",
     start = 1,
     stop = 3,
-    event_type = "point"
+    type = "point"
   )
 
   result <- add_events(af, ae)
@@ -623,10 +623,10 @@ test_that("a channel carrying both state and point rows produces two suffixed co
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
-    value = c("Awake", "WakeMicromovement"),
+    label = c("Awake", "WakeMicromovement"),
     start = c(1, 3),
     stop = c(8, 3),
-    event_type = c("state", "point")
+    type = c("state", "point")
   )
 
   result <- add_events(af, ae)
@@ -643,10 +643,10 @@ test_that("round-trip preserves mixed state/point on a single channel via _state
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
-    value = c("Awake", "WakeMicromovement"),
+    label = c("Awake", "WakeMicromovement"),
     start = c(1, 3),
     stop = c(8, 3),
-    event_type = c("state", "point")
+    type = c("state", "point")
   )
 
   af2 <- add_events(af, ae)
@@ -655,7 +655,7 @@ test_that("round-trip preserves mixed state/point on a single channel via _state
   expect_setequal(unique(ae_back$channel), "behaviour")
   expect_equal(nrow(ae_back), 2)
   expect_setequal(
-    as.character(ae_back$event_type),
+    as.character(ae_back$type),
     c("state", "point")
   )
 })
@@ -668,7 +668,7 @@ test_that("round-trip bundles split sub-columns back under base channel", {
     anievent(
       individual = c(1L, 1L),
       channel = c("behaviour", "behaviour"),
-      value = c("REM", "wake"),
+      label = c("REM", "wake"),
       start = c(1, 3),
       stop = c(5, 7)
     )
@@ -690,7 +690,7 @@ test_that("add_events accumulates into an existing variables_event", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 1,
     stop = 4
   )

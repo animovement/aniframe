@@ -42,7 +42,7 @@ test_that("state column is run-length-encoded into bouts", {
   expect_equal(nrow(ae), 3) # REM(1-3), wake(4-5), REM(6-7); the trailing NA closes
   expect_equal(ae$start, c(1, 4, 6))
   expect_equal(ae$stop, c(3, 5, 7))
-  expect_equal(as.character(ae$value), c("REM", "wake", "REM"))
+  expect_equal(as.character(ae$label), c("REM", "wake", "REM"))
   expect_true(all(ae$channel == "behaviour"))
 })
 

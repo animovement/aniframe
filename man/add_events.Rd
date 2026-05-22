@@ -12,27 +12,27 @@ add_events(data, events)
 \item{events}{An anievent.}
 }
 \value{
-The host aniframe with one new column per \verb{(channel, event_type)} group on the events. The new columns are
+The host aniframe with one new column per \verb{(channel, type)} group on the events. The new columns are
 factor-valued and \code{NA} outside any bout. Each column is
 registered in \code{metadata$variables_event$state} or \verb{$point}
-according to the row's \code{event_type}.
+according to the row's \code{type}.
 }
 \description{
 Joins an \code{\link[=anievent]{anievent()}} onto the per-frame time grid of an \code{\link[=aniframe]{aniframe()}}
-host, adding one factor column per \verb{(channel, event_type)} group in
+host, adding one factor column per \verb{(channel, type)} group in
 the anievent. For each row of the host, the new column carries the
-\code{value} of the active bout on that group for the matching subject
+\code{label} of the active bout on that group for the matching subject
 (and observation / session / trial, if those are present on both
 sides); \code{NA} where no bout is active.
 }
 \details{
 Column naming uses suffix conventions on collisions:
 \itemize{
-\item If a channel carries only one \code{event_type}, the column is
+\item If a channel carries only one \code{type}, the column is
 \verb{<channel>} (no suffix).
 \item If a channel carries both state and point, the columns are
 \verb{<channel>_state} and \verb{<channel>_point}.
-\item If bouts within a \verb{(channel, event_type)} group overlap, greedy
+\item If bouts within a \verb{(channel, type)} group overlap, greedy
 interval colouring splits them into tracks: track 1 keeps the
 base name, tracks 2.. add \verb{_2}, \verb{_3}, … (so a state channel with
 overlap might become \verb{<channel>_state} plus \verb{<channel>_state_2}).
@@ -60,7 +60,7 @@ af <- aniframe(individual = 1L, time = 1:10, x = 1:10, y = 1:10)
 ae <- anievent(
   individual = 1L,
   channel = c("behaviour", "behaviour"),
-  value = c("REM", "wake"),
+  label = c("REM", "wake"),
   start = c(1, 5),
   stop = c(4, 10)
 )

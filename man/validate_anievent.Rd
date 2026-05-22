@@ -15,10 +15,10 @@ The input \code{data}, invisibly.
 \description{
 Re-runs the structural invariants of an \code{anievent} object on demand:
 \itemize{
-\item required columns (\code{channel}, \code{event_type}, \code{value}, \code{start},
-\code{stop}) are present with the expected types — hard errors;
-\item \code{event_type} is a factor with levels \code{c("state", "point")} —
-hard error;
+\item required columns (\code{channel}, \code{type}, \code{label}, \code{start}, \code{stop})
+are present with the expected types — hard errors;
+\item \code{type} is a factor with levels \code{c("state", "point")} — hard
+error;
 \item \code{stop >= start} for every row — hard error;
 \item \code{modifiers}, if present, is a list-column whose cells are
 character vectors — hard error;

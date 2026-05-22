@@ -30,7 +30,7 @@ This helper does the inverse — strip both suffix kinds in turn to
 recover the base channel name, and groups physical columns under
 it. The bundled column list is what \code{as_anievent.aniframe()} walks
 to reconstruct one anievent row per bout, with the row's
-\code{event_type} set from which side of \code{variables_event} the column
+\code{type} set from which side of \code{variables_event} the column
 was declared in.
 }
 \keyword{internal}

@@ -7,12 +7,12 @@
 interval_join_channels(data, events, channel_groups, join_keys)
 }
 \description{
-Iterates over \verb{(channel, event_type)} groups (one row of
+Iterates over \verb{(channel, type)} groups (one row of
 \code{channel_groups} per group). For each group, adds one or more
 factor columns to \code{data}:
 \itemize{
 \item \strong{No overlap within an identity-group}: a single column whose
-value at each frame is the bout \code{value} active there (\code{NA}
+value at each frame is the bout \code{label} active there (\code{NA}
 outside any bout).
 \item \strong{Overlap within an identity-group}: the bouts are greedy
 interval-coloured into the smallest set of disjoint tracks.
@@ -22,8 +22,8 @@ suffixes. Each output column is itself mutually exclusive.
 }
 \details{
 Base column name comes from \code{channel_groups$column_base}, which is
-the bare channel name when the channel has only one event_type, or
-\verb{<channel>_<event_type>} when the channel carries both state and
+the bare channel name when the channel has only one type, or
+\verb{<channel>_<type>} when the channel carries both state and
 point bouts.
 
 If the anievent carries non-empty modifiers for a group, parallel

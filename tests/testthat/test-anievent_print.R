@@ -10,7 +10,7 @@ test_that("tbl_sum.anievent shows class name and identity row", {
   ae <- anievent(
     individual = c(1L, 1L, 2L),
     channel = c("behaviour", "call", "behaviour"),
-    value = c("REM", "alarm", "wake"),
+    label = c("REM", "alarm", "wake"),
     start = c(3, 4.5, 14),
     stop = c(9, 4.5, 19)
   )
@@ -25,7 +25,7 @@ test_that("tbl_sum.anievent surfaces event channels from the channel column", {
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "call"),
-    value = c("REM", "alarm"),
+    label = c("REM", "alarm"),
     start = c(3, 4.5),
     stop = c(9, 4.5)
   )
@@ -40,7 +40,7 @@ test_that("tbl_sum.anievent surfaces an event-type breakdown when both kinds are
   ae <- anievent(
     individual = c(1L, 1L, 1L),
     channel = c("behaviour", "behaviour", "call"),
-    value = c("REM", "wake", "alarm"),
+    label = c("REM", "wake", "alarm"),
     start = c(1, 5, 3),
     stop = c(4, 10, 3) # 2 state bouts + 1 point bout
   )
@@ -55,7 +55,7 @@ test_that("tbl_sum.anievent shows just one event-type kind when only one is pres
   ae <- anievent(
     individual = c(1L, 1L),
     channel = c("behaviour", "behaviour"),
-    value = c("REM", "wake"),
+    label = c("REM", "wake"),
     start = c(1, 5),
     stop = c(4, 10)
   )
@@ -70,7 +70,7 @@ test_that("tbl_sum.anievent surfaces sampling rate when set", {
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
-    value = "REM",
+    label = "REM",
     start = 3,
     stop = 9
   )
@@ -85,7 +85,7 @@ test_that("tbl_sum.anievent omits event channels row on a zero-row object", {
   ae <- anievent(
     individual = integer(),
     channel = character(),
-    value = factor(character()),
+    label = factor(character()),
     start = numeric(),
     stop = numeric()
   )
