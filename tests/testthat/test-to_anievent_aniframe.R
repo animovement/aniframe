@@ -1,4 +1,4 @@
-# Tests for as_anievent.aniframe (RLE conversion from aniframe -> anievent)
+# Tests for to_anievent.aniframe (RLE encoding from aniframe -> anievent)
 #
 # Construction:
 #   - state column run-length-encoded into bouts (start = first frame time,
@@ -36,7 +36,7 @@ make_state_aniframe <- function() {
 
 test_that("state column is run-length-encoded into bouts", {
   af <- make_state_aniframe()
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
 
   expect_s3_class(ae, "anievent")
   expect_equal(nrow(ae), 3) # REM(1-3), wake(4-5), REM(6-7); the trailing NA closes
@@ -59,7 +59,7 @@ test_that("point column emits one row per non-NA frame with start == stop", {
     variables_event = list(state = character(), point = "call")
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_equal(nrow(ae), 2)
   expect_equal(ae$start, c(2, 4))
   expect_equal(ae$start, ae$stop)
@@ -80,7 +80,7 @@ test_that("state and point columns coexist in one conversion", {
     variables_event = list(state = "behaviour", point = "call")
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_setequal(unique(ae$channel), c("behaviour", "call"))
   expect_equal(sum(ae$channel == "behaviour"), 2) # REM(1-2), wake(3-5)
   expect_equal(sum(ae$channel == "call"), 1) # one alarm at t=2
@@ -108,7 +108,7 @@ test_that("per-individual grouping isolates bouts", {
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_equal(nrow(ae), 4) # 2 bouts per individual
   expect_equal(sum(ae$individual == 1), 2)
   expect_equal(sum(ae$individual == 2), 2)
@@ -137,7 +137,7 @@ test_that("observation grouping isolates bouts across clips", {
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_equal(nrow(ae), 4)
   expect_true("observation" %in% names(ae))
   expect_true("observation" %in% get_metadata(ae, "variables_when"))
@@ -147,27 +147,27 @@ test_that("metadata is inherited from the host aniframe", {
   af <- make_state_aniframe()
   af <- set_metadata(af, unit_time = "s", sampling_rate = 30)
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_equal(as.character(get_metadata(ae, "unit_time")), "s")
   expect_equal(get_metadata(ae, "sampling_rate"), 30)
 })
 
-test_that("as_anievent.aniframe errors when no event columns are declared", {
+test_that("to_anievent.aniframe errors when no event columns are declared", {
   af <- aniframe(individual = 1L, time = 1:3, x = 1:3, y = 1:3)
-  expect_error(as_anievent(af), "no event columns declared")
+  expect_error(to_anievent(af), "no event columns declared")
 })
 
-test_that("as_anievent.aniframe errors when a declared column is missing", {
+test_that("to_anievent.aniframe errors when a declared column is missing", {
   af <- aniframe(individual = 1L, time = 1:3, x = 1:3, y = 1:3)
   af <- set_metadata(
     af,
     variables_event = list(state = "behaviour", point = character())
   )
 
-  expect_error(as_anievent(af), "not present in the data")
+  expect_error(to_anievent(af), "not present in the data")
 })
 
-test_that("as_anievent.aniframe picks up <channel>_modifiers list-columns", {
+test_that("to_anievent.aniframe picks up <channel>_modifiers list-columns", {
   af <- aniframe(
     individual = rep(1L, 5),
     time = 1:5,
@@ -187,13 +187,13 @@ test_that("as_anievent.aniframe picks up <channel>_modifiers list-columns", {
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_true("modifiers" %in% names(ae))
   expect_equal(ae$modifiers[[1]], c("limb", "whisker"))
   expect_equal(ae$modifiers[[2]], "tail")
 })
 
-test_that("as_anievent.aniframe handles an aniframe with no identity columns", {
+test_that("to_anievent.aniframe handles an aniframe with no identity columns", {
   af <- as_aniframe(
     dplyr::tibble(
       time = 1:5,
@@ -208,7 +208,7 @@ test_that("as_anievent.aniframe handles an aniframe with no identity columns", {
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_equal(nrow(ae), 2)
   expect_equal(ae$start, c(1, 3))
   expect_equal(ae$stop, c(2, 5))
@@ -232,7 +232,7 @@ test_that("redundant identity columns (e.g. keypoint when behaviour is constant 
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
 
   # Should be 2 bouts (REM 1-2, wake 3-3), not 4 (duplicated per keypoint)
   expect_equal(nrow(ae), 2)
@@ -260,7 +260,7 @@ test_that("non-redundant identity columns (e.g. behaviour varying by keypoint) a
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_true("keypoint" %in% names(ae))
   expect_true("keypoint" %in% get_metadata(ae, "variables_what"))
   expect_equal(nrow(ae), 2) # one bout per keypoint
@@ -279,7 +279,7 @@ test_that("singleton identity columns are preserved (single individual aniframe 
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_true("individual" %in% names(ae))
   expect_true("keypoint" %in% names(ae)) # auto-added centroid, also a singleton
   expect_setequal(
@@ -305,7 +305,7 @@ test_that("temporal-grouping columns (observation / session / trial) are always 
     variables_event = list(state = "behaviour", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_true("observation" %in% names(ae))
   expect_true("observation" %in% get_metadata(ae, "variables_when"))
   # 4 bouts: REM clip_a, wake clip_a, REM clip_b, wake clip_b
@@ -327,7 +327,7 @@ test_that("multi-value identity columns are dropped when the event is constant a
     variables_event = list(state = "epoch", point = character())
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_false("individual" %in% names(ae))
   expect_true("keypoint" %in% names(ae))
   expect_equal(get_metadata(ae, "variables_what"), "keypoint")
@@ -354,7 +354,7 @@ test_that("channels with disagreeing scopes error with a helpful message", {
     )
   )
 
-  expect_error(as_anievent(af), "disagree on their identity scope")
+  expect_error(to_anievent(af), "disagree on their identity scope")
 })
 
 test_that("point channel keeps identity columns when the scope detection requires it", {
@@ -374,7 +374,7 @@ test_that("point channel keeps identity columns when the scope detection require
     variables_event = list(state = character(), point = "call")
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_true("individual" %in% names(ae))
   expect_equal(nrow(ae), 2)
   expect_equal(sort(ae$individual), c(1L, 2L))
@@ -395,7 +395,7 @@ test_that("empty-rows path keeps identity columns when forced via variables_what
     variables_event = list(state = character(), point = "call")
   )
 
-  ae <- as_anievent(af, variables_what = "individual")
+  ae <- to_anievent(af, variables_what = "individual")
   expect_equal(nrow(ae), 0)
   expect_true("individual" %in% names(ae))
 })
@@ -415,12 +415,12 @@ test_that("explicit variables_what overrides scope detection", {
   )
 
   # Force keypoint to be kept even though it's redundant
-  ae <- as_anievent(af, variables_what = c("individual", "keypoint"))
+  ae <- to_anievent(af, variables_what = c("individual", "keypoint"))
   expect_true("keypoint" %in% names(ae))
   expect_equal(nrow(ae), 4) # duplicate per keypoint
 })
 
-test_that("as_anievent.aniframe returns an empty anievent when all event rows are NA", {
+test_that("to_anievent.aniframe returns an empty anievent when all event rows are NA", {
   af <- aniframe(
     individual = rep(1L, 3),
     time = 1:3,
@@ -434,7 +434,12 @@ test_that("as_anievent.aniframe returns an empty anievent when all event rows ar
     variables_event = list(state = "behaviour", point = "call")
   )
 
-  ae <- as_anievent(af)
+  ae <- to_anievent(af)
   expect_s3_class(ae, "anievent")
   expect_equal(nrow(ae), 0)
+})
+
+test_that("as_anievent on an aniframe errors with a redirect to to_anievent", {
+  af <- make_state_aniframe()
+  expect_error(as_anievent(af), "to_anievent")
 })

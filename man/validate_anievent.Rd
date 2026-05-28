@@ -27,8 +27,6 @@ the same \code{channel} should not overlap — \strong{warning} only.
 Overlapping bouts within a channel are permitted on the
 \code{anievent} side; this is the form the data takes from coding
 tools that allow non-mutually-exclusive coding (e.g. BORIS
-without strict ethogram). \code{add_events()} splits them into
-numbered sub-columns at the boundary into \code{aniframe}, where
-mutual exclusion is structurally enforced.
+without strict ethogram).
 }
 }

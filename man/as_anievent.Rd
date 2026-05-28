@@ -5,7 +5,7 @@
 \alias{as_anievent.anievent}
 \alias{as_anievent.aniframe}
 \alias{as_anievent.data.frame}
-\title{Convert a data frame to an anievent}
+\title{Cast a data frame to an anievent}
 \usage{
 as_anievent(
   data,
@@ -57,10 +57,14 @@ to use other names for the grouping context.}
 An anievent object.
 }
 \description{
-Builds an \code{anievent} from a data frame holding behavioural events in
-long format (one row per bout or instant). The five mandatory columns
-are \code{channel}, \code{type}, \code{label}, \code{start}, and \code{stop};
-identity columns travel via \code{variables_what}. An optional \code{modifiers}
-list-column may carry per-event modifier values (each cell a character
-vector, matching the BORIS export format).
+Strict cast — the input must already be in canonical anievent
+shape: one row per bout or instant, with the columns \code{channel},
+\code{type}, \code{label}, \code{start}, and \code{stop}. Identity columns travel via
+\code{variables_what}. An optional \code{modifiers} list-column may carry
+per-event modifier values (each cell a character vector, matching
+the BORIS export format).
+}
+\details{
+To \emph{encode} per-frame data (factor / logical / character columns)
+into the bout shape, use \code{\link[=to_anievent]{to_anievent()}} instead.
 }

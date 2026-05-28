@@ -13,9 +13,7 @@
 #'   Overlapping bouts within a channel are permitted on the
 #'   `anievent` side; this is the form the data takes from coding
 #'   tools that allow non-mutually-exclusive coding (e.g. BORIS
-#'   without strict ethogram). `add_events()` splits them into
-#'   numbered sub-columns at the boundary into `aniframe`, where
-#'   mutual exclusion is structurally enforced.
+#'   without strict ethogram).
 #'
 #' @param data An anievent object.
 #'
@@ -23,27 +21,12 @@
 #' @export
 validate_anievent <- function(data) {
   ensure_is_anievent(data)
-  ensure_anievent_structural(data)
-  warn_anievent_channels_overlap(data)
-  invisible(data)
-}
-
-
-#' Structural checks for an anievent (no overlap warning)
-#'
-#' Bundles the hard checks `validate_anievent()` runs: required
-#' columns, column types, non-negative intervals, modifier shape.
-#' Callers that already handle channel overlap (e.g. `add_events()`,
-#' which splits into numbered sub-columns) call this directly to
-#' avoid the redundant overlap warning.
-#'
-#' @keywords internal
-ensure_anievent_structural <- function(data) {
   ensure_anievent_cols(data)
   ensure_anievent_col_types(data)
   ensure_anievent_intervals_nonnegative(data)
   ensure_anievent_modifiers_shape(data)
-  invisible(TRUE)
+  warn_anievent_channels_overlap(data)
+  invisible(data)
 }
 
 
@@ -136,7 +119,7 @@ warn_anievent_channels_overlap <- function(data) {
     cli::cli_warn(c(
       "Two bouts of the same channel overlap for the same subject.",
       "x" = "Channel {.val {hit$channel}} has overlapping bouts at row {.val {hit$row}}.",
-      "i" = "Overlap is permitted on the {.cls anievent}. {.fn add_events} will split into numbered sub-columns when converting to {.cls aniframe}."
+      "i" = "Overlap is permitted on the {.cls anievent}; downstream consumers that require mutual exclusion can resolve it at that boundary."
     ))
   }
   invisible(TRUE)
