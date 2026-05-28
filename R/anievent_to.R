@@ -157,7 +157,11 @@ to_anievent.aniframe <- function(
         names(channel_scopes),
         function(nm) {
           sc <- channel_scopes[[nm]]
-          sc_str <- if (length(sc) == 0) "<none>" else paste(sc, collapse = ", ")
+          sc_str <- if (length(sc) == 0) {
+            "<none>"
+          } else {
+            paste(sc, collapse = ", ")
+          }
           paste0(nm, " -> ", sc_str)
         },
         character(1)

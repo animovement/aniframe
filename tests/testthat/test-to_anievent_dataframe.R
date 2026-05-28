@@ -113,7 +113,16 @@ test_that("state and point and logical columns can mix in one call", {
   df <- dplyr::tibble(
     individual = 1L,
     time = 1:8,
-    behaviour = factor(c("REM", "REM", "REM", "wake", "wake", "REM", "REM", NA)),
+    behaviour = factor(c(
+      "REM",
+      "REM",
+      "REM",
+      "wake",
+      "wake",
+      "REM",
+      "REM",
+      NA
+    )),
     woke_up = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
     call = c(NA, "alarm", NA, NA, NA, NA, NA, NA)
   )
@@ -137,8 +146,14 @@ test_that("multiple identity columns isolate bouts independently", {
     individual = rep(c(1L, 2L), each = 4),
     time = c(1:4, 1:4),
     behaviour = factor(c(
-      "REM", "REM", "wake", "wake",
-      "wake", "wake", "REM", "REM"
+      "REM",
+      "REM",
+      "wake",
+      "wake",
+      "wake",
+      "wake",
+      "REM",
+      "REM"
     ))
   )
 
