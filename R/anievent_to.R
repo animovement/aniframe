@@ -371,10 +371,6 @@ rle_state_column <- function(data, col, time_col, group_cols) {
   first_idx <- first_idx[keep_runs]
   last_idx <- last_idx[keep_runs]
 
-  if (length(first_idx) == 0L) {
-    return(make_empty_bout_df(group_cols, col))
-  }
-
   out <- dplyr::tibble(
     channel = col,
     label = vals[first_idx],

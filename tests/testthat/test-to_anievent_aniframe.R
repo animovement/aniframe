@@ -443,3 +443,73 @@ test_that("as_anievent on an aniframe errors with a redirect to to_anievent", {
   af <- make_state_aniframe()
   expect_error(as_anievent(af), "to_anievent")
 })
+
+test_that("scope-disagreement error formats empty scopes as '<none>'", {
+  # 2 individuals x 2 keypoints x 2 times = 8 rows.
+  # behaviour: constant across both identities -> scope = character()
+  # limb_extended: varies by keypoint only -> scope = c("keypoint")
+  # Different scopes -> disagreement error, empty scope rendered as <none>.
+  af <- aniframe(
+    individual = rep(c(1L, 2L), each = 4),
+    keypoint = rep(c("head", "tail"), 4),
+    time = rep(c(1, 1, 2, 2), 2),
+    x = rnorm(8),
+    y = rnorm(8),
+    behaviour = factor(rep("REM", 8)), # constant across everything
+    limb_extended = factor(rep(c("yes", "no"), 4)) # varies by keypoint
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(
+      state = c("behaviour", "limb_extended"),
+      point = character()
+    )
+  )
+
+  expect_error(to_anievent(af), "<none>")
+})
+
+test_that("explicit variables_when overrides metadata-driven grouping", {
+  af <- aniframe(
+    individual = 1L,
+    observation = c(rep("clip_a", 4), rep("clip_b", 4)),
+    time = c(1:4, 1:4),
+    x = rnorm(8),
+    y = rnorm(8),
+    behaviour = factor(rep(c("REM", "REM", "wake", "wake"), 2))
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = "behaviour", point = character())
+  )
+
+  # Override drops `observation` from the grouping; bouts cross clips.
+  ae <- to_anievent(af, variables_when = character())
+  expect_false("observation" %in% get_metadata(ae, "variables_when"))
+})
+
+test_that("to_anievent.aniframe gathers <col>_modifiers on point channels", {
+  af <- aniframe(
+    individual = rep(1L, 5),
+    time = 1:5,
+    x = rnorm(5),
+    y = rnorm(5),
+    call = factor(c(NA, "alarm", NA, "contact", NA)),
+    call_modifiers = I(list(
+      character(),
+      c("loud", "long"),
+      character(),
+      "soft",
+      character()
+    ))
+  )
+  af <- set_metadata(
+    af,
+    variables_event = list(state = character(), point = "call")
+  )
+
+  ae <- to_anievent(af)
+  expect_true("modifiers" %in% names(ae))
+  expect_equal(ae$modifiers[[1]], c("loud", "long"))
+  expect_equal(ae$modifiers[[2]], "soft")
+})
