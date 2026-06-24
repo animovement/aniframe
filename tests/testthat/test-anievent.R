@@ -1,0 +1,481 @@
+# Tests for the anievent class
+#
+# Construction:
+#   - anievent() builds an object with the expected class chain
+#   - as_anievent() coerces a data.frame
+#   - as_anievent() on an existing anievent is a no-op
+#   - column type standardisation (channel -> character, label -> factor,
+#     start/stop -> numeric, individual character -> factor)
+#   - metadata defaults: variables_what = "individual",
+#     variables_when = c("start", "stop"), variables_where = character()
+#   - optional modifiers list-column is preserved
+#
+# Validation (validate_anievent):
+#   - rejects missing required columns
+#   - rejects wrong column types
+#   - rejects negative intervals (stop < start)
+#   - rejects malformed modifiers (non-list cell, unnamed entries)
+#
+# Predicates:
+#   - is_anievent / ensure_is_anievent
+
+# ---- Construction --------------------------------------------------------
+
+test_that("anievent() builds an object with the expected class chain", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    label = c("REM", "wake", "alarm"),
+    start = c(3, 14, 4.5),
+    stop = c(9, 19, 4.5)
+  )
+
+  expect_s3_class(ae, "anievent")
+  expect_s3_class(ae, "tbl_df")
+  expect_false(inherits(ae, "aniframe"))
+})
+
+test_that("as_anievent() coerces a plain data.frame", {
+  df <- data.frame(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9,
+    stringsAsFactors = FALSE
+  )
+
+  ae <- as_anievent(df)
+  expect_s3_class(ae, "anievent")
+})
+
+test_that("anievent() accepts a single data.frame as its only argument", {
+  df <- dplyr::tibble(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  ae <- anievent(df)
+  expect_s3_class(ae, "anievent")
+})
+
+test_that("as_anievent() on an existing anievent is a no-op", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  expect_identical(as_anievent(ae), ae)
+})
+
+test_that("anievent standardises column types", {
+  ae <- anievent(
+    individual = c("a", "b"),
+    channel = factor(c("behaviour", "call")),
+    label = c("REM", "alarm"),
+    start = c(3L, 4L),
+    stop = c(9L, 4L)
+  )
+
+  expect_s3_class(ae$individual, "factor")
+  expect_type(ae$channel, "character")
+  expect_s3_class(ae$label, "factor")
+  expect_type(ae$start, "double")
+  expect_type(ae$stop, "double")
+})
+
+test_that("anievent metadata gets anievent-flavoured defaults", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  md <- get_metadata(ae)
+  expect_equal(md$variables_what, "individual")
+  expect_equal(md$variables_when, c("start", "stop"))
+  expect_length(md$variables_where, 0)
+})
+
+test_that("anievent auto-detects recognised identity columns", {
+  ae <- anievent(
+    subject = c("a", "b"),
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "wake"),
+    start = c(3, 14),
+    stop = c(9, 19)
+  )
+
+  expect_equal(get_metadata(ae, "variables_what"), "subject")
+})
+
+test_that("anievent accepts an explicit non-default identity column", {
+  ae <- anievent(
+    rat = c("a", "b"),
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "wake"),
+    start = c(3, 14),
+    stop = c(9, 19),
+    variables_what = "rat"
+  )
+
+  expect_equal(get_metadata(ae, "variables_what"), "rat")
+  expect_s3_class(ae$rat, "factor")
+})
+
+test_that("anievent works with no identity column", {
+  ae <- anievent(
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "wake"),
+    start = c(3, 14),
+    stop = c(9, 19)
+  )
+
+  expect_s3_class(ae, "anievent")
+  expect_length(get_metadata(ae, "variables_what"), 0)
+})
+
+test_that("anievent auto-detects observation / session / trial into variables_when", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L, 1L),
+    observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
+    trial = c(1L, 1L, 2L, 2L),
+    channel = c("behaviour", "behaviour", "behaviour", "behaviour"),
+    label = c("REM", "wake", "REM", "wake"),
+    start = c(3, 14, 1, 7),
+    stop = c(9, 19, 5, 12)
+  )
+
+  expect_equal(
+    get_metadata(ae, "variables_when"),
+    c("observation", "trial", "start", "stop")
+  )
+})
+
+test_that("anievent coerces auto-detected grouping columns to factor / integer", {
+  ae <- anievent(
+    individual = 1L,
+    observation = c("clip_a", "clip_a"),
+    trial = c(1L, 2L),
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "wake"),
+    start = c(3, 14),
+    stop = c(9, 19)
+  )
+
+  expect_s3_class(ae$observation, "factor")
+  expect_type(ae$trial, "integer")
+})
+
+test_that("anievent column ordering mirrors aniframe (what, when incl start/stop, payload)", {
+  ae <- anievent(
+    individual = 1L,
+    observation = "clip_a",
+    trial = 1L,
+    modifiers = list(character()),
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  expect_equal(
+    names(ae),
+    c(
+      "individual",
+      "observation",
+      "trial",
+      "start",
+      "stop",
+      "channel",
+      "type",
+      "label",
+      "modifiers"
+    )
+  )
+})
+
+test_that("optional modifiers list-column is preserved", {
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "REM"),
+    start = c(3, 14),
+    stop = c(9, 19),
+    modifiers = list(
+      c("limb", "whisker"),
+      "tail"
+    )
+  )
+
+  expect_true("modifiers" %in% names(ae))
+  expect_type(ae$modifiers, "list")
+  expect_equal(ae$modifiers[[1]], c("limb", "whisker"))
+})
+
+# ---- Validation ---------------------------------------------------------
+
+test_that("validate_anievent rejects missing required columns", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+  ae$label <- NULL
+
+  expect_error(validate_anievent(ae), "Missing required")
+})
+
+test_that("validate_anievent rejects wrong column types", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+  bad_channel <- ae
+  bad_channel$channel <- factor(bad_channel$channel)
+  expect_error(validate_anievent(bad_channel), "must be character")
+
+  bad_label <- ae
+  bad_label$label <- as.character(bad_label$label)
+  expect_error(validate_anievent(bad_label), "must be a factor")
+
+  bad_start <- ae
+  bad_start$start <- as.character(bad_start$start)
+  expect_error(validate_anievent(bad_start), "start must be numeric")
+
+  bad_stop <- ae
+  bad_stop$stop <- as.character(bad_stop$stop)
+  expect_error(validate_anievent(bad_stop), "stop must be numeric")
+})
+
+test_that("validate_anievent warns (by default) on overlapping bouts in the same channel for the same subject", {
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "wake"),
+    start = c(3, 5),
+    stop = c(8, 10)
+  )
+
+  expect_warning(validate_anievent(ae), "overlap")
+})
+
+test_that("validate_anievent accepts overlapping bouts on different channels", {
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "call"),
+    label = c("REM", "alarm"),
+    start = c(3, 5),
+    stop = c(8, 5)
+  )
+
+  expect_no_error(validate_anievent(ae))
+})
+
+test_that("validate_anievent accepts overlapping bouts in the same channel across subjects", {
+  ae <- anievent(
+    individual = c(1L, 2L),
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "REM"),
+    start = c(3, 4),
+    stop = c(8, 9)
+  )
+
+  expect_no_error(validate_anievent(ae))
+})
+
+test_that("validate_anievent rejects negative intervals", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 9,
+    stop = 3
+  )
+
+  expect_error(validate_anievent(ae), "greater than or equal")
+})
+
+test_that("validate_anievent rejects malformed modifiers", {
+  ae <- anievent(
+    individual = c(1L, 1L),
+    channel = c("behaviour", "behaviour"),
+    label = c("REM", "REM"),
+    start = c(3, 14),
+    stop = c(9, 19),
+    modifiers = list(
+      1:3,
+      character()
+    )
+  )
+
+  expect_error(validate_anievent(ae), "character vector")
+})
+
+test_that("validate_anievent rejects a modifiers column that isn't a list", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+  ae$modifiers <- "not a list"
+
+  expect_error(validate_anievent(ae), "must be a list-column")
+})
+
+test_that("validate_anievent accepts well-formed modifiers", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    label = c("REM", "REM", "alarm"),
+    start = c(3, 14, 4.5),
+    stop = c(9, 19, 4.5),
+    modifiers = list(
+      c("limb", "whisker"),
+      "tail",
+      character()
+    )
+  )
+
+  expect_no_error(validate_anievent(ae))
+})
+
+test_that("type auto-derives from start/stop when not supplied", {
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    label = c("REM", "wake", "alarm"),
+    start = c(3, 14, 4.5),
+    stop = c(9, 19, 4.5) # middle bout (after arrange): start == stop -> point
+  )
+  expect_s3_class(ae$type, "factor")
+  expect_equal(levels(ae$type), c("state", "point"))
+  # arrange-by-start reorders to (3, 4.5, 14); the start==stop bout sits second
+  expect_equal(
+    as.character(ae$type),
+    c("state", "point", "state")
+  )
+})
+
+test_that("type auto-derive is per (channel, label) — mixed-duration group is uniformly state", {
+  # (behaviour, REM) has two bouts: one durative (3-9), one single-frame
+  # (14-14). With the "any durative -> state" rule, both stay state.
+  # (call, alarm) is the only point group (start == stop).
+  ae <- anievent(
+    individual = c(1L, 1L, 1L),
+    channel = c("behaviour", "behaviour", "call"),
+    label = c("REM", "REM", "alarm"),
+    start = c(3, 14, 4.5),
+    stop = c(9, 14, 4.5)
+  )
+  # arrange-by-start reorders rows
+  by_key <- split(
+    as.character(ae$type),
+    paste(ae$channel, as.character(ae$label), sep = "/")
+  )
+  expect_setequal(by_key[["behaviour/REM"]], "state")
+  expect_setequal(by_key[["call/alarm"]], "point")
+})
+
+test_that("type override wins over auto-derive", {
+  # All bouts have start == stop, auto-derive would say "point".
+  # Explicit override forces "state".
+  ae <- anievent(
+    individual = 1L,
+    channel = "motif",
+    label = "M1",
+    start = 1,
+    stop = 1,
+    type = "state"
+  )
+  expect_equal(as.character(ae$type), "state")
+})
+
+test_that("type rejects values outside state/point", {
+  expect_error(
+    anievent(
+      individual = 1L,
+      channel = "behaviour",
+      label = "REM",
+      start = 1,
+      stop = 3,
+      type = "transient"
+    ),
+    "must be"
+  )
+})
+
+test_that("validate_anievent rejects wrong type levels", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 1,
+    stop = 3
+  )
+  # Mutate type to a factor with wrong levels
+  ae$type <- factor("state", levels = c("state", "point", "extra"))
+  expect_error(
+    validate_anievent(ae),
+    "levels exactly"
+  )
+})
+
+test_that("validate_anievent rejects non-factor type", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 1,
+    stop = 3
+  )
+  ae$type <- as.character(ae$type)
+  expect_error(
+    validate_anievent(ae),
+    "factor with levels"
+  )
+})
+
+test_that("validate_anievent returns the input invisibly on success", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  expect_identical(validate_anievent(ae), ae)
+})
+
+# ---- Predicates ---------------------------------------------------------
+
+test_that("is_anievent / ensure_is_anievent work as expected", {
+  ae <- anievent(
+    individual = 1L,
+    channel = "behaviour",
+    label = "REM",
+    start = 3,
+    stop = 9
+  )
+
+  expect_true(is_anievent(ae))
+  expect_false(is_anievent(data.frame()))
+  expect_no_error(ensure_is_anievent(ae))
+  expect_error(ensure_is_anievent(data.frame()), "not an anievent")
+})

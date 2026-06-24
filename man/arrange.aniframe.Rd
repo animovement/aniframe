@@ -19,3 +19,4 @@ An arranged aniframe
 \description{
 Arrange rows of an aniframe
 }
+\keyword{internal}

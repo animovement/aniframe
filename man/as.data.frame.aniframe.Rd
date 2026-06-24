@@ -17,3 +17,4 @@ A regular data frame
 \description{
 Convert aniframe to regular data frame
 }
+\keyword{internal}

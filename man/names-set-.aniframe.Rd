@@ -17,3 +17,4 @@ Modified aniframe
 \description{
 Rename columns with names<-
 }
+\keyword{internal}

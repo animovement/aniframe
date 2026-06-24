@@ -19,3 +19,4 @@ A filtered aniframe
 \description{
 Filter rows of an aniframe
 }
+\keyword{internal}

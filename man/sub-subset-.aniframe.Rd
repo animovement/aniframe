@@ -21,3 +21,4 @@ Modified aniframe
 \description{
 Column assignment for aniframe with [[<-
 }
+\keyword{internal}

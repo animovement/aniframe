@@ -1,0 +1,338 @@
+---
+title: "The anievent data structure"
+format:
+  html:
+    toc: true
+    toc-depth: 3
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(aniframe)
+```
+
+## At a glance
+
+An `anievent` is the sibling of [`aniframe`](aniframe-structure.html)
+for **behavioural events**: sleep bouts, vocalisations, manual scoring
+from BORIS, the output of segmentation models.
+
+Each row is one **event**. An event sits in a **channel** (where it
+is, as a soft convention, mutually exclusive with other events on the
+same channel), has a **type** — either `"state"` (durative) or
+`"point"` (instant) — and carries a **label** identifying which event
+it is. Each event has a **start** and a **stop** time (identical for
+point events). Just like an `aniframe`, the event is *performed by
+something* (identity columns, declared via `variables_what`) at *some
+time* (temporal-grouping columns, declared via `variables_when`).
+
+The class is a true sibling — it does **not** inherit from `aniframe`,
+but it shares the metadata substrate, so `get_metadata()`,
+`set_metadata()`, and the rest of the metadata API work on both.
+
+## Channels
+
+A **channel** is a single mutually-exclusive categorical track of
+behaviour. Within one channel, a subject can carry only one label at
+a time: a sleep-state channel is either `REM` or `wake`, never both
+simultaneously. If two behaviours **can** co-occur — say grooming
+while walking — they belong on **separate channels**, not as two
+values of the same channel. That mutual-exclusivity constraint is
+what makes a channel a channel.
+
+This means how you design your channels is a modelling choice. BORIS
+calls them "behavioural categories" in the ethogram; segmentation
+pipelines call them "label streams"; we call them channels in this
+package.
+
+## Anatomy at a glance
+
+```{r}
+ae <- anievent(
+  individual = c(1L, 1L, 1L, 2L),
+  channel = c("behaviour", "behaviour", "call", "behaviour"),
+  label =c("REM", "wake", "alarm", "REM"),
+  start = c(3, 14, 4.5, 1),
+  stop = c(9, 19, 4.5, 6)
+)
+ae
+```
+
+Two things to spot:
+
+1. The **header rows** prefixed with `#` come from the metadata
+   attribute — identity columns and the event channels carried by the
+   `channel` column.
+2. The **data columns** are the long-format event records: one row per
+   bout (or instant), with the channel name in `channel` and the
+   label in `label`.
+
+## Required schema
+
+An `anievent` has five mandatory columns plus identity columns that
+travel via `variables_what`:
+
+| Column       | Type      | Required? | Role                                       |
+|--------------|-----------|-----------|--------------------------------------------|
+| `channel`    | character | yes       | which event channel                        |
+| `type`       | factor    | yes       | `"state"` (durative) or `"point"` (instant) |
+| `label`      | factor    | yes       | which event (the categorical label)        |
+| `start`      | numeric   | yes       | bout start (or instant)                    |
+| `stop`       | numeric   | yes       | bout stop (equals `start` for point events) |
+| identity     | as source | optional  | e.g. `individual`, `track`, `subject`      |
+| `modifiers`  | list-column of `character` | optional | flat per-event modifier values |
+
+Identity columns are auto-detected from a known list
+(`model`, `individual`, `track`, `subject`), or you can supply any
+name via `variables_what`. An `anievent` with no identity column at
+all is fine for single-subject experiments.
+
+`type` is auto-derived from `start`/`stop` at construction.
+Classification is **per `(channel, label)` group**, not per row: a
+group is labelled `"point"` only when *all* of its bouts have
+`start == stop`. If even one bout in the group is durative, the
+whole group is `"state"` — so the same behaviour stays consistently
+typed across its occurrences. Pass `type` explicitly to
+override this default.
+
+### Multiple observations / trials / sessions
+
+Behavioural coding often spans several clips or trials, each with its
+own time origin (`start = 0` means "the start of *this* clip", not "the
+start of the experiment"). To carry that context, add an `observation`,
+`session`, or `trial` column — those three names are auto-detected
+into `variables_when` alongside `start` and `stop`, and the column is
+coerced to factor / integer the same way aniframe does it:
+
+```{r}
+ae_multi <- anievent(
+  individual = c(1L, 1L, 1L, 1L),
+  observation = c("clip_a", "clip_a", "clip_b", "clip_b"),
+  channel =c("behaviour", "behaviour", "behaviour", "behaviour"),
+  label =c("REM", "wake", "REM", "wake"),
+  start = c(3, 14, 1, 7),
+  stop = c(9, 19, 5, 12)
+)
+get_metadata(ae_multi, "variables_when")
+ae_multi
+```
+
+The `start`/`stop` values are local to each observation — both clips
+have an event starting near the beginning, but those are separate
+moments in real time. Anything downstream that needs to combine clips
+onto a shared timeline (plots, cross-clip metrics) will need an
+observation-level offset table; the class itself just carries the key.
+
+### Time unit
+
+`unit_time` is carried in the shared metadata substrate, so an
+`anievent` declares the unit of its `start`/`stop` values just like
+an `aniframe` declares the unit of its `time` column (`"frame"`,
+`"ms"`, `"s"`, `"m"`, `"h"`, …). `set_unit_time()` and
+`set_sampling_rate()` dispatch on both classes — on an anievent they
+scale `start` and `stop` instead of `time`:
+
+```{r}
+ae_frames <- anievent(
+  individual = 1L,
+  channel = c("behaviour", "behaviour"),
+  label =c("REM", "wake"),
+  start = c(30, 150),
+  stop = c(60, 300)
+)
+ae_seconds <- set_sampling_rate(ae_frames, sampling_rate = 30)
+ae_seconds
+```
+
+## State vs point events
+
+Two temporal kinds:
+
+- **State events** — interval-valued, durative (`stop > start`). A
+  sleep bout, a grooming bout.
+- **Point events** — instantaneous (`stop == start`). A startle, a
+  vocalisation onset.
+
+The `anievent` class is intentionally **type-agnostic**: it does not
+require you to declare which channels are state and which are point.
+The `channel` column already names the channels, and the duration of
+each row tells you everything the class needs.
+
+Type only becomes load-bearing at conversion / plotting / metric time:
+
+- when converting an `anievent` to a per-frame `aniframe` (so the
+  conversion knows whether to fill the whole interval or just a single
+  frame),
+- when plotting (state → coloured band; point → marker),
+- when computing metrics that differ by type.
+
+Those operations live in companion packages (`animetric`, `anivis`)
+and will accept type declarations at call time. The metadata field
+`variables_event = list(state = ..., point = ...)` exists on the
+shared metadata substrate for callers that want to record the
+distinction explicitly, but the `anievent` class itself does not
+enforce it.
+
+## Modifiers
+
+A **modifier** is a per-event attribute set at coding time — in BORIS,
+the values chosen from a behaviour's modifier sets. A grooming bout
+might carry the values `"limb"` and `"whisker"`; an alarm call might
+carry `"high"`.
+
+Modifiers are stored as an optional `modifiers` list-column, where
+each cell is a **flat character vector** (length zero, one, or many).
+This matches how BORIS exports modifier data: the set-to-value
+structure from the ethogram is collapsed into a single bag of values
+per event, so a modifier cell is just the values picked, with no
+set-key wrapping.
+
+```{r}
+ae_with_mods <- anievent(
+  individual = c(1L, 1L, 1L),
+  channel =c("behaviour", "behaviour", "call"),
+  label =c("REM", "REM", "alarm"),
+  start = c(3, 14, 4.5),
+  stop = c(9, 19, 4.5),
+  modifiers = list(
+    c("limb", "whisker"),
+    "tail",
+    character()
+  )
+)
+ae_with_mods
+```
+
+Standard dplyr verbs round-trip the list-column without further
+ceremony:
+
+```{r}
+ae_with_mods |>
+  dplyr::filter(channel == "behaviour")
+```
+
+A helper to widen this list-column into one logical column per
+distinct modifier value (so filtering or faceting on a single
+modifier value is straightforward) is planned but not yet
+implemented.
+
+## Validation
+
+`validate_anievent()` re-checks the structural invariants on demand,
+returning the input invisibly on success and erroring otherwise:
+
+```{r}
+#| error: true
+# Happy path: returns invisibly, no output
+validate_anievent(ae_with_mods)
+
+# Negative interval is caught
+bad <- ae_with_mods
+bad$stop[1] <- bad$start[1] - 1
+validate_anievent(bad)
+```
+
+The validator confirms required columns are present with the right
+types, that `stop >= start` for every row, and that any `modifiers`
+column is well-formed. It deliberately does **not** check
+type-linked invariants (e.g. point rows having `start == stop`) —
+those belong to the conversion code that knows which channels are
+typed as what.
+
+## Encoding per-frame data into an `anievent`
+
+Per-frame data (factor / character / logical columns over a time
+grid) is encoded into the bout shape with `to_anievent()`. The verb
+is distinct from `as_anievent()`: that one is a *strict cast* of an
+already-bout-shaped data frame (with `channel` / `type` / `label` /
+`start` / `stop`); `to_anievent()` *produces* that shape via
+run-length encoding.
+
+### From a data frame
+
+`to_anievent()` on a data frame takes bare-name selections for the
+event columns and the time / identity context.
+
+```{r}
+library(tibble)
+df <- tibble(
+  individual = 1L,
+  time       = 1:8,
+  behaviour  = factor(c("REM", "REM", "REM", "wake", "wake", "REM", "REM", NA)),
+  woke_up    = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+  call       = c(NA, "alarm", NA, NA, NA, NA, NA, NA)
+)
+
+to_anievent(
+  df,
+  time           = time,
+  state          = c(behaviour, woke_up),
+  point          = call,
+  variables_what = individual
+)
+```
+
+Three things to notice:
+
+- `behaviour` is a multi-level factor → one channel with both `REM`
+  and `wake` labels, RLE'd into contiguous bouts.
+- `woke_up` is a logical → TRUE-runs become bouts labelled
+  `"woke_up"` (the column name); FALSE frames produce nothing.
+- `call` is a sparse factor passed to `point` → one bout per
+  non-`NA` frame with `start == stop`.
+
+The channel name always comes from the column name. Use `state` vs
+`point` to pick how the column is interpreted — the value-shape
+(factor / character / logical) is handled internally.
+
+### From an `aniframe`
+
+If you already have an `aniframe` with `variables_event` declared in
+metadata, `to_anievent()` reads everything from there:
+
+```{r}
+af <- aniframe(
+  individual = rep(1L, 8),
+  time = 1:8,
+  x = 1:8,
+  y = 1:8,
+  behaviour = factor(
+    c("REM", "REM", "REM", "wake", "wake", "REM", "REM", NA),
+    levels = c("REM", "wake")
+  )
+)
+af <- set_metadata(
+  af,
+  variables_event = list(state = "behaviour", point = character())
+)
+to_anievent(af)
+```
+
+The resulting anievent inherits `unit_time` and `sampling_rate` from
+the host. `stop` is the time of the last frame of each bout
+(inclusive, frame-aligned). If a `<col>_modifiers` list-column is
+present alongside an event column, its cells are gathered into the
+anievent's `modifiers` column, one entry per emitted bout.
+
+The reverse direction (`anievent` → `aniframe`) is intentionally not
+provided yet — the anievent's loose mutual-exclusion semantics don't
+map onto an aniframe's per-frame columns without a design decision
+about how to resolve overlap, and that design is still pending.
+
+## Where things live in the ecosystem
+
+| Concern                                 | Planned home | Status     |
+|-----------------------------------------|--------------|------------|
+| The `anievent` class                    | `aniframe`   | ✅ implemented |
+| Encoding per-frame data (`to_anievent()`) | `aniframe`   | ✅ implemented |
+| Conversion to `aniframe`                | `aniframe`   | planned    |
+| Readers (BORIS, Solomon, …)             | `aniread`    | planned    |
+| Bout-summary metrics                    | `animetric`  | planned    |
+| Plots (state band, point marker)        | `anivis`     | planned    | -->

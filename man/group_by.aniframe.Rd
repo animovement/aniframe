@@ -17,3 +17,4 @@ A grouped aniframe
 \description{
 Group an aniframe
 }
+\keyword{internal}

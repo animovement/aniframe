@@ -11,6 +11,7 @@
 #' @param ... Additional arguments (unused)
 #' @return Named character vector with summary information
 #' @importFrom pillar tbl_sum
+#' @keywords internal
 #' @export
 tbl_sum.aniframe <- function(x, ...) {
   default_header <- NextMethod()
@@ -38,6 +39,24 @@ tbl_sum.aniframe <- function(x, ...) {
         title_case_pluralised(col)
       )
     )
+  }
+
+  event_vars <- md$variables_event
+  if (!is.null(event_vars)) {
+    state_vars <- intersect(event_vars$state, names(x))
+    if (length(state_vars) > 0) {
+      new_header <- c(
+        new_header,
+        "State event variables" = paste(state_vars, collapse = ", ")
+      )
+    }
+    point_vars <- intersect(event_vars$point, names(x))
+    if (length(point_vars) > 0) {
+      new_header <- c(
+        new_header,
+        "Point event variables" = paste(point_vars, collapse = ", ")
+      )
+    }
   }
 
   sampling_rate <- md$sampling_rate

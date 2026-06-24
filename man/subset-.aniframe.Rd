@@ -23,3 +23,4 @@ Modified aniframe
 \description{
 Subset assignment for aniframe with [<-
 }
+\keyword{internal}

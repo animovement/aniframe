@@ -23,3 +23,4 @@ A subset aniframe
 \description{
 Subset aniframe with [
 }
+\keyword{internal}

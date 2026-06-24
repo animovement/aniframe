@@ -19,3 +19,4 @@ A sliced aniframe
 \description{
 Slice rows from an aniframe
 }
+\keyword{internal}

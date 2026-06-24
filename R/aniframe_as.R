@@ -23,7 +23,7 @@ as_aniframe <- function(
   # Resolve variables_when: detect from data if not specified
   if (is.null(variables_when)) {
     # Recognised temporal variable names (time is always required)
-    recognised_when <- c("session", "trial", "time")
+    recognised_when <- c("observation", "session", "trial", "time")
 
     # Only include recognised when variables that are present in data
     variables_when <- recognised_when[recognised_when %in% names(data)]

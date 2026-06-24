@@ -17,3 +17,4 @@ An ungrouped aniframe
 \description{
 Ungroup an aniframe
 }
+\keyword{internal}

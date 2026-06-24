@@ -1,9 +1,13 @@
-#' Print method for aniframe metadata
+#' Print method for animovement metadata
 #'
 #' Renders the metadata as a single block, captured via
 #' [cli::cli_format_method()] and emitted with [cat()]. Field names
 #' and types are padded to fixed widths so the values line up in
 #' aligned columns, similar to [str()].
+#'
+#' The S3 class is named `aniframe_metadata` for historical reasons,
+#' but the metadata substrate is shared by both [aniframe()] and
+#' [anievent()] objects.
 #'
 #' @param x An `aniframe_metadata` list.
 #' @param ... Unused.
@@ -12,7 +16,7 @@
 #' @export
 print.aniframe_metadata <- function(x, ...) {
   out <- cli::cli_format_method({
-    cli::cli_h1("aniframe metadata")
+    cli::cli_h1("animovement metadata")
 
     if (length(x) == 0) {
       cli::cli_alert_info("No metadata available")

@@ -35,6 +35,7 @@ articles:
       - articles/aniframe-structure
       - articles/aniframe-metadata
       - articles/aniframe-connections
+      - articles/anievent-structure
 
 reference:
   - title: "Creating and converting aniframe objects"
@@ -48,9 +49,22 @@ reference:
       - is_aniframe
       - ensure_is_aniframe
 
+  - title: "Creating and converting anievent objects"
+    desc: >
+      Functions that create an anievent (long-format behavioural event
+      records) or coerce other objects to anievent.
+    contents:
+      - to_anievent
+      - as_anievent
+      - anievent
+      - is_anievent
+      - ensure_is_anievent
+      - validate_anievent
+
   - title: "Metadata handling"
     desc: >
-      Functions for reading, setting, and retrieving the metadata attached to an aniframe.
+      Functions for reading, setting, and retrieving the metadata
+      attached to aniframe or anievent objects.
     contents:
       - get_metadata
       - set_metadata
@@ -100,30 +114,3 @@ reference:
     - deg_to_rad
     - convert_nan_to_na
 
-  - title: "Data manipulation (dplyr‑style verbs)"
-    desc: >
-      S3 methods that mirror dplyr verbs for aniframe objects.
-    contents:
-      - arrange.aniframe
-      - filter.aniframe
-      - group_by.aniframe
-      - mutate.aniframe
-      - relocate.aniframe
-      - rename.aniframe
-      - select.aniframe
-      - slice.aniframe
-      - tbl_sum.aniframe   # (or tbl_sum.aniframe if that’s the name)
-      - ungroup.aniframe
-
-  - title: "Conversion helpers"
-    desc: |
-      Methods that let you treat aniframe objects like regular data frames.
-    contents:
-      - as.data.frame.aniframe
-      - "[.aniframe"
-      - "[[.aniframe"
-      - "[[<-.aniframe"
-      - "[<-.aniframe"
-      - "$<-.aniframe"
-      - "$.aniframe"
-      - names<-.aniframe    # if you expose the setter for names

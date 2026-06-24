@@ -2,12 +2,12 @@
 % Please edit documentation in R/metadata_set.R
 \name{set_metadata}
 \alias{set_metadata}
-\title{Set metadata for an aniframe}
+\title{Set metadata}
 \usage{
 set_metadata(data, ..., metadata = NULL)
 }
 \arguments{
-\item{data}{An aniframe object}
+\item{data}{An aniframe or anievent object.}
 
 \item{...}{Named metadata values (e.g., \verb{sampling_rate = 30, source = "sleap"})}
 
@@ -15,13 +15,13 @@ set_metadata(data, ..., metadata = NULL)
 simultaneously with \code{...}}
 }
 \value{
-The aniframe object with updated metadata
+The object with updated metadata.
 }
 \description{
-Sets or updates metadata for an aniframe object. Metadata can be provided
-either as named arguments or as a list. If the aniframe already has metadata,
-the new values will be merged with existing values, with new values taking
-precedence.
+Sets or updates metadata for an aniframe or anievent object. Metadata can
+be provided either as named arguments or as a list. If the object already
+has metadata, the new values will be merged with existing values, with new
+values taking precedence.
 
 Character values for factor fields will be automatically converted to factors
 if they match allowed levels.

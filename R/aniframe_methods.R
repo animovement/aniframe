@@ -1,4 +1,6 @@
-# Methods for aniframe class to preserve class through dplyr operations
+# Methods for aniframe class to preserve class through dplyr operations.
+# Shares the constructor / re-attach pattern with `anievent_methods.R`
+# via `preserve_animovement_class()`.
 
 # ---- dplyr verb methods ----
 
@@ -7,19 +9,16 @@
 #' @param x An aniframe object
 #' @param ... Additional arguments passed to dplyr::ungroup
 #' @return An ungrouped aniframe
+#' @keywords internal
 #' @export
 ungroup.aniframe <- function(x, ...) {
-  # if (!quiet) {
   cli::cli_warn(
     "Ungrouping an aniframe data frame makes errors more likely. Proceed with care."
   )
-  # }
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Group an aniframe
@@ -27,13 +26,12 @@ ungroup.aniframe <- function(x, ...) {
 #' @param .data An aniframe object
 #' @param ... Variables to group by
 #' @return A grouped aniframe
+#' @keywords internal
 #' @export
 group_by.aniframe <- function(.data, ...) {
   md <- get_metadata(.data)
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Mutate columns in an aniframe
@@ -41,13 +39,12 @@ group_by.aniframe <- function(.data, ...) {
 #' @param .data An aniframe object
 #' @param ... Name-value pairs of expressions
 #' @return An aniframe with modified columns
+#' @keywords internal
 #' @export
 mutate.aniframe <- function(.data, ...) {
   md <- get_metadata(.data)
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Select columns from an aniframe
@@ -55,13 +52,12 @@ mutate.aniframe <- function(.data, ...) {
 #' @param .data An aniframe object
 #' @param ... Columns to select
 #' @return An aniframe with selected columns
+#' @keywords internal
 #' @export
 select.aniframe <- function(.data, ...) {
   md <- get_metadata(.data)
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Filter rows of an aniframe
@@ -70,13 +66,12 @@ select.aniframe <- function(.data, ...) {
 #' @param ... Logical predicates
 #' @param .preserve Keep group structure
 #' @return A filtered aniframe
+#' @keywords internal
 #' @export
 filter.aniframe <- function(.data, ..., .preserve = FALSE) {
   md <- get_metadata(.data)
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Arrange rows of an aniframe
@@ -85,13 +80,12 @@ filter.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param ... Variables to order by
 #' @param .by_group If TRUE, arrange within groups
 #' @return An arranged aniframe
+#' @keywords internal
 #' @export
 arrange.aniframe <- function(.data, ..., .by_group = FALSE) {
   md <- get_metadata(.data)
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Rename columns in an aniframe
@@ -99,13 +93,12 @@ arrange.aniframe <- function(.data, ..., .by_group = FALSE) {
 #' @param .data An aniframe object
 #' @param ... Name-value pairs for renaming
 #' @return An aniframe with renamed columns
+#' @keywords internal
 #' @export
 rename.aniframe <- function(.data, ...) {
   md <- get_metadata(.data)
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Relocate columns in an aniframe
@@ -113,14 +106,13 @@ rename.aniframe <- function(.data, ...) {
 #' @param .data An aniframe object
 #' @param ... Columns to relocate
 #' @return An aniframe with relocated columns
+#' @keywords internal
 #' @export
 relocate.aniframe <- function(.data, ...) {
   md <- get_metadata(.data)
   class(.data) <- setdiff(class(.data), "aniframe")
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Slice rows from an aniframe
@@ -129,13 +121,12 @@ relocate.aniframe <- function(.data, ...) {
 #' @param ... Integer row positions
 #' @param .preserve Keep group structure
 #' @return A sliced aniframe
+#' @keywords internal
 #' @export
 slice.aniframe <- function(.data, ..., .preserve = FALSE) {
   md <- get_metadata(.data)
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 # ---- Base R extraction methods ----
@@ -148,14 +139,13 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param ... Additional arguments
 #' @param drop If TRUE, simplify to vector when possible
 #' @return A subset aniframe
+#' @keywords internal
 #' @export
 `[.aniframe` <- function(x, i, j, ..., drop = FALSE) {
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Extract single column from aniframe with [[
@@ -164,6 +154,7 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param i Column index or name
 #' @param ... Additional arguments
 #' @return A vector or data frame
+#' @keywords internal
 #' @export
 `[[.aniframe` <- function(x, i, ...) {
   md <- get_metadata(x)
@@ -175,8 +166,7 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
   # release changes that.
   if (is.data.frame(x)) {
     # nocov start
-    x <- new_aniframe(x)
-    x <- set_metadata(x, metadata = md)
+    x <- preserve_animovement_class(x, md, new_aniframe)
   } # nocov end
   x
 }
@@ -186,6 +176,7 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param x An aniframe object
 #' @param name Column name
 #' @return A vector
+#' @keywords internal
 #' @export
 `$.aniframe` <- function(x, name) {
   class(x) <- setdiff(class(x), "aniframe")
@@ -202,14 +193,13 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param ... Additional arguments
 #' @param value Replacement values
 #' @return Modified aniframe
+#' @keywords internal
 #' @export
 `[<-.aniframe` <- function(x, i, j, ..., value) {
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Column assignment for aniframe with [[<-
@@ -219,14 +209,13 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param ... Additional arguments
 #' @param value Replacement value
 #' @return Modified aniframe
+#' @keywords internal
 #' @export
 `[[<-.aniframe` <- function(x, i, ..., value) {
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Column assignment for aniframe with $<-
@@ -235,14 +224,13 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param name Column name
 #' @param value Replacement value
 #' @return Modified aniframe
+#' @keywords internal
 #' @export
 `$<-.aniframe` <- function(x, name, value) {
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 #' Rename columns with names<-
@@ -250,14 +238,13 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param x An aniframe object
 #' @param value New column names
 #' @return Modified aniframe
+#' @keywords internal
 #' @export
 `names<-.aniframe` <- function(x, value) {
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  x <- new_aniframe(x)
-  x <- set_metadata(x, metadata = md)
-  x
+  preserve_animovement_class(x, md, new_aniframe)
 }
 
 # ---- Conversion methods ----
@@ -267,6 +254,7 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @param x An aniframe object
 #' @param ... Additional arguments
 #' @return A regular data frame
+#' @keywords internal
 #' @export
 as.data.frame.aniframe <- function(x, ...) {
   class(x) <- setdiff(class(x), "aniframe")
