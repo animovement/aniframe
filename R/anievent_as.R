@@ -1,11 +1,14 @@
-#' Convert a data frame to an anievent
+#' Cast a data frame to an anievent
 #'
-#' Builds an `anievent` from a data frame holding behavioural events in
-#' long format (one row per bout or instant). The five mandatory columns
-#' are `channel`, `type`, `label`, `start`, and `stop`;
-#' identity columns travel via `variables_what`. An optional `modifiers`
-#' list-column may carry per-event modifier values (each cell a character
-#' vector, matching the BORIS export format).
+#' Strict cast — the input must already be in canonical anievent
+#' shape: one row per bout or instant, with the columns `channel`,
+#' `type`, `label`, `start`, and `stop`. Identity columns travel via
+#' `variables_what`. An optional `modifiers` list-column may carry
+#' per-event modifier values (each cell a character vector, matching
+#' the BORIS export format).
+#'
+#' To *encode* per-frame data (factor / logical / character columns)
+#' into the bout shape, use [to_anievent()] instead.
 #'
 #' @param data A data frame with the required columns.
 #' @param metadata Optional list of metadata.
@@ -41,6 +44,20 @@ as_anievent.anievent <- function(
   variables_when = NULL
 ) {
   data
+}
+
+#' @rdname as_anievent
+#' @export
+as_anievent.aniframe <- function(
+  data,
+  metadata = list(),
+  variables_what = NULL,
+  variables_when = NULL
+) {
+  cli::cli_abort(c(
+    "Cannot cast an {.cls aniframe} directly to an {.cls anievent}.",
+    "i" = "Use {.fn to_anievent} to encode per-frame event columns into bouts."
+  ))
 }
 
 #' @rdname as_anievent
@@ -138,7 +155,8 @@ ensure_anievent_cols <- function(data) {
       "Missing required column{?s} for an anievent: {.val {missing}}.",
       "i" = "An anievent requires {.val {required}}.",
       "i" = "{.field type} must be {.val state} or {.val point} per row.",
-      "i" = "Identity columns (e.g. {.val individual}) are recognised via {.arg variables_what} but are not required."
+      "i" = "Identity columns (e.g. {.val individual}) are recognised via {.arg variables_what} but are not required.",
+      "i" = "To encode per-frame event columns into bouts, use {.fn to_anievent} instead."
     ))
   }
   invisible(TRUE)

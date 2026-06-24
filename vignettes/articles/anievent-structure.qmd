@@ -246,36 +246,93 @@ type-linked invariants (e.g. point rows having `start == stop`) —
 those belong to the conversion code that knows which channels are
 typed as what.
 
-<!-- ## Relationship to `aniframe`
+## Encoding per-frame data into an `anievent`
 
-The two structures are pivot-duals of each other. An `aniframe`'s
-event columns (declared in `variables_event`) hold one label per
-frame, wide; an `anievent` holds one record per bout, long.
+Per-frame data (factor / character / logical columns over a time
+grid) is encoded into the bout shape with `to_anievent()`. The verb
+is distinct from `as_anievent()`: that one is a *strict cast* of an
+already-bout-shaped data frame (with `channel` / `type` / `label` /
+`start` / `stop`); `to_anievent()` *produces* that shape via
+run-length encoding.
 
-::: callout-note
-## Planned, not yet available
+### From a data frame
 
-Conversions between the two are the natural next step:
+`to_anievent()` on a data frame takes bare-name selections for the
+event columns and the time / identity context.
 
-- run-length-encoding the wide per-frame event columns of an
-  `aniframe` into the long bout form of an `anievent`,
-- broadcasting an `anievent`'s bouts back onto an `aniframe`'s
-  per-frame grid.
+```{r}
+library(tibble)
+df <- tibble(
+  individual = 1L,
+  time       = 1:8,
+  behaviour  = factor(c("REM", "REM", "REM", "wake", "wake", "REM", "REM", NA)),
+  woke_up    = c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+  call       = c(NA, "alarm", NA, NA, NA, NA, NA, NA)
+)
 
-Both directions will live in `aniframe`, since the package owns both
-classes. A BORIS reader (producing an `anievent` directly) is planned
-for `aniread`. None of these are implemented yet.
-:::
+to_anievent(
+  df,
+  time           = time,
+  state          = c(behaviour, woke_up),
+  point          = call,
+  variables_what = individual
+)
+```
+
+Three things to notice:
+
+- `behaviour` is a multi-level factor → one channel with both `REM`
+  and `wake` labels, RLE'd into contiguous bouts.
+- `woke_up` is a logical → TRUE-runs become bouts labelled
+  `"woke_up"` (the column name); FALSE frames produce nothing.
+- `call` is a sparse factor passed to `point` → one bout per
+  non-`NA` frame with `start == stop`.
+
+The channel name always comes from the column name. Use `state` vs
+`point` to pick how the column is interpreted — the value-shape
+(factor / character / logical) is handled internally.
+
+### From an `aniframe`
+
+If you already have an `aniframe` with `variables_event` declared in
+metadata, `to_anievent()` reads everything from there:
+
+```{r}
+af <- aniframe(
+  individual = rep(1L, 8),
+  time = 1:8,
+  x = 1:8,
+  y = 1:8,
+  behaviour = factor(
+    c("REM", "REM", "REM", "wake", "wake", "REM", "REM", NA),
+    levels = c("REM", "wake")
+  )
+)
+af <- set_metadata(
+  af,
+  variables_event = list(state = "behaviour", point = character())
+)
+to_anievent(af)
+```
+
+The resulting anievent inherits `unit_time` and `sampling_rate` from
+the host. `stop` is the time of the last frame of each bout
+(inclusive, frame-aligned). If a `<col>_modifiers` list-column is
+present alongside an event column, its cells are gathered into the
+anievent's `modifiers` column, one entry per emitted bout.
+
+The reverse direction (`anievent` → `aniframe`) is intentionally not
+provided yet — the anievent's loose mutual-exclusion semantics don't
+map onto an aniframe's per-frame columns without a design decision
+about how to resolve overlap, and that design is still pending.
 
 ## Where things live in the ecosystem
-
-Only the `anievent` class itself ships today; everything else is
-planned for follow-up work in the respective packages.
 
 | Concern                                 | Planned home | Status     |
 |-----------------------------------------|--------------|------------|
 | The `anievent` class                    | `aniframe`   | ✅ implemented |
-| Conversions to / from `aniframe`        | `aniframe`   | planned    |
+| Encoding per-frame data (`to_anievent()`) | `aniframe`   | ✅ implemented |
+| Conversion to `aniframe`                | `aniframe`   | planned    |
 | Readers (BORIS, Solomon, …)             | `aniread`    | planned    |
 | Bout-summary metrics                    | `animetric`  | planned    |
 | Plots (state band, point marker)        | `anivis`     | planned    | -->

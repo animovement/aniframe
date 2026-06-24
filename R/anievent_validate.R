@@ -1,19 +1,19 @@
 #' Validate an anievent
 #'
 #' Re-runs the structural invariants of an `anievent` object on demand:
-#' * required columns (`channel`, `type`, `label`, `start`,
-#'   `stop`) are present with the expected types; identity columns
-#'   travel via `variables_what` and are not part of the required set;
-#' * `type` is a factor with levels `c("state", "point")`,
-#'   classifying each row as either a state event (durative) or a
-#'   point event (instant);
-#' * `stop >= start` for every row;
+#' * required columns (`channel`, `type`, `label`, `start`, `stop`)
+#'   are present with the expected types — hard errors;
+#' * `type` is a factor with levels `c("state", "point")` — hard
+#'   error;
+#' * `stop >= start` for every row — hard error;
 #' * `modifiers`, if present, is a list-column whose cells are
-#'   character vectors (the values picked from BORIS modifier sets at
-#'   coding time; an empty vector when the event has no modifiers).
-#'
-#' Errors are raised through `cli::cli_abort()`; on success the object
-#' is returned invisibly.
+#'   character vectors — hard error;
+#' * within each `(identity + temporal-grouping)` group, two bouts of
+#'   the same `channel` should not overlap — **warning** only.
+#'   Overlapping bouts within a channel are permitted on the
+#'   `anievent` side; this is the form the data takes from coding
+#'   tools that allow non-mutually-exclusive coding (e.g. BORIS
+#'   without strict ethogram).
 #'
 #' @param data An anievent object.
 #'
@@ -25,6 +25,7 @@ validate_anievent <- function(data) {
   ensure_anievent_col_types(data)
   ensure_anievent_intervals_nonnegative(data)
   ensure_anievent_modifiers_shape(data)
+  warn_anievent_channels_overlap(data)
   invisible(data)
 }
 
@@ -65,6 +66,60 @@ ensure_anievent_intervals_nonnegative <- function(data) {
     cli::cli_abort(c(
       "{.field stop} must be greater than or equal to {.field start} for every row.",
       "x" = "Row{?s} violating the invariant: {.val {bad}}."
+    ))
+  }
+  invisible(TRUE)
+}
+
+
+#' Find the first overlapping bout pair within any (identity +
+#' temporal-grouping + channel) group of an anievent.
+#'
+#' Returns `NULL` when no overlap exists; otherwise a small named list
+#' identifying the channel and offending row.
+#'
+#' @keywords internal
+find_anievent_channel_overlap <- function(data) {
+  if (nrow(data) < 2) {
+    return(NULL)
+  }
+
+  md <- get_metadata(data)
+  group_cols <- intersect(
+    c(md$variables_what, setdiff(md$variables_when, c("start", "stop"))),
+    names(data)
+  )
+
+  # Work on a bare tibble so dplyr verbs don't trigger the
+  # `ungroup.anievent` "use with care" warning during validation.
+  bare <- dplyr::as_tibble(data)
+  groups <- dplyr::group_by(
+    bare,
+    dplyr::across(dplyr::all_of(c(group_cols, "channel")))
+  )
+  for (sub in dplyr::group_split(groups)) {
+    if (nrow(sub) < 2) {
+      next
+    }
+    sub <- sub[order(sub$start), ]
+    overlaps <- sub$start[-1] < sub$stop[-nrow(sub)]
+    if (any(overlaps)) {
+      bad_row <- which(overlaps)[1] + 1
+      return(list(channel = sub$channel[bad_row], row = bad_row))
+    }
+  }
+  NULL
+}
+
+
+#' @keywords internal
+warn_anievent_channels_overlap <- function(data) {
+  hit <- find_anievent_channel_overlap(data)
+  if (!is.null(hit)) {
+    cli::cli_warn(c(
+      "Two bouts of the same channel overlap for the same subject.",
+      "x" = "Channel {.val {hit$channel}} has overlapping bouts at row {.val {hit$row}}.",
+      "i" = "Overlap is permitted on the {.cls anievent}; downstream consumers that require mutual exclusion can resolve it at that boundary."
     ))
   }
   invisible(TRUE)

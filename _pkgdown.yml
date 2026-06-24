@@ -54,6 +54,7 @@ reference:
       Functions that create an anievent (long-format behavioural event
       records) or coerce other objects to anievent.
     contents:
+      - to_anievent
       - as_anievent
       - anievent
       - is_anievent
