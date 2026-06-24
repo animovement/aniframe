@@ -13,6 +13,7 @@
 
 * The `print.aniframe_metadata()` heading now reads "animovement metadata" to reflect that the metadata substrate is shared by both `aniframe` and `anievent`. The S3 class name `aniframe_metadata` is unchanged for backwards compatibility with previously serialised objects (#69).
 * `get_metadata()`, `set_metadata()`, and `default_metadata()` documentation generalised — these operate on either `aniframe` or `anievent` objects via the shared metadata substrate (#69).
+* `set_metadata()` now accepts partial `variables_event` input — supplying only `state` or only `point` is fine, and the missing side defaults to `character()`. `NA` and empty entries are read as "none" rather than erroring, so callers no longer have to spell out both sides or wrap values in `as.character()` (#76).
 
 ## Documentation
 

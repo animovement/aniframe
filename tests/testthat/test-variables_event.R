@@ -9,7 +9,9 @@
 # Validation:
 #   - rejects overlap between $state and $point
 #   - rejects non-character vectors in $state / $point
-#   - rejects a list missing the required entries
+#   - accepts partial input (only $state or only $point); the missing
+#     side fills in as character() — see #76
+#   - treats NA / empty entries as "none"
 #
 # Backwards compatibility:
 #   - metadata missing variables_event still passes ensure_valid_metadata()
@@ -69,13 +71,43 @@ test_that("set_metadata rejects non-character vectors in variables_event", {
   )
 })
 
-test_that("set_metadata rejects variables_event missing state or point", {
+test_that("set_metadata accepts variables_event with only state (#76)", {
   data <- dplyr::tibble()
 
-  expect_error(
-    set_metadata(data, variables_event = list(state = character())),
-    "state.*point"
+  result <- set_metadata(
+    data,
+    variables_event = list(state = c("sleep_state", "sleep_stage"))
   )
+
+  ve <- get_metadata(result, "variables_event")
+  expect_equal(ve$state, c("sleep_state", "sleep_stage"))
+  expect_equal(ve$point, character())
+})
+
+test_that("set_metadata accepts variables_event with only point (#76)", {
+  data <- dplyr::tibble()
+
+  result <- set_metadata(
+    data,
+    variables_event = list(point = "call")
+  )
+
+  ve <- get_metadata(result, "variables_event")
+  expect_equal(ve$state, character())
+  expect_equal(ve$point, "call")
+})
+
+test_that("set_metadata treats NA / empty variables_event entries as none (#76)", {
+  data <- dplyr::tibble()
+
+  result <- set_metadata(
+    data,
+    variables_event = list(state = "behaviour", point = NA)
+  )
+
+  ve <- get_metadata(result, "variables_event")
+  expect_equal(ve$state, "behaviour")
+  expect_equal(ve$point, character())
 })
 
 test_that("ensure_valid_metadata() tolerates metadata missing variables_event", {

@@ -11,6 +11,34 @@ optional_metadata_fields <- function() {
   c("spec_version", "variables_event")
 }
 
+# Normalise user-supplied `variables_event` into canonical form. Accepts
+# partial input — supplying only `state` or only `point` is fine, and the
+# missing side defaults to `character()`. `NULL`, empty, and all-`NA`
+# entries collapse to `character()` so callers can write
+# `list(point = "call")` or `list(state = "x", point = NA)` without having
+# to spell out both sides or wrap values in `as.character()`. Genuinely
+# wrong types (e.g. integers) are left untouched for the validator to
+# reject. Stored metadata always carries both entries as character vectors.
+normalise_variables_event_entry <- function(v) {
+  if (is.null(v) || length(v) == 0L || all(is.na(v))) {
+    return(character())
+  }
+  if (is.character(v)) {
+    return(v[!is.na(v)])
+  }
+  v
+}
+
+normalise_variables_event <- function(x) {
+  if (is.null(x) || !is.list(x)) {
+    return(x)
+  }
+  list(
+    state = normalise_variables_event_entry(x$state),
+    point = normalise_variables_event_entry(x$point)
+  )
+}
+
 # Structural check for `variables_event`: must be a list with character
 # vectors at `$state` and `$point`, and the two sets must not overlap (a
 # column cannot be both state and point).

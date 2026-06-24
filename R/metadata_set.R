@@ -129,6 +129,17 @@ set_metadata <- function(data, ..., metadata = NULL) {
   }
 
   # ------------------------------------------------------------------
+  # Normalise `variables_event` so partial input (just `state` or just
+  # `point`) and NA / empty entries are accepted; the missing side fills
+  # in as `character()`. See `normalise_variables_event()`.
+  # ------------------------------------------------------------------
+  if ("variables_event" %in% names(user_md)) {
+    user_md$variables_event <- normalise_variables_event(
+      user_md$variables_event
+    )
+  }
+
+  # ------------------------------------------------------------------
   # Does the data have metadata or not?
   # ------------------------------------------------------------------
   if (!check_metadata_exists(data)) {
