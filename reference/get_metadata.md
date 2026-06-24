@@ -12,7 +12,7 @@ get_metadata(data, fields = NULL)
 
 - data:
 
-  aniframe
+  An aniframe or anievent object.
 
 - fields:
 
@@ -20,4 +20,4 @@ get_metadata(data, fields = NULL)
 
 ## Value
 
-the metadata associated with the aniframe
+The metadata associated with the object.

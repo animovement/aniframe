@@ -16,23 +16,41 @@ provide example data.
 - [`ensure_is_aniframe()`](http://animovement.dev/aniframe/reference/ensure_is_aniframe.md)
   : Ensure object is an aniframe
 
+## Creating and converting anievent objects
+
+Functions that create an anievent (long-format behavioural event
+records) or coerce other objects to anievent.
+
+- [`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+  : Encode per-frame data into an anievent
+- [`as_anievent()`](http://animovement.dev/aniframe/reference/as_anievent.md)
+  : Cast a data frame to an anievent
+- [`anievent()`](http://animovement.dev/aniframe/reference/anievent.md)
+  : Create an anievent data frame
+- [`is_anievent()`](http://animovement.dev/aniframe/reference/is_anievent.md)
+  : Check if object is an anievent
+- [`ensure_is_anievent()`](http://animovement.dev/aniframe/reference/ensure_is_anievent.md)
+  : Ensure object is an anievent
+- [`validate_anievent()`](http://animovement.dev/aniframe/reference/validate_anievent.md)
+  : Validate an anievent
+
 ## Metadata handling
 
 Functions for reading, setting, and retrieving the metadata attached to
-an aniframe.
+aniframe or anievent objects.
 
 - [`get_metadata()`](http://animovement.dev/aniframe/reference/get_metadata.md)
   : Get metadata
 - [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
-  : Set metadata for an aniframe
+  : Set metadata
 - [`set_unit_time()`](http://animovement.dev/aniframe/reference/set_unit_time.md)
-  : Set the temporal unit of an aniframe object
+  : Set the temporal unit of an aniframe or anievent
 - [`set_unit_space()`](http://animovement.dev/aniframe/reference/set_unit_space.md)
   : Set the spatial unit of an aniframe object
 - [`set_unit_angle()`](http://animovement.dev/aniframe/reference/set_unit_angle.md)
   : Set the angular unit of an aniframe object
 - [`set_sampling_rate()`](http://animovement.dev/aniframe/reference/set_sampling_rate.md)
-  : Set the sampling rate of an aniframe object
+  : Set the sampling rate of an aniframe or anievent
 - [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md)
   : Set the coordinate origin
 - [`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md)
@@ -96,49 +114,3 @@ These functions provide checks for your coordinate system.
   : Convert degrees to radians
 - [`convert_nan_to_na()`](http://animovement.dev/aniframe/reference/convert_nan_to_na.md)
   : Convert NaN to NA in numeric columns
-
-## Data manipulation (dplyr‑style verbs)
-
-S3 methods that mirror dplyr verbs for aniframe objects.
-
-- [`arrange(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/arrange.aniframe.md)
-  : Arrange rows of an aniframe
-- [`filter(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/filter.aniframe.md)
-  : Filter rows of an aniframe
-- [`group_by(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/group_by.aniframe.md)
-  : Group an aniframe
-- [`mutate(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/mutate.aniframe.md)
-  : Mutate columns in an aniframe
-- [`relocate(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/relocate.aniframe.md)
-  : Relocate columns in an aniframe
-- [`rename(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/rename.aniframe.md)
-  : Rename columns in an aniframe
-- [`select(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/select.aniframe.md)
-  : Select columns from an aniframe
-- [`slice(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/slice.aniframe.md)
-  : Slice rows from an aniframe
-- [`tbl_sum(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/tbl_sum.aniframe.md)
-  : Custom tibble summary for aniframe
-- [`ungroup(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/ungroup.aniframe.md)
-  : Ungroup an aniframe
-
-## Conversion helpers
-
-Methods that let you treat aniframe objects like regular data frames.
-
-- [`as.data.frame(`*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/as.data.frame.aniframe.md)
-  : Convert aniframe to regular data frame
-- [`` `[`( ``*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/sub-.aniframe.md)
-  : Subset aniframe with \[
-- [`` `[[`( ``*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/sub-sub-.aniframe.md)
-  : Extract single column from aniframe with \[\[
-- [`` `[[<-`( ``*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/sub-subset-.aniframe.md)
-  : Column assignment for aniframe with \[\[\<-
-- [`` `[<-`( ``*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/subset-.aniframe.md)
-  : Subset assignment for aniframe with \[\<-
-- [`` `$<-`( ``*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/cash-set-.aniframe.md)
-  : Column assignment for aniframe with \$\<-
-- [`` `$`( ``*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/cash-.aniframe.md)
-  : Extract column from aniframe with \$
-- [`` `names<-`( ``*`<aniframe>`*`)`](http://animovement.dev/aniframe/reference/names-set-.aniframe.md)
-  : Rename columns with names\<-

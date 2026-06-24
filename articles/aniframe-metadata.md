@@ -33,7 +33,7 @@ You can see the full metadata by printing it directly:
 
 data <- example_aniframe()
 get_metadata(data)
-#> ── aniframe metadata ───────────────────────────────────────────────────────────
+#> ── animovement metadata ────────────────────────────────────────────────────────
 #> source            (character) : <NA>
 #> source_version    (character) : <NA>
 #> filename          (character) : <NA>
@@ -42,6 +42,7 @@ get_metadata(data)
 #> variables_what    (character) : "individual, keypoint"
 #> variables_when    (character) : "session, trial, time"
 #> variables_where   (character) : "x, y"
+#> variables_event   (list)      : "character(0), character(0)"
 #> unit_space        (factor)    : "px"
 #>                                 [levels: px, none, nm, um, mm, cm, m, km]
 #> unit_angle        (factor)    : "rad"
@@ -54,8 +55,9 @@ get_metadata(data)
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
 #> origin            (factor)    : "bottom_left"
 #>                                 [levels: bottom_left, top_left]
-#> y_height          (numeric)   : 2.631256
-#> connections       (list)      :
+#> y_height          (numeric)   : 3.324292
+#> connections       (list)      : 
+#> spec_version      (list)      : "1.0.0, 0.1.0"
 ```
 
 The fields and their defaults are defined in one place,
@@ -66,7 +68,7 @@ looks like.
 ``` r
 
 str(default_metadata(), max.level = 1)
-#> List of 16
+#> List of 18
 #>  $ source           : chr NA
 #>  $ source_version   : chr NA
 #>  $ filename         : chr NA
@@ -75,6 +77,7 @@ str(default_metadata(), max.level = 1)
 #>  $ variables_what   : chr [1:2] "individual" "keypoint"
 #>  $ variables_when   : chr "time"
 #>  $ variables_where  : chr [1:2] "x" "y"
+#>  $ variables_event  :List of 2
 #>  $ unit_space       : Factor w/ 8 levels "px","none","nm",..: 1
 #>  $ unit_angle       : Factor w/ 2 levels "rad","deg": 1
 #>  $ unit_time        : Factor w/ 8 levels "unknown","frame",..: 2
@@ -83,6 +86,7 @@ str(default_metadata(), max.level = 1)
 #>  $ origin           : Factor w/ 2 levels "bottom_left",..: 1
 #>  $ y_height         : num NA
 #>  $ connections      : list()
+#>  $ spec_version     :List of 2
 #>  - attr(*, "class")= chr "aniframe_metadata"
 ```
 

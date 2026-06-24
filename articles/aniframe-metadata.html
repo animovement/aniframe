@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Metadata on an aniframe • aniframe</title>
 <script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="aniframe-metadata_files/libs/quarto-html/popper.min.js"></script><script src="aniframe-metadata_files/libs/quarto-html/tippy.umd.min.js"></script><link href="aniframe-metadata_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="aniframe-metadata_files/libs/quarto-html/light-border.css" rel="stylesheet">
@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,7 @@
 <li><a class="dropdown-item" href="../articles/aniframe-structure.html">The aniframe data structure</a></li>
     <li><a class="dropdown-item" href="../articles/aniframe-metadata.html">Metadata on an aniframe</a></li>
     <li><a class="dropdown-item" href="../articles/aniframe-connections.html">Connections</a></li>
+    <li><a class="dropdown-item" href="../articles/anievent-structure.html">The anievent data structure</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -70,7 +71,7 @@
 
 
 
-      <small class="dont-index">Source: <a href="https://github.com/animovement/aniframe/blob/v0.5.0/vignettes/articles/aniframe-metadata.qmd" class="external-link"><code>vignettes/articles/aniframe-metadata.qmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/animovement/aniframe/blob/main/vignettes/articles/aniframe-metadata.qmd" class="external-link"><code>vignettes/articles/aniframe-metadata.qmd</code></a></small>
       <div class="d-none name"><code></code></div>
     </div>
 
@@ -95,7 +96,7 @@
 <div class="sourceCode cell-code" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/example_aniframe.html">example_aniframe</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/get_metadata.html">get_metadata</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── aniframe metadata ───────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt; ── animovement metadata ────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; source            (character) : &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; source_version    (character) : &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; filename          (character) : &lt;NA&gt;</span></span>
@@ -104,6 +105,7 @@
 <span><span class="co">#&gt; variables_what    (character) : "individual, keypoint"</span></span>
 <span><span class="co">#&gt; variables_when    (character) : "session, trial, time"</span></span>
 <span><span class="co">#&gt; variables_where   (character) : "x, y"</span></span>
+<span><span class="co">#&gt; variables_event   (list)      : "character(0), character(0)"</span></span>
 <span><span class="co">#&gt; unit_space        (factor)    : "px"</span></span>
 <span><span class="co">#&gt;                                 [levels: px, none, nm, um, mm, cm, m, km]</span></span>
 <span><span class="co">#&gt; unit_angle        (factor)    : "rad"</span></span>
@@ -116,14 +118,15 @@
 <span><span class="co">#&gt;                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]</span></span>
 <span><span class="co">#&gt; origin            (factor)    : "bottom_left"</span></span>
 <span><span class="co">#&gt;                                 [levels: bottom_left, top_left]</span></span>
-<span><span class="co">#&gt; y_height          (numeric)   : 2.631256</span></span>
-<span><span class="co">#&gt; connections       (list)      :</span></span></code></pre></div>
+<span><span class="co">#&gt; y_height          (numeric)   : 3.324292</span></span>
+<span><span class="co">#&gt; connections       (list)      : </span></span>
+<span><span class="co">#&gt; spec_version      (list)      : "1.0.0, 0.1.0"</span></span></code></pre></div>
 </div>
 <p>The fields and their defaults are defined in one place, <code><a href="../reference/default_metadata.html">default_metadata()</a></code> — that’s the canonical source of truth for what an <code>aniframe</code>’s metadata looks like.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/default_metadata.html">default_metadata</a></span><span class="op">(</span><span class="op">)</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 16</span></span>
+<span><span class="co">#&gt; List of 18</span></span>
 <span><span class="co">#&gt;  $ source           : chr NA</span></span>
 <span><span class="co">#&gt;  $ source_version   : chr NA</span></span>
 <span><span class="co">#&gt;  $ filename         : chr NA</span></span>
@@ -132,6 +135,7 @@
 <span><span class="co">#&gt;  $ variables_what   : chr [1:2] "individual" "keypoint"</span></span>
 <span><span class="co">#&gt;  $ variables_when   : chr "time"</span></span>
 <span><span class="co">#&gt;  $ variables_where  : chr [1:2] "x" "y"</span></span>
+<span><span class="co">#&gt;  $ variables_event  :List of 2</span></span>
 <span><span class="co">#&gt;  $ unit_space       : Factor w/ 8 levels "px","none","nm",..: 1</span></span>
 <span><span class="co">#&gt;  $ unit_angle       : Factor w/ 2 levels "rad","deg": 1</span></span>
 <span><span class="co">#&gt;  $ unit_time        : Factor w/ 8 levels "unknown","frame",..: 2</span></span>
@@ -140,6 +144,7 @@
 <span><span class="co">#&gt;  $ origin           : Factor w/ 2 levels "bottom_left",..: 1</span></span>
 <span><span class="co">#&gt;  $ y_height         : num NA</span></span>
 <span><span class="co">#&gt;  $ connections      : list()</span></span>
+<span><span class="co">#&gt;  $ spec_version     :List of 2</span></span>
 <span><span class="co">#&gt;  - attr(*, "class")= chr "aniframe_metadata"</span></span></code></pre></div>
 </div>
 <p>The fields fall into a few groups:</p>

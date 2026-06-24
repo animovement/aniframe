@@ -1,9 +1,9 @@
-# Set metadata for an aniframe
+# Set metadata
 
-Sets or updates metadata for an aniframe object. Metadata can be
-provided either as named arguments or as a list. If the aniframe already
-has metadata, the new values will be merged with existing values, with
-new values taking precedence.
+Sets or updates metadata for an aniframe or anievent object. Metadata
+can be provided either as named arguments or as a list. If the object
+already has metadata, the new values will be merged with existing
+values, with new values taking precedence.
 
 Character values for factor fields will be automatically converted to
 factors if they match allowed levels.
@@ -43,7 +43,7 @@ set_metadata(data, ..., metadata = NULL)
 
 - data:
 
-  An aniframe object
+  An aniframe or anievent object.
 
 - ...:
 
@@ -56,7 +56,7 @@ set_metadata(data, ..., metadata = NULL)
 
 ## Value
 
-The aniframe object with updated metadata
+The object with updated metadata.
 
 ## See also
 

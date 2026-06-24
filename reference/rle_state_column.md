@@ -1,0 +1,12 @@
+# Run-length encode one state event column into bouts
+
+Within each `group_cols` partition, emit one row per maximal run of
+identical non-`NA` (normalised) values in `col`. `start` is the
+`time_col` value at the first frame in the run; `stop` is the value at
+the last frame.
+
+## Usage
+
+``` r
+rle_state_column(data, col, time_col, group_cols)
+```

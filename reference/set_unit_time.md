@@ -1,13 +1,19 @@
-# Set the temporal unit of an aniframe object
+# Set the temporal unit of an aniframe or anievent
 
-Converts time values in an aniframe object to a different unit of
-measurement. The function handles both automatic unit conversion between
-standard time units and custom calibration from frame or arbitrary
-units.
+Converts the temporal columns of an `aniframe` (the `time` column) or
+`anievent` (the `start` and `stop` columns) to a different unit of
+measurement. Handles automatic conversion between standard SI time units
+and custom calibration from frame or arbitrary units.
 
 ## Usage
 
 ``` r
+set_unit_time(data, to_unit, calibration_factor = 1)
+
+# S3 method for class 'aniframe'
+set_unit_time(data, to_unit, calibration_factor = 1)
+
+# S3 method for class 'anievent'
 set_unit_time(data, to_unit, calibration_factor = 1)
 ```
 
@@ -15,59 +21,60 @@ set_unit_time(data, to_unit, calibration_factor = 1)
 
 - data:
 
-  An aniframe object containing time data.
+  An
+  [`aniframe()`](http://animovement.dev/aniframe/reference/aniframe.md)
+  or
+  [`anievent()`](http://animovement.dev/aniframe/reference/anievent.md)
+  object.
 
 - to_unit:
 
   Character string specifying the target time unit. Must be one of the
   permitted units defined in `default_metadata()$unit_time` (typically
-  "ms", "s", "m", "h" for milliseconds, seconds, minutes, hours).
+  `"ms"`, `"s"`, `"m"`, `"h"`).
 
 - calibration_factor:
 
   Numeric value for scaling time values. Default is 1. When converting
-  from standard time units (ms, s, m, h), this is ignored and the
-  appropriate conversion factor is calculated automatically. When
-  converting from "frame" or "unknown" units, you must provide a
-  calibration factor to define the relationship between the current
-  units and the target unit.
+  from standard time units (`ms`, `s`, `m`, `h`), this is ignored and
+  the appropriate conversion factor is calculated automatically. When
+  converting from `"frame"` or `"unknown"` units, you must provide a
+  calibration factor to define the relationship between the current and
+  target units.
 
 ## Value
 
-An aniframe object with time values converted to the specified unit and
-updated metadata reflecting the new unit_time.
+The input object with temporal columns converted to `to_unit` and
+`unit_time` metadata updated accordingly.
 
 ## Details
 
-The function performs the following operations:
+For an `aniframe` the `time` column is multiplied by the calibration
+factor; for an `anievent` both `start` and `stop` are. In either case:
 
-- Validates that `to_unit` is a permitted time unit
+- the function validates `to_unit` against the permitted levels;
 
-- Determines the current time unit from the object's metadata
+- if converting from a standard unit (`ms`, `s`, `m`, `h`) to another
+  standard unit, the calibration factor is auto-computed;
 
-- If converting from standard time units (ms, s, m, h) to another
-  standard unit, automatically calculates the conversion factor
+- if converting from `"frame"` or `"unknown"` with
+  `calibration_factor = 1`, an informational message is emitted and the
+  data values are left unchanged (the metadata still flips to
+  `to_unit`);
 
-- If converting from "frame" or "unknown" units with
-  `calibration_factor = 1`, issues an informational message and returns
-  data unchanged
-
-- Applies the calibration factor to the time column
-
-- Updates the object's unit_time metadata
+- the object's `unit_time` metadata is updated.
 
 ## Examples
 
 ``` r
 if (FALSE) { # \dontrun{
-# Convert from milliseconds to seconds (automatic conversion)
+# aniframe: convert milliseconds to seconds (automatic)
 data_s <- set_unit_time(data, to_unit = "s")
 
-# Convert from frames to seconds with custom calibration
-# (e.g., 30 frames per second means 1 frame = 1/30 seconds)
-data_s <- set_unit_time(data, to_unit = "s", calibration_factor = 1/30)
+# aniframe: convert frames to seconds at 30 fps
+data_s <- set_unit_time(data, to_unit = "s", calibration_factor = 1 / 30)
 
-# Convert from hours to minutes (automatic conversion)
-data_m <- set_unit_time(data, to_unit = "m")
+# anievent: same call shape; mutates start/stop instead of time
+ae_s <- set_unit_time(ae, to_unit = "s", calibration_factor = 1 / 30)
 } # }
 ```
