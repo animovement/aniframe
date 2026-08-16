@@ -1,34 +1,31 @@
-# aniframe 0.6.0 (development version)
+# aniframe 0.6.0 (2026-08-17)
 
 ## New features
 
-* Added the `anievent` class for behavioural events in long format — one row per bout (state event) or instant (point event). Sibling of `aniframe`: shares the metadata substrate but does not inherit from it. Required columns: `channel`, `type`, `label`, `start`, `stop`; identity columns travel via `variables_what`; an optional `modifiers` list-column carries per-event modifier values as flat character vectors (matching the BORIS export format). `type` is a per-row factor (`"state"` or `"point"`) — auto-derived from `start`/`stop` at construction, classifying *per `(channel, label)` group* rather than per row: a group is `"point"` only when *all* its bouts have `start == stop`. If even one bout in the group is durative, the whole group is `"state"` (keeping the same behaviour consistently typed across its occurrences). Explicitly overridable for the cases where this auto-derive misclassifies (e.g. a state channel with only single-frame bouts) (#67).
-* New exported API around the class: `anievent()` and `as_anievent()` for construction (strict cast of an already-bout-shaped data frame), `to_anievent()` for encoding per-frame data into bouts (see below), `is_anievent()` / `ensure_is_anievent()` for predicates, and `validate_anievent()` for re-checking structural invariants on demand. Class-preserving dplyr verbs and base-R extraction / assignment methods are registered (`mutate.anievent`, `filter.anievent`, `[.anievent`, etc.) so the class round-trips through tidyverse pipelines (#68).
-* Added a `variables_event` metadata field — a named list `list(state, point)` declaring which `aniframe` columns hold per-frame categorical event labels. State columns are interval-valued (ordered coarse to fine for nesting); point columns are instantaneous. Foundation for downstream conversions; the `aniframe` print header surfaces "State event variables" / "Point event variables" rows when populated (#66).
-* Added a `spec_version` metadata field — a named list keyed by class, e.g. `list(aniframe = "1.0.0", anievent = "0.1.0")` — so the data contract of each class can evolve independently of the package version. Older serialised objects missing the field continue to validate (#65).
-* `as_aniframe()` now auto-detects `observation` as a temporal grouping column, alongside the existing `session` and `trial`. Lays the groundwork for importing behavioural-event data from BORIS where each observation has its own time origin.
-* `set_unit_time()` and `set_sampling_rate()` are now S3 generics with methods for both `aniframe` and `anievent`. On an anievent the calibration factor is applied to `start` and `stop` (instead of `time` on an aniframe); the rest of the contract is identical. Lets anievent data round-trip between frame, millisecond, and SI units the same way aniframe does.
-* Added `to_anievent()` — the encoding verb that run-length-encodes per-frame data into anievent bouts. Distinct from `as_anievent()` (strict cast of an already-bout-shaped data frame): `to_anievent()` *produces* that shape from per-frame columns. Methods:
-  - `to_anievent.data.frame(data, time, state, point, variables_what, variables_when, metadata)` — bare-name tidyselect of the event columns. Logical columns produce TRUE-run bouts labelled by the column name; factor / character columns produce one bout per contiguous run of the same value. `point` columns produce one bout per non-`NA` (or TRUE) frame. The channel name comes from the column name.
-  - `to_anievent.aniframe(data, metadata)` — reads `variables_event`, `variables_what`, and `time` from metadata and delegates to the data-frame kernel. Inherits `unit_time` and `sampling_rate`. Auto-detects each channel's identity scope so a `behaviour` column constant across `keypoint` doesn't emit duplicate bouts per keypoint; singleton identity columns are preserved; temporal-grouping columns (`observation`, `session`, `trial`) are always carried through. Channels with disagreeing scopes error with a helpful message.
-  - If a `<col>_modifiers` list-column is present alongside an event column on the host, its cells are gathered into the resulting anievent's `modifiers` column.
-* `validate_anievent()` now also checks that two bouts of the same `channel` never overlap within the same `(identity + temporal-grouping)` group. The check is a **warning** — overlap is permitted on the `anievent` side (BORIS without strict ethogram produces it as normal output, and the long-form representation handles it natively).
+* Added the `anievent` class for behavioural events in long format — one row per bout (state event) or instant (point event). A sibling of `aniframe`: it shares the metadata substrate but does not inherit from it. Required columns are `channel`, `type`, `label`, `start` and `stop`, with identity columns travelling via `variables_what` and an optional `modifiers` list-column. `type` is derived per `(channel, label)` group at construction — a group is `"point"` only when all its bouts are instantaneous — and can be set explicitly where that misclassifies (#67).
+* New API around the class: `anievent()` and `as_anievent()` to construct, `is_anievent()` / `ensure_is_anievent()` to test, and `validate_anievent()` to re-check structural invariants on demand. Class-preserving dplyr and base-R methods are registered so the class survives tidyverse pipelines (#68).
+* Added `to_anievent()`, which run-length-encodes per-frame data into bouts — as distinct from `as_anievent()`, which casts data that is already bout-shaped. Methods for `data.frame` (tidyselect the event columns) and `aniframe` (read them from `variables_event`); the latter auto-detects each channel's identity scope, so a label constant across keypoints doesn't produce a duplicate bout per keypoint.
+* Added a `variables_event` metadata field — a named list `list(state, point)` declaring which `aniframe` columns hold per-frame event labels. State columns are interval-valued, point columns instantaneous; both surface in the print header when populated (#66).
+* Added a `spec_version` metadata field, keyed by class, so each class's data contract can evolve independently of the package version. Older serialised objects without it continue to validate (#65).
+* `set_unit_time()` and `set_sampling_rate()` are now S3 generics with `aniframe` and `anievent` methods. On an anievent the calibration factor applies to `start` and `stop` rather than `time`; the rest of the contract is identical.
+* `as_aniframe()` now auto-detects `observation` as a temporal grouping column, alongside `session` and `trial` — groundwork for BORIS data, where each observation has its own time origin.
+* `validate_anievent()` now warns when two bouts of the same `channel` overlap within a group. A warning rather than an error: overlap is normal BORIS output and the long format handles it natively.
 
 ## Improvements
 
-* The `print.aniframe_metadata()` heading now reads "animovement metadata" to reflect that the metadata substrate is shared by both `aniframe` and `anievent`. The S3 class name `aniframe_metadata` is unchanged for backwards compatibility with previously serialised objects (#69).
-* `get_metadata()`, `set_metadata()`, and `default_metadata()` documentation generalised — these operate on either `aniframe` or `anievent` objects via the shared metadata substrate (#69).
-* `set_metadata()` now accepts partial `variables_event` input — supplying only `state` or only `point` is fine, and the missing side defaults to `character()`. `NA` and empty entries are read as "none" rather than erroring, so callers no longer have to spell out both sides or wrap values in `as.character()` (#76).
+* The `print.aniframe_metadata()` heading now reads "animovement metadata", since the substrate is shared by both classes. The S3 class name is unchanged, for backwards compatibility with serialised objects (#69).
+* `get_metadata()`, `set_metadata()` and `default_metadata()` documentation generalised to cover both `aniframe` and `anievent` (#69).
+* `set_metadata()` now accepts partial `variables_event` input — supplying only `state` or only `point` is fine, and `NA` or empty entries read as "none" rather than erroring (#76).
 
 ## Documentation
 
-* New pkgdown article "The anievent data structure" walks through the class, the channel concept (one mutually-exclusive categorical track of behaviour), state vs point events, modifiers, validation, and multi-observation handling (#70).
-* New pkgdown reference section "Creating and converting anievent objects" indexes the user-facing anievent API; the class-preserving S3 methods are marked `@keywords internal` (still exported and dispatched) so they don't clutter the reference index, matching the tibble subsetting-family convention.
+* New pkgdown article "The anievent data structure", covering channels, state vs point events, modifiers, validation and multi-observation data (#70).
+* New pkgdown reference section indexing the user-facing anievent API. The class-preserving S3 methods are marked `@keywords internal` — still exported and dispatched — so they don't clutter the index, matching the tibble convention.
 
 ## Internal
 
-* Factored the strip-class / `NextMethod` / rebuild / re-attach pattern shared by `aniframe_methods.R` and `anievent_methods.R` into `preserve_animovement_class()` in `utils.R`.
-* `resolve_unit_time_calibration()` factors out the shared unit-validation and conversion-factor logic between `set_unit_time.aniframe` and `set_unit_time.anievent`.
+* Factored the strip-class / `NextMethod()` / rebuild / re-attach pattern shared by `aniframe_methods.R` and `anievent_methods.R` into `preserve_animovement_class()`.
+* `resolve_unit_time_calibration()` factors out the shared logic between the two `set_unit_time()` methods.
 * Test coverage at 100% (876 tests).
 
 # aniframe 0.5.0 (2026-05-04)
