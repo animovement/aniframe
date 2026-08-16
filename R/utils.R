@@ -32,21 +32,48 @@ deg_to_rad <- function(x) {
   (x * pi) / 180
 }
 
-#' Re-clothe a dispatched result with its animovement class and metadata
+#' Classes owned by dplyr, tibble and base R
+#'
+#' The tail of the class vector that belongs to dplyr rather than to
+#' animovement. `NextMethod()` returns these already set correctly, so
+#' they are never restored from the input — doing so would, for instance,
+#' re-group the result of an [dplyr::ungroup()].
+#'
+#' @return Character vector of class names.
+#' @keywords internal
+base_frame_classes <- function() {
+  c("grouped_df", "rowwise_df", "tbl_df", "tbl", "data.frame")
+}
+
+#' Re-clothe a dispatched result with its animovement classes and metadata
 #'
 #' After a generic strips a result down to a plain tibble (via
-#' `NextMethod()`), restore the animovement class (`aniframe` or
-#' `anievent`) and re-attach the metadata captured from the original
-#' input.
+#' `NextMethod()`), restore the animovement classes the input carried and
+#' re-attach its metadata.
+#'
+#' dplyr rebuilds only the classes it knows how to reconstruct, so by the
+#' time `NextMethod()` returns, the whole animovement family is gone —
+#' `aniframe` / `anievent` and any subclass a downstream package has built
+#' on top of them. Restoring the *incoming* stack rather than asserting a
+#' fixed one is what lets such a subclass (e.g. `animetric`'s
+#' `aniframe_kin`) survive a pipeline without registering methods of its
+#' own.
+#'
+#' Order is preserved, so a subclass stays ahead of its parent and keeps
+#' dispatch priority over it.
 #'
 #' @param x The bare result returned by `NextMethod()`.
+#' @param cls Class vector of the original input, captured before dispatch.
 #' @param md Metadata captured before dispatch via [get_metadata()].
-#' @param constructor Internal class constructor — `new_aniframe` or
-#'   `new_anievent`.
 #'
-#' @return `x` with the animovement class and metadata restored.
+#' @return `x` with the animovement classes and metadata restored.
 #' @keywords internal
-preserve_animovement_class <- function(x, md, constructor) {
-  x <- constructor(x)
+preserve_animovement_class <- function(x, cls, md) {
+  # Lay the incoming animovement classes down in their original order,
+  # then whatever dplyr set on the result. Re-adding only the *missing*
+  # ones would append them at the front instead, putting `aniframe` ahead
+  # of its own subclasses in the methods that strip it before dispatch.
+  animovement_cls <- setdiff(cls, base_frame_classes())
+  class(x) <- c(animovement_cls, setdiff(class(x), animovement_cls))
   set_metadata(x, metadata = md)
 }

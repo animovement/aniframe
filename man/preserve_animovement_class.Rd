@@ -2,25 +2,35 @@
 % Please edit documentation in R/utils.R
 \name{preserve_animovement_class}
 \alias{preserve_animovement_class}
-\title{Re-clothe a dispatched result with its animovement class and metadata}
+\title{Re-clothe a dispatched result with its animovement classes and metadata}
 \usage{
-preserve_animovement_class(x, md, constructor)
+preserve_animovement_class(x, cls, md)
 }
 \arguments{
 \item{x}{The bare result returned by \code{NextMethod()}.}
 
-\item{md}{Metadata captured before dispatch via \code{\link[=get_metadata]{get_metadata()}}.}
+\item{cls}{Class vector of the original input, captured before dispatch.}
 
-\item{constructor}{Internal class constructor — \code{new_aniframe} or
-\code{new_anievent}.}
+\item{md}{Metadata captured before dispatch via \code{\link[=get_metadata]{get_metadata()}}.}
 }
 \value{
-\code{x} with the animovement class and metadata restored.
+\code{x} with the animovement classes and metadata restored.
 }
 \description{
 After a generic strips a result down to a plain tibble (via
-\code{NextMethod()}), restore the animovement class (\code{aniframe} or
-\code{anievent}) and re-attach the metadata captured from the original
-input.
+\code{NextMethod()}), restore the animovement classes the input carried and
+re-attach its metadata.
+}
+\details{
+dplyr rebuilds only the classes it knows how to reconstruct, so by the
+time \code{NextMethod()} returns, the whole animovement family is gone —
+\code{aniframe} / \code{anievent} and any subclass a downstream package has built
+on top of them. Restoring the \emph{incoming} stack rather than asserting a
+fixed one is what lets such a subclass (e.g. \code{animetric}'s
+\code{aniframe_kin}) survive a pipeline without registering methods of its
+own.
+
+Order is preserved, so a subclass stays ahead of its parent and keeps
+dispatch priority over it.
 }
 \keyword{internal}

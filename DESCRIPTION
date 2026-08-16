@@ -1,7 +1,7 @@
 Package: aniframe
 Type: Package
 Title: An R package providing core data structures for movement data
-Version: 0.6.0.9000
+Version: 0.6.0.9001
 Authors@R: 
     person(
       "Mikkel", 
@@ -35,4 +35,4 @@ Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Config/Needs/website: animovement/animovementtemplate
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.0
