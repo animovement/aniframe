@@ -1,12 +1,12 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   articles/anievent-structure: anievent-structure.html
   articles/aniframe-connections: aniframe-connections.html
   articles/aniframe-metadata: aniframe-metadata.html
   articles/aniframe-structure: aniframe-structure.html
-last_built: 2026-06-29T13:23Z
+last_built: 2026-08-16T22:53Z
 urls:
   reference: http://animovement.dev/aniframe/reference
   article: http://animovement.dev/aniframe/articles
