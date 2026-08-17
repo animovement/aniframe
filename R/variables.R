@@ -11,15 +11,22 @@
 # therefore get dedicated setters that do the whole job, and
 # `set_metadata()` refuses them.
 
-#' The metadata fields that describe the frame's structure
+#' The metadata fields that declare which columns carry which role
 #'
-#' Writing any of these has consequences beyond the metadata list, so
-#' they are reachable only through their own setters.
+#' Writing any of these has consequences beyond the metadata list — at
+#' the least the named columns must exist, and for the three structural
+#' roles the frame is retyped, reordered and regrouped to match — so they
+#' are reachable only through their own setters.
 #'
 #' @return Character vector of metadata field names.
 #' @keywords internal
-structural_metadata_fields <- function() {
-  c("variables_what", "variables_when", "variables_where")
+declaration_metadata_fields <- function() {
+  c(
+    "variables_what",
+    "variables_when",
+    "variables_where",
+    "variables_event"
+  )
 }
 
 
@@ -295,7 +302,8 @@ ensure_declared_cols_exist <- function(data, cols, role) {
     role,
     what = "Identity variable{?s} not found in data",
     when = "Temporal variable{?s} not found in data",
-    where = "Missing spatial variable{?s}"
+    where = "Missing spatial variable{?s}",
+    event = "Event variable{?s} not found in data"
   )
 
   cli::cli_abort(c(

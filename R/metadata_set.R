@@ -17,30 +17,31 @@ write_metadata <- function(data, metadata) {
 }
 
 
-#' Refuse the structural metadata fields
+#' Refuse the metadata fields that have their own setters
 #'
 #' [set_metadata()] writes the metadata list and nothing else, which is
-#' what makes it safe to use everywhere. The structural fields need more
-#' than that — the frame has to be retyped, reordered, regrouped and its
-#' derived fields refreshed — so they are reachable only through their
-#' own setters.
+#' what makes it safe to use everywhere. The `variables_*` fields need
+#' more than that: they name columns, so the names have to be checked
+#' against the frame, and for the three structural roles the frame has to
+#' be retyped, reordered, regrouped and its derived fields refreshed.
+#' They are therefore reachable only through their own setters.
 #'
 #' @param user_md The metadata the caller supplied.
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_no_structural_fields <- function(user_md) {
-  offending <- intersect(names(user_md), structural_metadata_fields())
+ensure_no_declaration_fields <- function(user_md) {
+  offending <- intersect(names(user_md), declaration_metadata_fields())
 
   if (length(offending) > 0) {
     setters <- paste0("set_", offending)
     cli::cli_abort(c(
-      "{.fn set_metadata} cannot write the structural {cli::qty(offending)}field{?s} {.field {offending}}.",
       # Message strings are code, not comments, so they must stay ASCII:
       # R CMD check warns on non-ASCII in R sources, and CI errors on
       # warnings.
-      "i" = "{cli::qty(offending)}{?It is/They are} the frame's structure: the columns it is typed, ordered and grouped by. Writing {cli::qty(offending)}{?it/them} alone would leave the metadata and the frame disagreeing.",
-      "i" = "Use {.fn {setters}} instead, which also restructures the frame."
+      "{.fn set_metadata} cannot write {.field {offending}} directly.",
+      "i" = "{cli::qty(offending)}{?This field declares/These fields declare} which columns carry identity, time, position and events. Writing {cli::qty(offending)}{?it/them} here would leave the metadata naming columns the frame may not have, and the frame ordered and grouped as it was before.",
+      "i" = "Use {.fn {setters}} instead, which validate the columns exist and restructure the frame to match."
     ))
   }
 
@@ -127,9 +128,9 @@ set_metadata <- function(data, ..., metadata = NULL) {
   }
 
   # ------------------------------------------------------------------
-  # Refuse the structural fields
+  # Refuse the fields that have their own setters
   # ------------------------------------------------------------------
-  ensure_no_structural_fields(user_md)
+  ensure_no_declaration_fields(user_md)
 
   # ------------------------------------------------------------------
   # Backwards-compat: `point_of_reference` was renamed to `origin`
@@ -193,17 +194,6 @@ set_metadata <- function(data, ..., metadata = NULL) {
         }
       }
     }
-  }
-
-  # ------------------------------------------------------------------
-  # Normalise `variables_event` so partial input (just `state` or just
-  # `point`) and NA / empty entries are accepted; the missing side fills
-  # in as `character()`. See `normalise_variables_event()`.
-  # ------------------------------------------------------------------
-  if ("variables_event" %in% names(user_md)) {
-    user_md$variables_event <- normalise_variables_event(
-      user_md$variables_event
-    )
   }
 
   # ------------------------------------------------------------------

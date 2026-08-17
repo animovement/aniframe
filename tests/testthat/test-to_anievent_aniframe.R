@@ -28,10 +28,7 @@ make_state_aniframe <- function() {
       levels = c("REM", "wake")
     )
   )
-  set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  set_variables_event(af, state = "behaviour", point = character())
 }
 
 test_that("state column is run-length-encoded into bouts", {
@@ -54,10 +51,7 @@ test_that("point column emits one row per non-NA frame with start == stop", {
     y = rnorm(5),
     call = factor(c(NA, "alarm", NA, "alarm", NA), levels = "alarm")
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = character(), point = "call")
-  )
+  af <- set_variables_event(af, state = character(), point = "call")
 
   ae <- to_anievent(af)
   expect_equal(nrow(ae), 2)
@@ -75,10 +69,7 @@ test_that("state and point columns coexist in one conversion", {
     behaviour = factor(c("REM", "REM", "wake", "wake", "wake")),
     call = factor(c(NA, "alarm", NA, NA, NA), levels = "alarm")
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = "call")
-  )
+  af <- set_variables_event(af, state = "behaviour", point = "call")
 
   ae <- to_anievent(af)
   expect_setequal(unique(ae$channel), c("behaviour", "call"))
@@ -103,10 +94,7 @@ test_that("per-individual grouping isolates bouts", {
       "REM"
     ))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
   expect_equal(nrow(ae), 4) # 2 bouts per individual
@@ -132,10 +120,7 @@ test_that("observation grouping isolates bouts across clips", {
       "wake"
     ))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
   expect_equal(nrow(ae), 4)
@@ -158,8 +143,10 @@ test_that("to_anievent.aniframe errors when no event columns are declared", {
 })
 
 test_that("to_anievent.aniframe errors when a declared column is missing", {
+  # Declaring a column that isn't there is rejected by the setter, so
+  # the drifted state has to be forced to reach to_anievent()'s own check.
   af <- aniframe(individual = 1L, time = 1:3, x = 1:3, y = 1:3)
-  af <- set_metadata(
+  af <- drift_metadata(
     af,
     variables_event = list(state = "behaviour", point = character())
   )
@@ -182,10 +169,7 @@ test_that("to_anievent.aniframe picks up <channel>_modifiers list-columns", {
       "tail"
     ))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
   expect_true("modifiers" %in% names(ae))
@@ -203,10 +187,7 @@ test_that("to_anievent.aniframe handles an aniframe with no identity columns", {
     )
   )
   af <- set_variables_what(af, character())
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
   expect_equal(nrow(ae), 2)
@@ -227,10 +208,7 @@ test_that("redundant identity columns (e.g. keypoint when behaviour is constant 
       levels = c("REM", "wake")
     )
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
 
@@ -255,10 +233,7 @@ test_that("non-redundant identity columns (e.g. behaviour varying by keypoint) a
       levels = c("REM", "wake")
     )
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
   expect_true("keypoint" %in% names(ae))
@@ -274,10 +249,7 @@ test_that("singleton identity columns are preserved (single individual aniframe 
     y = rnorm(5),
     behaviour = factor(c("REM", "REM", "wake", "wake", "wake"))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
   expect_true("individual" %in% names(ae))
@@ -299,10 +271,7 @@ test_that("temporal-grouping columns (observation / session / trial) are always 
     y = rnorm(8),
     behaviour = factor(rep(c("REM", "REM", "wake", "wake"), 2))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   ae <- to_anievent(af)
   expect_true("observation" %in% names(ae))
@@ -321,10 +290,7 @@ test_that("multi-value identity columns are dropped when the event is constant a
     y = rnorm(4),
     epoch = factor(c("A", "B", "A", "B")) # same value for both individuals at each time
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "epoch", point = character())
-  )
+  af <- set_variables_event(af, state = "epoch", point = character())
 
   ae <- to_anievent(af)
   expect_false("individual" %in% names(ae))
@@ -345,12 +311,10 @@ test_that("channels with disagreeing scopes error with a helpful message", {
     # limb_extended: keypoint-scope (varies by keypoint)
     limb_extended = factor(rep(c("yes", "no"), each = 3))
   )
-  af <- set_metadata(
+  af <- set_variables_event(
     af,
-    variables_event = list(
-      state = c("behaviour", "limb_extended"),
-      point = character()
-    )
+    state = c("behaviour", "limb_extended"),
+    point = character()
   )
 
   expect_error(to_anievent(af), "disagree on their identity scope")
@@ -368,10 +332,7 @@ test_that("point channel keeps identity columns when the scope detection require
       levels = "alarm"
     )
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = character(), point = "call")
-  )
+  af <- set_variables_event(af, state = character(), point = "call")
 
   ae <- to_anievent(af)
   expect_true("individual" %in% names(ae))
@@ -389,10 +350,7 @@ test_that("empty-rows path keeps identity columns when forced via variables_what
     y = c(1, 2),
     call = factor(c(NA, NA), levels = "alarm")
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = character(), point = "call")
-  )
+  af <- set_variables_event(af, state = character(), point = "call")
 
   ae <- to_anievent(af, variables_what = "individual")
   expect_equal(nrow(ae), 0)
@@ -408,10 +366,7 @@ test_that("explicit variables_what overrides scope detection", {
     y = rnorm(6),
     behaviour = factor(rep(c("REM", "REM", "wake"), 2))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   # Force keypoint to be kept even though it's redundant
   ae <- to_anievent(af, variables_what = c("individual", "keypoint"))
@@ -428,10 +383,7 @@ test_that("to_anievent.aniframe returns an empty anievent when all event rows ar
     behaviour = factor(c(NA, NA, NA), levels = "REM"),
     call = factor(c(NA, NA, NA), levels = "alarm")
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = "call")
-  )
+  af <- set_variables_event(af, state = "behaviour", point = "call")
 
   ae <- to_anievent(af)
   expect_s3_class(ae, "anievent")
@@ -457,12 +409,10 @@ test_that("scope-disagreement error formats empty scopes as '<none>'", {
     behaviour = factor(rep("REM", 8)), # constant across everything
     limb_extended = factor(rep(c("yes", "no"), 4)) # varies by keypoint
   )
-  af <- set_metadata(
+  af <- set_variables_event(
     af,
-    variables_event = list(
-      state = c("behaviour", "limb_extended"),
-      point = character()
-    )
+    state = c("behaviour", "limb_extended"),
+    point = character()
   )
 
   expect_error(to_anievent(af), "<none>")
@@ -477,10 +427,7 @@ test_that("explicit variables_when overrides metadata-driven grouping", {
     y = rnorm(8),
     behaviour = factor(rep(c("REM", "REM", "wake", "wake"), 2))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = "behaviour", point = character())
-  )
+  af <- set_variables_event(af, state = "behaviour", point = character())
 
   # Override drops `observation` from the grouping; bouts cross clips.
   ae <- to_anievent(af, variables_when = character())
@@ -502,10 +449,7 @@ test_that("to_anievent.aniframe gathers <col>_modifiers on point channels", {
       character()
     ))
   )
-  af <- set_metadata(
-    af,
-    variables_event = list(state = character(), point = "call")
-  )
+  af <- set_variables_event(af, state = character(), point = "call")
 
   ae <- to_anievent(af)
   expect_true("modifiers" %in% names(ae))

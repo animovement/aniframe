@@ -40,7 +40,7 @@ test_that("set_metadata refuses each structural field, naming its setter", {
 
   expect_error(
     set_metadata(af, variables_what = "id"),
-    "cannot write the structural field"
+    "cannot write"
   )
   expect_error(set_metadata(af, variables_what = "id"), "set_variables_what")
   expect_error(set_metadata(af, variables_when = "time"), "set_variables_when")
@@ -52,7 +52,7 @@ test_that("set_metadata refuses them through the metadata list too", {
 
   expect_error(
     set_metadata(af, metadata = list(variables_what = "id")),
-    "cannot write the structural field"
+    "cannot write"
   )
 })
 
