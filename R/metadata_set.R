@@ -36,7 +36,10 @@ ensure_no_structural_fields <- function(user_md) {
     setters <- paste0("set_", offending)
     cli::cli_abort(c(
       "{.fn set_metadata} cannot write the structural {cli::qty(offending)}field{?s} {.field {offending}}.",
-      "i" = "{cli::qty(offending)}{?It is/They are} the frame's structure — the columns it is typed, ordered and grouped by — so writing {cli::qty(offending)}{?it/them} alone would leave the metadata and the frame disagreeing.",
+      # Message strings are code, not comments, so they must stay ASCII:
+      # R CMD check warns on non-ASCII in R sources, and CI errors on
+      # warnings.
+      "i" = "{cli::qty(offending)}{?It is/They are} the frame's structure: the columns it is typed, ordered and grouped by. Writing {cli::qty(offending)}{?it/them} alone would leave the metadata and the frame disagreeing.",
       "i" = "Use {.fn {setters}} instead, which also restructures the frame."
     ))
   }
