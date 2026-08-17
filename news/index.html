@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,7 +58,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.6.0" id="aniframe-060-2026-08-17">aniframe 0.6.0 (2026-08-17)<a class="anchor" aria-label="anchor" href="#aniframe-060-2026-08-17"></a></h2>
+<h2 class="pkg-version" data-toc-text="development version" id="aniframe-development-version">aniframe (development version)<a class="anchor" aria-label="anchor" href="#aniframe-development-version"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.6.0" id="aniframe-060-2026-06-24">aniframe 0.6.0 (2026-06-24)<a class="anchor" aria-label="anchor" href="#aniframe-060-2026-06-24"></a></h2>
 <div class="section level3">
 <h3 id="new-features-0-6-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-6-0"></a></h3>
 <ul><li>Added the <code>anievent</code> class for behavioural events in long format — one row per bout (state event) or instant (point event). A sibling of <code>aniframe</code>: it shares the metadata substrate but does not inherit from it. Required columns are <code>channel</code>, <code>type</code>, <code>label</code>, <code>start</code> and <code>stop</code>, with identity columns travelling via <code>variables_what</code> and an optional <code>modifiers</code> list-column. <code>type</code> is derived per <code>(channel, label)</code> group at construction — a group is <code>"point"</code> only when all its bouts are instantaneous — and can be set explicitly where that misclassifies (<a href="https://github.com/animovement/aniframe/issues/67" class="external-link">#67</a>).</li>

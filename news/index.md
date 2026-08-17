@@ -1,6 +1,8 @@
 # Changelog
 
-## aniframe 0.6.0 (2026-08-17)
+## aniframe (development version)
+
+## aniframe 0.6.0 (2026-06-24)
 
 ### New features
 
