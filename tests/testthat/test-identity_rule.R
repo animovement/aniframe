@@ -123,6 +123,23 @@ test_that("the recognised identity names are a single source of truth", {
   # Guards against the list drifting between the docs and the code.
   expect_equal(
     recognised_variables_what(),
-    c("model", "individual", "track", "keypoint")
+    c("model", "individual", "subject", "track", "keypoint")
   )
+})
+
+test_that("aniframe and anievent recognise the same identity names", {
+  # `subject` is the behavioural-coding name for what tracking tools
+  # call an `individual`; both classes accept both.
+  af <- as_aniframe(dplyr::mutate(flat_df(), subject = "a"))
+  expect_equal(get_metadata(af, "variables_what"), "subject")
+  expect_false("keypoint" %in% names(af))
+
+  ae <- as_anievent(data.frame(
+    keypoint = "snout",
+    channel = "behaviour",
+    label = "REM",
+    start = 1,
+    stop = 2
+  ))
+  expect_equal(get_metadata(ae, "variables_what"), "keypoint")
 })

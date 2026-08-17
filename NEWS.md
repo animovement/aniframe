@@ -7,6 +7,7 @@
 
 ## Improvements
 
+* `aniframe` and `anievent` now recognise the same identity variables: `model`, `individual`, `subject`, `track`, `keypoint`, ordered coarse to fine (#77). The two lists had diverged — `aniframe` knew `keypoint` but not `subject`, `anievent` the reverse — so identity meant something slightly different on each side. `subject` and `individual` name the same kind of thing; both are recognised because behavioural-coding tools speak of subjects where tracking tools speak of individuals.
 * The identity rule is now stated where it is enforced (#77). An aniframe needs **at least one identity (`what`) variable**; `as_aniframe()` guarantees that through a new internal `ensure_identity()`, and the recognised identity names live in one place (`recognised_variables_what()`) rather than inline. The documentation of `as_aniframe()`, `aniframe()` and `default_metadata()` no longer describes `c("individual", "keypoint")` as *the default* — identity columns are detected from the data, and `variables_what` in `default_metadata()` is a placeholder that every constructor overwrites. Declaring `variables_what = character(0)` remains a supported opt-out for data with no identity at all.
 
 ## Bug fixes

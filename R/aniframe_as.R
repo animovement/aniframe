@@ -5,7 +5,8 @@
 #' @param variables_what Character vector of identity columns that together
 #'   define a unique entity, and which the frame is grouped by. If `NULL`
 #'   (the default), detected from the data: whichever of `model`,
-#'   `individual`, `track` and `keypoint` are present. An aniframe needs
+#'   `individual`, `subject`, `track` and `keypoint` are present, in that
+#'   order (coarse to fine). An aniframe needs
 #'   at least one identity variable, so if none of them is found, a
 #'   `keypoint` column is added with the value `"centroid"`. Pass
 #'   `character(0)` to declare no identity variables at all — a
@@ -174,22 +175,6 @@ standardise_aniframe_cols <- function(
   }
 
   data
-}
-
-
-#' Identity variable names recognised by `as_aniframe()`
-#'
-#' The identity (`what`) columns auto-detection looks for, in the order
-#' they are laid out in the frame. Only those present in the data are
-#' used.
-#'
-#' `as_anievent()` deliberately recognises a different set: an event is
-#' coded for a `subject`, and a bout list has no use for a `keypoint`.
-#'
-#' @return Character vector of column names.
-#' @keywords internal
-recognised_variables_what <- function() {
-  c("model", "individual", "track", "keypoint")
 }
 
 

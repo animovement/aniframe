@@ -20,7 +20,8 @@ anievent(
 
 \item{variables_what}{Character vector of identity columns that together
 define a unique entity. When \code{NULL} (default), auto-detected from a
-known list (\code{model}, \code{individual}, \code{track}, \code{subject}).}
+known list (\code{model}, \code{individual}, \code{subject}, \code{track},
+\code{keypoint}).}
 
 \item{variables_when}{Character vector of temporal columns. When
 \code{NULL} (default), auto-detected from a known grouping list

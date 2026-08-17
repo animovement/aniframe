@@ -14,8 +14,9 @@
 #' @param metadata Optional list of metadata.
 #' @param variables_what Character vector of identity columns. When
 #'   `NULL` (default), auto-detected from a known list (`model`,
-#'   `individual`, `track`, `subject`) — only those present in `data` are
-#'   used. Pass an explicit value to use any other column name(s) as
+#'   `individual`, `subject`, `track`, `keypoint`) — only those present
+#'   in `data` are used. Pass an explicit value to use any other
+#'   column name(s) as
 #'   identity. An anievent with no identity column is permitted (e.g. a
 #'   single-subject experiment).
 #' @param variables_when Character vector of temporal columns. When
@@ -69,8 +70,9 @@ as_anievent.data.frame <- function(
   variables_when = NULL
 ) {
   if (is.null(variables_what)) {
-    recognised_what <- c("model", "individual", "track", "subject")
-    variables_what <- recognised_what[recognised_what %in% names(data)]
+    variables_what <- recognised_variables_what()[
+      recognised_variables_what() %in% names(data)
+    ]
   }
   if (is.null(variables_when)) {
     recognised_when_grouping <- c("observation", "session", "trial")

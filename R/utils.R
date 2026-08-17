@@ -32,6 +32,25 @@ deg_to_rad <- function(x) {
   (x * pi) / 180
 }
 
+#' Identity variable names recognised across the animovement classes
+#'
+#' The identity (`what`) columns auto-detection looks for, shared by
+#' [as_aniframe()] and [as_anievent()]. The order is coarse to fine — a
+#' `subject` or `individual` has `track`s, a track has `keypoint`s — and
+#' it carries through to column order and grouping. Only the names
+#' present in the data are used, and any other column can be declared
+#' explicitly via `variables_what`.
+#'
+#' `subject` and `individual` name the same kind of thing; both are
+#' recognised because behavioural coding tools (BORIS and its kin) speak
+#' of subjects where tracking tools speak of individuals.
+#'
+#' @return Character vector of column names.
+#' @keywords internal
+recognised_variables_what <- function() {
+  c("model", "individual", "subject", "track", "keypoint")
+}
+
 #' Classes owned by dplyr, tibble and base R
 #'
 #' The tail of the class vector that belongs to dplyr rather than to

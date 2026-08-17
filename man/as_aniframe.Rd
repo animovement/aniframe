@@ -20,7 +20,8 @@ as_aniframe(
 \item{variables_what}{Character vector of identity columns that together
 define a unique entity, and which the frame is grouped by. If \code{NULL}
 (the default), detected from the data: whichever of \code{model},
-\code{individual}, \code{track} and \code{keypoint} are present. An aniframe needs
+\code{individual}, \code{subject}, \code{track} and \code{keypoint} are present, in that
+order (coarse to fine). An aniframe needs
 at least one identity variable, so if none of them is found, a
 \code{keypoint} column is added with the value \code{"centroid"}. Pass
 \code{character(0)} to declare no identity variables at all — a
