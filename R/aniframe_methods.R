@@ -1,6 +1,12 @@
 # Methods for aniframe class to preserve class through dplyr operations.
-# Shares the constructor / re-attach pattern with `anievent_methods.R`
-# via `preserve_animovement_class()`.
+# Shares the capture / `NextMethod()` / re-attach pattern with
+# `anievent_methods.R` via `preserve_animovement_class()`.
+#
+# Each method captures the incoming class vector *before* dispatch and
+# hands it back to `preserve_animovement_class()`, which restores it. That
+# is what carries downstream subclasses (animetric's `aniframe_kin` and
+# friends) through a pipeline — rebuilding a fixed `aniframe` here would
+# drop them (#81).
 
 # ---- dplyr verb methods ----
 
@@ -15,10 +21,11 @@ ungroup.aniframe <- function(x, ...) {
   cli::cli_warn(
     "Ungrouping an aniframe data frame makes errors more likely. Proceed with care."
   )
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Group an aniframe
@@ -29,9 +36,10 @@ ungroup.aniframe <- function(x, ...) {
 #' @keywords internal
 #' @export
 group_by.aniframe <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Mutate columns in an aniframe
@@ -42,9 +50,10 @@ group_by.aniframe <- function(.data, ...) {
 #' @keywords internal
 #' @export
 mutate.aniframe <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Select columns from an aniframe
@@ -55,9 +64,10 @@ mutate.aniframe <- function(.data, ...) {
 #' @keywords internal
 #' @export
 select.aniframe <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Filter rows of an aniframe
@@ -69,9 +79,10 @@ select.aniframe <- function(.data, ...) {
 #' @keywords internal
 #' @export
 filter.aniframe <- function(.data, ..., .preserve = FALSE) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Arrange rows of an aniframe
@@ -83,9 +94,10 @@ filter.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 arrange.aniframe <- function(.data, ..., .by_group = FALSE) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Rename columns in an aniframe
@@ -96,9 +108,10 @@ arrange.aniframe <- function(.data, ..., .by_group = FALSE) {
 #' @keywords internal
 #' @export
 rename.aniframe <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Relocate columns in an aniframe
@@ -109,10 +122,11 @@ rename.aniframe <- function(.data, ...) {
 #' @keywords internal
 #' @export
 relocate.aniframe <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   class(.data) <- setdiff(class(.data), "aniframe")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Slice rows from an aniframe
@@ -124,9 +138,10 @@ relocate.aniframe <- function(.data, ...) {
 #' @keywords internal
 #' @export
 slice.aniframe <- function(.data, ..., .preserve = FALSE) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 # ---- Base R extraction methods ----
@@ -142,10 +157,11 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[.aniframe` <- function(x, i, j, ..., drop = FALSE) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Extract single column from aniframe with [[
@@ -157,6 +173,7 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[[.aniframe` <- function(x, i, ...) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
@@ -166,7 +183,7 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
   # release changes that.
   if (is.data.frame(x)) {
     # nocov start
-    x <- preserve_animovement_class(x, md, new_aniframe)
+    x <- preserve_animovement_class(x, cls, md)
   } # nocov end
   x
 }
@@ -196,10 +213,11 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[<-.aniframe` <- function(x, i, j, ..., value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Column assignment for aniframe with [[<-
@@ -212,10 +230,11 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[[<-.aniframe` <- function(x, i, ..., value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Column assignment for aniframe with $<-
@@ -227,10 +246,11 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `$<-.aniframe` <- function(x, name, value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Rename columns with names<-
@@ -241,10 +261,11 @@ slice.aniframe <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `names<-.aniframe` <- function(x, value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "aniframe")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_aniframe)
+  preserve_animovement_class(x, cls, md)
 }
 
 # ---- Conversion methods ----

@@ -1,7 +1,8 @@
 # Methods for the anievent class to preserve class through dplyr and
-# base-R operations. Mirrors `aniframe_methods.R`; the
-# constructor / re-attach pattern is shared via
-# `preserve_animovement_class()`.
+# base-R operations. Mirrors `aniframe_methods.R`; the capture /
+# re-attach pattern is shared via `preserve_animovement_class()`, which
+# restores the class vector captured before dispatch so downstream
+# subclasses survive too (#81).
 
 # ---- dplyr verb methods ----
 
@@ -16,10 +17,11 @@ ungroup.anievent <- function(x, ...) {
   cli::cli_warn(
     "Ungrouping an anievent data frame makes errors more likely. Proceed with care."
   )
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "anievent")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Group an anievent
@@ -30,9 +32,10 @@ ungroup.anievent <- function(x, ...) {
 #' @keywords internal
 #' @export
 group_by.anievent <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Mutate columns in an anievent
@@ -43,9 +46,10 @@ group_by.anievent <- function(.data, ...) {
 #' @keywords internal
 #' @export
 mutate.anievent <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Select columns from an anievent
@@ -56,9 +60,10 @@ mutate.anievent <- function(.data, ...) {
 #' @keywords internal
 #' @export
 select.anievent <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Filter rows of an anievent
@@ -70,9 +75,10 @@ select.anievent <- function(.data, ...) {
 #' @keywords internal
 #' @export
 filter.anievent <- function(.data, ..., .preserve = FALSE) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Arrange rows of an anievent
@@ -84,9 +90,10 @@ filter.anievent <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 arrange.anievent <- function(.data, ..., .by_group = FALSE) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Rename columns in an anievent
@@ -97,9 +104,10 @@ arrange.anievent <- function(.data, ..., .by_group = FALSE) {
 #' @keywords internal
 #' @export
 rename.anievent <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Relocate columns in an anievent
@@ -110,10 +118,11 @@ rename.anievent <- function(.data, ...) {
 #' @keywords internal
 #' @export
 relocate.anievent <- function(.data, ...) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   class(.data) <- setdiff(class(.data), "anievent")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Slice rows from an anievent
@@ -125,9 +134,10 @@ relocate.anievent <- function(.data, ...) {
 #' @keywords internal
 #' @export
 slice.anievent <- function(.data, ..., .preserve = FALSE) {
+  cls <- class(.data)
   md <- get_metadata(.data)
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 # ---- Base R extraction methods ----
@@ -143,10 +153,11 @@ slice.anievent <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[.anievent` <- function(x, i, j, ..., drop = FALSE) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "anievent")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Extract single column from anievent with [[
@@ -158,12 +169,13 @@ slice.anievent <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[[.anievent` <- function(x, i, ...) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "anievent")
   x <- NextMethod()
   if (is.data.frame(x)) {
     # nocov start
-    x <- preserve_animovement_class(x, md, new_anievent)
+    x <- preserve_animovement_class(x, cls, md)
   } # nocov end
   x
 }
@@ -193,10 +205,11 @@ slice.anievent <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[<-.anievent` <- function(x, i, j, ..., value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "anievent")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Column assignment for anievent with [[<-
@@ -209,10 +222,11 @@ slice.anievent <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `[[<-.anievent` <- function(x, i, ..., value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "anievent")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Column assignment for anievent with $<-
@@ -224,10 +238,11 @@ slice.anievent <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `$<-.anievent` <- function(x, name, value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "anievent")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 #' Rename columns with names<-
@@ -238,10 +253,11 @@ slice.anievent <- function(.data, ..., .preserve = FALSE) {
 #' @keywords internal
 #' @export
 `names<-.anievent` <- function(x, value) {
+  cls <- class(x)
   md <- get_metadata(x)
   class(x) <- setdiff(class(x), "anievent")
   x <- NextMethod()
-  preserve_animovement_class(x, md, new_anievent)
+  preserve_animovement_class(x, cls, md)
 }
 
 # ---- Conversion methods ----

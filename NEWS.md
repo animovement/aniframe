@@ -1,5 +1,14 @@
 # aniframe (development version)
 
+## Bug fixes
+
+* Subclasses of `aniframe` and `anievent` now survive the class-preserving methods (#81). dplyr strips the whole animovement family before `NextMethod()` returns, and the methods previously rebuilt a fixed `aniframe` / `anievent` — so a downstream subclass such as `animetric`'s `aniframe_kin` was dropped by the first `filter()`, `mutate()` or `[`. The incoming class vector is now captured before dispatch and restored afterwards, in its original order, so subclasses keep dispatch priority over their parent. Downstream packages need not register methods of their own. Verbs that aren't enumerated here (`distinct()`, `rowwise()`, the `*_join()` family, `bind_rows()`) still drop the class, as they did before.
+
+## Internal
+
+* `preserve_animovement_class()` takes the input's class vector rather than a constructor, and restores only the animovement layer — the `grouped_df` / tibble tail is left to dplyr, which has already set it correctly on the result.
+* Documentation regenerated with roxygen2 8.1.0, which restyles the `importFrom` block in `NAMESPACE`.
+
 # aniframe 0.6.0 (2026-06-24)
 
 ## New features
