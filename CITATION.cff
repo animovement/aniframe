@@ -9,7 +9,7 @@ type: software
 license: MIT
 title: 'aniframe: An R package providing core data structures for movement data'
 version: 0.6.0
-date-released: 2026-08-17
+date-released: 2026-06-24
 identifiers:
   - type: doi
     value: 10.5281/zenodo.17344598
