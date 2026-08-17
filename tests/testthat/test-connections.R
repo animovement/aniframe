@@ -327,14 +327,18 @@ test_that("add_connections errors when from or to is empty", {
 })
 
 test_that("set_connections doesn't warn when variable is in metadata but absent from data", {
-  # variables_what may legitimately include a column not (yet) present
-  # in the data frame — e.g. staged for a future merge or recorded in
-  # another file. The endpoint warning should early-return rather than
-  # complain about every value.
+  # Declaring a column that isn't in the data is rejected at
+  # construction (#77), but metadata can still drift out of sync with
+  # the frame afterwards — the divergence `validate_aniframe()` reports.
+  # Given such an object, the endpoint check has nothing to check
+  # against, so it should early-return rather than warn about every
+  # value.
   data <- as_aniframe(
-    data.frame(individual = 1L, time = 1:3, x = 1:3, y = 1:3),
-    variables_what = c("individual", "future_keypoint")
+    data.frame(individual = 1L, time = 1:3, x = 1:3, y = 1:3)
   )
+  drifted <- get_metadata(data)
+  drifted$variables_what <- c("individual", "future_keypoint")
+  data <- attach_metadata(data, drifted)
 
   expect_no_warning(
     data <- set_connections(

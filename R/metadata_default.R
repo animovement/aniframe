@@ -15,6 +15,16 @@
 #'   (e.g. `aniread::read_trackball()`) populate this with all source paths.
 #' * `sampling_rate`: Sampling rate in Hz (numeric, NA)
 #' * `start_datetime`: Start date and time of recording (POSIXct, NA)
+#' * `variables_what`, `variables_when`, `variables_where`: The columns
+#'   that carry, respectively, entity identity, temporal position and
+#'   spatial position. These are the structural fields — [as_aniframe()]
+#'   uses them to coerce column types, order columns and rows, group the
+#'   frame, and derive `coordinate_system`. The values here are a
+#'   placeholder skeleton for an object with no data attached; every
+#'   constructor overwrites them from the data or from its arguments.
+#'   In particular `variables_what` is **not** a requirement that a frame
+#'   carry `individual` and `keypoint` columns — the rule is that a frame
+#'   has at least one identity variable, whichever it happens to be.
 #' * `reference_frame`: Reference frame (factor, "allocentric")
 #' * `coordinate_system`: Coordinate system (factor, "cartesian")
 #' * `origin`: Location of the (0,0) coordinate relative to the recording

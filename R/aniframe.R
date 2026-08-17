@@ -5,12 +5,7 @@
 #'
 #' @param ... Name-value pairs to create columns in the data frame.
 #' @param metadata Optional list of metadata.
-#' @param variables_what Character vector of identity columns that together
-#'   define a unique entity. Defaults to `c("individual", "keypoint")`.
-#' @param variables_when Character vector of temporal columns that together
-#'   define a unique timepoint. Defaults to `"time"`.
-#' @param variables_where Character vector of spatial columns that together
-#'   define position. Defaults to `c("x", "y")`.
+#' @inheritParams as_aniframe
 #' @param .rows Number of rows (passed to tibble).
 #' @param .name_repair How to repair column names (passed to tibble).
 #'
