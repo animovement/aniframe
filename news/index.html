@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,16 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="aniframe-development-version">aniframe (development version)<a class="anchor" aria-label="anchor" href="#aniframe-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>Subclasses of <code>aniframe</code> and <code>anievent</code> now survive the class-preserving methods (<a href="https://github.com/animovement/aniframe/issues/81" class="external-link">#81</a>). dplyr strips the whole animovement family before <code><a href="https://rdrr.io/r/base/UseMethod.html" class="external-link">NextMethod()</a></code> returns, and the methods previously rebuilt a fixed <code>aniframe</code> / <code>anievent</code> — so a downstream subclass such as <code>animetric</code>’s <code>aniframe_kin</code> was dropped by the first <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code> or <code>[</code>. The incoming class vector is now captured before dispatch and restored afterwards, in its original order, so subclasses keep dispatch priority over their parent. Downstream packages need not register methods of their own. Verbs that aren’t enumerated here (<code>distinct()</code>, <code>rowwise()</code>, the <code>*_join()</code> family, <code>bind_rows()</code>) still drop the class, as they did before.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="internal-development-version">Internal<a class="anchor" aria-label="anchor" href="#internal-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/preserve_animovement_class.html">preserve_animovement_class()</a></code> takes the input’s class vector rather than a constructor, and restores only the animovement layer — the <code>grouped_df</code> / tibble tail is left to dplyr, which has already set it correctly on the result.</li>
+<li>Documentation regenerated with roxygen2 8.1.0, which restyles the <code>importFrom</code> block in <code>NAMESPACE</code>.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.6.0" id="aniframe-060-2026-06-24">aniframe 0.6.0 (2026-06-24)<a class="anchor" aria-label="anchor" href="#aniframe-060-2026-06-24"></a></h2>
