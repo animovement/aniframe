@@ -1,5 +1,10 @@
 # aniframe (development version)
 
+## New features
+
+* Added `validate_aniframe()`, which re-checks that an aniframe's metadata still describes the frame it is attached to (#79). Every column named in `variables_what`, `variables_when`, `variables_where` and `variables_event` must be present, `time` must be present and numeric, and the `variables_where` columns must be numeric — all hard errors. A `coordinate_system` that no longer matches `variables_where` is a warning, since the field is derived rather than declared. Counterpart to the existing `validate_anievent()`.
+* Added `is_spatial()` and `ensure_is_spatial()`, the spatial subset of those checks: the columns named in `variables_where` must be present and numeric (#79). This is a different question from the one `is_cartesian()` and its siblings answer — those test for the presence of column *names* and never consult the metadata or the column types, so a frame that has lost its `x` column still passes `is_cartesian_1d()` on the strength of `y` alone. Downstream packages that reach coordinates by iterating `variables_where` (`aniprocess` carries a local copy for its filters) can use these instead of writing their own.
+
 ## Bug fixes
 
 * Subclasses of `aniframe` and `anievent` now survive the class-preserving methods (#81). dplyr strips the whole animovement family before `NextMethod()` returns, and the methods previously rebuilt a fixed `aniframe` / `anievent` — so a downstream subclass such as `animetric`'s `aniframe_kin` was dropped by the first `filter()`, `mutate()` or `[`. The incoming class vector is now captured before dispatch and restored afterwards, in its original order, so subclasses keep dispatch priority over their parent. Downstream packages need not register methods of their own. Verbs that aren't enumerated here (`distinct()`, `rowwise()`, the `*_join()` family, `bind_rows()`) still drop the class, as they did before.

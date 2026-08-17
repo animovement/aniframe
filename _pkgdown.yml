@@ -28,6 +28,7 @@ reference:
       - example_aniframe
       - is_aniframe
       - ensure_is_aniframe
+      - validate_aniframe
 
   - title: "Creating and converting anievent objects"
     desc: >
@@ -71,7 +72,12 @@ reference:
   - title: "Spatial checks"
     desc: |
       These functions provide checks for your coordinate system.
+      `is_spatial()` and `ensure_is_spatial()` check the spatial columns
+      against the `variables_where` metadata; the `is_cartesian*()` family
+      checks for particular column names.
     contents:
+    - is_spatial
+    - ensure_is_spatial
     - is_cartesian
     - is_cartesian_1d
     - is_cartesian_2d
