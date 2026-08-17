@@ -19,10 +19,11 @@ frame is grouped by. When auto-detection finds none of the recognised
 names in the data, one is added so that rule holds.
 }
 \details{
-The column added is \code{keypoint = "centroid"}. That is a historical
-choice rather than a claim about the data: it does not mean the frame
-holds pose or skeleton data, only that it has a single unnamed entity.
-See #77 for the discussion of a more neutral default.
+The column added is \code{keypoint = "centroid"}. It is not a claim about
+the data: it does not mean the frame holds pose or skeleton data, only
+that it has a single unnamed entity. A more neutral default
+(\code{individual = "all"}) was considered and rejected in #77 — the name
+stays as it is.
 
 This applies only to the auto-detection path. An explicit
 \code{variables_what = character(0)} is a deliberate declaration of "no
