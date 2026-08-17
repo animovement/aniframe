@@ -57,6 +57,16 @@ reference:
       - set_y_height
       - default_metadata
 
+  - title: "Declaring variables"
+    desc: >
+      Declare which columns carry identity, time and position. These are
+      the frame's structure rather than a description of it, so the
+      setters restructure the frame to match — coercing column types,
+      relocating, reordering, regrouping, and refreshing derived fields.
+      `set_metadata()` refuses these three fields for that reason.
+    contents:
+      - variables
+
   - title: "Connections"
     desc: >
       Manage connections between identity or temporal variables (e.g.

@@ -41,14 +41,14 @@ test_that("dropping a declared spatial column is caught", {
 })
 
 test_that("a declared identity column that is missing is caught", {
-  af <- set_metadata(make_flat_af(), variables_what = "individual")
+  af <- drift_metadata(make_flat_af(), variables_what = "individual")
 
   expect_error(validate_aniframe(af), "variables_what")
   expect_error(validate_aniframe(af), "individual")
 })
 
 test_that("a declared temporal column that is missing is caught", {
-  af <- set_metadata(make_flat_af(), variables_when = c("session", "time"))
+  af <- drift_metadata(make_flat_af(), variables_when = c("session", "time"))
 
   expect_error(validate_aniframe(af), "variables_when")
   expect_error(validate_aniframe(af), "session")
@@ -65,7 +65,10 @@ test_that("a declared event column that is missing is caught", {
 })
 
 test_that("multiple missing columns are all named", {
-  af <- set_metadata(make_flat_af(), variables_what = c("individual", "track"))
+  af <- drift_metadata(
+    make_flat_af(),
+    variables_what = c("individual", "track")
+  )
 
   expect_error(validate_aniframe(af), "individual")
   expect_error(validate_aniframe(af), "track")
@@ -74,7 +77,7 @@ test_that("multiple missing columns are all named", {
 test_that("a missing time column is caught", {
   # `variables_when` has to be updated alongside the rename, or the
   # declared-columns check fires first and this branch is never reached.
-  no_time <- set_metadata(
+  no_time <- drift_metadata(
     dplyr::rename(make_flat_af(), moment = time),
     variables_when = "moment"
   )
@@ -92,7 +95,7 @@ test_that("a non-numeric time column is caught", {
 test_that("coordinate_system drift warns rather than errors", {
   # From #82: setting variables_where alone leaves the derived field stale.
   af <- make_flat_af()
-  drifted <- set_metadata(
+  drifted <- drift_metadata(
     dplyr::mutate(af, z = 0),
     variables_where = c("x", "y", "z")
   )
@@ -124,7 +127,7 @@ test_that("is_spatial tracks the metadata rather than the column names", {
 })
 
 test_that("is_spatial is FALSE when nothing is declared", {
-  af <- set_metadata(make_flat_af(), variables_where = character(0))
+  af <- drift_metadata(make_flat_af(), variables_where = character(0))
   expect_false(is_spatial(af))
 })
 
@@ -144,7 +147,7 @@ test_that("ensure_is_spatial names the non-numeric column and its class", {
 })
 
 test_that("ensure_is_spatial errors when no spatial variables are declared", {
-  af <- set_metadata(make_flat_af(), variables_where = character(0))
+  af <- drift_metadata(make_flat_af(), variables_where = character(0))
   expect_error(ensure_is_spatial(af), "No spatial variables")
 })
 
@@ -166,7 +169,7 @@ test_that("pluralisation reads correctly for one and several columns", {
   one <- dplyr::select(make_flat_af(), -x)
   expect_error(ensure_is_spatial(one), "column:")
 
-  both <- set_metadata(
+  both <- drift_metadata(
     dplyr::select(make_flat_af(), -x, -y),
     variables_where = c("x", "y")
   )

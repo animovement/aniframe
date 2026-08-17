@@ -202,7 +202,7 @@ test_that("to_anievent.aniframe handles an aniframe with no identity columns", {
       behaviour = factor(c("REM", "REM", "wake", "wake", "wake"))
     )
   )
-  af <- set_metadata(af, variables_what = character())
+  af <- set_variables_what(af, character())
   af <- set_metadata(
     af,
     variables_event = list(state = "behaviour", point = character())

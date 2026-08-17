@@ -1,3 +1,62 @@
+#' Validate a complete metadata list and attach it
+#'
+#' The write path shared by [set_metadata()] and the internal callers
+#' that legitimately write structural fields — the constructors and the
+#' variable setters. Unlike [set_metadata()] it applies no field-level
+#' policy: the caller has already decided what the metadata should be.
+#'
+#' @param data An aniframe or anievent object.
+#' @param metadata A complete metadata list.
+#'
+#' @return `data`, with `metadata` attached.
+#' @keywords internal
+write_metadata <- function(data, metadata) {
+  ensure_valid_metadata(metadata)
+  ensure_valid_variables_event(metadata$variables_event)
+  attach_metadata(data, metadata)
+}
+
+
+#' Refuse the structural metadata fields
+#'
+#' [set_metadata()] writes the metadata list and nothing else, which is
+#' what makes it safe to use everywhere. The structural fields need more
+#' than that — the frame has to be retyped, reordered, regrouped and its
+#' derived fields refreshed — so they are reachable only through their
+#' own setters.
+#'
+#' @param user_md The metadata the caller supplied.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+ensure_no_structural_fields <- function(user_md) {
+  offending <- intersect(names(user_md), structural_metadata_fields())
+
+  if (length(offending) > 0) {
+    setters <- paste0("set_", offending)
+    cli::cli_abort(c(
+      "{.fn set_metadata} cannot write the structural {cli::qty(offending)}field{?s} {.field {offending}}.",
+      "i" = "{cli::qty(offending)}{?It is/They are} the frame's structure — the columns it is typed, ordered and grouped by — so writing {cli::qty(offending)}{?it/them} alone would leave the metadata and the frame disagreeing.",
+      "i" = "Use {.fn {setters}} instead, which also restructures the frame."
+    ))
+  }
+
+  invisible(TRUE)
+}
+
+
+#' Coerce a metadata value to the factor its field expects
+#'
+#' @param value Character or factor value.
+#' @param field Name of the metadata field.
+#'
+#' @return A factor with the field's full set of levels.
+#' @keywords internal
+as_metadata_factor <- function(value, field) {
+  factor(as.character(value), levels = levels(default_metadata()[[field]]))
+}
+
+
 #' Set metadata
 #'
 #' @description
@@ -63,6 +122,11 @@ set_metadata <- function(data, ..., metadata = NULL) {
   } else {
     user_md <- list()
   }
+
+  # ------------------------------------------------------------------
+  # Refuse the structural fields
+  # ------------------------------------------------------------------
+  ensure_no_structural_fields(user_md)
 
   # ------------------------------------------------------------------
   # Backwards-compat: `point_of_reference` was renamed to `origin`
@@ -162,9 +226,7 @@ set_metadata <- function(data, ..., metadata = NULL) {
   user_md[list_valued] <- NULL
 
   new_md <- utils::modifyList(new_md, user_md)
-  ensure_valid_metadata(new_md)
-  ensure_valid_variables_event(new_md$variables_event)
-  data <- attach_metadata(data, new_md)
+  data <- write_metadata(data, new_md)
 
   # TODO: Figure out whether it makes sense to include these special cases in the aniframe package
 

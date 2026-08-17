@@ -111,35 +111,13 @@ as_anievent.data.frame <- function(
     )
   }
 
-  ensure_anievent_cols(data)
-  data <- standardise_anievent_cols(data, variables_what, variables_when)
-
-  present_what <- intersect(variables_what, names(data))
-  present_when <- intersect(variables_when, names(data))
-  event_cols <- c("channel", "type", "label")
-  if ("modifiers" %in% names(data)) {
-    event_cols <- c(event_cols, "modifiers")
-  }
-  standard_cols <- c(present_what, present_when, event_cols)
-  other_cols <- setdiff(names(data), standard_cols)
-  data <- data[, c(standard_cols, other_cols)]
-
-  present_when_grouping <- setdiff(present_when, c("start", "stop"))
-  data <- dplyr::arrange(
-    data,
-    dplyr::across(dplyr::all_of(c(present_what, present_when_grouping))),
-    .data$start
-  )
-
+  # Attach class and metadata first, then let the shared restructure
+  # validate, standardise types, relocate and order — the same code the
+  # variable setters use, so construction and re-declaration can't drift
+  # apart (#82).
   data <- new_anievent(data)
-
   data <- set_metadata(data, metadata = metadata)
-  data <- set_metadata(
-    data,
-    variables_what = variables_what,
-    variables_when = variables_when,
-    variables_where = character()
-  )
+  data <- restructure_anievent(data, variables_what, variables_when)
 
   data
 }

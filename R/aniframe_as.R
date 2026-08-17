@@ -63,66 +63,23 @@ as_aniframe <- function(
     }
   }
 
-  # Validate required columns exist
-  ensure_aniframe_cols(data, variables_what, variables_when, variables_where)
-
-  # Standardize column types
-  data <- standardise_aniframe_cols(
+  # Attach class and metadata first, then let the shared restructure do
+  # the rest: validate, standardise types, relocate, arrange, regroup,
+  # and derive `coordinate_system`. Construction and re-declaration go
+  # through the same code so they cannot drift apart (#82).
+  data <- new_aniframe(data)
+  data <- set_metadata(data, metadata = metadata)
+  data <- restructure_aniframe(
     data,
     variables_what,
     variables_when,
     variables_where
   )
 
-  # Infer coordinate system from spatial variables
-  coord_system <- infer_coordinate_system(variables_where)
-
-  # Relocate columns: what, when, where, confidence, rest
-  present_what <- variables_what[variables_what %in% names(data)]
-  present_when <- variables_when[variables_when %in% names(data)]
-  present_where <- variables_where[variables_where %in% names(data)]
-
-  standard_cols <- c(present_what, present_when, present_where)
-  if ("confidence" %in% names(data)) {
-    standard_cols <- c(standard_cols, "confidence")
-  }
-  other_cols <- setdiff(names(data), standard_cols)
-  data <- data[, c(standard_cols, other_cols)]
-
-  # Order by identity first, then temporal (keeps trajectories contiguous)
-  data <- dplyr::arrange(
-    data,
-    dplyr::across(dplyr::all_of(present_what)),
-    dplyr::across(dplyr::all_of(present_when))
-  )
-
-  # Group by identity + temporal context (all what + when except time)
-  grouping_vars <- c(present_what, setdiff(present_when, "time"))
-  grouping_vars <- grouping_vars[grouping_vars %in% names(data)]
-
-  if (length(grouping_vars) > 0) {
-    data <- dplyr::group_by(
-      data,
-      dplyr::across(dplyr::all_of(grouping_vars))
-    ) |>
-      suppressWarnings()
-  }
-
-  # Build aniframe
-  data <- new_aniframe(data)
-  data <- set_metadata(data, metadata = metadata)
-  data <- set_metadata(
-    data,
-    variables_what = variables_what,
-    variables_when = variables_when,
-    variables_where = variables_where,
-    coordinate_system = factor(coord_system)
-  )
-
   # Fall back y_height to max(y) when not supplied and y is present.
   # Never overwrite a value that's already set — only `set_y_height()` /
   # `set_origin()` should mutate it post-construction.
-  if ("y" %in% present_where) {
+  if ("y" %in% variables_where) {
     current_y_height <- get_metadata(data, "y_height")
     if (length(current_y_height) == 0 || is.na(current_y_height)) {
       max_y <- suppressWarnings(max(data$y, na.rm = TRUE))
@@ -224,17 +181,9 @@ ensure_aniframe_cols <- function(
   variables_when,
   variables_where
 ) {
-  # All identity variables must exist. Declaring a column that isn't
+  # All declared variables must exist. Declaring a column that isn't
   # there leaves the metadata describing a frame it doesn't have.
-  missing_what <- setdiff(variables_what, names(data))
-  if (length(missing_what) > 0) {
-    cli::cli_abort(
-      c(
-        "Identity variable{?s} not found in data: {.val {missing_what}}.",
-        "i" = "Columns specified in {.arg variables_what} must be present."
-      )
-    )
-  }
+  ensure_declared_cols_exist(data, variables_what, "what")
 
   # time column is always required
   if (!"time" %in% names(data)) {
@@ -246,28 +195,8 @@ ensure_aniframe_cols <- function(
     )
   }
 
-  # Check other temporal variables if specified
-  other_when <- setdiff(variables_when, "time")
-  missing_when <- setdiff(other_when, names(data))
-  if (length(missing_when) > 0) {
-    cli::cli_abort(
-      c(
-        "Temporal variable{?s} not found in data: {.val {missing_when}}.",
-        "i" = "Columns specified in {.arg variables_when} must be present."
-      )
-    )
-  }
-
-  # All spatial variables must exist
-  missing_where <- setdiff(variables_where, names(data))
-  if (length(missing_where) > 0) {
-    cli::cli_abort(
-      c(
-        "Missing spatial variable{?s}: {.val {missing_where}}.",
-        "i" = "Position columns must be present in data."
-      )
-    )
-  }
+  ensure_declared_cols_exist(data, setdiff(variables_when, "time"), "when")
+  ensure_declared_cols_exist(data, variables_where, "where")
 
   invisible(TRUE)
 }
