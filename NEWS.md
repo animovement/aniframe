@@ -1,5 +1,9 @@
 # aniframe (development version)
 
+## Bug fixes
+
+* `set_metadata()` again accepts a complete metadata object through `metadata =`, which the new refusal of the `variables_*` fields had broken (#82). Rebuilding a frame and putting its metadata back is a round-trip rather than a field write — the class-preserving methods do it internally, and downstream packages do it too, as `animetric::summarise_keypoints()` does after recomputing a frame — and refusing it left them no way to carry metadata across a rebuild at all. Writing a declaration field on its own, whether as a named argument or in a partial list, is still refused and still points at the dedicated setters.
+
 ## New features
 
 * Added `set_variables_event()`, `get_variables_event()`, `add_variables_event()` and `remove_variables_event()` for the fourth variable role (#82). It is the one role that doesn't change the frame's shape — nothing is retyped, relocated or regrouped — but it names columns, so the setters check they exist, closing the gap where a declaration could name a column the frame didn't have. `set_variables_event()` replaces the side you name and leaves the other alone — clearing one is explicit (`point = character()`) rather than a side effect of not mentioning it, since the columns would otherwise stay in the frame while `to_anievent()` quietly stopped encoding them. `add_variables_event()` appends to the side you name; `remove_variables_event()` takes plain column names, since a column can only be one kind. The partial-input and `NA` handling from #76 now lives behind these setters. Only an `aniframe` can carry the declaration — an `anievent` is already the encoded form, with its events in `channel` and `label`.

@@ -47,12 +47,35 @@ test_that("set_metadata refuses each structural field, naming its setter", {
   expect_error(set_metadata(af, variables_where = "x"), "set_variables_where")
 })
 
-test_that("set_metadata refuses them through the metadata list too", {
+test_that("set_metadata refuses them through a partial metadata list too", {
   af <- flat_af()
 
   expect_error(
     set_metadata(af, metadata = list(variables_what = "id")),
     "cannot write"
+  )
+})
+
+test_that("a complete metadata object can still be restored wholesale", {
+  # Rebuilding a frame and putting its metadata back is a round-trip, not
+  # a field write. The class-preserving methods do it internally, and
+  # downstream packages do it after recomputing a frame — refusing it
+  # left them no way to carry metadata across a rebuild.
+  af <- set_metadata(id_af(), sampling_rate = 30)
+  md <- get_metadata(af)
+
+  rebuilt <- as_aniframe(dplyr::as_tibble(af))
+  restored <- set_metadata(rebuilt, metadata = md)
+
+  expect_equal(get_metadata(restored), md)
+  expect_equal(get_variables_what(restored), "keypoint")
+  expect_equal(get_metadata(restored, "sampling_rate"), 30)
+})
+
+test_that("the refusal points at the wholesale route", {
+  expect_error(
+    set_metadata(flat_af(), variables_what = "id"),
+    "restored wholesale"
   )
 })
 
