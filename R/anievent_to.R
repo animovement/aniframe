@@ -194,7 +194,12 @@ to_anievent.aniframe <- function(
         "y_height",
         "origin",
         "coordinate_system",
-        "connections"
+        "connections",
+        # Spatial fields describe the host frame, not the bouts encoded
+        # from it; `as_anievent()` sets them to "none" (#73).
+        "unit_space",
+        "unit_angle",
+        "reference_frame"
       )
     )
   ]
