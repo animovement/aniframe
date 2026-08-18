@@ -24,13 +24,28 @@ write_metadata <- function(data, metadata) {
 #' more than that: they name columns, so the names have to be checked
 #' against the frame, and for the three structural roles the frame has to
 #' be retyped, reordered, regrouped and its derived fields refreshed.
-#' They are therefore reachable only through their own setters.
+#' Writing one of them as a *field* is therefore refused, and the
+#' dedicated setters do the job instead.
+#'
+#' Restoring a **complete** metadata object is a different operation, and
+#' is allowed. Rebuilding a frame and putting its metadata back is the
+#' round-trip the class-preserving methods perform internally, and
+#' downstream packages do it too — `animetric::summarise_keypoints()`
+#' recomputes a frame and restores the metadata it captured beforehand.
+#' Refusing that left them no way to carry metadata across a rebuild at
+#' all.
 #'
 #' @param user_md The metadata the caller supplied.
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
 ensure_no_declaration_fields <- function(user_md) {
+  # A complete metadata object is a wholesale replacement of the
+  # attribute, not a field write.
+  if (check_all_metadata_fields_present(user_md)) {
+    return(invisible(TRUE))
+  }
+
   offending <- intersect(names(user_md), declaration_metadata_fields())
 
   if (length(offending) > 0) {
@@ -41,7 +56,8 @@ ensure_no_declaration_fields <- function(user_md) {
       # warnings.
       "{.fn set_metadata} cannot write {.field {offending}} directly.",
       "i" = "{cli::qty(offending)}{?This field declares/These fields declare} which columns carry identity, time, position and events. Writing {cli::qty(offending)}{?it/them} here would leave the metadata naming columns the frame may not have, and the frame ordered and grouped as it was before.",
-      "i" = "Use {.fn {setters}} instead, which validate the columns exist and restructure the frame to match."
+      "i" = "Use {.fn {setters}} instead, which validate the columns exist and restructure the frame to match.",
+      "i" = "A complete metadata object can still be restored wholesale, as in {.code set_metadata(data, metadata = get_metadata(x))}."
     ))
   }
 

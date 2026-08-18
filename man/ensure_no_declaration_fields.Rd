@@ -18,6 +18,16 @@ what makes it safe to use everywhere. The \verb{variables_*} fields need
 more than that: they name columns, so the names have to be checked
 against the frame, and for the three structural roles the frame has to
 be retyped, reordered, regrouped and its derived fields refreshed.
-They are therefore reachable only through their own setters.
+Writing one of them as a \emph{field} is therefore refused, and the
+dedicated setters do the job instead.
+}
+\details{
+Restoring a \strong{complete} metadata object is a different operation, and
+is allowed. Rebuilding a frame and putting its metadata back is the
+round-trip the class-preserving methods perform internally, and
+downstream packages do it too — \code{animetric::summarise_keypoints()}
+recomputes a frame and restores the metadata it captured beforehand.
+Refusing that left them no way to carry metadata across a rebuild at
+all.
 }
 \keyword{internal}
