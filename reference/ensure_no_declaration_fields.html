@@ -4,12 +4,14 @@ what makes it safe to use everywhere. The variables_* fields need
 more than that: they name columns, so the names have to be checked
 against the frame, and for the three structural roles the frame has to
 be retyped, reordered, regrouped and its derived fields refreshed.
-They are therefore reachable only through their own setters."><meta property="og:description" content="set_metadata() writes the metadata list and nothing else, which is
+Writing one of them as a field is therefore refused, and the
+dedicated setters do the job instead."><meta property="og:description" content="set_metadata() writes the metadata list and nothing else, which is
 what makes it safe to use everywhere. The variables_* fields need
 more than that: they name columns, so the names have to be checked
 against the frame, and for the three structural roles the frame has to
 be retyped, reordered, regrouped and its derived fields refreshed.
-They are therefore reachable only through their own setters."></head><body>
+Writing one of them as a field is therefore refused, and the
+dedicated setters do the job instead."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -17,7 +19,7 @@ They are therefore reachable only through their own setters."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -74,7 +76,8 @@ what makes it safe to use everywhere. The <code>variables_*</code> fields need
 more than that: they name columns, so the names have to be checked
 against the frame, and for the three structural roles the frame has to
 be retyped, reordered, regrouped and its derived fields refreshed.
-They are therefore reachable only through their own setters.</p>
+Writing one of them as a <em>field</em> is therefore refused, and the
+dedicated setters do the job instead.</p>
     </div>
 
     <div class="section level2">
@@ -93,6 +96,16 @@ They are therefore reachable only through their own setters.</p>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p><code>TRUE</code>, invisibly.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Restoring a <strong>complete</strong> metadata object is a different operation, and
+is allowed. Rebuilding a frame and putting its metadata back is the
+round-trip the class-preserving methods perform internally, and
+downstream packages do it too — <code>animetric::summarise_keypoints()</code>
+recomputes a frame and restores the metadata it captured beforehand.
+Refusing that left them no way to carry metadata across a rebuild at
+all.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

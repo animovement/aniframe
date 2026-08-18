@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9005</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9006</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,7 @@
 <span><span class="co">#&gt;                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]</span></span>
 <span><span class="co">#&gt; origin            (factor)    : "bottom_left"</span></span>
 <span><span class="co">#&gt;                                 [levels: bottom_left, top_left]</span></span>
-<span><span class="co">#&gt; y_height          (numeric)   : 3.24958</span></span>
+<span><span class="co">#&gt; y_height          (numeric)   : 3.810056</span></span>
 <span><span class="co">#&gt; connections       (list)      : </span></span>
 <span><span class="co">#&gt; spec_version      (list)      : "1.0.0, 0.1.0"</span></span></code></pre></div>
 </div>
@@ -272,7 +272,9 @@
 <span><span class="co">#&gt;   Writing it here would leave the metadata naming columns the frame may not</span></span>
 <span><span class="co">#&gt;   have, and the frame ordered and grouped as it was before.</span></span>
 <span><span class="co">#&gt; ℹ Use `set_variables_what()` instead, which validate the columns exist and</span></span>
-<span><span class="co">#&gt;   restructure the frame to match.</span></span></code></pre></div>
+<span><span class="co">#&gt;   restructure the frame to match.</span></span>
+<span><span class="co">#&gt; ℹ A complete metadata object can still be restored wholesale, as in</span></span>
+<span><span class="co">#&gt;   `set_metadata(data, metadata = get_metadata(x))`.</span></span></code></pre></div>
 </div>
 <p>Each role has the same four verbs as <code>connections</code>: <code>get_variables_*()</code>, <code>set_variables_*()</code>, <code>add_variables_*()</code> and <code>remove_variables_*()</code>. The column has to exist before it can be declared, so the order is always create-then-declare:</p>
 <div class="cell">

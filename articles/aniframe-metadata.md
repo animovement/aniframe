@@ -55,7 +55,7 @@ get_metadata(data)
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
 #> origin            (factor)    : "bottom_left"
 #>                                 [levels: bottom_left, top_left]
-#> y_height          (numeric)   : 3.24958
+#> y_height          (numeric)   : 3.810056
 #> connections       (list)      : 
 #> spec_version      (list)      : "1.0.0, 0.1.0"
 ```
@@ -167,6 +167,8 @@ data |> set_metadata(variables_what = "id")
 #>   have, and the frame ordered and grouped as it was before.
 #> ℹ Use `set_variables_what()` instead, which validate the columns exist and
 #>   restructure the frame to match.
+#> ℹ A complete metadata object can still be restored wholesale, as in
+#>   `set_metadata(data, metadata = get_metadata(x))`.
 ```
 
 Each role has the same four verbs as `connections`: `get_variables_*()`,

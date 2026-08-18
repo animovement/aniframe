@@ -2,6 +2,21 @@
 
 ## aniframe (development version)
 
+### Bug fixes
+
+- [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+  again accepts a complete metadata object through `metadata =`, which
+  the new refusal of the `variables_*` fields had broken
+  ([\#82](https://github.com/animovement/aniframe/issues/82)).
+  Rebuilding a frame and putting its metadata back is a round-trip
+  rather than a field write — the class-preserving methods do it
+  internally, and downstream packages do it too, as
+  `animetric::summarise_keypoints()` does after recomputing a frame —
+  and refusing it left them no way to carry metadata across a rebuild at
+  all. Writing a declaration field on its own, whether as a named
+  argument or in a partial list, is still refused and still points at
+  the dedicated setters.
+
 ### New features
 
 - Added
