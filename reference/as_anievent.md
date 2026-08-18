@@ -54,10 +54,11 @@ as_anievent(
 - variables_what:
 
   Character vector of identity columns. When `NULL` (default),
-  auto-detected from a known list (`model`, `individual`, `track`,
-  `subject`) — only those present in `data` are used. Pass an explicit
-  value to use any other column name(s) as identity. An anievent with no
-  identity column is permitted (e.g. a single-subject experiment).
+  auto-detected from a known list (`model`, `individual`, `subject`,
+  `track`, `keypoint`) — only those present in `data` are used. Pass an
+  explicit value to use any other column name(s) as identity. An
+  anievent with no identity column is permitted (e.g. a single-subject
+  experiment).
 
 - variables_when:
 

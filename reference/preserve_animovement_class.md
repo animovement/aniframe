@@ -42,3 +42,12 @@ registering methods of its own.
 
 Order is preserved, so a subclass stays ahead of its parent and keeps
 dispatch priority over it.
+
+The metadata goes back through
+[`write_metadata()`](http://animovement.dev/aniframe/reference/write_metadata.md)
+rather than
+[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md):
+this is a round-trip of metadata that came off a valid object,
+structural fields included, and
+[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+refuses those by design.

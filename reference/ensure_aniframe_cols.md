@@ -5,7 +5,7 @@ Validate required columns for aniframe
 ## Usage
 
 ``` r
-ensure_aniframe_cols(data, variables_when, variables_where)
+ensure_aniframe_cols(data, variables_what, variables_when, variables_where)
 ```
 
 ## Arguments
@@ -13,6 +13,10 @@ ensure_aniframe_cols(data, variables_when, variables_where)
 - data:
 
   Data frame to validate.
+
+- variables_what:
+
+  Identity variables.
 
 - variables_when:
 

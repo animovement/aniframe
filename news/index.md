@@ -4,6 +4,23 @@
 
 ### New features
 
+- Added dedicated setters for the variable roles:
+  [`set_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
+  / `when` / `where`, with matching `get_`, `add_` and `remove_` verbs,
+  following the `connections` family
+  ([\#82](https://github.com/animovement/aniframe/issues/82)). These
+  declare the role *and* restructure the frame to match — validating
+  that the columns exist, coercing their types, relocating, reordering,
+  regrouping, and refreshing `coordinate_system` — so the frame and its
+  own description cannot drift apart. `add_variables_*()` appends to the
+  declaration, so adding one identity column no longer means restating
+  the others;
+  [`add_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
+  keeps `time` last, since rows sort by the coarser temporal context
+  first. They work on both `aniframe` and `anievent`, except
+  [`set_variables_where()`](http://animovement.dev/aniframe/reference/variables.md),
+  which an anievent refuses.
+
 - Added
   [`validate_aniframe()`](http://animovement.dev/aniframe/reference/validate_aniframe.md),
   which re-checks that an aniframe’s metadata still describes the frame
@@ -16,6 +33,7 @@
   is a warning, since the field is derived rather than declared.
   Counterpart to the existing
   [`validate_anievent()`](http://animovement.dev/aniframe/reference/validate_anievent.md).
+
 - Added
   [`is_spatial()`](http://animovement.dev/aniframe/reference/is_spatial.md)
   and
@@ -34,6 +52,36 @@
   local copy for its filters) can use these instead of writing their
   own.
 
+### Improvements
+
+- `aniframe` and `anievent` now recognise the same identity variables:
+  `model`, `individual`, `subject`, `track`, `keypoint`, ordered coarse
+  to fine ([\#77](https://github.com/animovement/aniframe/issues/77)).
+  The two lists had diverged — `aniframe` knew `keypoint` but not
+  `subject`, `anievent` the reverse — so identity meant something
+  slightly different on each side. `subject` and `individual` name the
+  same kind of thing; both are recognised because behavioural-coding
+  tools speak of subjects where tracking tools speak of individuals.
+- The identity rule is now stated where it is enforced
+  ([\#77](https://github.com/animovement/aniframe/issues/77)). An
+  aniframe needs **at least one identity (`what`) variable**;
+  [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+  guarantees that through a new internal
+  [`ensure_identity()`](http://animovement.dev/aniframe/reference/ensure_identity.md),
+  and the recognised identity names live in one place
+  ([`recognised_variables_what()`](http://animovement.dev/aniframe/reference/recognised_variables_what.md))
+  rather than inline. The documentation of
+  [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md),
+  [`aniframe()`](http://animovement.dev/aniframe/reference/aniframe.md)
+  and
+  [`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
+  no longer describes `c("individual", "keypoint")` as *the default* —
+  identity columns are detected from the data, and `variables_what` in
+  [`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
+  is a placeholder that every constructor overwrites. Declaring
+  `variables_what = character(0)` remains a supported opt-out for data
+  with no identity at all.
+
 ### Bug fixes
 
 - Subclasses of `aniframe` and `anievent` now survive the
@@ -51,8 +99,62 @@
   (`distinct()`, `rowwise()`, the `*_join()` family, `bind_rows()`)
   still drop the class, as they did before.
 
+### Breaking changes
+
+- [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+  now refuses `variables_what`, `variables_when` and `variables_where`,
+  pointing at the setters above
+  ([\#82](https://github.com/animovement/aniframe/issues/82)). Writing
+  them through
+  [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+  updated the metadata and nothing else: the print header changed, so it
+  looked like it had worked, while the frame kept its old column types,
+  order and — most consequentially — its old grouping. With several
+  trials bound together, anything relying on that grouping integrated
+  straight across the boundary between individuals, producing a spurious
+  jump at each join with no warning.
+  [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+  now means “write metadata, change nothing else”, which is what makes
+  it safe to use everywhere else.
+- [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+  no longer adds a `keypoint = "centroid"` column to data that already
+  has an identity column
+  ([\#77](https://github.com/animovement/aniframe/issues/77)). It
+  previously added one whenever `keypoint` was absent, so a frame
+  carrying `individual` gained a constant `keypoint` alongside it.
+  Results are unaffected — grouping by a constant column changes nothing
+  — but the column no longer appears in the frame, the print header, or
+  the output of
+  [`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md).
+  Data with no recognised identity column at all still gets the injected
+  `keypoint`, as before.
+- [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+  now errors when `variables_what` names a column that is not in the
+  data, matching the existing behaviour for `variables_when` and
+  `variables_where`. Metadata that names absent columns was previously
+  accepted and stored, leaving the frame described by columns it did not
+  have.
+
 ### Internal
 
+- The tail of
+  [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+  and
+  [`as_anievent()`](http://animovement.dev/aniframe/reference/as_anievent.md)
+  — validate, standardise types, relocate, arrange, regroup, refresh
+  derived fields — is factored into
+  [`restructure_aniframe()`](http://animovement.dev/aniframe/reference/restructure_aniframe.md)
+  /
+  [`restructure_anievent()`](http://animovement.dev/aniframe/reference/restructure_anievent.md),
+  shared with the new setters, so construction and re-declaration cannot
+  diverge.
+- [`write_metadata()`](http://animovement.dev/aniframe/reference/write_metadata.md)
+  is the internal write path that validates a complete metadata list and
+  attaches it, without the field-level policy
+  [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+  applies. The constructors, the variable setters and the
+  class-preserving methods use it, since all three legitimately write
+  structural fields.
 - [`preserve_animovement_class()`](http://animovement.dev/aniframe/reference/preserve_animovement_class.md)
   takes the input’s class vector rather than a constructor, and restores
   only the animovement layer — the `grouped_df` / tibble tail is left to

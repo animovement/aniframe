@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,7 @@
 <span><span class="co">#&gt;                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]</span></span>
 <span><span class="co">#&gt; origin            (factor)    : "bottom_left"</span></span>
 <span><span class="co">#&gt;                                 [levels: bottom_left, top_left]</span></span>
-<span><span class="co">#&gt; y_height          (numeric)   : 3.744226</span></span>
+<span><span class="co">#&gt; y_height          (numeric)   : 3.849835</span></span>
 <span><span class="co">#&gt; connections       (list)      : </span></span>
 <span><span class="co">#&gt; spec_version      (list)      : "1.0.0, 0.1.0"</span></span></code></pre></div>
 </div>
@@ -259,12 +259,48 @@
 </td>
 </tr>
 </tbody>
-</table></section><section class="level2"><h2 id="coordinate-origin">Coordinate origin<a class="anchor" aria-label="anchor" href="#coordinate-origin"></a>
+</table></section><section class="level2"><h2 id="declaring-the-slot-vocabulary">Declaring the slot vocabulary<a class="anchor" aria-label="anchor" href="#declaring-the-slot-vocabulary"></a>
+</h2>
+<p><code>variables_what</code>, <code>variables_when</code> and <code>variables_where</code> are a special case: they are not a description of the frame, they <em>are</em> its structure. <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code> uses them to coerce column types, order columns and rows, group the frame, and derive <code>coordinate_system</code>. Writing them without redoing that work would leave the frame and its own metadata disagreeing — the print header would update while the grouping still reflected the old declaration.</p>
+<p><code><a href="../reference/set_metadata.html">set_metadata()</a></code> therefore refuses these three, and points you at the setters that do the whole job:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">|&gt;</span> <span class="fu"><a href="../reference/set_metadata.html">set_metadata</a></span><span class="op">(</span>variables_what <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in `ensure_no_structural_fields()`:</span></span>
+<span><span class="co">#&gt; ! `set_metadata()` cannot write the structural field variables_what.</span></span>
+<span><span class="co">#&gt; ℹ It is the frame's structure: the columns it is typed, ordered and grouped by.</span></span>
+<span><span class="co">#&gt;   Writing it alone would leave the metadata and the frame disagreeing.</span></span>
+<span><span class="co">#&gt; ℹ Use `set_variables_what()` instead, which also restructures the frame.</span></span></code></pre></div>
+</div>
+<p>Each role has the same four verbs as <code>connections</code>: <code>get_variables_*()</code>, <code>set_variables_*()</code>, <code>add_variables_*()</code> and <code>remove_variables_*()</code>. The column has to exist before it can be declared, so the order is always create-then-declare:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tagged</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"trial_1"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/variables.html">add_variables_what</a></span><span class="op">(</span><span class="st">"id"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/variables.html">get_variables_what</a></span><span class="op">(</span><span class="va">tagged</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "individual" "keypoint"   "id"</span></span>
+<span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_data.html" class="external-link">group_vars</a></span><span class="op">(</span><span class="va">tagged</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "individual" "keypoint"   "id"         "session"    "trial"</span></span></code></pre></div>
+</div>
+<p><code>add_variables_*()</code> appends to the declaration, so you don’t have to restate what is already there — forgetting to would quietly demote an existing identity variable and regroup the frame without it.</p>
+<p>Declaring a spatial column refreshes the fields derived from it:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>z <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/variables.html">add_variables_where</a></span><span class="op">(</span><span class="st">"z"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="../reference/get_metadata.html">get_metadata</a></span><span class="op">(</span><span class="st">"coordinate_system"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] cartesian_3d</span></span>
+<span><span class="co">#&gt; 7 Levels: unknown cartesian_1d cartesian_2d cartesian_3d polar ... spherical</span></span></code></pre></div>
+</div>
+</section><section class="level2"><h2 id="coordinate-origin">Coordinate origin<a class="anchor" aria-label="anchor" href="#coordinate-origin"></a>
 </h2>
 <p>For 2D image-derived data there’s an annoying convention split: most image / video tooling uses the <strong>top-left</strong> corner as <code>(0, 0)</code> (y increases downward), while plotting and most maths uses the <strong>bottom-left</strong> corner (y increases upward). <code>aniframe</code> records which one your data uses in the <code>origin</code> field, with permitted values <code>c("bottom_left", "top_left")</code>.</p>
 <p><code><a href="../reference/set_origin.html">set_origin()</a></code> does the actual flip when you change convention. It needs the frame height to compute <code>y_new = y_height - y_old</code>, so <code>y_height</code> must be set first. Readers populate it automatically; for manually-constructed <code>aniframe</code> objects, <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code> falls back to <code>max(y)</code>, and <code><a href="../reference/set_y_height.html">set_y_height()</a></code> lets you override that with the true value.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">img</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aniframe.html">aniframe</a></span><span class="op">(</span></span>
 <span>  individual <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,</span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">30</span><span class="op">)</span>,</span>
@@ -282,7 +318,7 @@
 </h2>
 <p>Spatial, temporal, and angular units each have their own setter. Conversions between standard units are automatic; conversions from unknown / <code>frame</code> / <code>px</code> units require an explicit calibration factor (or, for time, a <code>sampling_rate</code>).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/example_aniframe.html">example_aniframe</a></span><span class="op">(</span>n_dims <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/set_metadata.html">set_metadata</a></span><span class="op">(</span>unit_space <span class="op">=</span> <span class="st">"mm"</span><span class="op">)</span></span>
 <span></span>
@@ -292,7 +328,7 @@
 <span><span class="co">#&gt; Levels: px none nm um mm cm m km</span></span></code></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/example_aniframe.html">example_aniframe</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># default unit_time = "frame"</span></span>
 <span><span class="va">data_s</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/set_sampling_rate.html">set_sampling_rate</a></span><span class="op">(</span><span class="va">data</span>, sampling_rate <span class="op">=</span> <span class="fl">30</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/get_metadata.html">get_metadata</a></span><span class="op">(</span><span class="va">data_s</span>, <span class="st">"unit_time"</span><span class="op">)</span> <span class="co"># now "s"</span></span>
@@ -303,7 +339,7 @@
 </div>
 <p>Spatial angular columns (<code>phi</code>, <code>theta</code>) are converted automatically by <code><a href="../reference/set_unit_angle.html">set_unit_angle()</a></code> whenever they’re present. Pass <code>cols</code> only for non-spatial angular columns (e.g. heading direction).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode cell-code" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pol</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/aniframe.html">aniframe</a></span><span class="op">(</span></span>
 <span>  individual <span class="op">=</span> <span class="fl">1L</span>, time <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">3</span>,</span>
 <span>  rho <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>, phi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">pi</span> <span class="op">/</span> <span class="fl">2</span>, <span class="va">pi</span><span class="op">)</span></span>

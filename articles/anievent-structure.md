@@ -91,9 +91,10 @@ travel via `variables_what`:
 | `modifiers` | list-column of `character` | optional | flat per-event modifier values |
 
 Identity columns are auto-detected from a known list (`model`,
-`individual`, `track`, `subject`), or you can supply any name via
-`variables_what`. An `anievent` with no identity column at all is fine
-for single-subject experiments.
+`individual`, `subject`, `track`, `keypoint`) — the same list `aniframe`
+uses, so identity means the same thing on both sides — or you can supply
+any name via `variables_what`. An `anievent` with no identity column at
+all is fine for single-subject experiments.
 
 `type` is auto-derived from `start`/`stop` at construction.
 Classification is **per `(channel, label)` group**, not per row: a group
@@ -376,16 +377,15 @@ af <- set_metadata(
   variables_event = list(state = "behaviour", point = character())
 )
 to_anievent(af)
-#> # anievent:       3 × 7
+#> # anievent:       3 × 6
 #> # Individuals:    1
-#> # Keypoints:      centroid
 #> # Event channels: behaviour
 #> # Event types:    3 state
-#>   individual keypoint start  stop channel   type  label
-#>        <int> <fct>    <dbl> <dbl> <chr>     <fct> <fct>
-#> 1          1 centroid     1     3 behaviour state REM  
-#> 2          1 centroid     4     5 behaviour state wake 
-#> 3          1 centroid     6     7 behaviour state REM
+#>   individual start  stop channel   type  label
+#>        <int> <dbl> <dbl> <chr>     <fct> <fct>
+#> 1          1     1     3 behaviour state REM  
+#> 2          1     4     5 behaviour state wake 
+#> 3          1     6     7 behaviour state REM
 ```
 
 The resulting anievent inherits `unit_time` and `sampling_rate` from the

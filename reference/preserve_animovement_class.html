@@ -11,7 +11,7 @@ re-attach its metadata."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -104,6 +104,10 @@ fixed one is what lets such a subclass (e.g. <code>animetric</code>'s
 own.</p>
 <p>Order is preserved, so a subclass stays ahead of its parent and keeps
 dispatch priority over it.</p>
+<p>The metadata goes back through <code><a href="write_metadata.html">write_metadata()</a></code> rather than
+<code><a href="set_metadata.html">set_metadata()</a></code>: this is a round-trip of metadata that came off a
+valid object, structural fields included, and <code><a href="set_metadata.html">set_metadata()</a></code> refuses
+those by design.</p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

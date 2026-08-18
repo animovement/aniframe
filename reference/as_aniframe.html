@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,17 +87,27 @@
 
 <dt id="arg-variables-what">variables_what<a class="anchor" aria-label="anchor" href="#arg-variables-what"></a></dt>
 <dd><p>Character vector of identity columns that together
-define a unique entity. Defaults to <code>c("individual", "keypoint")</code>.</p></dd>
+define a unique entity, and which the frame is grouped by. If <code>NULL</code>
+(the default), detected from the data: whichever of <code>model</code>,
+<code>individual</code>, <code>subject</code>, <code>track</code> and <code>keypoint</code> are present, in that
+order (coarse to fine). An aniframe needs
+at least one identity variable, so if none of them is found, a
+<code>keypoint</code> column is added with the value <code>"centroid"</code>. Pass
+<code>character(0)</code> to declare no identity variables at all — a
+deliberate opt-out, which leaves the frame ungrouped. Every column
+named here must exist in <code>data</code>.</p></dd>
 
 
 <dt id="arg-variables-when">variables_when<a class="anchor" aria-label="anchor" href="#arg-variables-when"></a></dt>
 <dd><p>Character vector of temporal columns that together
-define a unique timepoint. Defaults to <code>"time"</code>.</p></dd>
+define a unique timepoint. If <code>NULL</code> (the default), detected from the
+data: whichever of <code>observation</code>, <code>session</code>, <code>trial</code> and <code>time</code> are
+present. <code>time</code> is always required.</p></dd>
 
 
 <dt id="arg-variables-where">variables_where<a class="anchor" aria-label="anchor" href="#arg-variables-where"></a></dt>
 <dd><p>Character vector of spatial columns that together
-define position. If NULL, detected from data.</p></dd>
+define position. If <code>NULL</code> (the default), detected from the data.</p></dd>
 
 </dl></div>
     <div class="section level2">

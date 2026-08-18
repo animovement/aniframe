@@ -55,7 +55,7 @@ get_metadata(data)
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
 #> origin            (factor)    : "bottom_left"
 #>                                 [levels: bottom_left, top_left]
-#> y_height          (numeric)   : 3.744226
+#> y_height          (numeric)   : 3.849835
 #> connections       (list)      : 
 #> spec_version      (list)      : "1.0.0, 0.1.0"
 ```
@@ -138,6 +138,64 @@ related fields), prefer the dedicated setters listed below.
 | [`set_sampling_rate()`](http://animovement.dev/aniframe/reference/set_sampling_rate.md) | flips `unit_time` from frames to seconds and rescales `time` |
 | [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md) | flips the y-axis around `y_height` when changing convention |
 | [`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md) | sets the recorded frame height used by [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md) |
+
+## Declaring the slot vocabulary
+
+`variables_what`, `variables_when` and `variables_where` are a special
+case: they are not a description of the frame, they *are* its structure.
+[`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+uses them to coerce column types, order columns and rows, group the
+frame, and derive `coordinate_system`. Writing them without redoing that
+work would leave the frame and its own metadata disagreeing — the print
+header would update while the grouping still reflected the old
+declaration.
+
+[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+therefore refuses these three, and points you at the setters that do the
+whole job:
+
+``` r
+
+data |> set_metadata(variables_what = "id")
+#> Error in `ensure_no_structural_fields()`:
+#> ! `set_metadata()` cannot write the structural field variables_what.
+#> ℹ It is the frame's structure: the columns it is typed, ordered and grouped by.
+#>   Writing it alone would leave the metadata and the frame disagreeing.
+#> ℹ Use `set_variables_what()` instead, which also restructures the frame.
+```
+
+Each role has the same four verbs as `connections`: `get_variables_*()`,
+`set_variables_*()`, `add_variables_*()` and `remove_variables_*()`. The
+column has to exist before it can be declared, so the order is always
+create-then-declare:
+
+``` r
+
+tagged <- data |>
+  dplyr::mutate(id = "trial_1") |>
+  add_variables_what("id")
+
+get_variables_what(tagged)
+#> [1] "individual" "keypoint"   "id"
+dplyr::group_vars(tagged)
+#> [1] "individual" "keypoint"   "id"         "session"    "trial"
+```
+
+`add_variables_*()` appends to the declaration, so you don’t have to
+restate what is already there — forgetting to would quietly demote an
+existing identity variable and regroup the frame without it.
+
+Declaring a spatial column refreshes the fields derived from it:
+
+``` r
+
+data |>
+  dplyr::mutate(z = 0) |>
+  add_variables_where("z") |>
+  get_metadata("coordinate_system")
+#> [1] cartesian_3d
+#> 7 Levels: unknown cartesian_1d cartesian_2d cartesian_3d polar ... spherical
+```
 
 ## Coordinate origin
 

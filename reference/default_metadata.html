@@ -15,7 +15,7 @@ appropriately for your data."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,6 +88,16 @@ vector of length 1 or more — readers that load from multiple files
 (e.g. <code>aniread::read_trackball()</code>) populate this with all source paths.</p></li>
 <li><p><code>sampling_rate</code>: Sampling rate in Hz (numeric, NA)</p></li>
 <li><p><code>start_datetime</code>: Start date and time of recording (POSIXct, NA)</p></li>
+<li><p><code>variables_what</code>, <code>variables_when</code>, <code>variables_where</code>: The columns
+that carry, respectively, entity identity, temporal position and
+spatial position. These are the structural fields — <code><a href="as_aniframe.html">as_aniframe()</a></code>
+uses them to coerce column types, order columns and rows, group the
+frame, and derive <code>coordinate_system</code>. The values here are a
+placeholder skeleton for an object with no data attached; every
+constructor overwrites them from the data or from its arguments.
+In particular <code>variables_what</code> is <strong>not</strong> a requirement that a frame
+carry <code>individual</code> and <code>keypoint</code> columns — the rule is that a frame
+has at least one identity variable, whichever it happens to be.</p></li>
 <li><p><code>reference_frame</code>: Reference frame (factor, "allocentric")</p></li>
 <li><p><code>coordinate_system</code>: Coordinate system (factor, "cartesian")</p></li>
 <li><p><code>origin</code>: Location of the (0,0) coordinate relative to the recording

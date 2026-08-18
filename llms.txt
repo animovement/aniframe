@@ -113,6 +113,29 @@ aniframe or anievent objects.
 - [`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
   : Default metadata structure
 
+## Declaring variables
+
+Declare which columns carry identity, time and position. These are the
+frame’s structure rather than a description of it, so the setters
+restructure the frame to match — coercing column types, relocating,
+reordering, regrouping, and refreshing derived fields.
+[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+refuses these three fields for that reason.
+
+- [`get_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`get_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`get_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`set_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`set_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`set_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`add_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`add_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`add_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`remove_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`remove_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
+  [`remove_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
+  : Declare which columns carry identity, time and position
+
 ## Connections
 
 Manage connections between identity or temporal variables (e.g. skeleton

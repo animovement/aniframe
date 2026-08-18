@@ -34,7 +34,7 @@ anievent(
 
   Character vector of identity columns that together define a unique
   entity. When `NULL` (default), auto-detected from a known list
-  (`model`, `individual`, `track`, `subject`).
+  (`model`, `individual`, `subject`, `track`, `keypoint`).
 
 - variables_when:
 

@@ -19,12 +19,14 @@
 <url><loc>http://animovement.dev/aniframe/reference/as.data.frame.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/as_anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/as_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/as_metadata_factor.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/base_frame_classes.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-set-.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-set-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/convert_nan_to_na.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/declare_variables.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/declared_variables.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/default_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/deg_to_rad.html</loc></url>
@@ -33,9 +35,12 @@
 <url><loc>http://animovement.dev/aniframe/reference/ensure_anievent_cols.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_aniframe_cols.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_aniframe_time.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_declared_cols_exist.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_declared_variables_exist.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_identity.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_aniframe_or_anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian_2d.html</loc></url>
@@ -44,6 +49,8 @@
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_polar.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_spatial.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_spherical.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_no_structural_fields.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_variables_chr.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/example_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/filter.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/filter.aniframe.html</loc></url>
@@ -52,6 +59,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/format_time_interval.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/get_connections.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/get_metadata.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/get_variables.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/group_by.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/group_by.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/index.html</loc></url>
@@ -77,13 +85,18 @@
 <url><loc>http://animovement.dev/aniframe/reference/preserve_animovement_class.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/print.aniframe_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/rad_to_deg.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/recognised_variables_what.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/reflect_axis.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/regroup_frame.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/relocate.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/relocate.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/remove_connections.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/rename.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/rename.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/resolve_unit_time_calibration.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/restructure_anievent.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/restructure_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/restructure_frame.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/rle_state_column.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/seconds_per_time_unit.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/select.anievent.html</loc></url>
@@ -101,6 +114,8 @@
 <url><loc>http://animovement.dev/aniframe/reference/spatial_problems.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/standardise_anievent_cols.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/standardise_aniframe_cols.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/strip_animovement_class.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/structural_metadata_fields.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/sub-.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/sub-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/sub-sub-.anievent.html</loc></url>
@@ -118,6 +133,8 @@
 <url><loc>http://animovement.dev/aniframe/reference/ungroup.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/validate_anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/validate_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/variables.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/warn_coordinate_system_drift.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/write_metadata.html</loc></url>
 </urlset>
 

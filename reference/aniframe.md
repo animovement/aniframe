@@ -32,17 +32,26 @@ aniframe(
 - variables_what:
 
   Character vector of identity columns that together define a unique
-  entity. Defaults to `c("individual", "keypoint")`.
+  entity, and which the frame is grouped by. If `NULL` (the default),
+  detected from the data: whichever of `model`, `individual`, `subject`,
+  `track` and `keypoint` are present, in that order (coarse to fine). An
+  aniframe needs at least one identity variable, so if none of them is
+  found, a `keypoint` column is added with the value `"centroid"`. Pass
+  `character(0)` to declare no identity variables at all — a deliberate
+  opt-out, which leaves the frame ungrouped. Every column named here
+  must exist in `data`.
 
 - variables_when:
 
   Character vector of temporal columns that together define a unique
-  timepoint. Defaults to `"time"`.
+  timepoint. If `NULL` (the default), detected from the data: whichever
+  of `observation`, `session`, `trial` and `time` are present. `time` is
+  always required.
 
 - variables_where:
 
-  Character vector of spatial columns that together define position.
-  Defaults to `c("x", "y")`.
+  Character vector of spatial columns that together define position. If
+  `NULL` (the default), detected from the data.
 
 - .rows:
 
@@ -86,19 +95,18 @@ aniframe(
   y = rnorm(50)
 )
 #> # Individuals: 1, 2
-#> # Keypoints:   centroid
-#>    individual keypoint  time      x      y
-#>         <int> <fct>    <int>  <dbl>  <dbl>
-#>  1          1 centroid     1 -0.387  0.429
-#>  2          1 centroid     1 -0.209 -1.90 
-#>  3          1 centroid     1  2.04  -0.103
-#>  4          1 centroid     2 -0.785  0.122
-#>  5          1 centroid     2 -1.40   0.936
-#>  6          1 centroid     2  0.449 -0.974
-#>  7          1 centroid     3 -1.06  -1.14 
-#>  8          1 centroid     3  0.259 -0.309
-#>  9          1 centroid     3  1.39   1.27 
-#> 10          1 centroid     4 -0.796 -0.558
+#>    individual  time      x      y
+#>         <int> <int>  <dbl>  <dbl>
+#>  1          1     1 -0.387  0.429
+#>  2          1     1 -0.209 -1.90 
+#>  3          1     1  2.04  -0.103
+#>  4          1     2 -0.785  0.122
+#>  5          1     2 -1.40   0.936
+#>  6          1     2  0.449 -0.974
+#>  7          1     3 -1.06  -1.14 
+#>  8          1     3  0.259 -0.309
+#>  9          1     3  1.39   1.27 
+#> 10          1     4 -0.796 -0.558
 #> # ℹ 40 more rows
 
 # Custom variables

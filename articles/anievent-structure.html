@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9004</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -197,7 +197,7 @@
 </tr>
 </tbody>
 </table>
-<p>Identity columns are auto-detected from a known list (<code>model</code>, <code>individual</code>, <code>track</code>, <code>subject</code>), or you can supply any name via <code>variables_what</code>. An <code>anievent</code> with no identity column at all is fine for single-subject experiments.</p>
+<p>Identity columns are auto-detected from a known list (<code>model</code>, <code>individual</code>, <code>subject</code>, <code>track</code>, <code>keypoint</code>) — the same list <code>aniframe</code> uses, so identity means the same thing on both sides — or you can supply any name via <code>variables_what</code>. An <code>anievent</code> with no identity column at all is fine for single-subject experiments.</p>
 <p><code>type</code> is auto-derived from <code>start</code>/<code>stop</code> at construction. Classification is <strong>per <code>(channel, label)</code> group</strong>, not per row: a group is labelled <code>"point"</code> only when <em>all</em> of its bouts have <code>start == stop</code>. If even one bout in the group is durative, the whole group is <code>"state"</code> — so the same behaviour stays consistently typed across its occurrences. Pass <code>type</code> explicitly to override this default.</p>
 <section class="level3"><h3 id="multiple-observations-trials-sessions">Multiple observations / trials / sessions<a class="anchor" aria-label="anchor" href="#multiple-observations-trials-sessions"></a>
 </h3>
@@ -397,16 +397,15 @@
 <span>  variables_event <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>state <span class="op">=</span> <span class="st">"behaviour"</span>, point <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/to_anievent.html">to_anievent</a></span><span class="op">(</span><span class="va">af</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # anievent:       3 × 7</span></span>
+<span><span class="co">#&gt; # anievent:       3 × 6</span></span>
 <span><span class="co">#&gt; # Individuals:    1</span></span>
-<span><span class="co">#&gt; # Keypoints:      centroid</span></span>
 <span><span class="co">#&gt; # Event channels: behaviour</span></span>
 <span><span class="co">#&gt; # Event types:    3 state</span></span>
-<span><span class="co">#&gt;   individual keypoint start  stop channel   type  label</span></span>
-<span><span class="co">#&gt;        &lt;int&gt; &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;fct&gt; &lt;fct&gt;</span></span>
-<span><span class="co">#&gt; 1          1 centroid     1     3 behaviour state REM  </span></span>
-<span><span class="co">#&gt; 2          1 centroid     4     5 behaviour state wake </span></span>
-<span><span class="co">#&gt; 3          1 centroid     6     7 behaviour state REM</span></span></code></pre></div>
+<span><span class="co">#&gt;   individual start  stop channel   type  label</span></span>
+<span><span class="co">#&gt;        &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;fct&gt; &lt;fct&gt;</span></span>
+<span><span class="co">#&gt; 1          1     1     3 behaviour state REM  </span></span>
+<span><span class="co">#&gt; 2          1     4     5 behaviour state wake </span></span>
+<span><span class="co">#&gt; 3          1     6     7 behaviour state REM</span></span></code></pre></div>
 </div>
 <p>The resulting anievent inherits <code>unit_time</code> and <code>sampling_rate</code> from the host. <code>stop</code> is the time of the last frame of each bout (inclusive, frame-aligned). If a <code>&lt;col&gt;_modifiers</code> list-column is present alongside an event column, its cells are gathered into the anievent’s <code>modifiers</code> column, one entry per emitted bout.</p>
 <p>The reverse direction (<code>anievent</code> → <code>aniframe</code>) is intentionally not provided yet — the anievent’s loose mutual-exclusion semantics don’t map onto an aniframe’s per-frame columns without a design decision about how to resolve overlap, and that design is still pending.</p>
