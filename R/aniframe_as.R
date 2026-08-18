@@ -30,6 +30,19 @@ as_aniframe <- function(
 ) {
   defaults <- default_metadata()
 
+  # A frame that already declares a role keeps it. Casting an aniframe
+  # that has been given a custom identity -- `id`, say -- used to re-run
+  # detection, find no recognised name, inject `keypoint = "centroid"`
+  # and overwrite the declaration with it (#96). Declarations whose
+  # columns have since been dropped fall through to detection, so a cast
+  # still repairs a frame rather than erroring on it.
+  variables_when <- variables_when %||%
+    declared_if_present(data, "variables_when")
+  variables_what <- variables_what %||%
+    declared_if_present(data, "variables_what")
+  variables_where <- variables_where %||%
+    declared_if_present(data, "variables_where")
+
   # Resolve variables_when: detect from data if not specified
   if (is.null(variables_when)) {
     # Recognised temporal variable names (time is always required)
@@ -273,4 +286,34 @@ detect_variables_where <- function(data) {
   }
 
   NULL
+}
+
+
+#' A role the data already declares, when its columns are still there
+#'
+#' Casting an object that is already an aniframe should not re-derive
+#' what it has been told. It does fall back to detection when the
+#' declared columns are gone, so a cast still repairs a frame whose
+#' metadata has drifted rather than erroring on it.
+#'
+#' @param data Data frame, possibly carrying metadata.
+#' @param field One of the `variables_*` metadata fields.
+#'
+#' @return The declared column names, or `NULL` to detect instead.
+#' @keywords internal
+declared_if_present <- function(data, field) {
+  if (!check_metadata_exists(data)) {
+    return(NULL)
+  }
+
+  declared <- as.character(get_metadata(data, field))
+  declared <- declared[!is.na(declared)]
+
+  # An empty declaration is a deliberate opt-out (`variables_what =
+  # character(0)`), so it is kept as it is rather than re-detected.
+  if (length(declared) == 0) {
+    return(if (identical(field, "variables_what")) character(0) else NULL)
+  }
+
+  if (all(declared %in% names(data))) declared else NULL
 }
