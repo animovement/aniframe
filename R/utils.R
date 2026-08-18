@@ -87,6 +87,11 @@ base_frame_classes <- function() {
 #'
 #' @return `x` with the animovement classes and metadata restored.
 #' @keywords internal
+#' @details
+#' The metadata goes back through [write_metadata()] rather than
+#' [set_metadata()]: this is a round-trip of metadata that came off a
+#' valid object, structural fields included, and `set_metadata()` refuses
+#' those by design.
 preserve_animovement_class <- function(x, cls, md) {
   # Lay the incoming animovement classes down in their original order,
   # then whatever dplyr set on the result. Re-adding only the *missing*
@@ -94,5 +99,5 @@ preserve_animovement_class <- function(x, cls, md) {
   # of its own subclasses in the methods that strip it before dispatch.
   animovement_cls <- setdiff(cls, base_frame_classes())
   class(x) <- c(animovement_cls, setdiff(class(x), animovement_cls))
-  set_metadata(x, metadata = md)
+  write_metadata(x, md)
 }

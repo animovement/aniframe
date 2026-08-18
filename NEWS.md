@@ -2,6 +2,8 @@
 
 ## New features
 
+* Added dedicated setters for the variable roles: `set_variables_what()` / `when` / `where`, with matching `get_`, `add_` and `remove_` verbs, following the `connections` family (#82). These declare the role *and* restructure the frame to match — validating that the columns exist, coercing their types, relocating, reordering, regrouping, and refreshing `coordinate_system` — so the frame and its own description cannot drift apart. `add_variables_*()` appends to the declaration, so adding one identity column no longer means restating the others; `add_variables_when()` keeps `time` last, since rows sort by the coarser temporal context first. They work on both `aniframe` and `anievent`, except `set_variables_where()`, which an anievent refuses.
+
 * Added `validate_aniframe()`, which re-checks that an aniframe's metadata still describes the frame it is attached to (#79). Every column named in `variables_what`, `variables_when`, `variables_where` and `variables_event` must be present, `time` must be present and numeric, and the `variables_where` columns must be numeric — all hard errors. A `coordinate_system` that no longer matches `variables_where` is a warning, since the field is derived rather than declared. Counterpart to the existing `validate_anievent()`.
 * Added `is_spatial()` and `ensure_is_spatial()`, the spatial subset of those checks: the columns named in `variables_where` must be present and numeric (#79). This is a different question from the one `is_cartesian()` and its siblings answer — those test for the presence of column *names* and never consult the metadata or the column types, so a frame that has lost its `x` column still passes `is_cartesian_1d()` on the strength of `y` alone. Downstream packages that reach coordinates by iterating `variables_where` (`aniprocess` carries a local copy for its filters) can use these instead of writing their own.
 
@@ -16,11 +18,14 @@
 
 ## Breaking changes
 
+* `set_metadata()` now refuses `variables_what`, `variables_when` and `variables_where`, pointing at the setters above (#82). Writing them through `set_metadata()` updated the metadata and nothing else: the print header changed, so it looked like it had worked, while the frame kept its old column types, order and — most consequentially — its old grouping. With several trials bound together, anything relying on that grouping integrated straight across the boundary between individuals, producing a spurious jump at each join with no warning. `set_metadata()` now means "write metadata, change nothing else", which is what makes it safe to use everywhere else.
 * `as_aniframe()` no longer adds a `keypoint = "centroid"` column to data that already has an identity column (#77). It previously added one whenever `keypoint` was absent, so a frame carrying `individual` gained a constant `keypoint` alongside it. Results are unaffected — grouping by a constant column changes nothing — but the column no longer appears in the frame, the print header, or the output of `to_anievent()`. Data with no recognised identity column at all still gets the injected `keypoint`, as before.
 * `as_aniframe()` now errors when `variables_what` names a column that is not in the data, matching the existing behaviour for `variables_when` and `variables_where`. Metadata that names absent columns was previously accepted and stored, leaving the frame described by columns it did not have.
 
 ## Internal
 
+* The tail of `as_aniframe()` and `as_anievent()` — validate, standardise types, relocate, arrange, regroup, refresh derived fields — is factored into `restructure_aniframe()` / `restructure_anievent()`, shared with the new setters, so construction and re-declaration cannot diverge.
+* `write_metadata()` is the internal write path that validates a complete metadata list and attaches it, without the field-level policy `set_metadata()` applies. The constructors, the variable setters and the class-preserving methods use it, since all three legitimately write structural fields.
 * `preserve_animovement_class()` takes the input's class vector rather than a constructor, and restores only the animovement layer — the `grouped_df` / tibble tail is left to dplyr, which has already set it correctly on the result.
 * Documentation regenerated with roxygen2 8.1.0, which restyles the `importFrom` block in `NAMESPACE`.
 

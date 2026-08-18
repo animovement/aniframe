@@ -32,5 +32,10 @@ own.
 
 Order is preserved, so a subclass stays ahead of its parent and keeps
 dispatch priority over it.
+
+The metadata goes back through \code{\link[=write_metadata]{write_metadata()}} rather than
+\code{\link[=set_metadata]{set_metadata()}}: this is a round-trip of metadata that came off a
+valid object, structural fields included, and \code{set_metadata()} refuses
+those by design.
 }
 \keyword{internal}
