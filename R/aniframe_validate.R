@@ -1,0 +1,257 @@
+#' Validate an aniframe
+#'
+#' Re-checks, on demand, that an `aniframe`'s metadata still describes the
+#' frame it is attached to. The two drift apart silently under ordinary
+#' dplyr work: [dplyr::select()] drops a column without touching the
+#' metadata that names it, and assignment can change a column's type. The
+#' invariants are therefore checked rather than assumed:
+#'
+#' * every column named in `variables_what`, `variables_when`,
+#'   `variables_where` and `variables_event` is present in the data —
+#'   hard error;
+#' * `time` is present and numeric — hard error;
+#' * every column named in `variables_where` is numeric — hard error;
+#' * `coordinate_system` agrees with `variables_where` — **warning**
+#'   only. The frame is still usable, and the field is derived rather
+#'   than declared, so it can be refreshed.
+#'
+#' @param data An aniframe object.
+#'
+#' @return The input `data`, invisibly.
+#'
+#' @seealso [ensure_is_spatial()] for the spatial subset of these checks,
+#'   which is the part downstream filters need on every call;
+#'   [validate_anievent()] for the `anievent` equivalent.
+#'
+#' @examples
+#' af <- aniframe(time = 1:5, x = 1:5, y = 1:5)
+#' validate_aniframe(af)
+#'
+#' @export
+validate_aniframe <- function(data) {
+  ensure_is_aniframe(data)
+  ensure_declared_variables_exist(data)
+  ensure_aniframe_time(data)
+  ensure_is_spatial(data)
+  warn_coordinate_system_drift(data)
+  invisible(data)
+}
+
+
+#' Columns declared by the metadata, keyed by role
+#'
+#' `variables_event` is a named list of `state` / `point` columns rather
+#' than a flat vector, so it is flattened here to give every role the same
+#' shape. `NA` entries mean "unset" and are dropped.
+#'
+#' @param md An aniframe metadata list.
+#'
+#' @return Named list of character vectors, one per `variables_*` field.
+#' @keywords internal
+declared_variables <- function(md) {
+  drop_na <- function(x) {
+    x <- x[!is.na(x)]
+    as.character(x)
+  }
+
+  list(
+    variables_what = drop_na(md$variables_what),
+    variables_when = drop_na(md$variables_when),
+    variables_where = drop_na(md$variables_where),
+    variables_event = drop_na(c(
+      md$variables_event$state,
+      md$variables_event$point
+    ))
+  )
+}
+
+
+#' Ensure every declared variable names a column that exists
+#'
+#' @param data An aniframe object.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+ensure_declared_variables_exist <- function(data) {
+  declared <- declared_variables(get_metadata(data))
+
+  for (role in names(declared)) {
+    cols <- declared[[role]]
+    missing_cols <- setdiff(cols, names(data))
+    if (length(missing_cols) > 0) {
+      cli::cli_abort(c(
+        "Metadata field {.field {role}} names {cli::qty(missing_cols)}column{?s} not found in the data: {.val {missing_cols}}.",
+        "i" = "Declared: {.val {cols}}.",
+        "i" = "Present: {.val {names(data)}}.",
+        "i" = "Dropping a declared column leaves the metadata promising a column that isn't there."
+      ))
+    }
+  }
+
+  invisible(TRUE)
+}
+
+
+#' Ensure the time column is present and numeric
+#'
+#' @param data An aniframe object.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+ensure_aniframe_time <- function(data) {
+  if (!"time" %in% names(data)) {
+    cli::cli_abort(c(
+      "Column {.val time} is required but not found in data.",
+      "i" = "The {.val time} column must always be present."
+    ))
+  }
+  if (!is.numeric(data[["time"]])) {
+    cli::cli_abort(
+      "Column {.val time} must be numeric, not {.cls {class(data[['time']])}}."
+    )
+  }
+  invisible(TRUE)
+}
+
+
+#' Spatial columns that are missing or not numeric
+#'
+#' The shared kernel behind [is_spatial()] and [ensure_is_spatial()].
+#'
+#' @param data An aniframe object.
+#'
+#' @return Named list with the `declared` spatial variables and the
+#'   `missing` and `non_numeric` subsets of them.
+#' @keywords internal
+spatial_problems <- function(data) {
+  declared <- get_metadata(data, "variables_where")
+  declared <- as.character(declared[!is.na(declared)])
+
+  present <- intersect(declared, names(data))
+  is_num <- vapply(present, function(col) is.numeric(data[[col]]), logical(1))
+
+  list(
+    declared = declared,
+    missing = setdiff(declared, names(data)),
+    non_numeric = present[!is_num]
+  )
+}
+
+
+#' Test whether the spatial columns match the metadata
+#'
+#' Returns `TRUE` when `variables_where` declares at least one column and
+#' every column it names is present and numeric.
+#'
+#' This is a different question from the one [is_cartesian()] and its
+#' siblings answer: those test for the presence of particular column
+#' *names* (`x`, `y`, `z`, …) and never consult the metadata or the column
+#' types. A frame that has lost its `x` column still satisfies
+#' `is_cartesian_1d()` on the strength of `y` alone, while its
+#' `variables_where` still promises both.
+#'
+#' @param data An aniframe object.
+#'
+#' @return Logical scalar.
+#'
+#' @seealso [ensure_is_spatial()], [validate_aniframe()].
+#'
+#' @examples
+#' af <- aniframe(time = 1:5, x = 1:5, y = 1:5)
+#' is_spatial(af)
+#'
+#' # Dropping a declared column breaks the correspondence
+#' is_spatial(dplyr::select(af, -x))
+#'
+#' @export
+is_spatial <- function(data) {
+  problems <- spatial_problems(data)
+  length(problems$declared) > 0 &&
+    length(problems$missing) == 0 &&
+    length(problems$non_numeric) == 0
+}
+
+
+#' Ensure the spatial columns match the metadata
+#'
+#' Guard form of [is_spatial()], for functions that reach coordinates by
+#' iterating `variables_where`. Aborts naming the offending columns, so
+#' the error points at the metadata mismatch rather than surfacing later
+#' and further away.
+#'
+#' @param data An aniframe object.
+#'
+#' @return The input `data`, invisibly.
+#'
+#' @seealso [is_spatial()], [validate_aniframe()].
+#'
+#' @examples
+#' af <- aniframe(time = 1:5, x = 1:5, y = 1:5)
+#' ensure_is_spatial(af)
+#'
+#' @export
+ensure_is_spatial <- function(data) {
+  ensure_is_aniframe(data)
+  problems <- spatial_problems(data)
+
+  if (length(problems$declared) == 0) {
+    cli::cli_abort(c(
+      "No spatial variables are declared in {.field variables_where}.",
+      "i" = "Spatial operations need at least one coordinate column."
+    ))
+  }
+
+  if (length(problems$missing) > 0) {
+    cli::cli_abort(c(
+      "Missing spatial {cli::qty(problems$missing)}column{?s}: {.val {problems$missing}}.",
+      "i" = "Spatial variables from metadata: {.val {problems$declared}}."
+    ))
+  }
+
+  if (length(problems$non_numeric) > 0) {
+    classes <- vapply(
+      problems$non_numeric,
+      function(col) class(data[[col]])[[1]],
+      character(1)
+    )
+    cli::cli_abort(c(
+      "Spatial {cli::qty(problems$non_numeric)}column{?s} must be numeric: {.val {problems$non_numeric}}.",
+      "x" = "Found {.cls {classes}}."
+    ))
+  }
+
+  invisible(data)
+}
+
+
+#' Warn when coordinate_system no longer matches variables_where
+#'
+#' `coordinate_system` is derived from `variables_where` by
+#' [infer_coordinate_system()], but only at construction. Writing the
+#' source field on its own leaves the derived one stale.
+#'
+#' Called only from [validate_aniframe()], after [ensure_is_spatial()] has
+#' established that `variables_where` declares at least one column.
+#'
+#' @param data An aniframe object.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+warn_coordinate_system_drift <- function(data) {
+  md <- get_metadata(data)
+  declared <- as.character(md$variables_where[!is.na(md$variables_where)])
+  recorded <- as.character(md$coordinate_system)
+  # `infer_coordinate_system()` warns on combinations it doesn't
+  # recognise; we report the mismatch ourselves below.
+  implied <- suppressWarnings(infer_coordinate_system(declared))
+
+  if (!identical(recorded, implied)) {
+    cli::cli_warn(c(
+      "{.field coordinate_system} does not match {.field variables_where}.",
+      "x" = "Recorded {.val {recorded}}, but {.val {declared}} implies {.val {implied}}.",
+      "i" = "{.field coordinate_system} is derived at construction, so setting {.field variables_where} on its own leaves it stale."
+    ))
+  }
+
+  invisible(TRUE)
+}
