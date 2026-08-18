@@ -98,15 +98,18 @@ related fields), prefer the dedicated setters listed below.
 
 ## Declaring the slot vocabulary
 
-`variables_what`, `variables_when` and `variables_where` are a special
-case: they are not a description of the frame, they *are* its structure.
+`variables_what`, `variables_when`, `variables_where` and
+`variables_event` are a special case: they name columns rather than
+describing values, so a name that matches nothing is a promise the frame
+can't keep. The first three go further — they are not a description of
+the frame, they *are* its structure.
 `as_aniframe()` uses them to coerce column types, order columns and
 rows, group the frame, and derive `coordinate_system`. Writing them
 without redoing that work would leave the frame and its own metadata
 disagreeing — the print header would update while the grouping still
 reflected the old declaration.
 
-`set_metadata()` therefore refuses these three, and points you at the
+`set_metadata()` therefore refuses all four, and points you at the
 setters that do the whole job:
 
 ```{r error=TRUE}
@@ -138,6 +141,18 @@ data |>
   dplyr::mutate(z = 0) |>
   add_variables_where("z") |>
   get_metadata("coordinate_system")
+```
+
+`variables_event` is the fourth role, and the one that doesn't change
+the frame's shape: it declares which columns carry per-frame event
+labels, split into interval-valued `state` columns and instantaneous
+`point` columns. `to_anievent()` reads it to know what to encode.
+
+```{r}
+data |>
+  dplyr::mutate(behaviour = factor("rest")) |>
+  set_variables_event(state = "behaviour") |>
+  get_variables_event()
 ```
 
 ## Coordinate origin

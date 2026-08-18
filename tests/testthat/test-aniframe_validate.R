@@ -55,7 +55,7 @@ test_that("a declared temporal column that is missing is caught", {
 })
 
 test_that("a declared event column that is missing is caught", {
-  af <- set_metadata(
+  af <- drift_metadata(
     make_flat_af(),
     variables_event = list(state = "behaviour", point = character())
   )
