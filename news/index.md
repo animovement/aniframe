@@ -4,6 +4,26 @@
 
 ### Bug fixes
 
+- An `anievent` no longer claims spatial properties it cannot have
+  ([\#73](https://github.com/animovement/aniframe/issues/73)). Reading a
+  BORIS export produced an object announcing `origin: bottom_left`,
+  along with a reference frame, an angular unit and a spatial unit — all
+  inherited from the movement defaults, none of them meaningful for a
+  stream of behavioural events. `unit_angle`, `origin` and
+  `reference_frame` gain a `"none"` level, joining `unit_space`, and an
+  anievent is now constructed with the neutral value for each: `"none"`
+  for those four, `"unknown"` for `coordinate_system`, `NA` for
+  `y_height`. Values supplied by the caller are left alone, so a reader
+  that knows better can still say so, and
+  [`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+  no longer carries the host frame’s spatial metadata across.
+
+  The new levels are permitted on an `aniframe` too, for the same
+  honesty reasons. `spec_version` moves to `aniframe = "1.1.0"` and
+  `anievent = "0.2.0"`.
+
+### Bug fixes
+
 - [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
   again accepts a complete metadata object through `metadata =`, which
   the new refusal of the `variables_*` fields had broken

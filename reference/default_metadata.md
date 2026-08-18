@@ -44,13 +44,23 @@ A named list with the following fields:
   carry `individual` and `keypoint` columns — the rule is that a frame
   has at least one identity variable, whichever it happens to be.
 
-- `reference_frame`: Reference frame (factor, "allocentric")
+- `reference_frame`: Reference frame (factor, "allocentric"). Permitted
+  values: "allocentric", "egocentric", "none".
 
-- `coordinate_system`: Coordinate system (factor, "cartesian")
+- `coordinate_system`: Coordinate system (factor, "cartesian_2d")
 
 - `origin`: Location of the (0,0) coordinate relative to the recording
   frame (factor, "bottom_left"). Permitted values: "bottom_left",
-  "top_left".
+  "top_left", "none".
+
+The spatial fields all have a way of saying "not applicable", because
+the metadata substrate is shared with
+[`anievent()`](http://animovement.dev/aniframe/reference/anievent.md),
+which has no spatial component at all: `unit_space`, `unit_angle`,
+`reference_frame` and `origin` take "none", `coordinate_system` takes
+"unknown", and `y_height` takes `NA`. An anievent is constructed with
+those values rather than inheriting movement defaults it cannot honour
+(#73).
 
 - `y_height`: Height of the recording frame in y-axis units (numeric,
   NA). Used by

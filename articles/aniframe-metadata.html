@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,18 +122,18 @@
 <span><span class="co">#&gt; unit_space        (factor)    : "px"</span></span>
 <span><span class="co">#&gt;                                 [levels: px, none, nm, um, mm, cm, m, km]</span></span>
 <span><span class="co">#&gt; unit_angle        (factor)    : "rad"</span></span>
-<span><span class="co">#&gt;                                 [levels: rad, deg]</span></span>
+<span><span class="co">#&gt;                                 [levels: rad, deg, none]</span></span>
 <span><span class="co">#&gt; unit_time         (factor)    : "frame"</span></span>
 <span><span class="co">#&gt;                                 [levels: unknown, frame, ns, us, ms, s, m, h]</span></span>
 <span><span class="co">#&gt; reference_frame   (factor)    : "allocentric"</span></span>
-<span><span class="co">#&gt;                                 [levels: allocentric, egocentric]</span></span>
+<span><span class="co">#&gt;                                 [levels: allocentric, egocentric, none]</span></span>
 <span><span class="co">#&gt; coordinate_system (factor)    : "cartesian_2d"</span></span>
 <span><span class="co">#&gt;                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]</span></span>
 <span><span class="co">#&gt; origin            (factor)    : "bottom_left"</span></span>
-<span><span class="co">#&gt;                                 [levels: bottom_left, top_left]</span></span>
-<span><span class="co">#&gt; y_height          (numeric)   : 3.725691</span></span>
+<span><span class="co">#&gt;                                 [levels: bottom_left, top_left, none]</span></span>
+<span><span class="co">#&gt; y_height          (numeric)   : 3.183607</span></span>
 <span><span class="co">#&gt; connections       (list)      : </span></span>
-<span><span class="co">#&gt; spec_version      (list)      : "1.0.0, 0.1.0"</span></span></code></pre></div>
+<span><span class="co">#&gt; spec_version      (list)      : "1.1.0, 0.2.0"</span></span></code></pre></div>
 </div>
 <p>The fields and their defaults are defined in one place, <code><a href="../reference/default_metadata.html">default_metadata()</a></code> — that’s the canonical source of truth for what an <code>aniframe</code>’s metadata looks like.</p>
 <div class="cell">
@@ -150,11 +150,11 @@
 <span><span class="co">#&gt;  $ variables_where  : chr [1:2] "x" "y"</span></span>
 <span><span class="co">#&gt;  $ variables_event  :List of 2</span></span>
 <span><span class="co">#&gt;  $ unit_space       : Factor w/ 8 levels "px","none","nm",..: 1</span></span>
-<span><span class="co">#&gt;  $ unit_angle       : Factor w/ 2 levels "rad","deg": 1</span></span>
+<span><span class="co">#&gt;  $ unit_angle       : Factor w/ 3 levels "rad","deg","none": 1</span></span>
 <span><span class="co">#&gt;  $ unit_time        : Factor w/ 8 levels "unknown","frame",..: 2</span></span>
-<span><span class="co">#&gt;  $ reference_frame  : Factor w/ 2 levels "allocentric",..: 1</span></span>
+<span><span class="co">#&gt;  $ reference_frame  : Factor w/ 3 levels "allocentric",..: 1</span></span>
 <span><span class="co">#&gt;  $ coordinate_system: Factor w/ 7 levels "unknown","cartesian_1d",..: 3</span></span>
-<span><span class="co">#&gt;  $ origin           : Factor w/ 2 levels "bottom_left",..: 1</span></span>
+<span><span class="co">#&gt;  $ origin           : Factor w/ 3 levels "bottom_left",..: 1</span></span>
 <span><span class="co">#&gt;  $ y_height         : num NA</span></span>
 <span><span class="co">#&gt;  $ connections      : list()</span></span>
 <span><span class="co">#&gt;  $ spec_version     :List of 2</span></span>

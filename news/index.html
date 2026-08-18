@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9006</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9007</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -62,6 +62,13 @@
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>
+<p>An <code>anievent</code> no longer claims spatial properties it cannot have (<a href="https://github.com/animovement/aniframe/issues/73" class="external-link">#73</a>). Reading a BORIS export produced an object announcing <code>origin: bottom_left</code>, along with a reference frame, an angular unit and a spatial unit — all inherited from the movement defaults, none of them meaningful for a stream of behavioural events. <code>unit_angle</code>, <code>origin</code> and <code>reference_frame</code> gain a <code>"none"</code> level, joining <code>unit_space</code>, and an anievent is now constructed with the neutral value for each: <code>"none"</code> for those four, <code>"unknown"</code> for <code>coordinate_system</code>, <code>NA</code> for <code>y_height</code>. Values supplied by the caller are left alone, so a reader that knows better can still say so, and <code><a href="../reference/to_anievent.html">to_anievent()</a></code> no longer carries the host frame’s spatial metadata across.</p>
+<p>The new levels are permitted on an <code>aniframe</code> too, for the same honesty reasons. <code>spec_version</code> moves to <code>aniframe = "1.1.0"</code> and <code>anievent = "0.2.0"</code>.</p>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-development-version-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version-1"></a></h3>
+<ul><li>
 <code><a href="../reference/set_metadata.html">set_metadata()</a></code> again accepts a complete metadata object through <code>metadata =</code>, which the new refusal of the <code>variables_*</code> fields had broken (<a href="https://github.com/animovement/aniframe/issues/82" class="external-link">#82</a>). Rebuilding a frame and putting its metadata back is a round-trip rather than a field write — the class-preserving methods do it internally, and downstream packages do it too, as <code>animetric::summarise_keypoints()</code> does after recomputing a frame — and refusing it left them no way to carry metadata across a rebuild at all. Writing a declaration field on its own, whether as a named argument or in a partial list, is still refused and still points at the dedicated setters.</li>
 </ul></div>
 <div class="section level3">
@@ -78,7 +85,7 @@
 <li>The identity rule is now stated where it is enforced (<a href="https://github.com/animovement/aniframe/issues/77" class="external-link">#77</a>). An aniframe needs <strong>at least one identity (<code>what</code>) variable</strong>; <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code> guarantees that through a new internal <code><a href="../reference/ensure_identity.html">ensure_identity()</a></code>, and the recognised identity names live in one place (<code><a href="../reference/recognised_variables_what.html">recognised_variables_what()</a></code>) rather than inline. The documentation of <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code>, <code><a href="../reference/aniframe.html">aniframe()</a></code> and <code><a href="../reference/default_metadata.html">default_metadata()</a></code> no longer describes <code>c("individual", "keypoint")</code> as <em>the default</em> — identity columns are detected from the data, and <code>variables_what</code> in <code><a href="../reference/default_metadata.html">default_metadata()</a></code> is a placeholder that every constructor overwrites. Declaring <code>variables_what = character(0)</code> remains a supported opt-out for data with no identity at all.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version-1">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version-1"></a></h3>
+<h3 id="bug-fixes-development-version-2">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version-2"></a></h3>
 <ul><li>Subclasses of <code>aniframe</code> and <code>anievent</code> now survive the class-preserving methods (<a href="https://github.com/animovement/aniframe/issues/81" class="external-link">#81</a>). dplyr strips the whole animovement family before <code><a href="https://rdrr.io/r/base/UseMethod.html" class="external-link">NextMethod()</a></code> returns, and the methods previously rebuilt a fixed <code>aniframe</code> / <code>anievent</code> — so a downstream subclass such as <code>animetric</code>’s <code>aniframe_kin</code> was dropped by the first <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code> or <code>[</code>. The incoming class vector is now captured before dispatch and restored afterwards, in its original order, so subclasses keep dispatch priority over their parent. Downstream packages need not register methods of their own. Verbs that aren’t enumerated here (<code>distinct()</code>, <code>rowwise()</code>, the <code>*_join()</code> family, <code>bind_rows()</code>) still drop the class, as they did before.</li>
 </ul></div>
 <div class="section level3">

@@ -46,18 +46,18 @@ get_metadata(data)
 #> unit_space        (factor)    : "px"
 #>                                 [levels: px, none, nm, um, mm, cm, m, km]
 #> unit_angle        (factor)    : "rad"
-#>                                 [levels: rad, deg]
+#>                                 [levels: rad, deg, none]
 #> unit_time         (factor)    : "frame"
 #>                                 [levels: unknown, frame, ns, us, ms, s, m, h]
 #> reference_frame   (factor)    : "allocentric"
-#>                                 [levels: allocentric, egocentric]
+#>                                 [levels: allocentric, egocentric, none]
 #> coordinate_system (factor)    : "cartesian_2d"
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
 #> origin            (factor)    : "bottom_left"
-#>                                 [levels: bottom_left, top_left]
-#> y_height          (numeric)   : 3.725691
+#>                                 [levels: bottom_left, top_left, none]
+#> y_height          (numeric)   : 3.183607
 #> connections       (list)      : 
-#> spec_version      (list)      : "1.0.0, 0.1.0"
+#> spec_version      (list)      : "1.1.0, 0.2.0"
 ```
 
 The fields and their defaults are defined in one place,
@@ -79,11 +79,11 @@ str(default_metadata(), max.level = 1)
 #>  $ variables_where  : chr [1:2] "x" "y"
 #>  $ variables_event  :List of 2
 #>  $ unit_space       : Factor w/ 8 levels "px","none","nm",..: 1
-#>  $ unit_angle       : Factor w/ 2 levels "rad","deg": 1
+#>  $ unit_angle       : Factor w/ 3 levels "rad","deg","none": 1
 #>  $ unit_time        : Factor w/ 8 levels "unknown","frame",..: 2
-#>  $ reference_frame  : Factor w/ 2 levels "allocentric",..: 1
+#>  $ reference_frame  : Factor w/ 3 levels "allocentric",..: 1
 #>  $ coordinate_system: Factor w/ 7 levels "unknown","cartesian_1d",..: 3
-#>  $ origin           : Factor w/ 2 levels "bottom_left",..: 1
+#>  $ origin           : Factor w/ 3 levels "bottom_left",..: 1
 #>  $ y_height         : num NA
 #>  $ connections      : list()
 #>  $ spec_version     :List of 2
