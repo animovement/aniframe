@@ -55,7 +55,6 @@ set_unit_time.aniframe <- function(data, to_unit, calibration_factor = 1) {
 
   data <- data |>
     dplyr::mutate(time = .data$time * factor) |>
-    as_aniframe() |>
     set_metadata(unit_time = to_unit)
   data
 }

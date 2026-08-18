@@ -77,8 +77,7 @@ set_unit_angle <- function(data, to_unit, cols = NULL) {
     )
   }
 
-  data <- as_aniframe(data) |>
-    set_metadata(unit_angle = to_unit)
+  data <- set_metadata(data, unit_angle = to_unit)
 
   data
 }

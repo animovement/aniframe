@@ -588,3 +588,77 @@ test_that("detect_variables_where returns NULL when no spatial columns", {
 
   expect_null(result)
 })
+
+# ---- Casting keeps what the frame already declares (#96) ----------------
+
+test_that("casting an aniframe keeps a custom identity declaration", {
+  # `id` is not a recognised identity name, so re-detection found none,
+  # injected `keypoint = "centroid"` and overwrote the declaration with
+  # it — silently regrouping the frame on a constant column.
+  af <- aniframe(keypoint = "centroid", time = 1:4, x = 1:4, y = 1:4) |>
+    dplyr::mutate(id = "a") |>
+    add_variables_what("id") |>
+    remove_variables_what("keypoint") |>
+    dplyr::select(-keypoint)
+
+  out <- as_aniframe(af)
+
+  expect_equal(get_variables_what(out), "id")
+  expect_false("keypoint" %in% names(out))
+})
+
+test_that("casting keeps a declared opt-out rather than injecting an identity", {
+  af <- aniframe(
+    time = 1:4,
+    x = 1:4,
+    y = 1:4,
+    variables_what = character(0)
+  )
+
+  out <- as_aniframe(af)
+
+  expect_length(get_variables_what(out), 0)
+  expect_false("keypoint" %in% names(out))
+})
+
+test_that("a declaration whose columns are gone falls back to detection", {
+  # A cast should still repair a frame whose metadata has drifted, rather
+  # than erroring on columns that are no longer there.
+  af <- aniframe(individual = "a", time = 1:4, x = 1:4, y = 1:4, z = 1:4)
+  drifted <- dplyr::select(af, -z)
+
+  out <- as_aniframe(drifted)
+
+  expect_equal(get_variables_where(out), c("x", "y"))
+  expect_equal(
+    as.character(get_metadata(out, "coordinate_system")),
+    "cartesian_2d"
+  )
+})
+
+test_that("explicit arguments still win over what the frame declares", {
+  af <- aniframe(individual = "a", time = 1:4, x = 1:4, y = 1:4)
+  af <- dplyr::mutate(af, track = 1L)
+
+  out <- as_aniframe(af, variables_what = "track")
+
+  expect_equal(get_variables_what(out), "track")
+})
+
+test_that("the unit setters leave the declarations alone", {
+  af <- aniframe(keypoint = "centroid", time = 1:4, x = 1:4, y = 1:4) |>
+    dplyr::mutate(id = "a") |>
+    add_variables_what("id") |>
+    remove_variables_what("keypoint") |>
+    dplyr::select(-keypoint)
+
+  for (out in list(
+    set_unit_space(af, "cm", calibration_factor = 1 / 394),
+    set_unit_time(af, "s", calibration_factor = 1 / 30),
+    set_sampling_rate(af, 30),
+    set_unit_angle(af, "deg")
+  )) {
+    expect_equal(get_variables_what(out), "id")
+    expect_false("keypoint" %in% names(out))
+  }
+})

@@ -73,8 +73,7 @@ set_unit_space <- function(data, to_unit, calibration_factor = 1) {
         .names = "{.col}" # keep the original column names
       )
     )
-  as_aniframe(data) |>
-    set_metadata(unit_space = to_unit)
+  set_metadata(data, unit_space = to_unit)
 }
 
 #' @keywords internal
