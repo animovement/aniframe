@@ -15,8 +15,10 @@ test_that("default_metadata() includes spec_version with aniframe and anievent",
   expect_true("spec_version" %in% names(md))
   expect_type(md$spec_version, "list")
   expect_named(md$spec_version, c("aniframe", "anievent"))
-  expect_equal(md$spec_version$aniframe, "1.0.0")
-  expect_equal(md$spec_version$anievent, "0.1.0")
+  # Both bumped when the spatial fields gained a "none" level and an
+  # anievent stopped inheriting movement defaults (#73).
+  expect_equal(md$spec_version$aniframe, "1.1.0")
+  expect_equal(md$spec_version$anievent, "0.2.0")
 })
 
 test_that("set_metadata round-trips a custom spec_version list", {

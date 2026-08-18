@@ -25,10 +25,19 @@
 #'   In particular `variables_what` is **not** a requirement that a frame
 #'   carry `individual` and `keypoint` columns — the rule is that a frame
 #'   has at least one identity variable, whichever it happens to be.
-#' * `reference_frame`: Reference frame (factor, "allocentric")
-#' * `coordinate_system`: Coordinate system (factor, "cartesian")
+#' * `reference_frame`: Reference frame (factor, "allocentric").
+#'   Permitted values: "allocentric", "egocentric", "none".
+#' * `coordinate_system`: Coordinate system (factor, "cartesian_2d")
 #' * `origin`: Location of the (0,0) coordinate relative to the recording
-#'   frame (factor, "bottom_left"). Permitted values: "bottom_left", "top_left".
+#'   frame (factor, "bottom_left"). Permitted values: "bottom_left",
+#'   "top_left", "none".
+#'
+#' The spatial fields all have a way of saying "not applicable", because
+#' the metadata substrate is shared with [anievent()], which has no
+#' spatial component at all: `unit_space`, `unit_angle`, `reference_frame`
+#' and `origin` take "none", `coordinate_system` takes "unknown", and
+#' `y_height` takes `NA`. An anievent is constructed with those values
+#' rather than inheriting movement defaults it cannot honour (#73).
 #' * `y_height`: Height of the recording frame in y-axis units (numeric, NA).
 #'   Used by [set_origin()] to reflect y coordinates when switching origin
 #'   conventions.
@@ -86,7 +95,8 @@ default_metadata <- function() {
       "rad",
       levels = c(
         "rad",
-        "deg"
+        "deg",
+        "none"
       )
     ),
     unit_time = factor(
@@ -106,7 +116,8 @@ default_metadata <- function() {
       "allocentric",
       levels = c(
         "allocentric",
-        "egocentric"
+        "egocentric",
+        "none"
       )
     ),
     coordinate_system = factor(
@@ -125,14 +136,15 @@ default_metadata <- function() {
       "bottom_left",
       levels = c(
         "bottom_left",
-        "top_left"
+        "top_left",
+        "none"
       )
     ),
     y_height = as.numeric(NA),
     connections = list(),
     spec_version = list(
-      aniframe = "1.0.0",
-      anievent = "0.1.0"
+      aniframe = "1.1.0",
+      anievent = "0.2.0"
     )
   )
 

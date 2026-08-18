@@ -2,6 +2,12 @@
 
 ## Bug fixes
 
+* An `anievent` no longer claims spatial properties it cannot have (#73). Reading a BORIS export produced an object announcing `origin: bottom_left`, along with a reference frame, an angular unit and a spatial unit — all inherited from the movement defaults, none of them meaningful for a stream of behavioural events. `unit_angle`, `origin` and `reference_frame` gain a `"none"` level, joining `unit_space`, and an anievent is now constructed with the neutral value for each: `"none"` for those four, `"unknown"` for `coordinate_system`, `NA` for `y_height`. Values supplied by the caller are left alone, so a reader that knows better can still say so, and `to_anievent()` no longer carries the host frame's spatial metadata across.
+
+  The new levels are permitted on an `aniframe` too, for the same honesty reasons. `spec_version` moves to `aniframe = "1.1.0"` and `anievent = "0.2.0"`.
+
+## Bug fixes
+
 * `set_metadata()` again accepts a complete metadata object through `metadata =`, which the new refusal of the `variables_*` fields had broken (#82). Rebuilding a frame and putting its metadata back is a round-trip rather than a field write — the class-preserving methods do it internally, and downstream packages do it too, as `animetric::summarise_keypoints()` does after recomputing a frame — and refusing it left them no way to carry metadata across a rebuild at all. Writing a declaration field on its own, whether as a named argument or in a partial list, is still refused and still points at the dedicated setters.
 
 ## New features

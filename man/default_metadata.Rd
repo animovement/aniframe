@@ -26,10 +26,21 @@ constructor overwrites them from the data or from its arguments.
 In particular \code{variables_what} is \strong{not} a requirement that a frame
 carry \code{individual} and \code{keypoint} columns — the rule is that a frame
 has at least one identity variable, whichever it happens to be.
-\item \code{reference_frame}: Reference frame (factor, "allocentric")
-\item \code{coordinate_system}: Coordinate system (factor, "cartesian")
+\item \code{reference_frame}: Reference frame (factor, "allocentric").
+Permitted values: "allocentric", "egocentric", "none".
+\item \code{coordinate_system}: Coordinate system (factor, "cartesian_2d")
 \item \code{origin}: Location of the (0,0) coordinate relative to the recording
-frame (factor, "bottom_left"). Permitted values: "bottom_left", "top_left".
+frame (factor, "bottom_left"). Permitted values: "bottom_left",
+"top_left", "none".
+}
+
+The spatial fields all have a way of saying "not applicable", because
+the metadata substrate is shared with \code{\link[=anievent]{anievent()}}, which has no
+spatial component at all: \code{unit_space}, \code{unit_angle}, \code{reference_frame}
+and \code{origin} take "none", \code{coordinate_system} takes "unknown", and
+\code{y_height} takes \code{NA}. An anievent is constructed with those values
+rather than inheriting movement defaults it cannot honour (#73).
+\itemize{
 \item \code{y_height}: Height of the recording frame in y-axis units (numeric, NA).
 Used by \code{\link[=set_origin]{set_origin()}} to reflect y coordinates when switching origin
 conventions.

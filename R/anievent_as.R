@@ -116,7 +116,7 @@ as_anievent.data.frame <- function(
   # variable setters use, so construction and re-declaration can't drift
   # apart (#82).
   data <- new_anievent(data)
-  data <- set_metadata(data, metadata = metadata)
+  data <- set_metadata(data, metadata = neutral_spatial_metadata(metadata))
   data <- restructure_anievent(data, variables_what, variables_when)
 
   data
@@ -194,4 +194,44 @@ standardise_anievent_cols <- function(data, variables_what, variables_when) {
   data[["stop"]] <- as.numeric(data[["stop"]])
 
   data
+}
+
+
+#' Fill the spatial metadata fields with their "not applicable" values
+#'
+#' An anievent shares the metadata substrate with [aniframe()] but has no
+#' spatial component: a stream of behavioural events has no coordinate
+#' origin, no reference frame and no angular unit. Inheriting the movement
+#' defaults made it claim otherwise — a BORIS export read into an anievent
+#' announced `origin: bottom_left` (#73).
+#'
+#' Values the caller supplied are left alone, so a reader that knows
+#' better can still say so.
+#'
+#' @param metadata Metadata supplied by the caller.
+#'
+#' @return `metadata`, with the untouched spatial fields set to their
+#'   neutral values.
+#' @keywords internal
+neutral_spatial_metadata <- function(metadata) {
+  neutral <- list(
+    unit_space = "none",
+    unit_angle = "none",
+    reference_frame = "none",
+    coordinate_system = "unknown",
+    y_height = as.numeric(NA)
+  )
+
+  supplied <- names(metadata)
+  for (field in setdiff(names(neutral), supplied)) {
+    metadata[[field]] <- neutral[[field]]
+  }
+
+  # `origin` is the field that made the problem visible, and it is the one
+  # a reader is least likely to set, so it gets the same treatment.
+  if (!"origin" %in% supplied) {
+    metadata$origin <- "none"
+  }
+
+  metadata
 }
