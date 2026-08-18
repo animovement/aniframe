@@ -200,10 +200,12 @@ Type only becomes load-bearing at conversion / plotting / metric time:
 - when computing metrics that differ by type.
 
 Those operations live in companion packages (`animetric`, `anivis`) and
-will accept type declarations at call time. The metadata field
-`variables_event = list(state = ..., point = ...)` exists on the shared
-metadata substrate for callers that want to record the distinction
-explicitly, but the `anievent` class itself does not enforce it.
+will accept type declarations at call time. On the `aniframe` side the
+distinction can be recorded explicitly with
+`set_variables_event(state = ..., point = ...)`, but the `anievent`
+class itself does not enforce it — an anievent has no `variables_event`
+of its own, since its events are already encoded in `channel` and
+`label`.
 
 ## Modifiers
 
@@ -372,10 +374,7 @@ af <- aniframe(
     levels = c("REM", "wake")
   )
 )
-af <- set_metadata(
-  af,
-  variables_event = list(state = "behaviour", point = character())
-)
+af <- set_variables_event(af, state = "behaviour")
 to_anievent(af)
 #> # anievent:       3 × 6
 #> # Individuals:    1

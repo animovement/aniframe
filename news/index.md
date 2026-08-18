@@ -4,6 +4,35 @@
 
 ### New features
 
+- Added
+  [`set_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md),
+  [`get_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md),
+  [`add_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  and
+  [`remove_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  for the fourth variable role
+  ([\#82](https://github.com/animovement/aniframe/issues/82)). It is the
+  one role that doesn’t change the frame’s shape — nothing is retyped,
+  relocated or regrouped — but it names columns, so the setters check
+  they exist, closing the gap where a declaration could name a column
+  the frame didn’t have.
+  [`set_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  replaces the side you name and leaves the other alone — clearing one
+  is explicit (`point = character()`) rather than a side effect of not
+  mentioning it, since the columns would otherwise stay in the frame
+  while
+  [`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+  quietly stopped encoding them.
+  [`add_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  appends to the side you name;
+  [`remove_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  takes plain column names, since a column can only be one kind. The
+  partial-input and `NA` handling from
+  [\#76](https://github.com/animovement/aniframe/issues/76) now lives
+  behind these setters. Only an `aniframe` can carry the declaration —
+  an `anievent` is already the encoded form, with its events in
+  `channel` and `label`.
+
 - Added dedicated setters for the variable roles:
   [`set_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
   / `when` / `where`, with matching `get_`, `add_` and `remove_` verbs,
@@ -102,10 +131,9 @@
 ### Breaking changes
 
 - [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
-  now refuses `variables_what`, `variables_when` and `variables_where`,
-  pointing at the setters above
-  ([\#82](https://github.com/animovement/aniframe/issues/82)). Writing
-  them through
+  now refuses all four `variables_*` fields, pointing at the setters
+  above ([\#82](https://github.com/animovement/aniframe/issues/82)).
+  Writing them through
   [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
   updated the metadata and nothing else: the print header changed, so it
   looked like it had worked, while the frame kept its old column types,

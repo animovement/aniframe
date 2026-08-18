@@ -135,6 +135,11 @@ refuses these three fields for that reason.
   [`remove_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
   [`remove_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
   : Declare which columns carry identity, time and position
+- [`get_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  [`set_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  [`add_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  [`remove_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+  : Declare which columns carry per-frame event labels
 
 ## Connections
 

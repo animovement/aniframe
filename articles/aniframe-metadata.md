@@ -55,7 +55,7 @@ get_metadata(data)
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
 #> origin            (factor)    : "bottom_left"
 #>                                 [levels: bottom_left, top_left]
-#> y_height          (numeric)   : 3.849835
+#> y_height          (numeric)   : 3.24958
 #> connections       (list)      : 
 #> spec_version      (list)      : "1.0.0, 0.1.0"
 ```
@@ -141,8 +141,11 @@ related fields), prefer the dedicated setters listed below.
 
 ## Declaring the slot vocabulary
 
-`variables_what`, `variables_when` and `variables_where` are a special
-case: they are not a description of the frame, they *are* its structure.
+`variables_what`, `variables_when`, `variables_where` and
+`variables_event` are a special case: they name columns rather than
+describing values, so a name that matches nothing is a promise the frame
+can’t keep. The first three go further — they are not a description of
+the frame, they *are* its structure.
 [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
 uses them to coerce column types, order columns and rows, group the
 frame, and derive `coordinate_system`. Writing them without redoing that
@@ -151,17 +154,19 @@ header would update while the grouping still reflected the old
 declaration.
 
 [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
-therefore refuses these three, and points you at the setters that do the
+therefore refuses all four, and points you at the setters that do the
 whole job:
 
 ``` r
 
 data |> set_metadata(variables_what = "id")
-#> Error in `ensure_no_structural_fields()`:
-#> ! `set_metadata()` cannot write the structural field variables_what.
-#> ℹ It is the frame's structure: the columns it is typed, ordered and grouped by.
-#>   Writing it alone would leave the metadata and the frame disagreeing.
-#> ℹ Use `set_variables_what()` instead, which also restructures the frame.
+#> Error in `ensure_no_declaration_fields()`:
+#> ! `set_metadata()` cannot write variables_what directly.
+#> ℹ This field declares which columns carry identity, time, position and events.
+#>   Writing it here would leave the metadata naming columns the frame may not
+#>   have, and the frame ordered and grouped as it was before.
+#> ℹ Use `set_variables_what()` instead, which validate the columns exist and
+#>   restructure the frame to match.
 ```
 
 Each role has the same four verbs as `connections`: `get_variables_*()`,
@@ -195,6 +200,26 @@ data |>
   get_metadata("coordinate_system")
 #> [1] cartesian_3d
 #> 7 Levels: unknown cartesian_1d cartesian_2d cartesian_3d polar ... spherical
+```
+
+`variables_event` is the fourth role, and the one that doesn’t change
+the frame’s shape: it declares which columns carry per-frame event
+labels, split into interval-valued `state` columns and instantaneous
+`point` columns.
+[`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+reads it to know what to encode.
+
+``` r
+
+data |>
+  dplyr::mutate(behaviour = factor("rest")) |>
+  set_variables_event(state = "behaviour") |>
+  get_variables_event()
+#> $state
+#> [1] "behaviour"
+#> 
+#> $point
+#> character(0)
 ```
 
 ## Coordinate origin
