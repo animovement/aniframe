@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,6 +59,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="aniframe-development-version">aniframe (development version)<a class="anchor" aria-label="anchor" href="#aniframe-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>Added <code><a href="../reference/validate_aniframe.html">validate_aniframe()</a></code>, which re-checks that an aniframe’s metadata still describes the frame it is attached to (<a href="https://github.com/animovement/aniframe/issues/79" class="external-link">#79</a>). Every column named in <code>variables_what</code>, <code>variables_when</code>, <code>variables_where</code> and <code>variables_event</code> must be present, <code>time</code> must be present and numeric, and the <code>variables_where</code> columns must be numeric — all hard errors. A <code>coordinate_system</code> that no longer matches <code>variables_where</code> is a warning, since the field is derived rather than declared. Counterpart to the existing <code><a href="../reference/validate_anievent.html">validate_anievent()</a></code>.</li>
+<li>Added <code><a href="../reference/is_spatial.html">is_spatial()</a></code> and <code><a href="../reference/ensure_is_spatial.html">ensure_is_spatial()</a></code>, the spatial subset of those checks: the columns named in <code>variables_where</code> must be present and numeric (<a href="https://github.com/animovement/aniframe/issues/79" class="external-link">#79</a>). This is a different question from the one <code><a href="../reference/is_cartesian.html">is_cartesian()</a></code> and its siblings answer — those test for the presence of column <em>names</em> and never consult the metadata or the column types, so a frame that has lost its <code>x</code> column still passes <code><a href="../reference/is_cartesian_1d.html">is_cartesian_1d()</a></code> on the strength of <code>y</code> alone. Downstream packages that reach coordinates by iterating <code>variables_where</code> (<code>aniprocess</code> carries a local copy for its filters) can use these instead of writing their own.</li>
+</ul></div>
 <div class="section level3">
 <h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
 <ul><li>Subclasses of <code>aniframe</code> and <code>anievent</code> now survive the class-preserving methods (<a href="https://github.com/animovement/aniframe/issues/81" class="external-link">#81</a>). dplyr strips the whole animovement family before <code><a href="https://rdrr.io/r/base/UseMethod.html" class="external-link">NextMethod()</a></code> returns, and the methods previously rebuilt a fixed <code>aniframe</code> / <code>anievent</code> — so a downstream subclass such as <code>animetric</code>’s <code>aniframe_kin</code> was dropped by the first <code><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter()</a></code>, <code>mutate()</code> or <code>[</code>. The incoming class vector is now captured before dispatch and restored afterwards, in its original order, so subclasses keep dispatch priority over their parent. Downstream packages need not register methods of their own. Verbs that aren’t enumerated here (<code>distinct()</code>, <code>rowwise()</code>, the <code>*_join()</code> family, <code>bind_rows()</code>) still drop the class, as they did before.</li>

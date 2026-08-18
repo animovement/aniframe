@@ -15,6 +15,8 @@ provide example data.
   : Check if object is an aniframe
 - [`ensure_is_aniframe()`](http://animovement.dev/aniframe/reference/ensure_is_aniframe.md)
   : Ensure object is an aniframe
+- [`validate_aniframe()`](http://animovement.dev/aniframe/reference/validate_aniframe.md)
+  : Validate an aniframe
 
 ## Creating and converting anievent objects
 
@@ -76,7 +78,16 @@ Stored as a named list of `from`/`to` tibbles in `metadata$connections`.
 ## Spatial checks
 
 These functions provide checks for your coordinate system.
+[`is_spatial()`](http://animovement.dev/aniframe/reference/is_spatial.md)
+and
+[`ensure_is_spatial()`](http://animovement.dev/aniframe/reference/ensure_is_spatial.md)
+check the spatial columns against the `variables_where` metadata; the
+`is_cartesian*()` family checks for particular column names.
 
+- [`is_spatial()`](http://animovement.dev/aniframe/reference/is_spatial.md)
+  : Test whether the spatial columns match the metadata
+- [`ensure_is_spatial()`](http://animovement.dev/aniframe/reference/ensure_is_spatial.md)
+  : Ensure the spatial columns match the metadata
 - [`is_cartesian()`](http://animovement.dev/aniframe/reference/is_cartesian.md)
   : Test whether a data frame uses a Cartesian coordinate system
 - [`is_cartesian_1d()`](http://animovement.dev/aniframe/reference/is_cartesian_1d.md)

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,6 +100,13 @@
 
         </dt>
         <dd>Ensure object is an aniframe</dd>
+
+        <dt>
+
+          <code><a href="validate_aniframe.html">validate_aniframe()</a></code>
+
+        </dt>
+        <dd>Validate an aniframe</dd>
       </dl></div><div class="section level2">
       <h2 id="creating-and-converting-anievent-objects">Creating and converting anievent objects<a class="anchor" aria-label="anchor" href="#creating-and-converting-anievent-objects"></a></h2>
 
@@ -263,7 +270,7 @@
       </dl></div><div class="section level2">
       <h2 id="spatial-checks">Spatial checks<a class="anchor" aria-label="anchor" href="#spatial-checks"></a></h2>
 
-      <div class="section-desc"><p>These functions provide checks for your coordinate system.</p></div>
+      <div class="section-desc"><p>These functions provide checks for your coordinate system. <code><a href="../reference/is_spatial.html">is_spatial()</a></code> and <code><a href="../reference/ensure_is_spatial.html">ensure_is_spatial()</a></code> check the spatial columns against the <code>variables_where</code> metadata; the <code>is_cartesian*()</code> family checks for particular column names.</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -271,6 +278,20 @@
 
 
       <dl><dt>
+
+          <code><a href="is_spatial.html">is_spatial()</a></code>
+
+        </dt>
+        <dd>Test whether the spatial columns match the metadata</dd>
+
+        <dt>
+
+          <code><a href="ensure_is_spatial.html">ensure_is_spatial()</a></code>
+
+        </dt>
+        <dd>Ensure the spatial columns match the metadata</dd>
+
+        <dt>
 
           <code><a href="is_cartesian.html">is_cartesian()</a></code>
 

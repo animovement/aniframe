@@ -25,12 +25,15 @@
 <url><loc>http://animovement.dev/aniframe/reference/cash-set-.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/cash-set-.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/convert_nan_to_na.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/declared_variables.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/default_metadata.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/deg_to_rad.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/detect_event_scope.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/detect_variables_where.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_anievent_cols.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_aniframe_cols.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_aniframe_time.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_declared_variables_exist.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian.html</loc></url>
@@ -39,6 +42,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cartesian_3d.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_cylindrical.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_polar.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/ensure_is_spatial.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ensure_is_spherical.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/example_aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/filter.anievent.html</loc></url>
@@ -60,6 +64,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/is_cartesian_3d.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/is_cylindrical.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/is_polar.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/is_spatial.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/is_spherical.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/mutate.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/mutate.aniframe.html</loc></url>
@@ -93,6 +98,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/set_y_height.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/slice.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/slice.aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/spatial_problems.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/standardise_anievent_cols.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/standardise_aniframe_cols.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/sub-.anievent.html</loc></url>
@@ -111,5 +117,7 @@
 <url><loc>http://animovement.dev/aniframe/reference/ungroup.anievent.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/ungroup.aniframe.html</loc></url>
 <url><loc>http://animovement.dev/aniframe/reference/validate_anievent.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/validate_aniframe.html</loc></url>
+<url><loc>http://animovement.dev/aniframe/reference/warn_coordinate_system_drift.html</loc></url>
 </urlset>
 

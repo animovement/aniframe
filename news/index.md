@@ -2,6 +2,38 @@
 
 ## aniframe (development version)
 
+### New features
+
+- Added
+  [`validate_aniframe()`](http://animovement.dev/aniframe/reference/validate_aniframe.md),
+  which re-checks that an aniframe’s metadata still describes the frame
+  it is attached to
+  ([\#79](https://github.com/animovement/aniframe/issues/79)). Every
+  column named in `variables_what`, `variables_when`, `variables_where`
+  and `variables_event` must be present, `time` must be present and
+  numeric, and the `variables_where` columns must be numeric — all hard
+  errors. A `coordinate_system` that no longer matches `variables_where`
+  is a warning, since the field is derived rather than declared.
+  Counterpart to the existing
+  [`validate_anievent()`](http://animovement.dev/aniframe/reference/validate_anievent.md).
+- Added
+  [`is_spatial()`](http://animovement.dev/aniframe/reference/is_spatial.md)
+  and
+  [`ensure_is_spatial()`](http://animovement.dev/aniframe/reference/ensure_is_spatial.md),
+  the spatial subset of those checks: the columns named in
+  `variables_where` must be present and numeric
+  ([\#79](https://github.com/animovement/aniframe/issues/79)). This is a
+  different question from the one
+  [`is_cartesian()`](http://animovement.dev/aniframe/reference/is_cartesian.md)
+  and its siblings answer — those test for the presence of column
+  *names* and never consult the metadata or the column types, so a frame
+  that has lost its `x` column still passes
+  [`is_cartesian_1d()`](http://animovement.dev/aniframe/reference/is_cartesian_1d.md)
+  on the strength of `y` alone. Downstream packages that reach
+  coordinates by iterating `variables_where` (`aniprocess` carries a
+  local copy for its filters) can use these instead of writing their
+  own.
+
 ### Bug fixes
 
 - Subclasses of `aniframe` and `anievent` now survive the
