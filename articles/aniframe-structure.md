@@ -43,18 +43,18 @@ data
 #> # Keypoints:   head, neck, shoulder_right
 #> # Sessions:    1
 #> # Trials:      1
-#>    individual keypoint session trial  time       x      y confidence
-#>         <int> <fct>      <int> <int> <int>   <dbl>  <dbl>      <dbl>
-#>  1          1 head           1     1     1 -1.67    0.293      0.615
-#>  2          1 head           1     1     2 -1.42   -1.47       0.614
-#>  3          1 head           1     1     3 -0.657  -2.08       0.518
-#>  4          1 head           1     1     4  2.01   -0.821      0.803
-#>  5          1 head           1     1     5 -0.573   0.244      0.812
-#>  6          1 neck           1     1     1 -0.0644  0.217      0.690
-#>  7          1 neck           1     1     2  0.595  -0.223      0.949
-#>  8          1 neck           1     1     3 -2.35   -0.787      0.501
-#>  9          1 neck           1     1     4 -0.442  -0.942      0.967
-#> 10          1 neck           1     1     5 -1.08    0.350      0.778
+#>    individual keypoint session trial  time      x        y confidence
+#>         <int> <fct>      <int> <int> <int>  <dbl>    <dbl>      <dbl>
+#>  1          1 head           1     1     1  1.60   0.967        0.843
+#>  2          1 head           1     1     2 -0.910  0.549        0.873
+#>  3          1 head           1     1     3 -1.88  -0.752        0.486
+#>  4          1 head           1     1     4  0.420  0.656        0.655
+#>  5          1 head           1     1     5  1.61   1.52         0.937
+#>  6          1 neck           1     1     1  1.81   1.20         0.719
+#>  7          1 neck           1     1     2  0.257 -0.195        0.604
+#>  8          1 neck           1     1     3 -1.49   0.895        0.569
+#>  9          1 neck           1     1     4  0.538  0.00910      0.671
+#> 10          1 neck           1     1     5 -0.740  0.151        0.403
 #> # ℹ 20 more rows
 ```
 
@@ -126,20 +126,20 @@ custom <- as_aniframe(
 custom
 #> # Tracks: A, B, C
 #> # Trials: 1, 2
-#>    track trial  time      x     y
-#>    <fct> <int> <int>  <dbl> <dbl>
-#>  1 A         1     1 0.553  0.389
-#>  2 A         1     1 0.0914 0.717
-#>  3 A         1     2 0.472  0.397
-#>  4 A         1     2 0.643  0.731
-#>  5 B         1     1 0.435  0.158
-#>  6 B         1     2 0.133  0.722
-#>  7 B         2     1 0.993  0.729
-#>  8 B         2     2 0.364  0.837
-#>  9 C         2     1 0.842  0.768
-#> 10 C         2     1 0.0955 0.476
-#> 11 C         2     2 0.831  0.778
-#> 12 C         2     2 0.470  0.920
+#>    track trial  time      x      y
+#>    <fct> <int> <int>  <dbl>  <dbl>
+#>  1 A         1     1 0.500  0.0246
+#>  2 A         1     1 0.228  0.469 
+#>  3 A         1     2 0.516  0.168 
+#>  4 A         1     2 0.318  0.255 
+#>  5 B         1     1 0.751  0.106 
+#>  6 B         1     2 0.826  0.159 
+#>  7 B         2     1 0.767  0.739 
+#>  8 B         2     2 0.877  0.355 
+#>  9 C         2     1 0.0938 0.120 
+#> 10 C         2     1 0.961  0.216 
+#> 11 C         2     2 0.614  0.610 
+#> 12 C         2     2 0.619  0.988
 ```
 
 `time` is the only temporal column with a special status: it must always
