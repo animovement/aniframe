@@ -16,6 +16,16 @@ vector of length 1 or more — readers that load from multiple files
 (e.g. \code{aniread::read_trackball()}) populate this with all source paths.
 \item \code{sampling_rate}: Sampling rate in Hz (numeric, NA)
 \item \code{start_datetime}: Start date and time of recording (POSIXct, NA)
+\item \code{variables_what}, \code{variables_when}, \code{variables_where}: The columns
+that carry, respectively, entity identity, temporal position and
+spatial position. These are the structural fields — \code{\link[=as_aniframe]{as_aniframe()}}
+uses them to coerce column types, order columns and rows, group the
+frame, and derive \code{coordinate_system}. The values here are a
+placeholder skeleton for an object with no data attached; every
+constructor overwrites them from the data or from its arguments.
+In particular \code{variables_what} is \strong{not} a requirement that a frame
+carry \code{individual} and \code{keypoint} columns — the rule is that a frame
+has at least one identity variable, whichever it happens to be.
 \item \code{reference_frame}: Reference frame (factor, "allocentric")
 \item \code{coordinate_system}: Coordinate system (factor, "cartesian")
 \item \code{origin}: Location of the (0,0) coordinate relative to the recording

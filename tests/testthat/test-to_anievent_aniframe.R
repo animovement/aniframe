@@ -281,11 +281,10 @@ test_that("singleton identity columns are preserved (single individual aniframe 
 
   ae <- to_anievent(af)
   expect_true("individual" %in% names(ae))
-  expect_true("keypoint" %in% names(ae)) # auto-added centroid, also a singleton
-  expect_setequal(
-    get_metadata(ae, "variables_what"),
-    c("individual", "keypoint")
-  )
+  # No auto-added keypoint: `individual` already satisfies the
+  # at-least-one-identity rule (#77).
+  expect_false("keypoint" %in% names(ae))
+  expect_setequal(get_metadata(ae, "variables_what"), "individual")
 })
 
 test_that("temporal-grouping columns (observation / session / trial) are always carried over regardless of variation", {
@@ -312,9 +311,9 @@ test_that("temporal-grouping columns (observation / session / trial) are always 
   expect_equal(nrow(ae), 4)
 })
 
-test_that("multi-value identity columns are dropped when the event is constant across them, while singleton columns are preserved", {
-  # individual: 2 values, epoch constant per time -> dropped.
-  # keypoint: auto-added "centroid" (singleton) -> kept for traceability.
+test_that("multi-value identity columns are dropped when the event is constant across them", {
+  # individual: 2 values, epoch constant per time -> dropped, leaving the
+  # anievent with no identity columns at all, which is permitted there.
   af <- aniframe(
     individual = c(1L, 1L, 2L, 2L),
     time = c(1:2, 1:2),
@@ -329,8 +328,8 @@ test_that("multi-value identity columns are dropped when the event is constant a
 
   ae <- to_anievent(af)
   expect_false("individual" %in% names(ae))
-  expect_true("keypoint" %in% names(ae))
-  expect_equal(get_metadata(ae, "variables_what"), "keypoint")
+  expect_false("keypoint" %in% names(ae))
+  expect_length(get_metadata(ae, "variables_what"), 0)
   expect_equal(nrow(ae), 2) # one A bout, one B bout
 })
 

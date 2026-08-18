@@ -3,11 +3,21 @@
 #' @param data A data frame with movement data.
 #' @param metadata A list of metadata to attach to the aniframe.
 #' @param variables_what Character vector of identity columns that together
-#'   define a unique entity. Defaults to `c("individual", "keypoint")`.
+#'   define a unique entity, and which the frame is grouped by. If `NULL`
+#'   (the default), detected from the data: whichever of `model`,
+#'   `individual`, `subject`, `track` and `keypoint` are present, in that
+#'   order (coarse to fine). An aniframe needs
+#'   at least one identity variable, so if none of them is found, a
+#'   `keypoint` column is added with the value `"centroid"`. Pass
+#'   `character(0)` to declare no identity variables at all — a
+#'   deliberate opt-out, which leaves the frame ungrouped. Every column
+#'   named here must exist in `data`.
 #' @param variables_when Character vector of temporal columns that together
-#'   define a unique timepoint. Defaults to `"time"`.
+#'   define a unique timepoint. If `NULL` (the default), detected from the
+#'   data: whichever of `observation`, `session`, `trial` and `time` are
+#'   present. `time` is always required.
 #' @param variables_where Character vector of spatial columns that together
-#'   define position. If NULL, detected from data.
+#'   define position. If `NULL` (the default), detected from the data.
 #'
 #' @return An aniframe object
 #' @export
@@ -31,16 +41,12 @@ as_aniframe <- function(
 
   # Resolve variables_what: detect from data if not specified
   if (is.null(variables_what)) {
-    # Recognised identity variable names
-    recognised_what <- c("model", "individual", "track", "keypoint")
-
-    # If keypoint column is missing, add it with "centroid"
-    if (!"keypoint" %in% names(data)) {
-      data$keypoint <- "centroid"
-    }
+    data <- ensure_identity(data)
 
     # Only include recognised what variables that are present in data
-    variables_what <- recognised_what[recognised_what %in% names(data)]
+    variables_what <- recognised_variables_what()[
+      recognised_variables_what() %in% names(data)
+    ]
   }
 
   # For spatial variables: detect from data if not specified
@@ -58,7 +64,7 @@ as_aniframe <- function(
   }
 
   # Validate required columns exist
-  ensure_aniframe_cols(data, variables_when, variables_where)
+  ensure_aniframe_cols(data, variables_what, variables_when, variables_where)
 
   # Standardize column types
   data <- standardise_aniframe_cols(
@@ -172,14 +178,64 @@ standardise_aniframe_cols <- function(
 }
 
 
+#' Ensure the data carries at least one identity variable
+#'
+#' An aniframe needs **at least one identity (`what`) variable** — the
+#' columns that together say which entity a row belongs to, and which the
+#' frame is grouped by. When auto-detection finds none of the recognised
+#' names in the data, one is added so that rule holds.
+#'
+#' The column added is `keypoint = "centroid"`. It is not a claim about
+#' the data: it does not mean the frame holds pose or skeleton data, only
+#' that it has a single unnamed entity. A more neutral default
+#' (`individual = "all"`) was considered and rejected in #77 — the name
+#' stays as it is.
+#'
+#' This applies only to the auto-detection path. An explicit
+#' `variables_what = character(0)` is a deliberate declaration of "no
+#' identity variables" and is left alone.
+#'
+#' @param data Data frame to check.
+#'
+#' @return `data`, with an identity column added if it had none.
+#' @keywords internal
+ensure_identity <- function(data) {
+  has_identity <- any(recognised_variables_what() %in% names(data))
+
+  if (!has_identity) {
+    data$keypoint <- "centroid"
+  }
+
+  data
+}
+
+
 #' Validate required columns for aniframe
 #'
 #' @param data Data frame to validate.
+#' @param variables_what Identity variables.
 #' @param variables_when Temporal variables.
 #' @param variables_where Spatial variables.
 #'
 #' @keywords internal
-ensure_aniframe_cols <- function(data, variables_when, variables_where) {
+ensure_aniframe_cols <- function(
+  data,
+  variables_what,
+  variables_when,
+  variables_where
+) {
+  # All identity variables must exist. Declaring a column that isn't
+  # there leaves the metadata describing a frame it doesn't have.
+  missing_what <- setdiff(variables_what, names(data))
+  if (length(missing_what) > 0) {
+    cli::cli_abort(
+      c(
+        "Identity variable{?s} not found in data: {.val {missing_what}}.",
+        "i" = "Columns specified in {.arg variables_what} must be present."
+      )
+    )
+  }
+
   # time column is always required
   if (!"time" %in% names(data)) {
     cli::cli_abort(

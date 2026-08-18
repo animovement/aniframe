@@ -4,10 +4,12 @@
 \alias{ensure_aniframe_cols}
 \title{Validate required columns for aniframe}
 \usage{
-ensure_aniframe_cols(data, variables_when, variables_where)
+ensure_aniframe_cols(data, variables_what, variables_when, variables_where)
 }
 \arguments{
 \item{data}{Data frame to validate.}
+
+\item{variables_what}{Identity variables.}
 
 \item{variables_when}{Temporal variables.}
 

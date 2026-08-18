@@ -22,13 +22,23 @@ aniframe(
 \item{metadata}{Optional list of metadata.}
 
 \item{variables_what}{Character vector of identity columns that together
-define a unique entity. Defaults to \code{c("individual", "keypoint")}.}
+define a unique entity, and which the frame is grouped by. If \code{NULL}
+(the default), detected from the data: whichever of \code{model},
+\code{individual}, \code{subject}, \code{track} and \code{keypoint} are present, in that
+order (coarse to fine). An aniframe needs
+at least one identity variable, so if none of them is found, a
+\code{keypoint} column is added with the value \code{"centroid"}. Pass
+\code{character(0)} to declare no identity variables at all — a
+deliberate opt-out, which leaves the frame ungrouped. Every column
+named here must exist in \code{data}.}
 
 \item{variables_when}{Character vector of temporal columns that together
-define a unique timepoint. Defaults to \code{"time"}.}
+define a unique timepoint. If \code{NULL} (the default), detected from the
+data: whichever of \code{observation}, \code{session}, \code{trial} and \code{time} are
+present. \code{time} is always required.}
 
 \item{variables_where}{Character vector of spatial columns that together
-define position. Defaults to \code{c("x", "y")}.}
+define position. If \code{NULL} (the default), detected from the data.}
 
 \item{.rows}{Number of rows (passed to tibble).}
 

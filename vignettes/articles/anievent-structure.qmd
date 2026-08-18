@@ -90,9 +90,10 @@ travel via `variables_what`:
 | `modifiers`  | list-column of `character` | optional | flat per-event modifier values |
 
 Identity columns are auto-detected from a known list
-(`model`, `individual`, `track`, `subject`), or you can supply any
-name via `variables_what`. An `anievent` with no identity column at
-all is fine for single-subject experiments.
+(`model`, `individual`, `subject`, `track`, `keypoint`) — the same list
+`aniframe` uses, so identity means the same thing on both sides — or you
+can supply any name via `variables_what`. An `anievent` with no identity
+column at all is fine for single-subject experiments.
 
 `type` is auto-derived from `start`/`stop` at construction.
 Classification is **per `(channel, label)` group**, not per row: a

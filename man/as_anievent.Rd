@@ -42,8 +42,9 @@ as_anievent(
 
 \item{variables_what}{Character vector of identity columns. When
 \code{NULL} (default), auto-detected from a known list (\code{model},
-\code{individual}, \code{track}, \code{subject}) — only those present in \code{data} are
-used. Pass an explicit value to use any other column name(s) as
+\code{individual}, \code{subject}, \code{track}, \code{keypoint}) — only those present
+in \code{data} are used. Pass an explicit value to use any other
+column name(s) as
 identity. An anievent with no identity column is permitted (e.g. a
 single-subject experiment).}
 

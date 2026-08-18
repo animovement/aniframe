@@ -20,7 +20,8 @@
 #' @param metadata Optional list of metadata.
 #' @param variables_what Character vector of identity columns that together
 #'   define a unique entity. When `NULL` (default), auto-detected from a
-#'   known list (`model`, `individual`, `track`, `subject`).
+#'   known list (`model`, `individual`, `subject`, `track`,
+#'   `keypoint`).
 #' @param variables_when Character vector of temporal columns. When
 #'   `NULL` (default), auto-detected from a known grouping list
 #'   (`observation`, `session`, `trial`) and concatenated with the
