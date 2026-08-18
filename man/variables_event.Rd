@@ -19,7 +19,8 @@ remove_variables_event(data, variables)
 \arguments{
 \item{data}{An aniframe object.}
 
-\item{state, point}{Character vectors of column names.}
+\item{state, point}{Character vectors of column names. \code{NULL} (the
+default) leaves that side of the declaration as it was.}
 
 \item{variables}{Character vector of column names to undeclare.}
 }
@@ -46,11 +47,12 @@ These functions declare the columns and check they exist, so the
 metadata cannot promise a column the frame doesn't have.
 \code{\link[=set_metadata]{set_metadata()}} refuses the field for that reason.
 \itemize{
-\item \code{set_variables_event()} replaces the declaration. A side you leave
-as \code{NULL} is cleared, so \code{set_variables_event(data, state = "x")}
-declares one state column and no point columns.
-\item \code{add_variables_event()} appends to either side, leaving the other
-untouched.
+\item \code{set_variables_event()} replaces the side(s) you name and leaves the
+other alone, so \code{set_variables_event(data, state = "x")} swaps the
+state declaration without touching any point columns. Clear a side by
+naming it explicitly: \code{set_variables_event(data, point = character())}.
+\item \code{add_variables_event()} appends to the side(s) you name, leaving the
+other untouched.
 \item \code{remove_variables_event()} drops the named columns from whichever
 side they are on — a column can only be one kind, so it needs no
 \code{state} / \code{point} argument.
@@ -71,6 +73,12 @@ af <- aniframe(
 
 af <- set_variables_event(af, state = "behaviour", point = "call")
 get_variables_event(af)
+
+# Naming one side leaves the other alone
+get_variables_event(set_variables_event(af, state = "behaviour"))
+
+# Clearing a side is explicit
+get_variables_event(set_variables_event(af, point = character()))
 
 # Declaring a column that isn't there is caught
 try(add_variables_event(af, state = "grooming"))

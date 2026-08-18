@@ -18,6 +18,18 @@
 declare_variables_event <- function(data, state, point) {
   ensure_can_declare_events(data)
 
+  # `NULL` means "leave this side alone". With named arguments it reads as
+  # not-supplied, and silently clearing the side the caller never mentioned
+  # is the same footgun `add_*()` exists to avoid elsewhere. A side is
+  # cleared by naming it explicitly as `character()`.
+  current <- normalise_variables_event(get_metadata(data, "variables_event"))
+  if (is.null(state)) {
+    state <- current$state
+  }
+  if (is.null(point)) {
+    point <- current$point
+  }
+
   declared <- normalise_variables_event(list(state = state, point = point))
   ensure_valid_variables_event(declared)
   ensure_declared_cols_exist(
@@ -76,11 +88,12 @@ ensure_can_declare_events <- function(data) {
 #' metadata cannot promise a column the frame doesn't have.
 #' [set_metadata()] refuses the field for that reason.
 #'
-#' * `set_variables_event()` replaces the declaration. A side you leave
-#'   as `NULL` is cleared, so `set_variables_event(data, state = "x")`
-#'   declares one state column and no point columns.
-#' * `add_variables_event()` appends to either side, leaving the other
-#'   untouched.
+#' * `set_variables_event()` replaces the side(s) you name and leaves the
+#'   other alone, so `set_variables_event(data, state = "x")` swaps the
+#'   state declaration without touching any point columns. Clear a side by
+#'   naming it explicitly: `set_variables_event(data, point = character())`.
+#' * `add_variables_event()` appends to the side(s) you name, leaving the
+#'   other untouched.
 #' * `remove_variables_event()` drops the named columns from whichever
 #'   side they are on — a column can only be one kind, so it needs no
 #'   `state` / `point` argument.
@@ -90,7 +103,8 @@ ensure_can_declare_events <- function(data) {
 #' already the encoded form, with its events in `channel` and `label`.
 #'
 #' @param data An aniframe object.
-#' @param state,point Character vectors of column names.
+#' @param state,point Character vectors of column names. `NULL` (the
+#'   default) leaves that side of the declaration as it was.
 #' @param variables Character vector of column names to undeclare.
 #'
 #' @return For the setters, `data` with the declaration recorded. For
@@ -111,6 +125,12 @@ ensure_can_declare_events <- function(data) {
 #'
 #' af <- set_variables_event(af, state = "behaviour", point = "call")
 #' get_variables_event(af)
+#'
+#' # Naming one side leaves the other alone
+#' get_variables_event(set_variables_event(af, state = "behaviour"))
+#'
+#' # Clearing a side is explicit
+#' get_variables_event(set_variables_event(af, point = character()))
 #'
 #' # Declaring a column that isn't there is caught
 #' try(add_variables_event(af, state = "grooming"))

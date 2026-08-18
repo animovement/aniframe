@@ -86,18 +86,31 @@ test_that("set_variables_event declares both sides and reads back", {
   )
 })
 
-test_that("set_variables_event replaces wholesale, clearing the other side", {
-  af <- set_variables_event(event_af(), state = "behaviour", point = "call")
-  replaced <- set_variables_event(af, state = "behaviour")
+test_that("set_variables_event replaces the named side, leaving the other", {
+  # Naming one side must not silently undeclare the other: the columns
+  # would stay in the frame while to_anievent() quietly stopped encoding
+  # them.
+  af <- event_af() |>
+    dplyr::mutate(did_stuff = factor("yes")) |>
+    set_variables_event(state = "behaviour", point = "call")
 
-  expect_equal(get_variables_event(replaced)$state, "behaviour")
-  expect_length(get_variables_event(replaced)$point, 0)
+  swapped <- set_variables_event(af, state = "did_stuff")
+  expect_equal(get_variables_event(swapped)$state, "did_stuff")
+  expect_equal(get_variables_event(swapped)$point, "call")
+
+  swapped_point <- set_variables_event(af, point = character())
+  expect_equal(get_variables_event(swapped_point)$state, "behaviour")
+  expect_length(get_variables_event(swapped_point)$point, 0)
 })
 
-test_that("a declaration with neither side clears the field", {
-  af <- set_variables_event(event_af(), state = "behaviour")
-  cleared <- set_variables_event(af)
+test_that("clearing a side is explicit, and naming neither is a no-op", {
+  af <- set_variables_event(event_af(), state = "behaviour", point = "call")
 
+  expect_equal(get_variables_event(set_variables_event(af)), {
+    get_variables_event(af)
+  })
+
+  cleared <- set_variables_event(af, state = character(), point = character())
   expect_length(get_variables_event(cleared)$state, 0)
   expect_length(get_variables_event(cleared)$point, 0)
 })
@@ -193,7 +206,9 @@ test_that("a non-character declaration errors", {
   )
 })
 
-test_that("partial input fills the missing side with none (#76)", {
+test_that("either side can be declared on its own (#76)", {
+  # On a frame with nothing declared, naming one side leaves the other
+  # empty -- not because it is cleared, but because it already was.
   state_only <- set_variables_event(event_af(), state = "behaviour")
   expect_equal(get_variables_event(state_only)$state, "behaviour")
   expect_equal(get_variables_event(state_only)$point, character())
