@@ -1,7 +1,7 @@
 # Ensure declared columns are present
 
 Shared by construction
-([`ensure_aniframe_cols()`](http://animovement.dev/aniframe/reference/ensure_aniframe_cols.md))
+([`ensure_aniframe_cols()`](https://animovement.dev/aniframe/reference/ensure_aniframe_cols.md))
 and re-declaration, so a column that isn't there is reported the same
 way whichever route the caller took.
 

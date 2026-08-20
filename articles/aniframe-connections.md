@@ -17,9 +17,9 @@ small family of functions for managing it. This article covers that
 field and those functions.
 
 For the rest of the metadata see [Metadata on an
-aniframe](http://animovement.dev/aniframe/articles/aniframe-metadata.md);
+aniframe](https://animovement.dev/aniframe/articles/aniframe-metadata.md);
 for the data-column structure see [The aniframe data
-structure](http://animovement.dev/aniframe/articles/aniframe-structure.md).
+structure](https://animovement.dev/aniframe/articles/aniframe-structure.md).
 
 ## Storage shape
 
@@ -130,7 +130,7 @@ nrow(get_connections(fish, "keypoint"))
 #> [1] 4
 ```
 
-[`remove_connections()`](http://animovement.dev/aniframe/reference/remove_connections.md)
+[`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
 matches exactly on `from`/`to`. Direction matters: removing `(a, b)`
 won’t strip `(b, a)`. If you stored an edge in one direction but want it
 gone regardless of orientation, include both pairs in the call (or
@@ -161,15 +161,15 @@ get_connections(social)
 
 The `variable` argument must be a column listed in `variables_what` or
 `variables_when` —
-[`set_connections()`](http://animovement.dev/aniframe/reference/set_connections.md)
+[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md)
 errors otherwise to catch typos.
 
 ## Catching typos
 
 When a `from`/`to` value isn’t found in the corresponding column,
-[`set_connections()`](http://animovement.dev/aniframe/reference/set_connections.md)
+[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md)
 and
-[`add_connections()`](http://animovement.dev/aniframe/reference/add_connections.md)
+[`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md)
 emit a warning but **keep the connection** — the value may legitimately
 be missing in this particular recording while being valid elsewhere.
 
@@ -183,17 +183,17 @@ example_aniframe(n_keypoints = 5) |>
 #> # Keypoints:   head, neck, shoulder_right, shoulder_left, abdomen
 #> # Sessions:    1
 #> # Trials:      1
-#>    individual keypoint session trial  time      x        y confidence
-#>         <int> <fct>      <int> <int> <int>  <dbl>    <dbl>      <dbl>
-#>  1          1 head           1     1     1  1.54  -0.656        0.950
-#>  2          1 head           1     1     2 -0.608  0.157        0.854
-#>  3          1 head           1     1     3  0.119  0.302        0.530
-#>  4          1 head           1     1     4 -0.367 -1.26         0.736
-#>  5          1 head           1     1     5 -1.06   0.0322       0.766
-#>  6          1 head           1     1     6 -0.326 -0.714        0.695
-#>  7          1 head           1     1     7 -0.863 -0.0869       0.367
-#>  8          1 head           1     1     8 -0.801  0.00127      0.893
-#>  9          1 head           1     1     9 -0.161  0.717        0.767
-#> 10          1 head           1     1    10  0.701  1.18         0.649
+#>    individual keypoint session trial  time       x      y confidence
+#>         <int> <fct>      <int> <int> <int>   <dbl>  <dbl>      <dbl>
+#>  1          1 head           1     1     1  0.0958  0.489      0.870
+#>  2          1 head           1     1     2 -0.0305  0.409      0.895
+#>  3          1 head           1     1     3 -0.152   2.45       0.730
+#>  4          1 head           1     1     4 -2.12   -1.79       0.560
+#>  5          1 head           1     1     5  0.920  -0.750      0.996
+#>  6          1 head           1     1     6 -0.493  -0.518      0.674
+#>  7          1 head           1     1     7  1.09    0.422      0.786
+#>  8          1 head           1     1     8  0.638  -1.75       0.648
+#>  9          1 head           1     1     9  1.95    0.161      0.624
+#> 10          1 head           1     1    10  0.225   0.571      0.619
 #> # ℹ 740 more rows
 ```

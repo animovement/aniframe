@@ -9,13 +9,13 @@ categorical event labels, split into two kinds:
 - **point** columns are instantaneous — every non-`NA` frame is its own
   zero-length event.
 
-[`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
 reads the declaration to know what to encode, and the print header
 surfaces it as "State event variables" / "Point event variables".
 
 These functions declare the columns and check they exist, so the
 metadata cannot promise a column the frame doesn't have.
-[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
 refuses the field for that reason.
 
 - `set_variables_event()` replaces the side(s) you name and leaves the
@@ -70,9 +70,9 @@ For the setters, `data` with the declaration recorded. For
 
 ## See also
 
-[`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md),
+[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md),
 which consumes the declaration;
-[`set_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
+[`set_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
 and friends for the other variable roles.
 
 ## Examples

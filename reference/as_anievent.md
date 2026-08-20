@@ -76,5 +76,5 @@ An anievent object.
 
 To *encode* per-frame data (factor / logical / character columns) into
 the bout shape, use
-[`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
 instead.

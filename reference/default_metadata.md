@@ -2,9 +2,9 @@
 
 Returns a list containing the default metadata fields and their initial
 values. The same metadata substrate is shared by both
-[`aniframe()`](http://animovement.dev/aniframe/reference/aniframe.md)
+[`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
 and
-[`anievent()`](http://animovement.dev/aniframe/reference/anievent.md)
+[`anievent()`](https://animovement.dev/aniframe/reference/anievent.md)
 objects; per-class data contracts are versioned via `spec_version`. Most
 fields are initialized as `NA` and should be set appropriately for your
 data.
@@ -35,7 +35,7 @@ A named list with the following fields:
 - `variables_what`, `variables_when`, `variables_where`: The columns
   that carry, respectively, entity identity, temporal position and
   spatial position. These are the structural fields —
-  [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+  [`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
   uses them to coerce column types, order columns and rows, group the
   frame, and derive `coordinate_system`. The values here are a
   placeholder skeleton for an object with no data attached; every
@@ -55,7 +55,7 @@ A named list with the following fields:
 
 The spatial fields all have a way of saying "not applicable", because
 the metadata substrate is shared with
-[`anievent()`](http://animovement.dev/aniframe/reference/anievent.md),
+[`anievent()`](https://animovement.dev/aniframe/reference/anievent.md),
 which has no spatial component at all: `unit_space`, `unit_angle`,
 `reference_frame` and `origin` take "none", `coordinate_system` takes
 "unknown", and `y_height` takes `NA`. An anievent is constructed with
@@ -64,18 +64,18 @@ those values rather than inheriting movement defaults it cannot honour
 
 - `y_height`: Height of the recording frame in y-axis units (numeric,
   NA). Used by
-  [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md)
+  [`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md)
   to reflect y coordinates when switching origin conventions.
 
 - `connections`: Named list of connection tables, one per identity or
   temporal variable (typically `keypoint` for skeletons; could also be
   `individual` for social networks). Each entry is a 2-column tibble of
   `from`/`to` pairs. Default is an empty list. Manage via
-  [`set_connections()`](http://animovement.dev/aniframe/reference/set_connections.md),
-  [`get_connections()`](http://animovement.dev/aniframe/reference/get_connections.md),
-  [`add_connections()`](http://animovement.dev/aniframe/reference/add_connections.md)
+  [`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md),
+  [`get_connections()`](https://animovement.dev/aniframe/reference/get_connections.md),
+  [`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md)
   and
-  [`remove_connections()`](http://animovement.dev/aniframe/reference/remove_connections.md).
+  [`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md).
 
 - `variables_event`: Named list with two entries, `state` and `point`,
   each a character vector naming columns that carry per-frame
@@ -94,5 +94,5 @@ those values rather than inheriting movement defaults it cannot honour
 
 ## See also
 
-[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md),
-[`get_metadata()`](http://animovement.dev/aniframe/reference/get_metadata.md)
+[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md),
+[`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md)

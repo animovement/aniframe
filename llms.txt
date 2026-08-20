@@ -31,24 +31,23 @@ To cite *aniframe* in publications use:
 ``` r
 
 citation("aniframe")
-#> To cite aniframe in publications use:
+#> To cite aniframe in publications, please cite the animovement toolbox
+#> as a whole (the first entry below). If your work used only aniframe,
+#> you may cite the package directly instead (the second entry).
+#> 
+#>   Roald-Arbøl M (2026). "animovement: An R toolbox for analysing
+#>   movement across space and time." doi:10.5281/zenodo.13235277
+#>   <https://doi.org/10.5281/zenodo.13235277>.
+#>   <https://animovement.dev/animovement/>.
 #> 
 #>   Roald-Arbøl M (2026). "aniframe: An R package providing core data
-#>   structures for movement data." doi:10.5281/zenodo.17344598
-#>   <https://doi.org/10.5281/zenodo.17344598>,
-#>   <http://animovement.dev/aniframe/>.
+#>   structures for movement data." doi:10.5281/zenodo.17344597
+#>   <https://doi.org/10.5281/zenodo.17344597>.
+#>   <https://animovement.dev/aniframe/>.
 #> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Misc{aniframe,
-#>     doi = {10.5281/zenodo.17344598},
-#>     title = {aniframe: An R package providing core data structures for movement data},
-#>     author = {Mikkel Roald-Arbøl},
-#>     year = {2026},
-#>     url = {http://animovement.dev/aniframe/},
-#>     abstract = {An R package providing core data structures for movement data.},
-#>     version = {0.4.1},
-#>   }
+#> To see these entries in BibTeX format, use 'print(<citation>,
+#> bibtex=TRUE)', 'toBibtex(.)', or set
+#> 'options(citation.bibtex.max=999)'.
 ```
 
 # Package index
@@ -58,17 +57,17 @@ citation("aniframe")
 Functions that create an aniframe, coerce other objects to aniframe, or
 provide example data.
 
-- [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+- [`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
   : Convert a data frame to aniframe
-- [`aniframe()`](http://animovement.dev/aniframe/reference/aniframe.md)
+- [`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
   : aniframe package
-- [`example_aniframe()`](http://animovement.dev/aniframe/reference/example_aniframe.md)
+- [`example_aniframe()`](https://animovement.dev/aniframe/reference/example_aniframe.md)
   : Create example aniframe data
-- [`is_aniframe()`](http://animovement.dev/aniframe/reference/is_aniframe.md)
+- [`is_aniframe()`](https://animovement.dev/aniframe/reference/is_aniframe.md)
   : Check if object is an aniframe
-- [`ensure_is_aniframe()`](http://animovement.dev/aniframe/reference/ensure_is_aniframe.md)
+- [`ensure_is_aniframe()`](https://animovement.dev/aniframe/reference/ensure_is_aniframe.md)
   : Ensure object is an aniframe
-- [`validate_aniframe()`](http://animovement.dev/aniframe/reference/validate_aniframe.md)
+- [`validate_aniframe()`](https://animovement.dev/aniframe/reference/validate_aniframe.md)
   : Validate an aniframe
 
 ## Creating and converting anievent objects
@@ -76,17 +75,17 @@ provide example data.
 Functions that create an anievent (long-format behavioural event
 records) or coerce other objects to anievent.
 
-- [`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+- [`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
   : Encode per-frame data into an anievent
-- [`as_anievent()`](http://animovement.dev/aniframe/reference/as_anievent.md)
+- [`as_anievent()`](https://animovement.dev/aniframe/reference/as_anievent.md)
   : Cast a data frame to an anievent
-- [`anievent()`](http://animovement.dev/aniframe/reference/anievent.md)
+- [`anievent()`](https://animovement.dev/aniframe/reference/anievent.md)
   : Create an anievent data frame
-- [`is_anievent()`](http://animovement.dev/aniframe/reference/is_anievent.md)
+- [`is_anievent()`](https://animovement.dev/aniframe/reference/is_anievent.md)
   : Check if object is an anievent
-- [`ensure_is_anievent()`](http://animovement.dev/aniframe/reference/ensure_is_anievent.md)
+- [`ensure_is_anievent()`](https://animovement.dev/aniframe/reference/ensure_is_anievent.md)
   : Ensure object is an anievent
-- [`validate_anievent()`](http://animovement.dev/aniframe/reference/validate_anievent.md)
+- [`validate_anievent()`](https://animovement.dev/aniframe/reference/validate_anievent.md)
   : Validate an anievent
 
 ## Metadata handling
@@ -94,23 +93,23 @@ records) or coerce other objects to anievent.
 Functions for reading, setting, and retrieving the metadata attached to
 aniframe or anievent objects.
 
-- [`get_metadata()`](http://animovement.dev/aniframe/reference/get_metadata.md)
+- [`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md)
   : Get metadata
-- [`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+- [`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
   : Set metadata
-- [`set_unit_time()`](http://animovement.dev/aniframe/reference/set_unit_time.md)
+- [`set_unit_time()`](https://animovement.dev/aniframe/reference/set_unit_time.md)
   : Set the temporal unit of an aniframe or anievent
-- [`set_unit_space()`](http://animovement.dev/aniframe/reference/set_unit_space.md)
+- [`set_unit_space()`](https://animovement.dev/aniframe/reference/set_unit_space.md)
   : Set the spatial unit of an aniframe object
-- [`set_unit_angle()`](http://animovement.dev/aniframe/reference/set_unit_angle.md)
+- [`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md)
   : Set the angular unit of an aniframe object
-- [`set_sampling_rate()`](http://animovement.dev/aniframe/reference/set_sampling_rate.md)
+- [`set_sampling_rate()`](https://animovement.dev/aniframe/reference/set_sampling_rate.md)
   : Set the sampling rate of an aniframe or anievent
-- [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md)
+- [`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md)
   : Set the coordinate origin
-- [`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md)
+- [`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md)
   : Set the y-axis frame height
-- [`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
+- [`default_metadata()`](https://animovement.dev/aniframe/reference/default_metadata.md)
   : Default metadata structure
 
 ## Declaring variables
@@ -119,26 +118,26 @@ Declare which columns carry identity, time and position. These are the
 frame’s structure rather than a description of it, so the setters
 restructure the frame to match — coercing column types, relocating,
 reordering, regrouping, and refreshing derived fields.
-[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
 refuses these three fields for that reason.
 
-- [`get_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`get_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`get_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`set_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`set_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`set_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`add_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`add_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`add_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`remove_variables_what()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`remove_variables_when()`](http://animovement.dev/aniframe/reference/variables.md)
-  [`remove_variables_where()`](http://animovement.dev/aniframe/reference/variables.md)
+- [`get_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`get_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`get_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`set_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`set_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`set_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`add_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`add_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`add_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`remove_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`remove_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
+  [`remove_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
   : Declare which columns carry identity, time and position
-- [`get_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
-  [`set_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
-  [`add_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
-  [`remove_variables_event()`](http://animovement.dev/aniframe/reference/variables_event.md)
+- [`get_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
+  [`set_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
+  [`add_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
+  [`remove_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
   : Declare which columns carry per-frame event labels
 
 ## Connections
@@ -147,64 +146,64 @@ Manage connections between identity or temporal variables (e.g. skeleton
 edges between keypoints, or social-network edges between individuals).
 Stored as a named list of `from`/`to` tibbles in `metadata$connections`.
 
-- [`set_connections()`](http://animovement.dev/aniframe/reference/set_connections.md)
+- [`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md)
   **\[experimental\]** : Set the connections for a variable
-- [`get_connections()`](http://animovement.dev/aniframe/reference/get_connections.md)
+- [`get_connections()`](https://animovement.dev/aniframe/reference/get_connections.md)
   **\[experimental\]** : Get connections from an aniframe
-- [`add_connections()`](http://animovement.dev/aniframe/reference/add_connections.md)
+- [`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md)
   **\[experimental\]** : Add connections to an aniframe
-- [`remove_connections()`](http://animovement.dev/aniframe/reference/remove_connections.md)
+- [`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
   **\[experimental\]** : Remove connections from an aniframe
 
 ## Spatial checks
 
 These functions provide checks for your coordinate system.
-[`is_spatial()`](http://animovement.dev/aniframe/reference/is_spatial.md)
+[`is_spatial()`](https://animovement.dev/aniframe/reference/is_spatial.md)
 and
-[`ensure_is_spatial()`](http://animovement.dev/aniframe/reference/ensure_is_spatial.md)
+[`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md)
 check the spatial columns against the `variables_where` metadata; the
 `is_cartesian*()` family checks for particular column names.
 
-- [`is_spatial()`](http://animovement.dev/aniframe/reference/is_spatial.md)
+- [`is_spatial()`](https://animovement.dev/aniframe/reference/is_spatial.md)
   : Test whether the spatial columns match the metadata
-- [`ensure_is_spatial()`](http://animovement.dev/aniframe/reference/ensure_is_spatial.md)
+- [`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md)
   : Ensure the spatial columns match the metadata
-- [`is_cartesian()`](http://animovement.dev/aniframe/reference/is_cartesian.md)
+- [`is_cartesian()`](https://animovement.dev/aniframe/reference/is_cartesian.md)
   : Test whether a data frame uses a Cartesian coordinate system
-- [`is_cartesian_1d()`](http://animovement.dev/aniframe/reference/is_cartesian_1d.md)
+- [`is_cartesian_1d()`](https://animovement.dev/aniframe/reference/is_cartesian_1d.md)
   : Test for a 1‑D Cartesian coordinate system
-- [`is_cartesian_2d()`](http://animovement.dev/aniframe/reference/is_cartesian_2d.md)
+- [`is_cartesian_2d()`](https://animovement.dev/aniframe/reference/is_cartesian_2d.md)
   : Test for a 2‑D Cartesian coordinate system
-- [`is_cartesian_3d()`](http://animovement.dev/aniframe/reference/is_cartesian_3d.md)
+- [`is_cartesian_3d()`](https://animovement.dev/aniframe/reference/is_cartesian_3d.md)
   : Test for a 3‑D Cartesian coordinate system
-- [`is_polar()`](http://animovement.dev/aniframe/reference/is_polar.md)
+- [`is_polar()`](https://animovement.dev/aniframe/reference/is_polar.md)
   : Test whether a data frame uses a polar coordinate system
-- [`is_cylindrical()`](http://animovement.dev/aniframe/reference/is_cylindrical.md)
+- [`is_cylindrical()`](https://animovement.dev/aniframe/reference/is_cylindrical.md)
   : Test whether a data frame uses a cylindrical coordinate system
-- [`is_spherical()`](http://animovement.dev/aniframe/reference/is_spherical.md)
+- [`is_spherical()`](https://animovement.dev/aniframe/reference/is_spherical.md)
   : Test whether a data frame uses a spherical coordinate system
-- [`ensure_is_cartesian()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian.md)
+- [`ensure_is_cartesian()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian.md)
   : Internal guard for Cartesian checks
-- [`ensure_is_cartesian_1d()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.md)
+- [`ensure_is_cartesian_1d()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.md)
   : Internal guard for 1‑D Cartesian checks
-- [`ensure_is_cartesian_2d()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian_2d.md)
+- [`ensure_is_cartesian_2d()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian_2d.md)
   : Internal guard for 2‑D Cartesian checks
-- [`ensure_is_cartesian_3d()`](http://animovement.dev/aniframe/reference/ensure_is_cartesian_3d.md)
+- [`ensure_is_cartesian_3d()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian_3d.md)
   : Internal guard for 3‑D Cartesian checks
-- [`ensure_is_polar()`](http://animovement.dev/aniframe/reference/ensure_is_polar.md)
+- [`ensure_is_polar()`](https://animovement.dev/aniframe/reference/ensure_is_polar.md)
   : Internal guard for polar checks
-- [`ensure_is_cylindrical()`](http://animovement.dev/aniframe/reference/ensure_is_cylindrical.md)
+- [`ensure_is_cylindrical()`](https://animovement.dev/aniframe/reference/ensure_is_cylindrical.md)
   : Internal guard for cylindrical checks
-- [`ensure_is_spherical()`](http://animovement.dev/aniframe/reference/ensure_is_spherical.md)
+- [`ensure_is_spherical()`](https://animovement.dev/aniframe/reference/ensure_is_spherical.md)
   : Internal guard for spherical checks
 
 ## Helpers
 
-- [`rad_to_deg()`](http://animovement.dev/aniframe/reference/rad_to_deg.md)
+- [`rad_to_deg()`](https://animovement.dev/aniframe/reference/rad_to_deg.md)
   : Convert radians to degrees
-- [`deg_to_rad()`](http://animovement.dev/aniframe/reference/deg_to_rad.md)
+- [`deg_to_rad()`](https://animovement.dev/aniframe/reference/deg_to_rad.md)
   : Convert degrees to radians
-- [`convert_nan_to_na()`](http://animovement.dev/aniframe/reference/convert_nan_to_na.md)
+- [`convert_nan_to_na()`](https://animovement.dev/aniframe/reference/convert_nan_to_na.md)
   : Convert NaN to NA in numeric columns
 
 # Articles
@@ -212,9 +211,9 @@ check the spatial columns against the `variables_where` metadata; the
 ### Get started
 
 - [The aniframe data
-  structure](http://animovement.dev/aniframe/articles/aniframe-structure.md):
+  structure](https://animovement.dev/aniframe/articles/aniframe-structure.md):
 - [Metadata on an
-  aniframe](http://animovement.dev/aniframe/articles/aniframe-metadata.md):
-- [Connections](http://animovement.dev/aniframe/articles/aniframe-connections.md):
+  aniframe](https://animovement.dev/aniframe/articles/aniframe-metadata.md):
+- [Connections](https://animovement.dev/aniframe/articles/aniframe-connections.md):
 - [The anievent data
-  structure](http://animovement.dev/aniframe/articles/anievent-structure.md):
+  structure](https://animovement.dev/aniframe/articles/anievent-structure.md):

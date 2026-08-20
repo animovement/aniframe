@@ -1,8 +1,9 @@
 # Set the sampling rate of an aniframe or anievent
 
 Sets the sampling rate (in Hz) on an
-[`aniframe()`](http://animovement.dev/aniframe/reference/aniframe.md) or
-[`anievent()`](http://animovement.dev/aniframe/reference/anievent.md)
+[`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
+or
+[`anievent()`](https://animovement.dev/aniframe/reference/anievent.md)
 and, if the object's `unit_time` is currently `"frame"` or `"unknown"`,
 converts the temporal columns from frames to seconds using
 `1 / sampling_rate`. If `unit_time` is already an SI unit, only the

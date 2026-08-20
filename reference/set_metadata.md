@@ -60,8 +60,8 @@ The object with updated metadata.
 
 ## See also
 
-[`get_metadata()`](http://animovement.dev/aniframe/reference/get_metadata.md),
-[`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
+[`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md),
+[`default_metadata()`](https://animovement.dev/aniframe/reference/default_metadata.md)
 
 ## Examples
 

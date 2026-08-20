@@ -31,13 +31,13 @@ updated `origin` metadata.
 The flip uses the formula `y_new = y_height - y_old`. The `y_height`
 metadata field must therefore be set when the origin actually changes;
 if it is `NA`, this function errors and asks the user to set it via
-[`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md).
+[`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md).
 When the supplied `origin` matches the current value, the data is
 returned unchanged.
 
 ## See also
 
-[`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md)
+[`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md)
 
 ## Examples
 

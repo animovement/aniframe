@@ -21,9 +21,9 @@ three semantic slots that answer **what** is moving, **when**, and
 
 This article covers the data shape. Companion articles cover the
 [metadata
-attribute](http://animovement.dev/aniframe/articles/aniframe-metadata.md)
+attribute](https://animovement.dev/aniframe/articles/aniframe-metadata.md)
 and the [connections
-field](http://animovement.dev/aniframe/articles/aniframe-connections.md)
+field](https://animovement.dev/aniframe/articles/aniframe-connections.md)
 for skeletons and networks.
 
 ## Anatomy at a glance
@@ -43,18 +43,18 @@ data
 #> # Keypoints:   head, neck, shoulder_right
 #> # Sessions:    1
 #> # Trials:      1
-#>    individual keypoint session trial  time       x       y confidence
-#>         <int> <fct>      <int> <int> <int>   <dbl>   <dbl>      <dbl>
-#>  1          1 head           1     1     1  1.000  -0.0632      0.759
-#>  2          1 head           1     1     2 -0.566  -0.594       0.835
-#>  3          1 head           1     1     3 -0.430  -1.73        0.603
-#>  4          1 head           1     1     4 -1.11   -0.184       0.678
-#>  5          1 head           1     1     5  0.303  -0.620       0.557
-#>  6          1 neck           1     1     1  0.0423 -0.570       0.957
-#>  7          1 neck           1     1     2  0.962  -0.832       0.641
-#>  8          1 neck           1     1     3 -1.37    2.25        0.579
-#>  9          1 neck           1     1     4  0.101  -0.925       0.906
-#> 10          1 neck           1     1     5 -1.11    0.663       0.884
+#>    individual keypoint session trial  time       x      y confidence
+#>         <int> <fct>      <int> <int> <int>   <dbl>  <dbl>      <dbl>
+#>  1          1 head           1     1     1  0.895  -0.937      0.724
+#>  2          1 head           1     1     2  0.684   1.23       0.659
+#>  3          1 head           1     1     3  1.58   -1.44       0.894
+#>  4          1 head           1     1     4  0.0415  0.435      0.933
+#>  5          1 head           1     1     5 -1.00   -1.89       0.796
+#>  6          1 neck           1     1     1 -0.797  -1.32       0.909
+#>  7          1 neck           1     1     2 -0.686   1.49       0.772
+#>  8          1 neck           1     1     3 -1.96    1.22       0.750
+#>  9          1 neck           1     1     4 -0.764  -0.937      0.658
+#> 10          1 neck           1     1     5  0.0517  2.49       0.576
 #> # ℹ 20 more rows
 ```
 
@@ -103,7 +103,7 @@ md$variables_where
 
 Most readers populate these from the source data, but you can override
 them when constructing manually. By default,
-[`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
 recognises `c("model", "individual", "track", "keypoint")` as identity
 columns and `c("session", "trial", "time")` as temporal columns. Pass
 the slot arguments explicitly to use other names:
@@ -126,20 +126,20 @@ custom <- as_aniframe(
 custom
 #> # Tracks: A, B, C
 #> # Trials: 1, 2
-#>    track trial  time      x      y
-#>    <fct> <int> <int>  <dbl>  <dbl>
-#>  1 A         1     1 0.699  0.422 
-#>  2 A         1     1 0.725  0.926 
-#>  3 A         1     2 0.186  0.816 
-#>  4 A         1     2 0.773  0.525 
-#>  5 B         1     1 0.0799 0.444 
-#>  6 B         1     2 0.205  0.0917
-#>  7 B         2     1 0.581  0.482 
-#>  8 B         2     2 0.336  0.516 
-#>  9 C         2     1 0.339  0.411 
-#> 10 C         2     1 0.888  0.442 
-#> 11 C         2     2 0.196  0.267 
-#> 12 C         2     2 0.0903 0.896
+#>    track trial  time      x     y
+#>    <fct> <int> <int>  <dbl> <dbl>
+#>  1 A         1     1 0.800  0.907
+#>  2 A         1     1 0.718  0.117
+#>  3 A         1     2 0.143  0.191
+#>  4 A         1     2 0.465  0.629
+#>  5 B         1     1 0.920  0.661
+#>  6 B         1     2 0.627  0.792
+#>  7 B         2     1 0.0671 0.897
+#>  8 B         2     2 0.744  0.672
+#>  9 C         2     1 0.220  0.903
+#> 10 C         2     1 0.486  0.487
+#> 11 C         2     2 0.468  0.361
+#> 12 C         2     2 0.925  0.606
 ```
 
 `time` is the only temporal column with a special status: it must always
@@ -216,9 +216,9 @@ is_cartesian_2d(cart)
 ## Where to next?
 
 - [The metadata
-  attribute](http://animovement.dev/aniframe/articles/aniframe-metadata.md)
+  attribute](https://animovement.dev/aniframe/articles/aniframe-metadata.md)
   — units, origin, sampling rate, and the setters that keep them
   consistent with the data.
-- [Connections](http://animovement.dev/aniframe/articles/aniframe-connections.md)
+- [Connections](https://animovement.dev/aniframe/articles/aniframe-connections.md)
   — recording skeleton edges or other relationships between values of an
   identity / temporal variable.

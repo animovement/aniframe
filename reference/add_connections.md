@@ -44,9 +44,9 @@ appear twice in the resulting table. Endpoints not found in
 
 ## See also
 
-[`set_connections()`](http://animovement.dev/aniframe/reference/set_connections.md),
-[`get_connections()`](http://animovement.dev/aniframe/reference/get_connections.md),
-[`remove_connections()`](http://animovement.dev/aniframe/reference/remove_connections.md)
+[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md),
+[`get_connections()`](https://animovement.dev/aniframe/reference/get_connections.md),
+[`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
 
 ## Examples
 

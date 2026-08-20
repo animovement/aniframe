@@ -1,9 +1,9 @@
 # Spatial columns that are missing or not numeric
 
 The shared kernel behind
-[`is_spatial()`](http://animovement.dev/aniframe/reference/is_spatial.md)
+[`is_spatial()`](https://animovement.dev/aniframe/reference/is_spatial.md)
 and
-[`ensure_is_spatial()`](http://animovement.dev/aniframe/reference/ensure_is_spatial.md).
+[`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md).
 
 ## Usage
 

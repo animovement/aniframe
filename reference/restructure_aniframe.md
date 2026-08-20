@@ -1,7 +1,7 @@
 # Restructure an aniframe
 
 The tail of
-[`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md),
+[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md),
 factored out so that construction and re-declaration cannot drift apart:
 validate the declared columns exist, standardise their types, relocate,
 arrange, regroup, and refresh the derived `coordinate_system`.

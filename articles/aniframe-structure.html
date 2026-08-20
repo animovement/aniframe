@@ -13,6 +13,7 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="aniframe-structure_files/libs/quarto-html/popper.min.js"></script><script src="aniframe-structure_files/libs/quarto-html/tippy.umd.min.js"></script><link href="aniframe-structure_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="aniframe-structure_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="The aniframe data structure">
+<meta property="og:image" content="https://animovement.dev/aniframe/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -51,7 +52,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-animovement" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="animovement"><span class="fa fab fa-r-project"></span> animovement</button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-animovement">
 <li><a class="external-link dropdown-item" href="https://animovement.dev/anicheck/">anicheck</a></li>
-    <li><a class="external-link dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
+    <li><a class="dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animetric/">animetric</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animovement/">animovement</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/aniprocess/">aniprocess</a></li>
@@ -78,8 +79,7 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>The aniframe data structure</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>The aniframe data structure</h1>
 
 
 
@@ -95,7 +95,7 @@
 
     <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://animovement.dev/aniframe/">aniframe</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://animovement.dev/aniframe/" class="external-link">aniframe</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <section class="level2"><h2 id="what-is-an-aniframe">What is an <code>aniframe</code>?<a class="anchor" aria-label="anchor" href="#what-is-an-aniframe"></a>
 </h2>
@@ -118,18 +118,18 @@
 <span><span class="co">#&gt; # Keypoints:   head, neck, shoulder_right</span></span>
 <span><span class="co">#&gt; # Sessions:    1</span></span>
 <span><span class="co">#&gt; # Trials:      1</span></span>
-<span><span class="co">#&gt;    individual keypoint session trial  time       x       y confidence</span></span>
-<span><span class="co">#&gt;         &lt;int&gt; &lt;fct&gt;      &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1          1 head           1     1     1  1.000  -0.0632      0.759</span></span>
-<span><span class="co">#&gt;  2          1 head           1     1     2 -0.566  -0.594       0.835</span></span>
-<span><span class="co">#&gt;  3          1 head           1     1     3 -0.430  -1.73        0.603</span></span>
-<span><span class="co">#&gt;  4          1 head           1     1     4 -1.11   -0.184       0.678</span></span>
-<span><span class="co">#&gt;  5          1 head           1     1     5  0.303  -0.620       0.557</span></span>
-<span><span class="co">#&gt;  6          1 neck           1     1     1  0.0423 -0.570       0.957</span></span>
-<span><span class="co">#&gt;  7          1 neck           1     1     2  0.962  -0.832       0.641</span></span>
-<span><span class="co">#&gt;  8          1 neck           1     1     3 -1.37    2.25        0.579</span></span>
-<span><span class="co">#&gt;  9          1 neck           1     1     4  0.101  -0.925       0.906</span></span>
-<span><span class="co">#&gt; 10          1 neck           1     1     5 -1.11    0.663       0.884</span></span>
+<span><span class="co">#&gt;    individual keypoint session trial  time       x      y confidence</span></span>
+<span><span class="co">#&gt;         &lt;int&gt; &lt;fct&gt;      &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1          1 head           1     1     1  0.895  -0.937      0.724</span></span>
+<span><span class="co">#&gt;  2          1 head           1     1     2  0.684   1.23       0.659</span></span>
+<span><span class="co">#&gt;  3          1 head           1     1     3  1.58   -1.44       0.894</span></span>
+<span><span class="co">#&gt;  4          1 head           1     1     4  0.0415  0.435      0.933</span></span>
+<span><span class="co">#&gt;  5          1 head           1     1     5 -1.00   -1.89       0.796</span></span>
+<span><span class="co">#&gt;  6          1 neck           1     1     1 -0.797  -1.32       0.909</span></span>
+<span><span class="co">#&gt;  7          1 neck           1     1     2 -0.686   1.49       0.772</span></span>
+<span><span class="co">#&gt;  8          1 neck           1     1     3 -1.96    1.22       0.750</span></span>
+<span><span class="co">#&gt;  9          1 neck           1     1     4 -0.764  -0.937      0.658</span></span>
+<span><span class="co">#&gt; 10          1 neck           1     1     5  0.0517  2.49       0.576</span></span>
 <span><span class="co">#&gt; # ℹ 20 more rows</span></span></code></pre></div>
 </div>
 <p>Two things to spot:</p>
@@ -216,20 +216,20 @@
 <span><span class="va">custom</span></span>
 <span><span class="co">#&gt; # Tracks: A, B, C</span></span>
 <span><span class="co">#&gt; # Trials: 1, 2</span></span>
-<span><span class="co">#&gt;    track trial  time      x      y</span></span>
-<span><span class="co">#&gt;    &lt;fct&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1 A         1     1 0.699  0.422 </span></span>
-<span><span class="co">#&gt;  2 A         1     1 0.725  0.926 </span></span>
-<span><span class="co">#&gt;  3 A         1     2 0.186  0.816 </span></span>
-<span><span class="co">#&gt;  4 A         1     2 0.773  0.525 </span></span>
-<span><span class="co">#&gt;  5 B         1     1 0.0799 0.444 </span></span>
-<span><span class="co">#&gt;  6 B         1     2 0.205  0.0917</span></span>
-<span><span class="co">#&gt;  7 B         2     1 0.581  0.482 </span></span>
-<span><span class="co">#&gt;  8 B         2     2 0.336  0.516 </span></span>
-<span><span class="co">#&gt;  9 C         2     1 0.339  0.411 </span></span>
-<span><span class="co">#&gt; 10 C         2     1 0.888  0.442 </span></span>
-<span><span class="co">#&gt; 11 C         2     2 0.196  0.267 </span></span>
-<span><span class="co">#&gt; 12 C         2     2 0.0903 0.896</span></span></code></pre></div>
+<span><span class="co">#&gt;    track trial  time      x     y</span></span>
+<span><span class="co">#&gt;    &lt;fct&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1 A         1     1 0.800  0.907</span></span>
+<span><span class="co">#&gt;  2 A         1     1 0.718  0.117</span></span>
+<span><span class="co">#&gt;  3 A         1     2 0.143  0.191</span></span>
+<span><span class="co">#&gt;  4 A         1     2 0.465  0.629</span></span>
+<span><span class="co">#&gt;  5 B         1     1 0.920  0.661</span></span>
+<span><span class="co">#&gt;  6 B         1     2 0.627  0.792</span></span>
+<span><span class="co">#&gt;  7 B         2     1 0.0671 0.897</span></span>
+<span><span class="co">#&gt;  8 B         2     2 0.744  0.672</span></span>
+<span><span class="co">#&gt;  9 C         2     1 0.220  0.903</span></span>
+<span><span class="co">#&gt; 10 C         2     1 0.486  0.487</span></span>
+<span><span class="co">#&gt; 11 C         2     2 0.468  0.361</span></span>
+<span><span class="co">#&gt; 12 C         2     2 0.925  0.606</span></span></code></pre></div>
 </div>
 <p><code>time</code> is the only temporal column with a special status: it must always be present, and downstream operations (smoothing, derivatives) assume it’s monotonically ordered within each entity.</p>
 </section></section><section class="level2"><h2 id="coordinate-systems">Coordinate systems<a class="anchor" aria-label="anchor" href="#coordinate-systems"></a>

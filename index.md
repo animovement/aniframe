@@ -31,22 +31,21 @@ To cite *aniframe* in publications use:
 ``` r
 
 citation("aniframe")
-#> To cite aniframe in publications use:
+#> To cite aniframe in publications, please cite the animovement toolbox
+#> as a whole (the first entry below). If your work used only aniframe,
+#> you may cite the package directly instead (the second entry).
+#> 
+#>   Roald-Arbøl M (2026). "animovement: An R toolbox for analysing
+#>   movement across space and time." doi:10.5281/zenodo.13235277
+#>   <https://doi.org/10.5281/zenodo.13235277>.
+#>   <https://animovement.dev/animovement/>.
 #> 
 #>   Roald-Arbøl M (2026). "aniframe: An R package providing core data
-#>   structures for movement data." doi:10.5281/zenodo.17344598
-#>   <https://doi.org/10.5281/zenodo.17344598>,
-#>   <http://animovement.dev/aniframe/>.
+#>   structures for movement data." doi:10.5281/zenodo.17344597
+#>   <https://doi.org/10.5281/zenodo.17344597>.
+#>   <https://animovement.dev/aniframe/>.
 #> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Misc{aniframe,
-#>     doi = {10.5281/zenodo.17344598},
-#>     title = {aniframe: An R package providing core data structures for movement data},
-#>     author = {Mikkel Roald-Arbøl},
-#>     year = {2026},
-#>     url = {http://animovement.dev/aniframe/},
-#>     abstract = {An R package providing core data structures for movement data.},
-#>     version = {0.4.1},
-#>   }
+#> To see these entries in BibTeX format, use 'print(<citation>,
+#> bibtex=TRUE)', 'toBibtex(.)', or set
+#> 'options(citation.bibtex.max=999)'.
 ```

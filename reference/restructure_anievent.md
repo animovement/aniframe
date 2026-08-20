@@ -1,7 +1,7 @@
 # Restructure an anievent
 
 The anievent counterpart to
-[`restructure_aniframe()`](http://animovement.dev/aniframe/reference/restructure_aniframe.md):
+[`restructure_aniframe()`](https://animovement.dev/aniframe/reference/restructure_aniframe.md):
 validate, standardise types, relocate, and order by identity then bout
 start. An anievent is not grouped.
 

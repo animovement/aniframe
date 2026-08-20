@@ -21,9 +21,9 @@ tool can read it back without a hand-off.
 
 This article covers the metadata attribute and the functions that read
 and update it. For the data-column structure see [The aniframe data
-structure](http://animovement.dev/aniframe/articles/aniframe-structure.md);
+structure](https://animovement.dev/aniframe/articles/aniframe-structure.md);
 for the `connections` field specifically see
-[Connections](http://animovement.dev/aniframe/articles/aniframe-connections.md).
+[Connections](https://animovement.dev/aniframe/articles/aniframe-connections.md).
 
 ## The metadata attribute
 
@@ -55,13 +55,13 @@ get_metadata(data)
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
 #> origin            (factor)    : "bottom_left"
 #>                                 [levels: bottom_left, top_left, none]
-#> y_height          (numeric)   : 3.738342
+#> y_height          (numeric)   : 3.389616
 #> connections       (list)      : 
 #> spec_version      (list)      : "1.1.0, 0.2.0"
 ```
 
 The fields and their defaults are defined in one place,
-[`default_metadata()`](http://animovement.dev/aniframe/reference/default_metadata.md)
+[`default_metadata()`](https://animovement.dev/aniframe/reference/default_metadata.md)
 — that’s the canonical source of truth for what an `aniframe`’s metadata
 looks like.
 
@@ -106,9 +106,9 @@ The fields fall into a few groups:
 
 ## Reading and writing metadata
 
-[`get_metadata()`](http://animovement.dev/aniframe/reference/get_metadata.md)
+[`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md)
 and
-[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
 are the workhorses.
 
 ``` r
@@ -123,7 +123,7 @@ get_metadata(data, "source")
 #> [1] "deeplabcut"
 ```
 
-[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
 validates the input — factor fields are checked against their permitted
 levels, and unknown fields are rejected.
 
@@ -132,12 +132,12 @@ related fields), prefer the dedicated setters listed below.
 
 | Setter | Touches |
 |----|----|
-| [`set_unit_space()`](http://animovement.dev/aniframe/reference/set_unit_space.md) | converts `x`/`y`/`z` between length units |
-| [`set_unit_time()`](http://animovement.dev/aniframe/reference/set_unit_time.md) | converts `time` between time units |
-| [`set_unit_angle()`](http://animovement.dev/aniframe/reference/set_unit_angle.md) | converts `phi`/`theta` (auto) and any extra `cols` you supply |
-| [`set_sampling_rate()`](http://animovement.dev/aniframe/reference/set_sampling_rate.md) | flips `unit_time` from frames to seconds and rescales `time` |
-| [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md) | flips the y-axis around `y_height` when changing convention |
-| [`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md) | sets the recorded frame height used by [`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md) |
+| [`set_unit_space()`](https://animovement.dev/aniframe/reference/set_unit_space.md) | converts `x`/`y`/`z` between length units |
+| [`set_unit_time()`](https://animovement.dev/aniframe/reference/set_unit_time.md) | converts `time` between time units |
+| [`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md) | converts `phi`/`theta` (auto) and any extra `cols` you supply |
+| [`set_sampling_rate()`](https://animovement.dev/aniframe/reference/set_sampling_rate.md) | flips `unit_time` from frames to seconds and rescales `time` |
+| [`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md) | flips the y-axis around `y_height` when changing convention |
+| [`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md) | sets the recorded frame height used by [`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md) |
 
 ## Declaring the slot vocabulary
 
@@ -146,14 +146,14 @@ related fields), prefer the dedicated setters listed below.
 describing values, so a name that matches nothing is a promise the frame
 can’t keep. The first three go further — they are not a description of
 the frame, they *are* its structure.
-[`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
 uses them to coerce column types, order columns and rows, group the
 frame, and derive `coordinate_system`. Writing them without redoing that
 work would leave the frame and its own metadata disagreeing — the print
 header would update while the grouping still reflected the old
 declaration.
 
-[`set_metadata()`](http://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
 therefore refuses all four, and points you at the setters that do the
 whole job:
 
@@ -208,7 +208,7 @@ data |>
 the frame’s shape: it declares which columns carry per-frame event
 labels, split into interval-valued `state` columns and instantaneous
 `point` columns.
-[`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
 reads it to know what to encode.
 
 ``` r
@@ -233,14 +233,14 @@ increases downward), while plotting and most maths uses the
 one your data uses in the `origin` field, with permitted values
 `c("bottom_left", "top_left")`.
 
-[`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md)
+[`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md)
 does the actual flip when you change convention. It needs the frame
 height to compute `y_new = y_height - y_old`, so `y_height` must be set
 first. Readers populate it automatically; for manually-constructed
 `aniframe` objects,
-[`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
 falls back to `max(y)`, and
-[`set_y_height()`](http://animovement.dev/aniframe/reference/set_y_height.md)
+[`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md)
 lets you override that with the true value.
 
 ``` r
@@ -289,7 +289,7 @@ range(data_s$time) # frames divided by fps
 ```
 
 Spatial angular columns (`phi`, `theta`) are converted automatically by
-[`set_unit_angle()`](http://animovement.dev/aniframe/reference/set_unit_angle.md)
+[`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md)
 whenever they’re present. Pass `cols` only for non-spatial angular
 columns (e.g. heading direction).
 

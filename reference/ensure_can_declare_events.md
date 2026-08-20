@@ -3,7 +3,7 @@
 `variables_event` names per-frame columns, which only an aniframe has.
 An anievent already *is* the encoded form — its events live in `channel`
 and `label` — so
-[`to_anievent()`](http://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
 drops the field rather than inheriting it.
 
 ## Usage

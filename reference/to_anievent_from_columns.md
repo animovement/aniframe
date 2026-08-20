@@ -2,7 +2,7 @@
 
 Walks `state_cols` and `point_cols`, encodes each via the run-length /
 point-pick helpers, binds the bouts together, and casts the result via
-[`as_anievent()`](http://animovement.dev/aniframe/reference/as_anievent.md).
+[`as_anievent()`](https://animovement.dev/aniframe/reference/as_anievent.md).
 
 ## Usage
 

@@ -1,7 +1,7 @@
 # Fill the spatial metadata fields with their "not applicable" values
 
 An anievent shares the metadata substrate with
-[`aniframe()`](http://animovement.dev/aniframe/reference/aniframe.md)
+[`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
 but has no spatial component: a stream of behavioural events has no
 coordinate origin, no reference frame and no angular unit. Inheriting
 the movement defaults made it claim otherwise — a BORIS export read into

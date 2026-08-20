@@ -13,6 +13,7 @@
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><script src="aniframe-connections_files/libs/quarto-html/popper.min.js"></script><script src="aniframe-connections_files/libs/quarto-html/tippy.umd.min.js"></script><link href="aniframe-connections_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="aniframe-connections_files/libs/quarto-html/light-border.css" rel="stylesheet">
 <!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Connections">
+<meta property="og:image" content="https://animovement.dev/aniframe/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -51,7 +52,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-animovement" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="animovement"><span class="fa fab fa-r-project"></span> animovement</button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-animovement">
 <li><a class="external-link dropdown-item" href="https://animovement.dev/anicheck/">anicheck</a></li>
-    <li><a class="external-link dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
+    <li><a class="dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animetric/">animetric</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animovement/">animovement</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/aniprocess/">aniprocess</a></li>
@@ -78,8 +79,7 @@
 </nav><div class="container template-quarto">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Connections</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Connections</h1>
 
 
 
@@ -95,7 +95,7 @@
 
     <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://animovement.dev/aniframe/">aniframe</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://animovement.dev/aniframe/" class="external-link">aniframe</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <section class="level2"><h2 id="what-connections-are-for">What <code>connections</code> are for<a class="anchor" aria-label="anchor" href="#what-connections-are-for"></a>
 </h2>
@@ -232,18 +232,18 @@
 <span><span class="co">#&gt; # Keypoints:   head, neck, shoulder_right, shoulder_left, abdomen</span></span>
 <span><span class="co">#&gt; # Sessions:    1</span></span>
 <span><span class="co">#&gt; # Trials:      1</span></span>
-<span><span class="co">#&gt;    individual keypoint session trial  time      x        y confidence</span></span>
-<span><span class="co">#&gt;         &lt;int&gt; &lt;fct&gt;      &lt;int&gt; &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;    &lt;dbl&gt;      &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt;  1          1 head           1     1     1  1.54  -0.656        0.950</span></span>
-<span><span class="co">#&gt;  2          1 head           1     1     2 -0.608  0.157        0.854</span></span>
-<span><span class="co">#&gt;  3          1 head           1     1     3  0.119  0.302        0.530</span></span>
-<span><span class="co">#&gt;  4          1 head           1     1     4 -0.367 -1.26         0.736</span></span>
-<span><span class="co">#&gt;  5          1 head           1     1     5 -1.06   0.0322       0.766</span></span>
-<span><span class="co">#&gt;  6          1 head           1     1     6 -0.326 -0.714        0.695</span></span>
-<span><span class="co">#&gt;  7          1 head           1     1     7 -0.863 -0.0869       0.367</span></span>
-<span><span class="co">#&gt;  8          1 head           1     1     8 -0.801  0.00127      0.893</span></span>
-<span><span class="co">#&gt;  9          1 head           1     1     9 -0.161  0.717        0.767</span></span>
-<span><span class="co">#&gt; 10          1 head           1     1    10  0.701  1.18         0.649</span></span>
+<span><span class="co">#&gt;    individual keypoint session trial  time       x      y confidence</span></span>
+<span><span class="co">#&gt;         &lt;int&gt; &lt;fct&gt;      &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span><span class="co">#&gt;  1          1 head           1     1     1  0.0958  0.489      0.870</span></span>
+<span><span class="co">#&gt;  2          1 head           1     1     2 -0.0305  0.409      0.895</span></span>
+<span><span class="co">#&gt;  3          1 head           1     1     3 -0.152   2.45       0.730</span></span>
+<span><span class="co">#&gt;  4          1 head           1     1     4 -2.12   -1.79       0.560</span></span>
+<span><span class="co">#&gt;  5          1 head           1     1     5  0.920  -0.750      0.996</span></span>
+<span><span class="co">#&gt;  6          1 head           1     1     6 -0.493  -0.518      0.674</span></span>
+<span><span class="co">#&gt;  7          1 head           1     1     7  1.09    0.422      0.786</span></span>
+<span><span class="co">#&gt;  8          1 head           1     1     8  0.638  -1.75       0.648</span></span>
+<span><span class="co">#&gt;  9          1 head           1     1     9  1.95    0.161      0.624</span></span>
+<span><span class="co">#&gt; 10          1 head           1     1    10  0.225   0.571      0.619</span></span>
 <span><span class="co">#&gt; # ℹ 740 more rows</span></span></code></pre></div>
 </div>
 </section><script id="quarto-html-after-body" type="application/javascript">

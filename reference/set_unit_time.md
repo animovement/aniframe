@@ -22,9 +22,9 @@ set_unit_time(data, to_unit, calibration_factor = 1)
 - data:
 
   An
-  [`aniframe()`](http://animovement.dev/aniframe/reference/aniframe.md)
+  [`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
   or
-  [`anievent()`](http://animovement.dev/aniframe/reference/anievent.md)
+  [`anievent()`](https://animovement.dev/aniframe/reference/anievent.md)
   object.
 
 - to_unit:

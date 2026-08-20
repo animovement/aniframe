@@ -2,7 +2,7 @@
 
 Internal helper that reflects values in a numeric column around a
 reference, computed as `reference - data[[axis]]`. Currently used by
-[`set_origin()`](http://animovement.dev/aniframe/reference/set_origin.md)
+[`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md)
 to flip the y-axis when changing the coordinate origin convention, but
 parameterised so it can be reused for other axes (e.g. z) later.
 

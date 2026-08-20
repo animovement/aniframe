@@ -32,6 +32,6 @@ tibble.
 
 ## See also
 
-[`set_connections()`](http://animovement.dev/aniframe/reference/set_connections.md),
-[`add_connections()`](http://animovement.dev/aniframe/reference/add_connections.md),
-[`remove_connections()`](http://animovement.dev/aniframe/reference/remove_connections.md)
+[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md),
+[`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md),
+[`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)

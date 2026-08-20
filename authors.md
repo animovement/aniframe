@@ -10,17 +10,29 @@
 Source:
 [`inst/CITATION`](https://github.com/animovement/aniframe/blob/main/inst/CITATION)
 
+Roald-Arbøl M (2026). “animovement: An R toolbox for analysing movement
+across space and time.”
+[doi:10.5281/zenodo.13235277](https://doi.org/10.5281/zenodo.13235277).
+<https://animovement.dev/animovement/>.
+
+    @Misc{animovement,
+      title = {animovement: An R toolbox for analysing movement across space and time},
+      author = {Mikkel Roald-Arbøl},
+      year = {2026},
+      doi = {10.5281/zenodo.13235277},
+      url = {https://animovement.dev/animovement/},
+    }
+
 Roald-Arbøl M (2026). “aniframe: An R package providing core data
 structures for movement data.”
-[doi:10.5281/zenodo.17344598](https://doi.org/10.5281/zenodo.17344598).
-<http://animovement.dev/aniframe/>.
+[doi:10.5281/zenodo.17344597](https://doi.org/10.5281/zenodo.17344597).
+<https://animovement.dev/aniframe/>.
 
     @Misc{aniframe,
-      doi = {10.5281/zenodo.17344598},
       title = {aniframe: An R package providing core data structures for movement data},
       author = {Mikkel Roald-Arbøl},
       year = {2026},
-      url = {http://animovement.dev/aniframe/},
-      abstract = {An R package providing core data structures for movement data.},
-      version = {0.7.0},
+      doi = {10.5281/zenodo.17344597},
+      version = {0.7.0.9000},
+      url = {https://animovement.dev/aniframe/},
     }

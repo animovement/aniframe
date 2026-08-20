@@ -1,9 +1,9 @@
 # Identity variable names recognised across the animovement classes
 
 The identity (`what`) columns auto-detection looks for, shared by
-[`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
 and
-[`as_anievent()`](http://animovement.dev/aniframe/reference/as_anievent.md).
+[`as_anievent()`](https://animovement.dev/aniframe/reference/as_anievent.md).
 The order is coarse to fine — a `subject` or `individual` has `track`s,
 a track has `keypoint`s — and it carries through to column order and
 grouping. Only the names present in the data are used, and any other

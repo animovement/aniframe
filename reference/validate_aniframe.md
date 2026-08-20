@@ -40,10 +40,10 @@ The input `data`, invisibly.
 
 ## See also
 
-[`ensure_is_spatial()`](http://animovement.dev/aniframe/reference/ensure_is_spatial.md)
+[`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md)
 for the spatial subset of these checks, which is the part downstream
 filters need on every call;
-[`validate_anievent()`](http://animovement.dev/aniframe/reference/validate_anievent.md)
+[`validate_anievent()`](https://animovement.dev/aniframe/reference/validate_anievent.md)
 for the `anievent` equivalent.
 
 ## Examples
