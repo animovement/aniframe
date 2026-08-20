@@ -1,5 +1,33 @@
 # Changelog
 
+## aniframe (development version)
+
+### Bug fixes
+
+- [`set_unit_space()`](http://animovement.dev/aniframe/reference/set_unit_space.md),
+  [`set_unit_angle()`](http://animovement.dev/aniframe/reference/set_unit_angle.md),
+  [`set_unit_time()`](http://animovement.dev/aniframe/reference/set_unit_time.md)
+  and
+  [`set_sampling_rate()`](http://animovement.dev/aniframe/reference/set_sampling_rate.md)
+  no longer re-inject a `keypoint` column and overwrite `variables_what`
+  with it ([\#96](https://github.com/animovement/aniframe/issues/96)).
+  Each ended by casting with
+  [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md),
+  which re-ran auto-detection: a frame given a custom identity such as
+  `id` had no recognised identity name, so one was injected and the
+  declaration replaced — silently regrouping the frame on a constant
+  column. The cast was also redundant, since `mutate()` has preserved
+  class and metadata since
+  [\#81](https://github.com/animovement/aniframe/issues/81).
+
+- [`as_aniframe()`](http://animovement.dev/aniframe/reference/as_aniframe.md)
+  keeps the roles a frame already declares rather than re-deriving them,
+  so casting an object that is already an aniframe is no longer
+  destructive
+  ([\#96](https://github.com/animovement/aniframe/issues/96)). A
+  declaration whose columns have since been dropped still falls through
+  to detection, so a cast continues to repair a drifted frame.
+
 ## aniframe 0.7.0 (2026-08-18)
 
 ### Breaking changes

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">aniframe</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,9 +54,17 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/animovement/aniframe/blob/v0.7.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/animovement/aniframe/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="aniframe-development-version">aniframe (development version)<a class="anchor" aria-label="anchor" href="#aniframe-development-version"></a></h2>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li><p><code><a href="../reference/set_unit_space.html">set_unit_space()</a></code>, <code><a href="../reference/set_unit_angle.html">set_unit_angle()</a></code>, <code><a href="../reference/set_unit_time.html">set_unit_time()</a></code> and <code><a href="../reference/set_sampling_rate.html">set_sampling_rate()</a></code> no longer re-inject a <code>keypoint</code> column and overwrite <code>variables_what</code> with it (<a href="https://github.com/animovement/aniframe/issues/96" class="external-link">#96</a>). Each ended by casting with <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code>, which re-ran auto-detection: a frame given a custom identity such as <code>id</code> had no recognised identity name, so one was injected and the declaration replaced — silently regrouping the frame on a constant column. The cast was also redundant, since <code>mutate()</code> has preserved class and metadata since <a href="https://github.com/animovement/aniframe/issues/81" class="external-link">#81</a>.</p></li>
+<li><p><code><a href="../reference/as_aniframe.html">as_aniframe()</a></code> keeps the roles a frame already declares rather than re-deriving them, so casting an object that is already an aniframe is no longer destructive (<a href="https://github.com/animovement/aniframe/issues/96" class="external-link">#96</a>). A declaration whose columns have since been dropped still falls through to detection, so a cast continues to repair a drifted frame.</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.7.0" id="aniframe-070-2026-08-18">aniframe 0.7.0 (2026-08-18)<a class="anchor" aria-label="anchor" href="#aniframe-070-2026-08-18"></a></h2>
 <div class="section level3">
