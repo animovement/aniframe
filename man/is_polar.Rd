@@ -2,16 +2,20 @@
 % Please edit documentation in R/coord_system_validate.R
 \name{is_polar}
 \alias{is_polar}
-\title{Test whether a data frame uses a polar coordinate system}
+\title{Test whether an aniframe uses a polar coordinate system}
 \usage{
 is_polar(data)
 }
 \arguments{
-\item{data}{A data frame.}
+\item{data}{An aniframe.}
 }
 \value{
-Logical scalar.
+A logical value.
 }
 \description{
 Requires columns \code{rho} and \code{phi} and forbids \code{theta} or \code{z}.
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_polar(af)
 }

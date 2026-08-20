@@ -26,6 +26,9 @@
 #'   to use other names for the grouping context.
 #'
 #' @return An anievent object.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' try(as_anievent(af))
 #' @export
 as_anievent <- function(
   data,

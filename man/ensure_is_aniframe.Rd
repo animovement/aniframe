@@ -15,3 +15,10 @@ Error if not an aniframe
 \description{
 Ensure object is an aniframe
 }
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+# Passes silently, and errors otherwise
+ensure_is_aniframe(af)
+
+try(ensure_is_aniframe(data.frame(x = 1)))
+}

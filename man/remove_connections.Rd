@@ -21,7 +21,7 @@ length as \code{from}.}
 The aniframe with matching connections removed.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\strong{[Experimental]}
 
 Remove \code{from}/\code{to} pairs from the connections of a variable. Matching is
 exact and order-sensitive: \code{remove_connections(data, "a", "b")} removes

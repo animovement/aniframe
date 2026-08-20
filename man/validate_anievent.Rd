@@ -30,3 +30,7 @@ tools that allow non-mutually-exclusive coding (e.g. BORIS
 without strict ethogram).
 }
 }
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+try(validate_anievent(af))
+}

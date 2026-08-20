@@ -15,3 +15,7 @@ A data frame with \code{NaN} values replaced by \code{NA} in numeric columns.
 \description{
 Replaces all \code{NaN} values with \code{NA} in numeric columns of a data frame.
 }
+\examples{
+df <- data.frame(x = c(1, NaN, 3))
+convert_nan_to_na(df)
+}

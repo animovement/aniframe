@@ -15,3 +15,7 @@ Numeric vector of angles expressed in radians.
 \description{
 Convert degrees to radians
 }
+\examples{
+deg_to_rad(180)
+deg_to_rad(c(0, 90, 180))
+}

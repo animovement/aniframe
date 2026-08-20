@@ -2,16 +2,20 @@
 % Please edit documentation in R/coord_system_validate.R
 \name{is_cylindrical}
 \alias{is_cylindrical}
-\title{Test whether a data frame uses a cylindrical coordinate system}
+\title{Test whether an aniframe uses a cylindrical coordinate system}
 \usage{
 is_cylindrical(data)
 }
 \arguments{
-\item{data}{A data frame.}
+\item{data}{An aniframe.}
 }
 \value{
-Logical scalar.
+A logical value.
 }
 \description{
 Requires \code{rho}, \code{phi} and \code{z}; forbids \code{theta}.
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_cylindrical(af)
 }

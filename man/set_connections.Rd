@@ -24,7 +24,7 @@ Defaults to \code{"keypoint"}.}
 The aniframe with updated \code{connections} metadata.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\strong{[Experimental]}
 
 Replace the connections (e.g. skeleton edges between keypoints, edges of a
 social network between individuals) for a single variable. Connections are

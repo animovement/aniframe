@@ -15,3 +15,10 @@ Logical: TRUE if x inherits from aniframe
 \description{
 Check if object is an aniframe
 }
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_aniframe(af)
+
+# A plain data frame is not one
+is_aniframe(data.frame(x = 1))
+}

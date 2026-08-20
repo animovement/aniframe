@@ -17,3 +17,10 @@ The metadata associated with the object.
 \description{
 Get metadata
 }
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+names(get_metadata(af))
+
+# A single field can be pulled out by name
+get_metadata(af, 'sampling_rate')
+}

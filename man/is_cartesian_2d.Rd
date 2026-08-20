@@ -7,12 +7,17 @@
 is_cartesian_2d(data)
 }
 \arguments{
-\item{data}{A data frame.}
+\item{data}{An aniframe.}
 }
 \value{
-Logical scalar (invisible).
+\code{TRUE} if the aniframe has \code{x} and \code{y} and none of \code{rho}, \code{phi} or
+\code{theta}, otherwise \code{FALSE}.
 }
 \description{
 Requires columns \code{x} and \code{y}.  Column \code{z} may be present only if it is
 completely \code{NA}.
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_cartesian_2d(af)
 }

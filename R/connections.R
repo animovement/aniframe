@@ -1,7 +1,7 @@
 #' Set the connections for a variable
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
+#' **\[Experimental\]**
 #'
 #' Replace the connections (e.g. skeleton edges between keypoints, edges of a
 #' social network between individuals) for a single variable. Connections are
@@ -83,7 +83,7 @@ set_connections <- function(data, connections, variable = "keypoint") {
 #' Get connections from an aniframe
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
+#' **\[Experimental\]**
 #'
 #' Read the connections currently stored on an aniframe. Returns the full
 #' named list of `from`/`to` tibbles by default, or a single tibble when
@@ -100,6 +100,9 @@ set_connections <- function(data, connections, variable = "keypoint") {
 #'
 #' @seealso [set_connections()], [add_connections()], [remove_connections()]
 #'
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' get_connections(af)
 #' @export
 get_connections <- function(data, variable = NULL) {
   ensure_is_aniframe(data)
@@ -122,7 +125,7 @@ get_connections <- function(data, variable = NULL) {
 #' Add connections to an aniframe
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
+#' **\[Experimental\]**
 #'
 #' Append one or more `from`/`to` pairs to the existing connections for a
 #' variable. `from` and `to` may be either single strings or character vectors
@@ -177,7 +180,7 @@ add_connections <- function(data, from, to, variable = "keypoint") {
 #' Remove connections from an aniframe
 #'
 #' @description
-#' `r lifecycle::badge("experimental")`
+#' **\[Experimental\]**
 #'
 #' Remove `from`/`to` pairs from the connections of a variable. Matching is
 #' exact and order-sensitive: `remove_connections(data, "a", "b")` removes

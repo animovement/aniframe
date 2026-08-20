@@ -63,6 +63,8 @@
 #'
 #' @seealso [set_metadata()], [get_metadata()]
 #'
+#' @examples
+#' names(default_metadata())
 #' @export
 default_metadata <- function() {
   metadata <- list(

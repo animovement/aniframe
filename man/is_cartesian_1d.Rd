@@ -7,14 +7,20 @@
 is_cartesian_1d(data, stop = FALSE)
 }
 \arguments{
-\item{data}{A data frame.}
+\item{data}{An aniframe.}
 
-\item{stop}{Unused placeholder kept for API compatibility.}
+\item{stop}{Unused, and kept only so the signature does not change.
+It has no effect.}
 }
 \value{
-Logical scalar (invisible).
+\code{TRUE} if the aniframe has exactly one of \code{x}, \code{y} or \code{z} and none of \code{rho}, \code{phi} or
+\code{theta}, otherwise \code{FALSE}.
 }
 \description{
-The data frame must contain \strong{exactly one} of \code{x}, \code{y} or \code{z} and none of the
+The aniframe must contain \strong{exactly one} of \code{x}, \code{y} or \code{z} and none of the
 polar columns (\code{rho}, \code{phi}, \code{theta}).
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_cartesian_1d(af)
 }
