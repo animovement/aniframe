@@ -15,7 +15,12 @@
 #' @param variables_when Character vector of temporal columns that together
 #'   define a unique timepoint. If `NULL` (the default), detected from the
 #'   data: whichever of `observation`, `session`, `trial` and `time` are
-#'   present. `time` is always required.
+#'   present. The `index` column is always one of them.
+#' @param index Length-one character vector naming the column the frame is
+#'   indexed by — the position of each row within its trajectory. If
+#'   `NULL` (the default), the frame's existing declaration is kept, or
+#'   `"time"` for a frame that has none. The column must exist and be
+#'   numeric; it may be called anything.
 #' @param variables_where Character vector of spatial columns that together
 #'   define position. If `NULL` (the default), detected from the data.
 #'
@@ -32,9 +37,21 @@ as_aniframe <- function(
   metadata = list(),
   variables_what = NULL,
   variables_when = NULL,
-  variables_where = NULL
+  variables_where = NULL,
+  index = NULL
 ) {
   defaults <- default_metadata()
+
+  # An explicit index wins; otherwise keep what the frame already declares,
+  # falling back to "time" for a frame — or a serialised object — with no
+  # declaration at all.
+  index <- index %||%
+    (if (is_aniframe(data) || is_anievent(data)) {
+      resolve_index(get_metadata(data))
+    } else {
+      NULL
+    }) %||%
+    "time"
 
   # A frame that already declares a role keeps it. Casting an aniframe
   # that has been given a custom identity -- `id`, say -- used to re-run
@@ -57,6 +74,11 @@ as_aniframe <- function(
     # Only include recognised when variables that are present in data
     variables_when <- recognised_when[recognised_when %in% names(data)]
   }
+
+  # The index is a temporal variable whatever it is called, so a custom one
+  # joins the declaration even though detection cannot recognise its name.
+  # It sorts last: rows run coarse context first, then the index within it.
+  variables_when <- c(setdiff(variables_when, index), index)
 
   # Resolve variables_what: detect from data if not specified
   if (is.null(variables_what)) {
@@ -88,6 +110,13 @@ as_aniframe <- function(
   # through the same code so they cannot drift apart (#82).
   data <- new_aniframe(data)
   data <- set_metadata(data, metadata = metadata)
+
+  # `index` is a declaration, so `set_metadata()` refuses it — it goes on
+  # directly, before the restructure that reads it back.
+  md <- get_metadata(data)
+  md[["variables_when_index"]] <- index
+  data <- attach_metadata(data, md)
+
   data <- restructure_aniframe(
     data,
     variables_what,
@@ -115,13 +144,16 @@ as_aniframe <- function(
 #' Standardize column types for aniframe
 #'
 #' Converts character identity and temporal variables to factors.
-#' Converts numeric identity and temporal variables (except time) to integers.
+#' Converts numeric identity and temporal variables (except the index) to
+#' integers.
 #' Spatial variables are converted to numeric.
 #'
 #' @param data Data frame to standardise.
 #' @param variables_what Identity variable names.
 #' @param variables_when Temporal variable names.
 #' @param variables_where Spatial variable names.
+#' @param index The index column, which stays numeric while the other
+#'   temporal variables are made categorical.
 #'
 #' @return Data frame with standardised column types.
 #' @keywords internal
@@ -129,10 +161,11 @@ standardise_aniframe_cols <- function(
   data,
   variables_what,
   variables_when,
-  variables_where
+  variables_where,
+  index = "time"
 ) {
   # What and when variables (except time) should be categorical or integer
-  categorical_vars <- c(variables_what, setdiff(variables_when, "time"))
+  categorical_vars <- c(variables_what, setdiff(variables_when, index))
   for (col in categorical_vars) {
     if (col %in% names(data)) {
       if (is.character(data[[col]])) {
@@ -198,23 +231,26 @@ ensure_aniframe_cols <- function(
   data,
   variables_what,
   variables_when,
-  variables_where
+  variables_where,
+  index = "time"
 ) {
   # All declared variables must exist. Declaring a column that isn't
   # there leaves the metadata describing a frame it doesn't have.
   ensure_declared_cols_exist(data, variables_what, "what")
 
-  # time column is always required
-  if (!"time" %in% names(data)) {
+  # The frame needs an index. Which column that is comes from the
+  # declaration; `time` is only its default (#109).
+  if (!index %in% names(data)) {
     cli::cli_abort(
       c(
-        "Column {.val time} is required but not found in data.",
-        "i" = "The {.val time} column must always be present."
+        "Index column {.val {index}} is required but not found in data.",
+        "i" = "An aniframe is indexed by exactly one column.",
+        "i" = "Declare a different one with {.arg index}, or {.fn set_index}."
       )
     )
   }
 
-  ensure_declared_cols_exist(data, setdiff(variables_when, "time"), "when")
+  ensure_declared_cols_exist(data, setdiff(variables_when, index), "when")
   ensure_declared_cols_exist(data, variables_where, "where")
 
   invisible(TRUE)

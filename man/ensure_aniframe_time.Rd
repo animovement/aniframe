@@ -2,7 +2,7 @@
 % Please edit documentation in R/aniframe_validate.R
 \name{ensure_aniframe_time}
 \alias{ensure_aniframe_time}
-\title{Ensure the time column is present and numeric}
+\title{Ensure the index column is present and numeric}
 \usage{
 ensure_aniframe_time(data)
 }
@@ -13,6 +13,7 @@ ensure_aniframe_time(data)
 \code{TRUE}, invisibly.
 }
 \description{
-Ensure the time column is present and numeric
+Which column that is comes from the frame's own declaration; \code{time} is
+its default, not a requirement (#109).
 }
 \keyword{internal}

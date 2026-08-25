@@ -8,7 +8,7 @@ ensure_valid_metadata <- function(metadata) {
 # read so previously serialised objects continue to validate; new objects
 # always have them via `default_metadata()`.
 optional_metadata_fields <- function() {
-  c("spec_version", "variables_event")
+  c("spec_version", "variables_event", "variables_when_index")
 }
 
 # Normalise user-supplied `variables_event` into canonical form. Accepts

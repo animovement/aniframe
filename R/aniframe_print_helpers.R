@@ -18,12 +18,13 @@ title_case_pluralised <- function(x) {
 #'
 #' @keywords internal
 format_time_interval <- function(x, md) {
-  if (!"time" %in% names(x)) {
+  index <- resolve_index(md)
+  if (!index %in% names(x)) {
     return(NULL)
   }
 
-  time_min <- suppressWarnings(min(x$time, na.rm = TRUE))
-  time_max <- suppressWarnings(max(x$time, na.rm = TRUE))
+  time_min <- suppressWarnings(min(x[[index]], na.rm = TRUE))
+  time_max <- suppressWarnings(max(x[[index]], na.rm = TRUE))
   if (!is.finite(time_min) || !is.finite(time_max)) {
     return(NULL)
   }

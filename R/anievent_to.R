@@ -138,7 +138,10 @@ to_anievent.aniframe <- function(
   }
 
   host_what <- intersect(md$variables_what, names(data))
-  grouping_when <- intersect(setdiff(md$variables_when, "time"), names(data))
+  grouping_when <- intersect(
+    setdiff(md$variables_when, resolve_index(md)),
+    names(data)
+  )
 
   bare <- dplyr::ungroup(dplyr::as_tibble(data))
 
@@ -190,6 +193,9 @@ to_anievent.aniframe <- function(
         "variables_when",
         "variables_where",
         "variables_event",
+        # An anievent is ordered by bout start, not by the host frame's
+        # index column, so the declaration does not carry over (#109).
+        "variables_when_index",
         "spec_version",
         "y_height",
         "origin",

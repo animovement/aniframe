@@ -15,6 +15,15 @@
 #'   (e.g. `aniread::read_trackball()`) populate this with all source paths.
 #' * `sampling_rate`: Sampling rate in Hz (numeric, NA)
 #' * `start_datetime`: Start date and time of recording (POSIXct, NA)
+#' * `variables_when_index`: The single column the frame is indexed by (character,
+#'   `"time"`). Exactly one column, and it may be called anything — the
+#'   constructor requires *that* column rather than a column literally
+#'   named `time`. It is always one of the `variables_when`; the rest of
+#'   that vector is the surrounding temporal context, which is what the
+#'   frame is grouped by. Read it with [get_index()], change it with
+#'   [set_index()]. Absent from objects serialised before the field
+#'   existed, where it reads back as `"time"` — the value they were built
+#'   with.
 #' * `variables_what`, `variables_when`, `variables_where`: The columns
 #'   that carry, respectively, entity identity, temporal position and
 #'   spatial position. These are the structural fields — [as_aniframe()]
@@ -75,6 +84,7 @@ default_metadata <- function() {
     start_datetime = as.POSIXct(NA),
     variables_what = c("individual", "keypoint"),
     variables_when = c("time"),
+    variables_when_index = "time",
     variables_where = c("x", "y"),
     variables_event = list(
       state = character(),

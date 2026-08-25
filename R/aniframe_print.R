@@ -30,7 +30,10 @@ tbl_sum.aniframe <- function(x, ...) {
     )
   }
 
-  temporal_vars <- intersect(setdiff(md$variables_when, "time"), names(x))
+  temporal_vars <- intersect(
+    setdiff(md$variables_when, resolve_index(md)),
+    names(x)
+  )
   for (col in temporal_vars) {
     new_header <- c(
       new_header,

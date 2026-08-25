@@ -49,7 +49,18 @@ ensure_no_declaration_fields <- function(user_md) {
   offending <- intersect(names(user_md), declaration_metadata_fields())
 
   if (length(offending) > 0) {
-    setters <- paste0("set_", offending)
+    setters <- vapply(
+      offending,
+      function(field) {
+        # The index's setter is named for the concept, not the field.
+        if (identical(field, "variables_when_index")) {
+          "set_index"
+        } else {
+          paste0("set_", field)
+        }
+      },
+      character(1)
+    )
     cli::cli_abort(c(
       # Message strings are code, not comments, so they must stay ASCII:
       # R CMD check warns on non-ASCII in R sources, and CI errors on

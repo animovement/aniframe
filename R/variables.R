@@ -25,7 +25,8 @@ declaration_metadata_fields <- function() {
     "variables_what",
     "variables_when",
     "variables_where",
-    "variables_event"
+    "variables_event",
+    "variables_when_index"
   )
 }
 
@@ -64,6 +65,13 @@ declare_variables <- function(data, role, variables) {
     where = get_variables(data, "where")
   )
   declared[[role]] <- unname(variables)
+
+  # The index is one of the temporal variables by definition. A `when`
+  # declaration that leaves it out would point the metadata at a column the
+  # frame no longer declares, which is the desynchronisation #82 closed.
+  if (role == "when" && is_aniframe(data)) {
+    ensure_index_declared(data, declared$when)
+  }
 
   restructure_frame(data, declared$what, declared$when, declared$where)
 }
@@ -173,14 +181,22 @@ restructure_aniframe <- function(
 ) {
   cls <- class(data)
   md <- get_metadata(data)
+  index <- resolve_index(md)
   bare <- strip_animovement_class(data)
 
-  ensure_aniframe_cols(bare, variables_what, variables_when, variables_where)
+  ensure_aniframe_cols(
+    bare,
+    variables_what,
+    variables_when,
+    variables_where,
+    index
+  )
   bare <- standardise_aniframe_cols(
     bare,
     variables_what,
     variables_when,
-    variables_where
+    variables_where,
+    index
   )
 
   # Column order: what, when, where, confidence, everything else.
@@ -197,13 +213,14 @@ restructure_aniframe <- function(
     dplyr::across(dplyr::all_of(variables_when))
   )
 
-  # Group by identity + temporal context (all what + when except time).
-  grouping_vars <- c(variables_what, setdiff(variables_when, "time"))
+  # Group by identity + temporal context (all what + when except the index).
+  grouping_vars <- c(variables_what, setdiff(variables_when, index))
   bare <- regroup_frame(bare, grouping_vars)
 
   md$variables_what <- variables_what
   md$variables_when <- variables_when
   md$variables_where <- variables_where
+  md$variables_when_index <- index
   md$coordinate_system <- as_metadata_factor(
     infer_coordinate_system(variables_where),
     "coordinate_system"
@@ -427,12 +444,13 @@ add_variables_when <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
   ensure_variables_chr(variables)
 
-  # `time` is the leaf of the temporal hierarchy — rows are ordered by
-  # the coarser context first, then by time within it. Appending a
-  # session or trial *after* `time` would sort by time across sessions
+  # The index is the leaf of the temporal hierarchy — rows are ordered by
+  # the coarser context first, then by the index within it. Appending a
+  # session or trial *after* the index would sort by it across sessions
   # and interleave them, so the new columns go ahead of it.
+  index <- get_index(data)
   declared <- union(get_variables(data, "when"), variables)
-  declared <- c(setdiff(declared, "time"), intersect(declared, "time"))
+  declared <- c(setdiff(declared, index), intersect(declared, index))
 
   declare_variables(data, "when", declared)
 }

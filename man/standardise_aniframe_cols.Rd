@@ -8,7 +8,8 @@ standardise_aniframe_cols(
   data,
   variables_what,
   variables_when,
-  variables_where
+  variables_where,
+  index = "time"
 )
 }
 \arguments{
@@ -19,13 +20,17 @@ standardise_aniframe_cols(
 \item{variables_when}{Temporal variable names.}
 
 \item{variables_where}{Spatial variable names.}
+
+\item{index}{The index column, which stays numeric while the other
+temporal variables are made categorical.}
 }
 \value{
 Data frame with standardised column types.
 }
 \description{
 Converts character identity and temporal variables to factors.
-Converts numeric identity and temporal variables (except time) to integers.
+Converts numeric identity and temporal variables (except the index) to
+integers.
 Spatial variables are converted to numeric.
 }
 \keyword{internal}

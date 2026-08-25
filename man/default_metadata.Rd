@@ -16,6 +16,15 @@ vector of length 1 or more — readers that load from multiple files
 (e.g. \code{aniread::read_trackball()}) populate this with all source paths.
 \item \code{sampling_rate}: Sampling rate in Hz (numeric, NA)
 \item \code{start_datetime}: Start date and time of recording (POSIXct, NA)
+\item \code{variables_when_index}: The single column the frame is indexed by (character,
+\code{"time"}). Exactly one column, and it may be called anything — the
+constructor requires \emph{that} column rather than a column literally
+named \code{time}. It is always one of the \code{variables_when}; the rest of
+that vector is the surrounding temporal context, which is what the
+frame is grouped by. Read it with \code{\link[=get_index]{get_index()}}, change it with
+\code{\link[=set_index]{set_index()}}. Absent from objects serialised before the field
+existed, where it reads back as \code{"time"} — the value they were built
+with.
 \item \code{variables_what}, \code{variables_when}, \code{variables_where}: The columns
 that carry, respectively, entity identity, temporal position and
 spatial position. These are the structural fields — \code{\link[=as_aniframe]{as_aniframe()}}

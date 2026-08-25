@@ -92,22 +92,26 @@ ensure_declared_variables_exist <- function(data) {
 }
 
 
-#' Ensure the time column is present and numeric
+#' Ensure the index column is present and numeric
+#'
+#' Which column that is comes from the frame's own declaration; `time` is
+#' its default, not a requirement (#109).
 #'
 #' @param data An aniframe object.
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
 ensure_aniframe_time <- function(data) {
-  if (!"time" %in% names(data)) {
+  index <- resolve_index(get_metadata(data))
+  if (!index %in% names(data)) {
     cli::cli_abort(c(
-      "Column {.val time} is required but not found in data.",
-      "i" = "The {.val time} column must always be present."
+      "Index column {.val {index}} is required but not found in data.",
+      "i" = "An aniframe is indexed by exactly one column."
     ))
   }
-  if (!is.numeric(data[["time"]])) {
+  if (!is.numeric(data[[index]])) {
     cli::cli_abort(
-      "Column {.val time} must be numeric, not {.cls {class(data[['time']])}}."
+      "Index column {.val {index}} must be numeric, not {.cls {class(data[[index]])}}."
     )
   }
   invisible(TRUE)
