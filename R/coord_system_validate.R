@@ -1,10 +1,13 @@
-#' Test whether a data frame uses a Cartesian coordinate system
+#' Test whether an aniframe uses a Cartesian coordinate system
 #'
 #' Returns `TRUE` if the data frame satisfies *any* of the 1‑D, 2‑D or 3‑D
 #' Cartesian checks defined in the helper functions.
 #'
-#' @param data A data frame.
-#' @return Logical scalar.
+#' @param data An aniframe.
+#' @return A logical value.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' is_cartesian(af)
 #' @export
 is_cartesian <- function(data) {
   is_cartesian_1d(data) ||
@@ -17,7 +20,11 @@ is_cartesian <- function(data) {
 #'
 #' Stops with a clear error message if `data` is not Cartesian.
 #'
-#' @param data A data frame.
+#' @param data An aniframe.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' # Passes silently when the coordinate system matches
+#' ensure_is_cartesian(af)
 #' @export
 ensure_is_cartesian <- function(data) {
   if (!is_cartesian(data)) {
@@ -30,12 +37,17 @@ ensure_is_cartesian <- function(data) {
 
 #' Test for a 1‑D Cartesian coordinate system
 #'
-#' The data frame must contain **exactly one** of `x`, `y` or `z` and none of the
+#' The aniframe must contain **exactly one** of `x`, `y` or `z` and none of the
 #' polar columns (`rho`, `phi`, `theta`).
 #'
-#' @param data A data frame.
-#' @param stop Unused placeholder kept for API compatibility.
-#' @return Logical scalar (invisible).
+#' @param data An aniframe.
+#' @param stop Unused, and kept only so the signature does not change.
+#'   It has no effect.
+#' @return `TRUE` if the aniframe has exactly one of `x`, `y` or `z` and none of `rho`, `phi` or
+#'   `theta`, otherwise `FALSE`.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' is_cartesian_1d(af)
 #' @export
 is_cartesian_1d <- function(data, stop = FALSE) {
   forbidden <- c("rho", "phi", "theta")
@@ -44,18 +56,21 @@ is_cartesian_1d <- function(data, stop = FALSE) {
   present_axes <- intersect(names(data), cartesian_axes)
 
   if (length(present_forbidden) > 0L) {
-    invisible(FALSE)
+    FALSE
   } else if (length(present_axes) != 1L) {
-    invisible(FALSE)
+    FALSE
   } else {
-    invisible(TRUE)
+    TRUE
   }
 }
 
 
 #' Internal guard for 1‑D Cartesian checks
 #'
-#' @param data A data frame.
+#' @param data An aniframe.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' try(ensure_is_cartesian_1d(af))
 #' @export
 ensure_is_cartesian_1d <- function(data) {
   if (!is_cartesian_1d(data)) {
@@ -71,27 +86,34 @@ ensure_is_cartesian_1d <- function(data) {
 #' Requires columns `x` and `y`.  Column `z` may be present only if it is
 #' completely `NA`.
 #'
-#' @param data A data frame.
-#' @return Logical scalar (invisible).
+#' @param data An aniframe.
+#' @return `TRUE` if the aniframe has `x` and `y` and none of `rho`, `phi` or
+#'   `theta`, otherwise `FALSE`.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' is_cartesian_2d(af)
 #' @export
 is_cartesian_2d <- function(data) {
   # Must contain x and y
   if (!all(c("x", "y") %in% names(data))) {
-    return(invisible(FALSE))
+    return(FALSE)
   }
 
   # If z exists, it must be entirely NA (or absent)
   if ("z" %in% names(data) && !all(is.na(data$z))) {
-    invisible(FALSE)
+    FALSE
   } else {
-    invisible(TRUE)
+    TRUE
   }
 }
 
 
 #' Internal guard for 2‑D Cartesian checks
 #'
-#' @param data A data frame.
+#' @param data An aniframe.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' ensure_is_cartesian_2d(af)
 #' @export
 ensure_is_cartesian_2d <- function(data) {
   if (!is_cartesian_2d(data)) {
@@ -106,25 +128,32 @@ ensure_is_cartesian_2d <- function(data) {
 #'
 #' Requires non‑missing columns `x`, `y` and `z`.
 #'
-#' @param data A data frame.
-#' @return Logical scalar (invisible).
+#' @param data An aniframe.
+#' @return `TRUE` if the aniframe has `x`, `y` and `z` and none of `rho`, `phi` or
+#'   `theta`, otherwise `FALSE`.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' is_cartesian_3d(af)
 #' @export
 is_cartesian_3d <- function(data) {
   # Must contain x, y, and z
   if (!all(c("x", "y", "z") %in% names(data))) {
-    invisible(FALSE)
+    FALSE
   } else if (all(c("x", "y", "z") %in% names(data)) && all(is.na(data$z))) {
-    invisible(FALSE)
+    FALSE
   } else {
     # All required columns are present
-    invisible(TRUE)
+    TRUE
   }
 }
 
 
 #' Internal guard for 3‑D Cartesian checks
 #'
-#' @param data A data frame.
+#' @param data An aniframe.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' try(ensure_is_cartesian_3d(af))
 #' @export
 ensure_is_cartesian_3d <- function(data) {
   if (!is_cartesian_3d(data)) {
@@ -135,12 +164,15 @@ ensure_is_cartesian_3d <- function(data) {
 }
 
 
-#' Test whether a data frame uses a polar coordinate system
+#' Test whether an aniframe uses a polar coordinate system
 #'
 #' Requires columns `rho` and `phi` and forbids `theta` or `z`.
 #'
-#' @param data A data frame.
-#' @return Logical scalar.
+#' @param data An aniframe.
+#' @return A logical value.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' is_polar(af)
 #' @export
 is_polar <- function(data) {
   all(c("rho", "phi") %in% names(data)) &&
@@ -150,7 +182,11 @@ is_polar <- function(data) {
 
 #' Internal guard for polar checks
 #'
-#' @param data A data frame.
+#' @param data An aniframe.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' # Passes silently when the coordinate system matches
+#' try(ensure_is_polar(af))
 #' @export
 ensure_is_polar <- function(data) {
   if (!is_polar(data)) {
@@ -159,12 +195,15 @@ ensure_is_polar <- function(data) {
 }
 
 
-#' Test whether a data frame uses a cylindrical coordinate system
+#' Test whether an aniframe uses a cylindrical coordinate system
 #'
 #' Requires `rho`, `phi` and `z`; forbids `theta`.
 #'
-#' @param data A data frame.
-#' @return Logical scalar.
+#' @param data An aniframe.
+#' @return A logical value.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' is_cylindrical(af)
 #' @export
 is_cylindrical <- function(data) {
   all(c("rho", "phi", "z") %in% names(data)) &&
@@ -174,7 +213,11 @@ is_cylindrical <- function(data) {
 
 #' Internal guard for cylindrical checks
 #'
-#' @param data A data frame.
+#' @param data An aniframe.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' # Passes silently when the coordinate system matches
+#' try(ensure_is_cylindrical(af))
 #' @export
 ensure_is_cylindrical <- function(data) {
   if (!is_cylindrical(data)) {
@@ -183,12 +226,15 @@ ensure_is_cylindrical <- function(data) {
 }
 
 
-#' Test whether a data frame uses a spherical coordinate system
+#' Test whether an aniframe uses a spherical coordinate system
 #'
 #' Requires `rho`, `phi` and `theta`; forbids `z`.
 #'
-#' @param data A data frame.
-#' @return Logical scalar.
+#' @param data An aniframe.
+#' @return A logical value.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' is_spherical(af)
 #' @export
 is_spherical <- function(data) {
   all(c("rho", "phi", "theta") %in% names(data)) &&
@@ -198,7 +244,11 @@ is_spherical <- function(data) {
 
 #' Internal guard for spherical checks
 #'
-#' @param data A data frame.
+#' @param data An aniframe.
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' # Passes silently when the coordinate system matches
+#' try(ensure_is_spherical(af))
 #' @export
 ensure_is_spherical <- function(data) {
   if (!is_spherical(data)) {

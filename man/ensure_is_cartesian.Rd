@@ -7,8 +7,13 @@
 ensure_is_cartesian(data)
 }
 \arguments{
-\item{data}{A data frame.}
+\item{data}{An aniframe.}
 }
 \description{
 Stops with a clear error message if \code{data} is not Cartesian.
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+# Passes silently when the coordinate system matches
+ensure_is_cartesian(af)
 }

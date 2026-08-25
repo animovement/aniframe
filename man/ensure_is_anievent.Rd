@@ -15,3 +15,7 @@ Errors if \code{x} is not an anievent; otherwise returns invisibly.
 \description{
 Ensure object is an anievent
 }
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+try(ensure_is_anievent(af))
+}

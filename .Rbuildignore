@@ -13,3 +13,4 @@
 ^README\.qmd$
 ^vignettes/articles$
 ^CLAUDE\.md$
+^AGENTS\.md$

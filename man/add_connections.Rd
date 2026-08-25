@@ -22,7 +22,7 @@ to \code{"keypoint"}.}
 The aniframe with the new connections appended.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\strong{[Experimental]}
 
 Append one or more \code{from}/\code{to} pairs to the existing connections for a
 variable. \code{from} and \code{to} may be either single strings or character vectors

@@ -2,16 +2,20 @@
 % Please edit documentation in R/coord_system_validate.R
 \name{is_spherical}
 \alias{is_spherical}
-\title{Test whether a data frame uses a spherical coordinate system}
+\title{Test whether an aniframe uses a spherical coordinate system}
 \usage{
 is_spherical(data)
 }
 \arguments{
-\item{data}{A data frame.}
+\item{data}{An aniframe.}
 }
 \value{
-Logical scalar.
+A logical value.
 }
 \description{
 Requires \code{rho}, \code{phi} and \code{theta}; forbids \code{z}.
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_spherical(af)
 }

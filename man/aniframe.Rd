@@ -48,6 +48,8 @@ define position. If \code{NULL} (the default), detected from the data.}
 An aniframe object (tibble with aniframe class).
 }
 \description{
+\if{html}{\figure{logo.svg}{options: style='float: right' alt='logo' width='120'}}
+
 An R package providing core data structures for movement data.
 
 Creates a specialized data frame for movement data with columns defining

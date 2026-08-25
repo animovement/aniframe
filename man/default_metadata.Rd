@@ -72,6 +72,9 @@ values. The same metadata substrate is shared by both \code{\link[=aniframe]{ani
 \code{spec_version}. Most fields are initialized as \code{NA} and should be set
 appropriately for your data.
 }
+\examples{
+names(default_metadata())
+}
 \seealso{
 \code{\link[=set_metadata]{set_metadata()}}, \code{\link[=get_metadata]{get_metadata()}}
 }

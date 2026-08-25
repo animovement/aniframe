@@ -19,11 +19,15 @@ A named list of tibbles (when \code{variable} is NULL), or a single
 2-column tibble.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\strong{[Experimental]}
 
 Read the connections currently stored on an aniframe. Returns the full
 named list of \code{from}/\code{to} tibbles by default, or a single tibble when
 \code{variable} is supplied.
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+get_connections(af)
 }
 \seealso{
 \code{\link[=set_connections]{set_connections()}}, \code{\link[=add_connections]{add_connections()}}, \code{\link[=remove_connections]{remove_connections()}}

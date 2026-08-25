@@ -20,6 +20,12 @@
 #'   define position. If `NULL` (the default), detected from the data.
 #'
 #' @return An aniframe object
+#' @examples
+#' df <- data.frame(
+#'   time = 1:3, individual = 'a', keypoint = 'centroid',
+#'   x = c(0, 1, 2), y = c(0, 1, 0)
+#' )
+#' as_aniframe(df)
 #' @export
 as_aniframe <- function(
   data,

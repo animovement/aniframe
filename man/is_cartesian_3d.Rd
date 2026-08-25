@@ -7,11 +7,16 @@
 is_cartesian_3d(data)
 }
 \arguments{
-\item{data}{A data frame.}
+\item{data}{An aniframe.}
 }
 \value{
-Logical scalar (invisible).
+\code{TRUE} if the aniframe has \code{x}, \code{y} and \code{z} and none of \code{rho}, \code{phi} or
+\code{theta}, otherwise \code{FALSE}.
 }
 \description{
 Requires non‑missing columns \code{x}, \code{y} and \code{z}.
+}
+\examples{
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_cartesian_3d(af)
 }

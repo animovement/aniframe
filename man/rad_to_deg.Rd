@@ -15,3 +15,7 @@ Numeric vector of angles expressed in degrees.
 \description{
 Convert radians to degrees
 }
+\examples{
+rad_to_deg(pi)
+rad_to_deg(c(0, pi / 2, pi))
+}

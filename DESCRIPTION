@@ -24,7 +24,6 @@ Imports:
     rlang,
     pillar,
     anytime,
-    lifecycle
 Suggests:
   knitr,
   rmarkdown,
