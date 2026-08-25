@@ -95,13 +95,13 @@ edges between keypoints, or social-network edges between individuals).
 Stored as a named list of `from`/`to` tibbles in `metadata$connections`.
 
 - [`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md)
-  **\[experimental\]** : Set the connections for a variable
+  : Set the connections for a variable
 - [`get_connections()`](https://animovement.dev/aniframe/reference/get_connections.md)
-  **\[experimental\]** : Get connections from an aniframe
+  : Get connections from an aniframe
 - [`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md)
-  **\[experimental\]** : Add connections to an aniframe
+  : Add connections to an aniframe
 - [`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
-  **\[experimental\]** : Remove connections from an aniframe
+  : Remove connections from an aniframe
 
 ## Spatial checks
 
@@ -117,7 +117,7 @@ check the spatial columns against the `variables_where` metadata; the
 - [`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md)
   : Ensure the spatial columns match the metadata
 - [`is_cartesian()`](https://animovement.dev/aniframe/reference/is_cartesian.md)
-  : Test whether a data frame uses a Cartesian coordinate system
+  : Test whether an aniframe uses a Cartesian coordinate system
 - [`is_cartesian_1d()`](https://animovement.dev/aniframe/reference/is_cartesian_1d.md)
   : Test for a 1‑D Cartesian coordinate system
 - [`is_cartesian_2d()`](https://animovement.dev/aniframe/reference/is_cartesian_2d.md)
@@ -125,11 +125,11 @@ check the spatial columns against the `variables_where` metadata; the
 - [`is_cartesian_3d()`](https://animovement.dev/aniframe/reference/is_cartesian_3d.md)
   : Test for a 3‑D Cartesian coordinate system
 - [`is_polar()`](https://animovement.dev/aniframe/reference/is_polar.md)
-  : Test whether a data frame uses a polar coordinate system
+  : Test whether an aniframe uses a polar coordinate system
 - [`is_cylindrical()`](https://animovement.dev/aniframe/reference/is_cylindrical.md)
-  : Test whether a data frame uses a cylindrical coordinate system
+  : Test whether an aniframe uses a cylindrical coordinate system
 - [`is_spherical()`](https://animovement.dev/aniframe/reference/is_spherical.md)
-  : Test whether a data frame uses a spherical coordinate system
+  : Test whether an aniframe uses a spherical coordinate system
 - [`ensure_is_cartesian()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian.md)
   : Internal guard for Cartesian checks
 - [`ensure_is_cartesian_1d()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.md)

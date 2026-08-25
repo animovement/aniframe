@@ -1,4 +1,4 @@
-# Test whether a data frame uses a cylindrical coordinate system
+# Test whether an aniframe uses a cylindrical coordinate system
 
 Requires `rho`, `phi` and `z`; forbids `theta`.
 
@@ -12,8 +12,16 @@ is_cylindrical(data)
 
 - data:
 
-  A data frame.
+  An aniframe.
 
 ## Value
 
-Logical scalar.
+A logical value.
+
+## Examples
+
+``` r
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_cylindrical(af)
+#> [1] FALSE
+```

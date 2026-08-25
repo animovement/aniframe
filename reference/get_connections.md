@@ -1,6 +1,6 @@
 # Get connections from an aniframe
 
-**\[experimental\]**
+**\[Experimental\]**
 
 Read the connections currently stored on an aniframe. Returns the full
 named list of `from`/`to` tibbles by default, or a single tibble when
@@ -35,3 +35,11 @@ tibble.
 [`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md),
 [`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md),
 [`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
+
+## Examples
+
+``` r
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+get_connections(af)
+#> list()
+```

@@ -12,4 +12,11 @@ ensure_is_cartesian_2d(data)
 
 - data:
 
-  A data frame.
+  An aniframe.
+
+## Examples
+
+``` r
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+ensure_is_cartesian_2d(af)
+```

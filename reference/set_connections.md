@@ -1,6 +1,6 @@
 # Set the connections for a variable
 
-**\[experimental\]**
+**\[Experimental\]**
 
 Replace the connections (e.g. skeleton edges between keypoints, edges of
 a social network between individuals) for a single variable. Connections

@@ -17,3 +17,11 @@ is_anievent(x)
 ## Value
 
 Logical: `TRUE` if `x` inherits from `anievent`.
+
+## Examples
+
+``` r
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_anievent(af)
+#> [1] FALSE
+```

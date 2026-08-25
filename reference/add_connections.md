@@ -1,6 +1,6 @@
 # Add connections to an aniframe
 
-**\[experimental\]**
+**\[Experimental\]**
 
 Append one or more `from`/`to` pairs to the existing connections for a
 variable. `from` and `to` may be either single strings or character

@@ -17,3 +17,15 @@ is_aniframe(x)
 ## Value
 
 Logical: TRUE if x inherits from aniframe
+
+## Examples
+
+``` r
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_aniframe(af)
+#> [1] TRUE
+
+# A plain data frame is not one
+is_aniframe(data.frame(x = 1))
+#> [1] FALSE
+```

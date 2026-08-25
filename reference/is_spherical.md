@@ -1,4 +1,4 @@
-# Test whether a data frame uses a spherical coordinate system
+# Test whether an aniframe uses a spherical coordinate system
 
 Requires `rho`, `phi` and `theta`; forbids `z`.
 
@@ -12,8 +12,16 @@ is_spherical(data)
 
 - data:
 
-  A data frame.
+  An aniframe.
 
 ## Value
 
-Logical scalar.
+A logical value.
+
+## Examples
+
+``` r
+af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+is_spherical(af)
+#> [1] FALSE
+```

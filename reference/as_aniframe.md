@@ -51,3 +51,20 @@ as_aniframe(
 ## Value
 
 An aniframe object
+
+## Examples
+
+``` r
+df <- data.frame(
+  time = 1:3, individual = 'a', keypoint = 'centroid',
+  x = c(0, 1, 2), y = c(0, 1, 0)
+)
+as_aniframe(df)
+#> # Individuals: a
+#> # Keypoints:   centroid
+#>   individual keypoint  time     x     y
+#>   <fct>      <fct>    <int> <dbl> <dbl>
+#> 1 a          centroid     1     0     0
+#> 2 a          centroid     2     1     1
+#> 3 a          centroid     3     2     0
+```

@@ -1,6 +1,6 @@
 # Remove connections from an aniframe
 
-**\[experimental\]**
+**\[Experimental\]**
 
 Remove `from`/`to` pairs from the connections of a variable. Matching is
 exact and order-sensitive: `remove_connections(data, "a", "b")` removes
