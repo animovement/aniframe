@@ -23,9 +23,15 @@ An aniframe object with spatial coordinates converted to the specified
 unit and updated metadata reflecting the new unit_space.
 }
 \description{
-Converts spatial coordinates (x, y, z) in an aniframe object to a different
-unit of measurement. The function handles both automatic unit conversion
-between standard units and custom calibration from pixel or arbitrary units.
+Converts the spatial coordinates of an aniframe object to a different unit
+of measurement. The function handles both automatic unit conversion between
+standard units and custom calibration from pixel or arbitrary units.
+
+The columns converted are the axes of the frame's \code{coordinate_system} that
+carry a \strong{length} — \code{x}, \code{y} and \code{z} on a Cartesian frame, but \code{rho} on a
+polar or spherical one and \code{rho} and \code{z} on a cylindrical one. The angular
+axes (\code{phi}, \code{theta}) are left alone; they are \code{\link[=set_unit_angle]{set_unit_angle()}}'s to
+convert.
 }
 \details{
 The function performs the following operations:
@@ -36,8 +42,8 @@ The function performs the following operations:
 automatically calculates the conversion factor
 \item If converting from "px" or "unknown" units with \code{calibration_factor = 1},
 issues an informational message and returns data unchanged
-\item Applies the calibration factor to all spatial columns (x, y, z) that exist
-in the data
+\item Applies the calibration factor to the length axes of the frame's
+coordinate system
 \item Updates the object's unit_space metadata
 }
 }
