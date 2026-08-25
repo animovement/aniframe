@@ -383,3 +383,80 @@ test_that("get_conversion_factor_time returns 1 for same units", {
   expect_equal(get_conversion_factor_time("m", "m"), 1)
   expect_equal(get_conversion_factor_time("h", "h"), 1)
 })
+
+# Length axes vs angular axes (#98) ----
+
+test_that("set_unit_space converts rho on a polar frame", {
+  data <- aniframe(
+    individual = "a",
+    time = 1:3,
+    rho = c(100, 200, 300),
+    phi = c(0, 1, 2)
+  )
+
+  result <- set_unit_space(data, to_unit = "cm", calibration_factor = 1 / 10)
+
+  # rho is a length, so it converts; phi is an angle and belongs to
+  # set_unit_angle(), so it must not.
+  expect_equal(result$rho, c(10, 20, 30))
+  expect_equal(result$phi, c(0, 1, 2))
+  expect_equal(as.character(get_metadata(result, "unit_space")), "cm")
+})
+
+test_that("set_unit_space converts both length axes of a cylindrical frame", {
+  # The sharp case: one length axis named rho and one named z. Selecting
+  # columns by name converted z and left rho, leaving two axes of the same
+  # coordinate system in different units under a single unit_space (#98).
+  data <- aniframe(
+    individual = "a",
+    time = 1:3,
+    rho = c(100, 200, 300),
+    phi = c(0, 1, 2),
+    z = c(10, 20, 30)
+  )
+
+  result <- set_unit_space(data, to_unit = "cm", calibration_factor = 1 / 10)
+
+  expect_equal(result$rho, c(10, 20, 30))
+  expect_equal(result$z, c(1, 2, 3))
+  expect_equal(result$phi, c(0, 1, 2))
+})
+
+test_that("set_unit_space converts rho on a spherical frame and leaves both angles", {
+  data <- aniframe(
+    individual = "a",
+    time = 1:3,
+    rho = c(100, 200, 300),
+    phi = c(0, 1, 2),
+    theta = c(0, 0.5, 1)
+  )
+
+  result <- set_unit_space(data, to_unit = "cm", calibration_factor = 1 / 10)
+
+  expect_equal(result$rho, c(10, 20, 30))
+  expect_equal(result$phi, c(0, 1, 2))
+  expect_equal(result$theta, c(0, 0.5, 1))
+})
+
+test_that("set_unit_space warns rather than silently claiming a unit it did not apply", {
+  # An unrecognised set of spatial names leaves coordinate_system "unknown",
+  # so there is no way to tell a length from an angle. Converting nothing
+  # while updating the metadata is the same lie as #98, so it warns.
+  data <- suppressWarnings(as_aniframe(
+    dplyr::tibble(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 1, 0)),
+    variables_where = c("u", "v")
+  ))
+
+  expect_warning(
+    set_unit_space(data, to_unit = "cm", calibration_factor = 1 / 10),
+    "No length axes found"
+  )
+})
+
+test_that("length_axes() splits each coordinate system into lengths and angles", {
+  expect_equal(length_axes("cartesian_2d"), c("x", "y", "z"))
+  expect_equal(length_axes("polar"), "rho")
+  expect_equal(length_axes("cylindrical"), c("rho", "z"))
+  expect_equal(length_axes("spherical"), "rho")
+  expect_equal(length_axes("unknown"), character())
+})
