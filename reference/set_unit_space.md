@@ -1,9 +1,16 @@
 # Set the spatial unit of an aniframe object
 
-Converts spatial coordinates (x, y, z) in an aniframe object to a
-different unit of measurement. The function handles both automatic unit
-conversion between standard units and custom calibration from pixel or
-arbitrary units.
+Converts the spatial coordinates of an aniframe object to a different
+unit of measurement. The function handles both automatic unit conversion
+between standard units and custom calibration from pixel or arbitrary
+units.
+
+The columns converted are the axes of the frame's `coordinate_system`
+that carry a **length** — `x`, `y` and `z` on a Cartesian frame, but
+`rho` on a polar or spherical one and `rho` and `z` on a cylindrical
+one. The angular axes (`phi`, `theta`) are left alone; they are
+[`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md)'s
+to convert.
 
 ## Usage
 
@@ -51,8 +58,8 @@ The function performs the following operations:
   `calibration_factor = 1`, issues an informational message and returns
   data unchanged
 
-- Applies the calibration factor to all spatial columns (x, y, z) that
-  exist in the data
+- Applies the calibration factor to the length axes of the frame's
+  coordinate system
 
 - Updates the object's unit_space metadata
 

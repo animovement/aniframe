@@ -4,6 +4,20 @@
 
 ### Bug fixes
 
+- [`set_unit_space()`](https://animovement.dev/aniframe/reference/set_unit_space.md)
+  now converts the length axes of the frame’s coordinate system rather
+  than whichever of `x`, `y` and `z` happen to be present
+  ([\#98](https://github.com/animovement/aniframe/issues/98)). On a
+  polar or spherical frame `rho` is a length and was never converted,
+  while the metadata was updated to claim the new unit; on a cylindrical
+  frame `rho` was left in the old unit and `z` converted, leaving two
+  axes of one coordinate system in different units. The angular axes are
+  untouched, as before — they belong to
+  [`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md).
+  Where the coordinate system is `unknown` there is no way to tell a
+  length from an angle, and the function now warns instead of quietly
+  changing nothing.
+
 - [`set_unit_space()`](https://animovement.dev/aniframe/reference/set_unit_space.md),
   [`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md),
   [`set_unit_time()`](https://animovement.dev/aniframe/reference/set_unit_time.md)
