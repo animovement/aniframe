@@ -190,7 +190,7 @@ test_that("declaring a temporal grouping column groups and orders by it", {
     add_variables_when("session")
 
   # `time` stays last: rows sort by session, then by time within it.
-  expect_equal(get_variables_when(af), c("session", "time"))
+  expect_equal(get_variables_when(af), "session")
   expect_equal(dplyr::group_vars(af), "session")
   expect_s3_class(af$session, "factor")
   # Ordered by the temporal context, so sessions are contiguous.
@@ -204,7 +204,8 @@ test_that("remove_variables_when drops the temporal context and ungroups", {
 
   dropped <- remove_variables_when(af, "session")
 
-  expect_equal(get_variables_when(dropped), "time")
+  # Nothing left but the index, which lives in its own field.
+  expect_equal(get_variables_when(dropped), character(0))
   expect_false(dplyr::is_grouped_df(dropped))
   expect_true("session" %in% names(dropped))
 })

@@ -4,7 +4,8 @@ test_that("a frame with no declaration is indexed by time", {
   af <- aniframe(individual = "a", time = 1:3, x = c(1, 2, 3), y = c(0, 1, 0))
 
   expect_equal(get_index(af), "time")
-  expect_equal(get_variables_when(af), "time")
+  # `variables_when` is the temporal *context*, and this frame has none.
+  expect_equal(get_variables_when(af), character(0))
 })
 
 test_that("a frame can be indexed by a column that is not called time", {
@@ -18,8 +19,8 @@ test_that("a frame can be indexed by a column that is not called time", {
   af <- as_aniframe(df, index = "frame")
 
   expect_equal(get_index(af), "frame")
-  # The index is one of the temporal variables, never a separate declaration.
-  expect_true("frame" %in% get_variables_when(af))
+  # The index is declared separately, never as temporal context.
+  expect_false("frame" %in% get_variables_when(af))
   # No column literally named `time` is required any more.
   expect_false("time" %in% names(af))
 })
@@ -66,9 +67,12 @@ test_that("set_index() moves the index and regroups the frame", {
   result <- set_index(af, "tick")
 
   expect_equal(get_index(result), "tick")
-  # `time` is now ordinary temporal context, so it groups.
-  expect_true("time" %in% dplyr::group_vars(result))
+  # The column the frame *was* indexed by must not become a grouping
+  # variable: holding one value per row, it would put every row in its own
+  # group. It becomes an ordinary undeclared column instead.
+  expect_false("time" %in% dplyr::group_vars(result))
   expect_false("tick" %in% dplyr::group_vars(result))
+  expect_equal(dplyr::n_groups(result), 1L)
 })
 
 test_that("set_index() rejects a column that cannot be an index", {
@@ -90,9 +94,10 @@ test_that("as_aniframe() aborts when the declared index is absent", {
   expect_error(as_aniframe(df, index = "nope"), "not found in data")
 })
 
-test_that("variables_when must keep the index", {
-  # Dropping it would leave the metadata pointing at a column the frame no
-  # longer declares as temporal, which is the desynchronisation #82 closed.
+test_that("variables_when never contains the index", {
+  # Frames built before the field existed list the index in
+  # `variables_when`. Carrying that through would group by it, putting
+  # every row in its own group, so it is normalised out on construction.
   af <- as_aniframe(data.frame(
     time = 1:4,
     session = c("a", "a", "b", "b"),
@@ -101,7 +106,20 @@ test_that("variables_when must keep the index", {
     y = 1:4
   ))
 
-  expect_error(set_variables_when(af, "session"), "must include the index")
+  expect_false(get_index(af) %in% get_variables_when(af))
+  expect_equal(get_variables_when(af), "session")
+  expect_setequal(dplyr::group_vars(af), c("individual", "session"))
+})
+
+test_that("setting a new index does not promote the old one to a grouping variable", {
+  af <- aniframe(individual = "a", time = 1:5, x = 1:5, y = 1:5) |>
+    dplyr::mutate(frame = c(10, 20, 30, 40, 50))
+
+  result <- set_index(af, "frame")
+
+  expect_equal(dplyr::group_vars(result), "individual")
+  expect_equal(dplyr::n_groups(result), 1L)
+  expect_false("time" %in% get_variables_when(result))
 })
 
 test_that("set_metadata() refuses the index and names its setter", {

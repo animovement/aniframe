@@ -15,9 +15,13 @@
 #' @param variables_when Character vector of temporal columns that together
 #'   define a unique timepoint. If `NULL` (the default), detected from the
 #'   data: whichever of `observation`, `session`, `trial` and `time` are
-#'   present. The `index` column is always one of them.
+#'   present, minus the index. These are the temporal *context* — which
+#'   session, which trial — and, together with `variables_what`, they are
+#'   what the frame is grouped by. The index itself is declared separately
+#'   and is never one of them.
 #' @param index Length-one character vector naming the column the frame is
-#'   indexed by — the position of each row within its trajectory. If
+#'   indexed by — the position of each row within its temporal context.
+#'   It is never a grouping variable. If
 #'   `NULL` (the default), the frame's existing declaration is kept, or
 #'   `"time"` for a frame that has none. The column must exist and be
 #'   numeric; it may be called anything.
@@ -75,10 +79,10 @@ as_aniframe <- function(
     variables_when <- recognised_when[recognised_when %in% names(data)]
   }
 
-  # The index is a temporal variable whatever it is called, so a custom one
-  # joins the declaration even though detection cannot recognise its name.
-  # It sorts last: rows run coarse context first, then the index within it.
-  variables_when <- c(setdiff(variables_when, index), index)
+  # `variables_when` is the temporal *context* — which session, which
+  # trial. The index is the position within that context and is declared
+  # separately, so detection's `time` drops out here.
+  variables_when <- setdiff(variables_when, index)
 
   # Resolve variables_what: detect from data if not specified
   if (is.null(variables_what)) {
@@ -152,8 +156,8 @@ as_aniframe <- function(
 #' @param variables_what Identity variable names.
 #' @param variables_when Temporal variable names.
 #' @param variables_where Spatial variable names.
-#' @param index The index column, which stays numeric while the other
-#'   temporal variables are made categorical.
+#' @param index The index column, which stays numeric. The temporal
+#'   context variables are made categorical.
 #'
 #' @return Data frame with standardised column types.
 #' @keywords internal
@@ -165,7 +169,7 @@ standardise_aniframe_cols <- function(
   index = "time"
 ) {
   # What and when variables (except time) should be categorical or integer
-  categorical_vars <- c(variables_what, setdiff(variables_when, index))
+  categorical_vars <- c(variables_what, variables_when)
   for (col in categorical_vars) {
     if (col %in% names(data)) {
       if (is.character(data[[col]])) {
@@ -250,7 +254,7 @@ ensure_aniframe_cols <- function(
     )
   }
 
-  ensure_declared_cols_exist(data, setdiff(variables_when, index), "when")
+  ensure_declared_cols_exist(data, variables_when, "when")
   ensure_declared_cols_exist(data, variables_where, "where")
 
   invisible(TRUE)

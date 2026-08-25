@@ -66,13 +66,6 @@ declare_variables <- function(data, role, variables) {
   )
   declared[[role]] <- unname(variables)
 
-  # The index is one of the temporal variables by definition. A `when`
-  # declaration that leaves it out would point the metadata at a column the
-  # frame no longer declares, which is the desynchronisation #82 closed.
-  if (role == "when" && is_aniframe(data)) {
-    ensure_index_declared(data, declared$when)
-  }
-
   restructure_frame(data, declared$what, declared$when, declared$where)
 }
 
@@ -184,6 +177,13 @@ restructure_aniframe <- function(
   index <- resolve_index(md)
   bare <- strip_animovement_class(data)
 
+  # The index is declared separately and is never one of the context
+  # variables. Normalising here rather than at each caller keeps frames
+  # built before the field existed coherent too: their `variables_when`
+  # still lists the index column, and grouping by it would put every row
+  # in its own group.
+  variables_when <- setdiff(variables_when, index)
+
   ensure_aniframe_cols(
     bare,
     variables_what,
@@ -199,22 +199,26 @@ restructure_aniframe <- function(
     index
   )
 
-  # Column order: what, when, where, confidence, everything else.
-  standard_cols <- unique(c(variables_what, variables_when, variables_where))
+  # Column order: what, when, index, where, confidence, everything else.
+  standard_cols <- unique(
+    c(variables_what, variables_when, index, variables_where)
+  )
   if ("confidence" %in% names(bare)) {
     standard_cols <- c(standard_cols, "confidence")
   }
   bare <- bare[, c(standard_cols, setdiff(names(bare), standard_cols))]
 
-  # Order by identity first, then temporal (keeps trajectories contiguous).
+  # Order by identity, then temporal context, then position within it —
+  # the index sorts last, which keeps each trajectory contiguous.
   bare <- dplyr::arrange(
     bare,
     dplyr::across(dplyr::all_of(variables_what)),
-    dplyr::across(dplyr::all_of(variables_when))
+    dplyr::across(dplyr::all_of(c(variables_when, index)))
   )
 
-  # Group by identity + temporal context (all what + when except the index).
-  grouping_vars <- c(variables_what, setdiff(variables_when, index))
+  # Group by identity + temporal context. `variables_when` is exactly the
+  # context now, so there is nothing to exclude — the index is not in it.
+  grouping_vars <- c(variables_what, variables_when)
   bare <- regroup_frame(bare, grouping_vars)
 
   md$variables_what <- variables_what
@@ -444,15 +448,10 @@ add_variables_when <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
   ensure_variables_chr(variables)
 
-  # The index is the leaf of the temporal hierarchy — rows are ordered by
-  # the coarser context first, then by the index within it. Appending a
-  # session or trial *after* the index would sort by it across sessions
-  # and interleave them, so the new columns go ahead of it.
-  index <- get_index(data)
-  declared <- union(get_variables(data, "when"), variables)
-  declared <- c(setdiff(declared, index), intersect(declared, index))
-
-  declare_variables(data, "when", declared)
+  # `variables_when` holds only the temporal context, so a new column
+  # simply joins it — the index sorts after all of them regardless, and is
+  # declared separately.
+  declare_variables(data, "when", union(get_variables(data, "when"), variables))
 }
 
 #' @rdname variables

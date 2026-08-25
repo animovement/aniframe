@@ -14,9 +14,10 @@ Length-one character vector naming the index column.
 }
 \description{
 Exactly one column, of any name, holding the position of each row
-within its trajectory. It is always one of the \code{variables_when}; the
-rest of that vector is the surrounding temporal context — session,
-trial, observation — and is what the frame is grouped by.
+within its temporal context. It is declared separately from
+\code{variables_when}, which holds the context itself — session, trial,
+observation — and which, with \code{variables_what}, is what the frame is
+grouped by. The index is never a grouping variable.
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

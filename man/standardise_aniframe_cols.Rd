@@ -21,8 +21,8 @@ standardise_aniframe_cols(
 
 \item{variables_where}{Spatial variable names.}
 
-\item{index}{The index column, which stays numeric while the other
-temporal variables are made categorical.}
+\item{index}{The index column, which stays numeric. The temporal
+context variables are made categorical.}
 }
 \value{
 Data frame with standardised column types.

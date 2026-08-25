@@ -32,13 +32,17 @@ named here must exist in \code{data}.}
 \item{variables_when}{Character vector of temporal columns that together
 define a unique timepoint. If \code{NULL} (the default), detected from the
 data: whichever of \code{observation}, \code{session}, \code{trial} and \code{time} are
-present. The \code{index} column is always one of them.}
+present, minus the index. These are the temporal \emph{context} — which
+session, which trial — and, together with \code{variables_what}, they are
+what the frame is grouped by. The index itself is declared separately
+and is never one of them.}
 
 \item{variables_where}{Character vector of spatial columns that together
 define position. If \code{NULL} (the default), detected from the data.}
 
 \item{index}{Length-one character vector naming the column the frame is
-indexed by — the position of each row within its trajectory. If
+indexed by — the position of each row within its temporal context.
+It is never a grouping variable. If
 \code{NULL} (the default), the frame's existing declaration is kept, or
 \code{"time"} for a frame that has none. The column must exist and be
 numeric; it may be called anything.}

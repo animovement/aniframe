@@ -16,13 +16,18 @@ must exist in \code{data} and be numeric.}
 \code{data}, re-indexed and restructured.
 }
 \description{
-Changing the index changes what the frame is grouped by and the order
-its rows come in, so — like the \verb{variables_*} declarations — it is not
-reachable through \code{\link[=set_metadata]{set_metadata()}} and has its own setter, which does
-the restructuring too.
+Changing the index changes the order the rows come in, so — like the
+\verb{variables_*} declarations — it is not reachable through
+\code{\link[=set_metadata]{set_metadata()}} and has its own setter, which does the restructuring
+too.
 }
 \details{
-The column is added to \code{variables_when} if it is not already there.
+If the column was declared as temporal context it stops being so: a
+variable cannot be both the position within a context and part of it.
+The column the frame was previously indexed by becomes an ordinary
+undeclared column rather than being promoted to a grouping variable —
+which, holding one value per row, would put every row in its own
+group.
 }
 \examples{
 df <- data.frame(frame = 1:3, individual = "a", x = c(1, 2, 3), y = c(0, 1, 0))

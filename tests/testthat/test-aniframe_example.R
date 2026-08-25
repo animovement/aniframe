@@ -135,6 +135,7 @@ test_that("example_aniframe sets correct metadata variables", {
   expect_equal(get_metadata(result)$variables_what, c("individual", "keypoint"))
   expect_equal(
     get_metadata(result)$variables_when,
-    c("session", "trial", "time")
+    # The index is declared separately and is not temporal *context*.
+    c("session", "trial")
   )
 })

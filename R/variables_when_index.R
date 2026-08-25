@@ -12,9 +12,10 @@
 #' The column an aniframe is indexed by
 #'
 #' Exactly one column, of any name, holding the position of each row
-#' within its trajectory. It is always one of the `variables_when`; the
-#' rest of that vector is the surrounding temporal context — session,
-#' trial, observation — and is what the frame is grouped by.
+#' within its temporal context. It is declared separately from
+#' `variables_when`, which holds the context itself — session, trial,
+#' observation — and which, with `variables_what`, is what the frame is
+#' grouped by. The index is never a grouping variable.
 #'
 #' @param data An aniframe or anievent object.
 #'
@@ -54,12 +55,17 @@ resolve_index <- function(md) {
 
 #' Declare which column an aniframe is indexed by
 #'
-#' Changing the index changes what the frame is grouped by and the order
-#' its rows come in, so — like the `variables_*` declarations — it is not
-#' reachable through [set_metadata()] and has its own setter, which does
-#' the restructuring too.
+#' Changing the index changes the order the rows come in, so — like the
+#' `variables_*` declarations — it is not reachable through
+#' [set_metadata()] and has its own setter, which does the restructuring
+#' too.
 #'
-#' The column is added to `variables_when` if it is not already there.
+#' If the column was declared as temporal context it stops being so: a
+#' variable cannot be both the position within a context and part of it.
+#' The column the frame was previously indexed by becomes an ordinary
+#' undeclared column rather than being promoted to a grouping variable —
+#' which, holding one value per row, would put every row in its own
+#' group.
 #'
 #' @param data An aniframe object.
 #' @param column Length-one character vector naming the index column. It
@@ -82,12 +88,15 @@ set_index <- function(data, column) {
   md[["variables_when_index"]] <- column
   data <- attach_metadata(data, md)
 
-  # The index is one of the temporal variables, and declaring it restructures
-  # the frame: it decides both the grouping and the within-group row order.
+  # If the column was serving as temporal context, it stops: a variable
+  # cannot be both the position within a context and part of the context.
+  # The previous index simply stops being declared — it is not silently
+  # promoted to a grouping variable, which for a column of unique values
+  # would put every row in its own group.
   declare_variables(
     data,
     "when",
-    union(get_variables(data, "when"), column)
+    setdiff(get_variables(data, "when"), column)
   )
 }
 
@@ -115,31 +124,6 @@ ensure_valid_index <- function(data, column) {
     cli::cli_abort(
       "Index column {.val {column}} must be numeric, not {.cls {class(data[[column]])}}."
     )
-  }
-  invisible(TRUE)
-}
-
-
-#' Ensure a `when` declaration still contains the index
-#'
-#' `variables_when_index` names one of the `variables_when`. Declaring a
-#' set that leaves it out would leave the metadata pointing at a column the
-#' frame no longer declares as temporal — the same desynchronisation that
-#' dedicated setters exist to prevent (#82).
-#'
-#' @param data An aniframe object.
-#' @param when The proposed `variables_when` declaration.
-#'
-#' @return `TRUE`, invisibly.
-#' @keywords internal
-ensure_index_declared <- function(data, when) {
-  index <- resolve_index(get_metadata(data))
-  if (!index %in% when) {
-    cli::cli_abort(c(
-      "{.field variables_when} must include the index column {.val {index}}.",
-      "i" = "The index is one of the temporal variables, not a separate declaration.",
-      "i" = "To index the frame by a different column, use {.fn set_index}, which moves both."
-    ))
   }
   invisible(TRUE)
 }

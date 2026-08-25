@@ -383,7 +383,7 @@ test_that("as_aniframe stores variables in metadata", {
 
   result_md <- get_metadata(result)
   expect_equal(result_md$variables_what, "individual")
-  expect_equal(result_md$variables_when, c("trial", "time"))
+  expect_equal(result_md$variables_when, "trial")
   expect_equal(result_md$variables_where, c("x", "y"))
 })
 
@@ -412,7 +412,7 @@ test_that("as_aniframe respects custom variables_when with time", {
   result <- as_aniframe(df, variables_when = c("session", "time"))
 
   expect_s3_class(result, "aniframe")
-  expect_equal(get_metadata(result)$variables_when, c("session", "time"))
+  expect_equal(get_metadata(result)$variables_when, "session")
 })
 
 test_that("as_aniframe auto-detects observation as a temporal grouping column", {
@@ -428,7 +428,7 @@ test_that("as_aniframe auto-detects observation as a temporal grouping column", 
 
   expect_equal(
     get_metadata(result, "variables_when"),
-    c("observation", "time")
+    "observation"
   )
 })
 
