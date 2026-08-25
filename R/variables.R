@@ -62,9 +62,16 @@ declare_variables <- function(data, role, variables) {
   declared <- list(
     what = get_variables(data, "what"),
     when = get_variables(data, "when"),
-    where = get_variables(data, "where")
+    # Names carry the axis roles, so this one is read unstripped (#109).
+    where = get_metadata(data, "variables_where")
   )
-  declared[[role]] <- unname(variables)
+  # Only `where` carries names worth keeping; stripping them elsewhere
+  # guards `union()`/`setdiff()` against surprises.
+  declared[[role]] <- if (identical(role, "where")) {
+    variables
+  } else {
+    unname(variables)
+  }
 
   restructure_frame(data, declared$what, declared$when, declared$where)
 }
@@ -184,24 +191,35 @@ restructure_aniframe <- function(
   # in its own group.
   variables_when <- setdiff(variables_when, index)
 
+  # Roles decide the coordinate system; columns are what the frame is
+  # restructured against. An explicit role mapping is validated strictly —
+  # a bad role is named here rather than degrading the frame to "unknown"
+  # and failing in whichever spatial function the user reaches first (#109).
+  by_role <- axes_declared_by_role(variables_where)
+  axes <- normalise_axes(variables_where)
+  if (by_role) {
+    ensure_valid_axis_roles(axes)
+  }
+  where_cols <- unname(axes)
+
   ensure_aniframe_cols(
     bare,
     variables_what,
     variables_when,
-    variables_where,
+    where_cols,
     index
   )
   bare <- standardise_aniframe_cols(
     bare,
     variables_what,
     variables_when,
-    variables_where,
+    where_cols,
     index
   )
 
   # Column order: what, when, index, where, confidence, everything else.
   standard_cols <- unique(
-    c(variables_what, variables_when, index, variables_where)
+    c(variables_what, variables_when, index, where_cols)
   )
   if ("confidence" %in% names(bare)) {
     standard_cols <- c(standard_cols, "confidence")
@@ -221,12 +239,21 @@ restructure_aniframe <- function(
   grouping_vars <- c(variables_what, variables_when)
   bare <- regroup_frame(bare, grouping_vars)
 
+  coordinate_system <- infer_coordinate_system(axes)
+
   md$variables_what <- variables_what
   md$variables_when <- variables_when
-  md$variables_where <- variables_where
+  # Roles are only stored once they mean something. A frame whose axes do
+  # not form a coordinate system keeps the bare vector it was declared
+  # with, so `unknown` behaves exactly as it did before roles existed.
+  md$variables_where <- if (identical(coordinate_system, "unknown")) {
+    where_cols
+  } else {
+    axes
+  }
   md$variables_index <- index
   md$coordinate_system <- as_metadata_factor(
-    infer_coordinate_system(variables_where),
+    coordinate_system,
     "coordinate_system"
   )
 

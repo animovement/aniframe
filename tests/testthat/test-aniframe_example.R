@@ -85,7 +85,7 @@ test_that("example_aniframe creates 1D data with only x", {
   expect_true("x" %in% names(result))
   expect_false("y" %in% names(result))
   expect_false("z" %in% names(result))
-  expect_equal(get_metadata(result)$variables_where, "x")
+  expect_equal(get_metadata(result)$variables_where, c(x = "x"))
 })
 
 test_that("example_aniframe creates 2D data with x and y", {
@@ -93,14 +93,17 @@ test_that("example_aniframe creates 2D data with x and y", {
 
   expect_true(all(c("x", "y") %in% names(result)))
   expect_false("z" %in% names(result))
-  expect_equal(get_metadata(result)$variables_where, c("x", "y"))
+  expect_equal(get_metadata(result)$variables_where, c(x = "x", y = "y"))
 })
 
 test_that("example_aniframe creates 3D data with x, y, and z", {
   result <- example_aniframe(n_dims = 3)
 
   expect_true(all(c("x", "y", "z") %in% names(result)))
-  expect_equal(get_metadata(result)$variables_where, c("x", "y", "z"))
+  expect_equal(
+    get_metadata(result)$variables_where,
+    c(x = "x", y = "y", z = "z")
+  )
 })
 
 test_that("example_aniframe creates correct number of rows", {

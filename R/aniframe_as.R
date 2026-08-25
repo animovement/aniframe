@@ -25,8 +25,14 @@
 #'   `NULL` (the default), the frame's existing declaration is kept, or
 #'   `"time"` for a frame that has none. The column must exist and be
 #'   numeric; it may be called anything.
-#' @param variables_where Character vector of spatial columns that together
-#'   define position. If `NULL` (the default), detected from the data.
+#' @param variables_where The spatial columns that together define
+#'   position. Either a plain character vector of column names, in which
+#'   case the name is taken to be the axis role, or a vector named by axis
+#'   role — `c(x = "u", y = "v")` — which lets the columns be called
+#'   anything. The roles themselves are a closed set (`x`, `y`, `z`,
+#'   `rho`, `phi`, `theta`), so that transformations between coordinate
+#'   systems stay well defined; an unrecognised role is rejected by name.
+#'   If `NULL` (the default), detected from the data.
 #'
 #' @return An aniframe object
 #' @examples
@@ -131,13 +137,16 @@ as_aniframe <- function(
     variables_where
   )
 
-  # Fall back y_height to max(y) when not supplied and y is present.
-  # Never overwrite a value that's already set — only `set_y_height()` /
-  # `set_origin()` should mutate it post-construction.
-  if ("y" %in% variables_where) {
+  # Fall back y_height to max of the y axis when not supplied and that
+  # axis is present. Never overwrite a value that's already set — only
+  # `set_y_height()` / `set_origin()` should mutate it post-construction.
+  # Found by role, so a frame whose y axis is called something else is
+  # handled too.
+  axes <- get_axes(data)
+  if ("y" %in% names(axes)) {
     current_y_height <- get_metadata(data, "y_height")
     if (length(current_y_height) == 0 || is.na(current_y_height)) {
-      max_y <- suppressWarnings(max(data$y, na.rm = TRUE))
+      max_y <- suppressWarnings(max(data[[axes[["y"]]]], na.rm = TRUE))
       if (is.finite(max_y)) {
         data <- set_metadata(data, y_height = max_y)
       }
@@ -270,31 +279,19 @@ ensure_aniframe_cols <- function(
 #' @return Character string naming the coordinate system.
 #' @keywords internal
 infer_coordinate_system <- function(variables_where) {
-  vars <- sort(variables_where)
+  # The roles decide the system. For a bare vector of column names the
+  # name is the role, which is the historical behaviour (#109).
+  roles <- names(normalise_axes(variables_where))
+  key <- paste(sort(roles), collapse = ",")
 
-  # Map sorted variable combinations to coordinate systems
-  coord_map <- list(
-    "x" = "cartesian_1d",
-    "y" = "cartesian_1d",
-    "z" = "cartesian_1d",
-    "x,y" = "cartesian_2d",
-    "x,z" = "cartesian_2d",
-    "y,z" = "cartesian_2d",
-    "x,y,z" = "cartesian_3d",
-    "phi,rho" = "polar",
-    "phi,rho,z" = "cylindrical",
-    "phi,rho,theta" = "spherical"
-  )
-
-  key <- paste(vars, collapse = ",")
-
+  coord_map <- axis_role_sets()
   if (key %in% names(coord_map)) {
     return(coord_map[[key]])
   }
 
   cli::cli_warn(
     c(
-      "Could not infer coordinate system from spatial variables: {.val {variables_where}}.",
+      "Could not infer coordinate system from spatial variables: {.val {unname(variables_where)}}.",
       "i" = "Setting coordinate system to {.val unknown}."
     )
   )

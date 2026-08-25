@@ -8,9 +8,15 @@
 
   An `anievent` has no index, since a bout is delimited by `start` and `stop`. Its `variables_index` is `NA` and `get_index()` errors on it.
 
+* `variables_where` can be declared as a mapping from axis role to column — `c(x = "u", y = "v")` — so coordinates may be carried by columns of any name (#109). `get_axes()` returns the mapping. The roles are a closed set: `x`, `y`, `z`, `rho`, `phi`, `theta`, and one that forms no coordinate system is rejected by name at declaration. A plain unnamed vector keeps its old meaning, the column name being the role.
+
 * Every exported function now has a runnable example (#106).
 
 ## Changed
+
+* `coordinate_system` follows from which axis roles are declared rather than from column names (#109). A frame whose coordinates are named something else is now inferred correctly, where it degraded to `unknown` and was refused by every spatial function.
+
+* `get_metadata(data, "variables_where")` carries axis-role names once the roles are known (#109). `get_variables_where()` and `get_variables()` still return bare column names; code comparing the raw field with `identical()` must allow for the names.
 
 * `validate_aniframe()` warns when identity, temporal context and the index together do not name one observation per row (#49). A repeat means some variable that tells the rows apart is undeclared, and every grouped operation folds them together.
 
