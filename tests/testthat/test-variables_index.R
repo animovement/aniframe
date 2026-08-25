@@ -126,18 +126,18 @@ test_that("set_metadata() refuses the index and names its setter", {
   af <- aniframe(individual = "a", time = 1:3, x = c(1, 2, 3), y = c(0, 1, 0))
 
   expect_error(
-    set_metadata(af, variables_when_index = "x"),
+    set_metadata(af, variables_index = "x"),
     "set_index"
   )
 })
 
 test_that("metadata serialised before the field existed reads back as time", {
-  # `variables_when_index` is optional precisely so that objects written by
+  # `variables_index` is optional precisely so that objects written by
   # earlier versions still validate. They were built when a column named
   # `time` was mandatory, so that is what they are indexed by.
   af <- aniframe(individual = "a", time = 1:3, x = c(1, 2, 3), y = c(0, 1, 0))
   md <- get_metadata(af)
-  md[["variables_when_index"]] <- NULL
+  md[["variables_index"]] <- NULL
 
   expect_true(check_all_metadata_fields_present(md))
   expect_equal(resolve_index(md), "time")

@@ -53,7 +53,7 @@ ensure_no_declaration_fields <- function(user_md) {
       offending,
       function(field) {
         # The index's setter is named for the concept, not the field.
-        if (identical(field, "variables_when_index")) {
+        if (identical(field, "variables_index")) {
           "set_index"
         } else {
           paste0("set_", field)

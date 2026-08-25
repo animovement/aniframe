@@ -16,7 +16,7 @@ vector of length 1 or more — readers that load from multiple files
 (e.g. \code{aniread::read_trackball()}) populate this with all source paths.
 \item \code{sampling_rate}: Sampling rate in Hz (numeric, NA)
 \item \code{start_datetime}: Start date and time of recording (POSIXct, NA)
-\item \code{variables_when_index}: The single column the frame is indexed by (character,
+\item \code{variables_index}: The single column the frame is indexed by (character,
 \code{"time"}). Exactly one column, and it may be called anything — the
 constructor requires \emph{that} column rather than a column literally
 named \code{time}. It is always one of the \code{variables_when}; the rest of

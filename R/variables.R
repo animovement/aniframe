@@ -26,7 +26,7 @@ declaration_metadata_fields <- function() {
     "variables_when",
     "variables_where",
     "variables_event",
-    "variables_when_index"
+    "variables_index"
   )
 }
 
@@ -224,7 +224,7 @@ restructure_aniframe <- function(
   md$variables_what <- variables_what
   md$variables_when <- variables_when
   md$variables_where <- variables_where
-  md$variables_when_index <- index
+  md$variables_index <- index
   md$coordinate_system <- as_metadata_factor(
     infer_coordinate_system(variables_where),
     "coordinate_system"

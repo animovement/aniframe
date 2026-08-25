@@ -45,7 +45,7 @@ get_index <- function(data) {
 #' @return Length-one character vector.
 #' @keywords internal
 resolve_index <- function(md) {
-  idx <- md[["variables_when_index"]]
+  idx <- md[["variables_index"]]
   if (is.null(idx) || length(idx) != 1L || is.na(idx)) {
     return("time")
   }
@@ -85,7 +85,7 @@ set_index <- function(data, column) {
   ensure_valid_index(data, column)
 
   md <- get_metadata(data)
-  md[["variables_when_index"]] <- column
+  md[["variables_index"]] <- column
   data <- attach_metadata(data, md)
 
   # If the column was serving as temporal context, it stops: a variable

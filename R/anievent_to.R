@@ -195,7 +195,7 @@ to_anievent.aniframe <- function(
         "variables_event",
         # An anievent is ordered by bout start, not by the host frame's
         # index column, so the declaration does not carry over (#109).
-        "variables_when_index",
+        "variables_index",
         "spec_version",
         "y_height",
         "origin",

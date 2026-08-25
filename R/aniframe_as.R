@@ -118,7 +118,7 @@ as_aniframe <- function(
   # `index` is a declaration, so `set_metadata()` refuses it — it goes on
   # directly, before the restructure that reads it back.
   md <- get_metadata(data)
-  md[["variables_when_index"]] <- index
+  md[["variables_index"]] <- index
   data <- attach_metadata(data, md)
 
   data <- restructure_aniframe(

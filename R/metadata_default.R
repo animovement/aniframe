@@ -15,7 +15,7 @@
 #'   (e.g. `aniread::read_trackball()`) populate this with all source paths.
 #' * `sampling_rate`: Sampling rate in Hz (numeric, NA)
 #' * `start_datetime`: Start date and time of recording (POSIXct, NA)
-#' * `variables_when_index`: The single column the frame is indexed by (character,
+#' * `variables_index`: The single column the frame is indexed by (character,
 #'   `"time"`). Exactly one column, and it may be called anything — the
 #'   constructor requires *that* column rather than a column literally
 #'   named `time`. It is always one of the `variables_when`; the rest of
@@ -84,7 +84,7 @@ default_metadata <- function() {
     start_datetime = as.POSIXct(NA),
     variables_what = c("individual", "keypoint"),
     variables_when = c("time"),
-    variables_when_index = "time",
+    variables_index = "time",
     variables_where = c("x", "y"),
     variables_event = list(
       state = character(),
