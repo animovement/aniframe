@@ -69,6 +69,7 @@ reference:
       - variables_event
       - get_index
       - set_index
+      - get_axes
 
   - title: "Connections"
     desc: >
