@@ -63,10 +63,12 @@ reference:
       the frame's structure rather than a description of it, so the
       setters restructure the frame to match — coercing column types,
       relocating, reordering, regrouping, and refreshing derived fields.
-      `set_metadata()` refuses these three fields for that reason.
+      `set_metadata()` refuses these fields for that reason.
     contents:
       - variables
       - variables_event
+      - get_index
+      - set_index
 
   - title: "Connections"
     desc: >
