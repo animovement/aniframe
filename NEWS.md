@@ -104,11 +104,23 @@
 
 * `as_aniframe()` no longer mis-classifies cylindrical (`rho`, `phi`, `z`) and spherical (`rho`, `phi`, `theta`) data as Cartesian (#44). Detection recognises the `rho` + `phi` signature first, so cylindrical data is no longer reduced to `cartesian_1d` by its `z` column. Cylindrical spatial columns are now ordered `rho`, `phi`, `z` (#43).
 
+# aniframe 0.4.1
+
+## Fixed
+
+* Corrected metadata written by `as_aniframe()`.
+
 # aniframe 0.4.0
 
 ## Added
 
-* `variables_what`, `variables_when` and `variables_where` arguments to `as_aniframe()` and `example_aniframe()`, written into the frame's metadata.
+* `variables_what`, `variables_when` and `variables_where` arguments to `as_aniframe()` and `example_aniframe()`, written into the frame's metadata. These declare which columns carry identity, temporal position and spatial position, and are the basis for how the frame is typed, ordered and grouped.
+
+## Changed
+
+* Identity and temporal variables are coerced to integer, with the exception of `time`, which stays numeric.
+* `time` is required. A frame without it is no longer a valid aniframe.
+* An unrecognised set of spatial columns is accepted, with `coordinate_system` recorded as `"unknown"`, rather than refused.
 
 # aniframe 0.3.5
 
@@ -116,3 +128,104 @@
 
 * A `NEWS.md` file, to track changes to the package.
 * Smaller units: `ns` (nanosecond), `us` (microsecond), `nm` (nanometre) and `um` (micrometre).
+
+## Removed
+
+* `get_trackball_calibration_factor()`, following the move of trackball handling to aniread.
+
+# aniframe 0.3.4
+
+## Removed
+
+* Trackball calibration. It reads hardware output rather than describing a frame, and belongs with the readers in aniread.
+
+# aniframe 0.3.3
+
+## Fixed
+
+* `NA` and `NaN` handling in metadata and coercion.
+* An `NA` datetime is no longer given a class, which had made empty `start_datetime` values print oddly.
+
+# aniframe 0.3.2
+
+## Changed
+
+* `"cartesian"` is no longer a permitted `coordinate_system` value; the dimensioned forms `cartesian_1d`, `cartesian_2d` and `cartesian_3d` replace it.
+* Metadata printing and the `start_datetime` class were tidied.
+
+# aniframe 0.3.1
+
+## Removed
+
+* `add_centroid()`. Deriving a centroid is a metric rather than a property of the frame, and belongs in animetric.
+
+# aniframe 0.3.0
+
+Spatial transformations leave aniframe for [anispace](https://github.com/animovement/anispace). aniframe keeps the coordinate *system* — what a frame is in, and how to test it — while converting between systems becomes anispace's job.
+
+## Added
+
+* `ensure_is_cartesian()`, with `_1d()`, `_2d()` and `_3d()` variants, and `ensure_is_polar()`, `ensure_is_cylindrical()` and `ensure_is_spherical()` — guards to sit at the top of a function that requires a particular coordinate system.
+* `convert_nan_to_na()` is exported.
+
+## Removed
+
+* The coordinate transformations `map_to_cartesian()`, `map_to_polar()`, `map_to_cylindrical()` and `map_to_spherical()`, the component converters `cartesian_to_rho()`, `cartesian_to_phi()`, `cartesian_to_theta()`, `polar_to_x()`, `polar_to_y()` and `spherical_to_z()`, the rigid transforms `rotate_coords()`, `translate_coords()` and `transform_to_egocentric()`, and the angle helpers `wrap_angle()`, `unwrap_angle()`, `diff_angle()` and `calculate_angular_difference()`. All are available from anispace.
+
+# aniframe 0.2.5
+
+## Fixed
+
+* `map_to_cartesian()` no longer adds a `z` column when converting from polar coordinates.
+
+# aniframe 0.2.4
+
+## Changed
+
+* `set_metadata()` accepts a partial metadata list, rather than requiring every field.
+
+# aniframe 0.2.3
+
+## Added
+
+* `is_cartesian()`, with `_1d()`, `_2d()` and `_3d()` variants, and `is_polar()`, `is_cylindrical()` and `is_spherical()` to test a frame's coordinate system.
+
+## Changed
+
+* `model` is recognised as an identity column, alongside `individual` and `keypoint`.
+
+# aniframe 0.2.2
+
+## Added
+
+* `unwrap_angle()`, the counterpart to `wrap_angle()`.
+
+## Changed
+
+* `constrain_angles_radians()` is renamed `wrap_angle()`.
+
+# aniframe 0.2.1
+
+## Added
+
+* Unit handling: `set_unit_space()`, `set_unit_angle()`, `set_unit_time()` and `set_sampling_rate()`.
+* Coordinate transformations: `map_to_cartesian()`, `map_to_polar()`, `map_to_cylindrical()` and `map_to_spherical()`, with the component converters `cartesian_to_rho()`, `cartesian_to_phi()`, `cartesian_to_theta()`, `polar_to_x()`, `polar_to_y()` and `spherical_to_z()`.
+* Rigid transformations: `rotate_coords()`, `translate_coords()` and `transform_to_egocentric()`.
+* Angle handling: `deg_to_rad()`, `rad_to_deg()`, `constrain_angles_radians()`, `calculate_angular_difference()` and `diff_angle()`.
+* `ensure_is_aniframe()`, a guard for functions that require an aniframe.
+* Trackball calibration, via `get_trackball_calibration_factor()`.
+
+# aniframe 0.2.0 (2025-10-23)
+
+## Changed
+
+* `tbl_sum.aniframe()` is registered as an S3 method rather than exported.
+
+# aniframe 0.1.0 (2025-10-13)
+
+First release. aniframe provides the core data structure for the animovement suite: a tibble subclass carrying metadata that says which columns hold identity, time and position.
+
+## Added
+
+* `aniframe()` and `as_aniframe()` to construct a frame, `is_aniframe()` to test one, and `example_aniframe()` to generate one.
+* `get_metadata()`, `set_metadata()` and `default_metadata()` to read and write the metadata a frame carries.
