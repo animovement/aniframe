@@ -156,8 +156,8 @@ default_metadata <- function() {
     y_height = as.numeric(NA),
     connections = list(),
     spec_version = list(
-      aniframe = "1.1.0",
-      anievent = "0.2.0"
+      aniframe = "2.0.0",
+      anievent = "0.3.0"
     )
   )
 
