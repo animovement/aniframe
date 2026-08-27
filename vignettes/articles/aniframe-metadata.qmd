@@ -63,7 +63,7 @@ The fields fall into a few groups:
 | **Sampling**       | `sampling_rate`                                                     |
 | **Units**          | `unit_space`, `unit_time`, `unit_angle`                             |
 | **Frame of reference** | `reference_frame`, `coordinate_system`, `origin`, `y_height`    |
-| **Slot vocabulary**| `variables_what`, `variables_when`, `variables_where`               |
+| **Slot vocabulary**| `variables_what`, `variables_when`, `variables_index`, `variables_where` |
 | **Relationships**  | `connections`                                                       |
 
 `filename` accepts a character vector — readers like
@@ -90,36 +90,43 @@ related fields), prefer the dedicated setters listed below.
 | Setter                | Touches                                                        |
 |-----------------------|----------------------------------------------------------------|
 | `set_unit_space()`    | converts `x`/`y`/`z` between length units                      |
-| `set_unit_time()`     | converts `time` between time units                             |
+| `set_unit_time()`     | converts the index column between time units                   |
 | `set_unit_angle()`    | converts `phi`/`theta` (auto) and any extra `cols` you supply  |
-| `set_sampling_rate()` | flips `unit_time` from frames to seconds and rescales `time`   |
+| `set_sampling_rate()` | flips `unit_time` from frames to seconds and rescales the index |
+| `set_index()`         | changes which column the frame is indexed by, and re-orders it |
 | `set_origin()`        | flips the y-axis around `y_height` when changing convention    |
 | `set_y_height()`      | sets the recorded frame height used by `set_origin()`          |
 
+The temporal setters follow the frame's own declaration rather than a
+column called `time` — see
+[the index](aniframe-structure.html#the-index).
+
 ## Declaring the slot vocabulary
 
-`variables_what`, `variables_when`, `variables_where` and
-`variables_event` are a special case: they name columns rather than
+`variables_what`, `variables_when`, `variables_index`, `variables_where`
+and `variables_event` are a special case: they name columns rather than
 describing values, so a name that matches nothing is a promise the frame
-can't keep. The first three go further — they are not a description of
-the frame, they *are* its structure.
+can't keep. All but `variables_event` go further — they are not a
+description of the frame, they *are* its structure.
 `as_aniframe()` uses them to coerce column types, order columns and
 rows, group the frame, and derive `coordinate_system`. Writing them
 without redoing that work would leave the frame and its own metadata
 disagreeing — the print header would update while the grouping still
 reflected the old declaration.
 
-`set_metadata()` therefore refuses all four, and points you at the
+`set_metadata()` therefore refuses all five, and points you at the
 setters that do the whole job:
 
 ```{r error=TRUE}
 data |> set_metadata(variables_what = "id")
 ```
 
-Each role has the same four verbs as `connections`:
+The three structural roles have the same four verbs as `connections`:
 `get_variables_*()`, `set_variables_*()`, `add_variables_*()` and
-`remove_variables_*()`. The column has to exist before it can be
-declared, so the order is always create-then-declare:
+`remove_variables_*()`. `variables_index` has only two — `get_index()`
+and `set_index()` — because a frame has exactly one index, leaving
+nothing for `add_` and `remove_` to do. The column has to exist before
+it can be declared, so the order is always create-then-declare:
 
 ```{r}
 tagged <- data |>

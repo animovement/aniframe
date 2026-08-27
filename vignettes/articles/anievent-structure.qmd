@@ -135,10 +135,11 @@ observation-level offset table; the class itself just carries the key.
 
 `unit_time` is carried in the shared metadata substrate, so an
 `anievent` declares the unit of its `start`/`stop` values just like
-an `aniframe` declares the unit of its `time` column (`"frame"`,
+an `aniframe` declares the unit of its
+[index column](aniframe-structure.html#the-index) (`"frame"`,
 `"ms"`, `"s"`, `"m"`, `"h"`, …). `set_unit_time()` and
 `set_sampling_rate()` dispatch on both classes — on an anievent they
-scale `start` and `stop` instead of `time`:
+scale `start` and `stop` instead of the index:
 
 ```{r}
 ae_frames <- anievent(
