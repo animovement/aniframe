@@ -1,7 +1,7 @@
 citHeader(
   paste(
-    "To cite aniframe in publications, please cite the animovement toolbox as a",
-    "whole (the first entry below). If your work used only aniframe, you may",
+    "To cite anicore in publications, please cite the animovement toolbox as a",
+    "whole (the first entry below). If your work used only anicore, you may",
     "cite the package directly instead (the second entry)."
   )
 )
@@ -21,8 +21,8 @@ bibentry(
 
 bibentry(
   bibtype  = "Misc",
-  key      = "aniframe",
-  title    = "aniframe: An R package providing core data structures for movement data",
+  key      = "anicore",
+  title    = "anicore: An R package providing core data structures for movement data",
   author   = person(
     given = "Mikkel", family = "Roald-Arbøl",
     comment = c(ORCID = "0000-0002-9998-0058")
@@ -30,5 +30,5 @@ bibentry(
   year     = "2026",
   doi      = "10.5281/zenodo.17344597",
   version  = meta$Version,
-  url      = "https://animovement.dev/aniframe/"
+  url      = "https://animovement.dev/anicore/"
 )

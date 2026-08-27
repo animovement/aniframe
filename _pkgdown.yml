@@ -1,6 +1,6 @@
-url: https://animovement.dev/aniframe/
+url: https://animovement.dev/anicore/
 home:
-  title: "aniframe – An R package providing core data structures for movement data"
+  title: "anicore – An R package providing core data structures for movement data"
 
 # Shared navbar (incl. the animovement dropdown + Zulip), theme, and author
 # details are inherited from animovementtemplate.

@@ -1,6 +1,6 @@
-#' aniframe package
+#' anicore package
 #'
-#' @name aniframe
+#' @name anicore
 #'
 #' @importFrom dplyr
 #'   arrange

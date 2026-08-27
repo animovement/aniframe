@@ -1,4 +1,15 @@
-# aniframe (development version)
+# anicore (development version)
+
+## Changed
+
+* **The package is renamed from `aniframe` to `anicore`** (#84). It is no longer one class's home: it declares `aniframe`, `anievent` and — as #84 settles — the types the domain packages build on, while producing almost none of them. A package named after one of its entries was going to keep getting stranger as angles (#83), orientation (#46) and masks (#11) arrive.
+
+  **The `aniframe` class keeps its name**, as do `as_aniframe()`, `is_aniframe()` and every other function. Only the package changes: `library(anicore)`, `anicore::`, and `install.packages("anicore")`.
+
+  Done now rather than at 1.0.0 because a rename only ever gets more expensive, and there are no external users yet to carry the cost.
+
+* `?aniframe` is the constructor again. The package documentation had claimed the same help topic, so the two were merged into one page; it is now `?anicore`.
+
 
 ## Added
 
