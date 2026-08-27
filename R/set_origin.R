@@ -41,7 +41,19 @@ set_origin <- function(data, origin) {
     return(data)
   }
 
-  ensure_has_column(data, "y")
+  # The vertical axis is whichever column carries the `y` role, not one
+  # literally named `y` (#109). A frame with no y axis -- a polar one --
+  # has an origin convention, but not one this reflection can change.
+  axes <- get_axes(data)
+  if (!"y" %in% names(axes)) {
+    cli::cli_abort(c(
+      "This aniframe has no {.field y} axis to reflect.",
+      "i" = "{.field coordinate_system} is {.val {get_coordinate_system(data)}}.",
+      "i" = "Changing the origin reflects the vertical axis, so the frame needs one."
+    ))
+  }
+  y_col <- axes[["y"]]
+  ensure_has_column(data, y_col)
 
   y_height <- get_metadata(data, "y_height")
   if (length(y_height) == 0 || is.na(y_height)) {
@@ -51,7 +63,7 @@ set_origin <- function(data, origin) {
     ))
   }
 
-  data <- reflect_axis(data, axis = "y", reference = y_height)
+  data <- reflect_axis(data, axis = y_col, reference = y_height)
   # Level membership of `origin` is validated here by `set_metadata`.
   set_metadata(data, origin = origin)
 }

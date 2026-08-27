@@ -423,3 +423,34 @@ test_that("set_axes() warns on shadowing too", {
 
   expect_warning(set_axes(af, c(rho = "u", phi = "v")), "also has a column")
 })
+
+
+# set_origin() resolves the vertical axis by role ----
+
+test_that("set_origin() reflects the y axis of a renamed frame", {
+  # The flip reached for a literal `y` column, so a frame whose vertical
+  # axis is called something else got a `y_height` it could not use (#109).
+  af <- as_aniframe(
+    data.frame(individual = "a", time = 1:3, u = c(1, 2, 3), v = c(0, 5, 10)),
+    variables_where = c(x = "u", y = "v")
+  )
+  expect_equal(get_metadata(af, "y_height"), 10)
+
+  result <- set_origin(af, "top_left")
+
+  expect_equal(result$v, c(10, 5, 0))
+  expect_equal(as.character(get_metadata(result, "origin")), "top_left")
+  # The x axis is untouched.
+  expect_equal(result$u, c(1, 2, 3))
+})
+
+test_that("set_origin() says so when there is no y axis to reflect", {
+  # A polar frame has an origin convention -- the sense of phi -- but not
+  # one this reflection can change.
+  pol <- as_aniframe(
+    data.frame(individual = "a", time = 1:3, rho = c(1, 2, 3), phi = c(0, 1, 2))
+  ) |>
+    set_y_height(10)
+
+  expect_error(set_origin(pol, "top_left"), "no .*y.* axis")
+})

@@ -22,6 +22,8 @@
 
 * `is_cartesian()`, `is_polar()`, `is_cylindrical()`, `is_spherical()`, the `is_cartesian_*d()` variants and their `ensure_` guards read `coordinate_system` rather than matching column names, and require an aniframe (#107, #109). A frame whose coordinates are called something else now satisfies the predicate for the system it is in, and an undeclared column no longer decides the answer — a spherical frame that has dropped `rho` from its declaration is no longer reported as spherical. The guards say which system the frame is in and how to get to the one you need.
 
+* `set_origin()` reflects the column carrying the `y` axis rather than one literally named `y` (#109). A renamed frame got a correct `y_height` it could not then use. A frame with no `y` axis at all — a polar one — now says so instead of reporting a missing column.
+
 * `add_variables_where()` and `remove_variables_where()` carry the axis roles through (#109). They combined bare column names, so on a frame with declared roles every addition or removal reduced it to `unknown`. Removing an axis until the remainder forms no coordinate system warns rather than aborting; declaring such a set outright still aborts.
 
 * `validate_aniframe()` warns when identity, temporal context and the index together do not name one observation per row (#49). A repeat means some variable that tells the rows apart is undeclared, and every grouped operation folds them together.
