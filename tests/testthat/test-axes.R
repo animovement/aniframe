@@ -265,7 +265,7 @@ test_that("metadata serialised before the field existed still resolves its axes"
   md <- get_metadata(af)
   md[["axes"]] <- NULL
 
-  expect_true(check_all_metadata_fields_present(md))
+  expect_true(has_all_metadata_fields(md))
   expect_equal(resolve_axes(md), c(x = "x", y = "y"))
 })
 

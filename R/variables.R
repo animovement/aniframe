@@ -78,7 +78,7 @@ declared_where <- function(data) {
 #' @keywords internal
 declare_variables <- function(data, role, variables, strict = TRUE) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
 
   declared <- list(
     what = get_variables(data, "what"),
@@ -112,7 +112,7 @@ declare_variables <- function(data, role, variables, strict = TRUE) {
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_variables_chr <- function(variables) {
+ensure_variables_character <- function(variables) {
   if (!is.character(variables)) {
     cli::cli_abort(
       "{.arg variables} must be a character vector, not {.cls {class(variables)}}."
@@ -124,7 +124,7 @@ ensure_variables_chr <- function(variables) {
 
 #' Ensure declared columns are present
 #'
-#' Shared by construction ([ensure_aniframe_cols()]) and re-declaration,
+#' Shared by construction ([ensure_has_aniframe_cols()]) and re-declaration,
 #' so a column that isn't there is reported the same way whichever route
 #' the caller took.
 #'
@@ -134,7 +134,7 @@ ensure_variables_chr <- function(variables) {
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_declared_cols_exist <- function(data, cols, role) {
+ensure_has_declared_cols <- function(data, cols, role) {
   missing_cols <- setdiff(cols, names(data))
   if (length(missing_cols) == 0) {
     return(invisible(TRUE))
@@ -259,7 +259,7 @@ set_variables_where <- function(data, variables) {
 #' @export
 add_variables_what <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
   declare_variables(data, "what", union(get_variables(data, "what"), variables))
 }
 
@@ -267,7 +267,7 @@ add_variables_what <- function(data, variables) {
 #' @export
 add_variables_when <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
 
   # `variables_when` holds only the temporal context, so a new column
   # simply joins it — the index sorts after all of them regardless, and is
@@ -279,7 +279,7 @@ add_variables_when <- function(data, variables) {
 #' @export
 add_variables_where <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
 
   # `union()` drops names, so combining has to happen on the mapping: the
   # roles already declared, plus the new ones, with anything the addition
@@ -295,7 +295,7 @@ add_variables_where <- function(data, variables) {
 #' @export
 remove_variables_what <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
   declare_variables(
     data,
     "what",
@@ -307,7 +307,7 @@ remove_variables_what <- function(data, variables) {
 #' @export
 remove_variables_when <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
   declare_variables(
     data,
     "when",
@@ -319,7 +319,7 @@ remove_variables_when <- function(data, variables) {
 #' @export
 remove_variables_where <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
 
   # By column, like the other `remove_` verbs; the roles of whatever is
   # left travel with it, which `setdiff()` on bare columns would lose.

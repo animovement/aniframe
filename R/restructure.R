@@ -107,7 +107,7 @@ restructure_aniframe <- function(
   }
   where_cols <- unname(axes)
 
-  ensure_aniframe_cols(
+  ensure_has_aniframe_cols(
     bare,
     variables_what,
     variables_when,
@@ -183,9 +183,9 @@ restructure_anievent <- function(data, variables_what, variables_when) {
   md <- get_metadata(data)
   bare <- strip_animovement_class(data)
 
-  ensure_anievent_cols(bare)
-  ensure_declared_cols_exist(bare, variables_what, "what")
-  ensure_declared_cols_exist(
+  ensure_has_anievent_cols(bare)
+  ensure_has_declared_cols(bare, variables_what, "what")
+  ensure_has_declared_cols(
     bare,
     setdiff(variables_when, c("start", "stop")),
     "when"
@@ -246,7 +246,7 @@ regroup_frame <- function(data, grouping_vars) {
 #' @param variables_where Spatial variables.
 #'
 #' @keywords internal
-ensure_aniframe_cols <- function(
+ensure_has_aniframe_cols <- function(
   data,
   variables_what,
   variables_when,
@@ -255,7 +255,7 @@ ensure_aniframe_cols <- function(
 ) {
   # All declared variables must exist. Declaring a column that isn't
   # there leaves the metadata describing a frame it doesn't have.
-  ensure_declared_cols_exist(data, variables_what, "what")
+  ensure_has_declared_cols(data, variables_what, "what")
 
   # The frame needs an index. Which column that is comes from the
   # declaration; `time` is only its default (#109).
@@ -269,8 +269,8 @@ ensure_aniframe_cols <- function(
     )
   }
 
-  ensure_declared_cols_exist(data, variables_when, "when")
-  ensure_declared_cols_exist(data, variables_where, "where")
+  ensure_has_declared_cols(data, variables_when, "when")
+  ensure_has_declared_cols(data, variables_where, "where")
 
   invisible(TRUE)
 }

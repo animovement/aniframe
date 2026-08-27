@@ -42,7 +42,7 @@ write_metadata <- function(data, metadata) {
 ensure_no_declaration_fields <- function(user_md) {
   # A complete metadata object is a wholesale replacement of the
   # attribute, not a field write.
-  if (check_all_metadata_fields_present(user_md)) {
+  if (has_all_metadata_fields(user_md)) {
     return(invisible(TRUE))
   }
 
@@ -226,7 +226,7 @@ set_metadata <- function(data, ..., metadata = NULL) {
   # ------------------------------------------------------------------
   # Does the data have metadata or not?
   # ------------------------------------------------------------------
-  if (!check_metadata_exists(data)) {
+  if (!has_metadata(data)) {
     new_md <- default_metadata()
   } else {
     new_md <- get_metadata(data)

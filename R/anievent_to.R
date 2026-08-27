@@ -250,14 +250,14 @@ to_anievent_from_columns <- function(
 
   bouts <- list()
   for (col in state_cols) {
-    sub <- rle_state_column(data, col, time_col, group_cols)
+    sub <- encode_state_bouts(data, col, time_col, group_cols)
     if (nrow(sub) > 0) {
       sub$type <- "state"
     }
     bouts[[paste0("state__", col)]] <- sub
   }
   for (col in point_cols) {
-    sub <- pick_point_column(data, col, time_col, group_cols)
+    sub <- encode_point_bouts(data, col, time_col, group_cols)
     if (nrow(sub) > 0) {
       sub$type <- "point"
     }

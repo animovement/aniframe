@@ -139,7 +139,7 @@ test_that("metadata serialised before the field existed reads back as time", {
   md <- get_metadata(af)
   md[["variables_index"]] <- NULL
 
-  expect_true(check_all_metadata_fields_present(md))
+  expect_true(has_all_metadata_fields(md))
   expect_equal(resolve_index(md), "time")
 })
 

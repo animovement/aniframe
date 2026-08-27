@@ -68,7 +68,7 @@ detect_event_scope <- function(
 }
 
 
-#' Run-length encode one state event column into bouts
+#' Encode one state event column into bouts
 #'
 #' Within each `group_cols` partition, emit one row per maximal run
 #' of identical non-`NA` (normalised) values in `col`. `NA` rows
@@ -77,10 +77,10 @@ detect_event_scope <- function(
 #' frame in the run; `stop` is the value at the last frame.
 #'
 #' @keywords internal
-rle_state_column <- function(data, col, time_col, group_cols) {
+encode_state_bouts <- function(data, col, time_col, group_cols) {
   vals <- normalise_event_values(data[[col]], col)
   if (length(vals) == 0 || all(is.na(vals))) {
-    return(make_empty_bout_df(group_cols, col))
+    return(empty_bouts(group_cols, col))
   }
 
   if (length(group_cols) > 0) {
@@ -137,7 +137,7 @@ rle_state_column <- function(data, col, time_col, group_cols) {
 #' Emit one row per non-`NA` frame of a point event column
 #'
 #' @keywords internal
-pick_point_column <- function(data, col, time_col, group_cols) {
+encode_point_bouts <- function(data, col, time_col, group_cols) {
   vals <- normalise_event_values(data[[col]], col)
   mod_col <- paste0(col, "_modifiers")
   has_modifiers <- mod_col %in% names(data)
@@ -146,7 +146,7 @@ pick_point_column <- function(data, col, time_col, group_cols) {
   data <- data[keep, , drop = FALSE]
   vals <- vals[keep]
   if (length(vals) == 0) {
-    return(make_empty_bout_df(group_cols, col))
+    return(empty_bouts(group_cols, col))
   }
 
   out <- dplyr::tibble(
@@ -168,7 +168,7 @@ pick_point_column <- function(data, col, time_col, group_cols) {
 
 
 #' @keywords internal
-make_empty_bout_df <- function(group_cols, col) {
+empty_bouts <- function(group_cols, col) {
   out <- dplyr::tibble(
     channel = character(),
     label = character(),

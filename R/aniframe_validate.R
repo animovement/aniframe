@@ -34,8 +34,8 @@ validate_aniframe <- function(data) {
   ensure_is_aniframe(data)
   # Before the generic check, which also names the index but reports it
   # less helpfully.
-  ensure_aniframe_index(data)
-  ensure_declared_variables_exist(data)
+  ensure_has_index(data)
+  ensure_has_declared_variables(data)
   ensure_is_spatial(data)
   warn_coordinate_system_drift(data)
   warn_duplicate_observations(data)
@@ -121,7 +121,7 @@ declared_variables <- function(md) {
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_declared_variables_exist <- function(data) {
+ensure_has_declared_variables <- function(data) {
   declared <- declared_variables(get_metadata(data))
 
   for (role in names(declared)) {
@@ -150,7 +150,7 @@ ensure_declared_variables_exist <- function(data) {
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_aniframe_index <- function(data) {
+ensure_has_index <- function(data) {
   index <- resolve_index(get_metadata(data))
   if (!index %in% names(data)) {
     cli::cli_abort(c(

@@ -53,15 +53,15 @@ test_that("the injected identity is keypoint = centroid", {
   expect_equal(as.character(unique(af$keypoint)), "centroid")
 })
 
-test_that("ensure_identity leaves data that already has an identity alone", {
+test_that("add_default_identity leaves data that already has an identity alone", {
   with_id <- dplyr::mutate(flat_df(), individual = "a")
 
-  expect_identical(ensure_identity(with_id), with_id)
-  expect_false("keypoint" %in% names(ensure_identity(with_id)))
+  expect_identical(add_default_identity(with_id), with_id)
+  expect_false("keypoint" %in% names(add_default_identity(with_id)))
 })
 
-test_that("ensure_identity adds one when there is none", {
-  out <- ensure_identity(flat_df())
+test_that("add_default_identity adds one when there is none", {
+  out <- add_default_identity(flat_df())
 
   expect_true("keypoint" %in% names(out))
   expect_equal(unique(out$keypoint), "centroid")

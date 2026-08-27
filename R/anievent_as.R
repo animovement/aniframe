@@ -130,7 +130,7 @@ as_anievent.data.frame <- function(
 #'
 #' @param data Data frame to validate.
 #' @keywords internal
-ensure_anievent_cols <- function(data) {
+ensure_has_anievent_cols <- function(data) {
   required <- c("channel", "type", "label", "start", "stop")
   missing <- setdiff(required, names(data))
   if (length(missing) > 0) {

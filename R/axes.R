@@ -268,7 +268,7 @@ warn_shadowed_axis_roles <- function(axes, columns) {
 #' @export
 set_axes <- function(data, axes) {
   ensure_is_aniframe(data)
-  ensure_variables_chr(axes)
+  ensure_variables_character(axes)
   if (!has_axis_roles(axes)) {
     cli::cli_abort(c(
       "{.arg axes} must name an axis role for every column.",

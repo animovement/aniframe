@@ -178,7 +178,7 @@ test_that("set_metadata works with empty arguments", {
   result <- set_metadata(data)
 
   # Should still have metadata (default or existing)
-  expect_true(check_metadata_exists(result))
+  expect_true(has_metadata(result))
 })
 
 test_that("set_metadata preserves aniframe class", {

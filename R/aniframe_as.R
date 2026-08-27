@@ -95,7 +95,7 @@ as_aniframe <- function(
 
   # Resolve variables_what: detect from data if not specified
   if (is.null(variables_what)) {
-    data <- ensure_identity(data)
+    data <- add_default_identity(data)
 
     # Only include recognised what variables that are present in data
     variables_what <- recognised_variables_what()[
@@ -157,7 +157,7 @@ as_aniframe <- function(
 }
 
 
-#' Ensure the data carries at least one identity variable
+#' Add a default identity variable when the data has none
 #'
 #' An aniframe needs **at least one identity (`what`) variable** — the
 #' columns that together say which entity a row belongs to, and which the
@@ -174,11 +174,11 @@ as_aniframe <- function(
 #' `variables_what = character(0)` is a deliberate declaration of "no
 #' identity variables" and is left alone.
 #'
-#' @param data Data frame to check.
+#' @param data Data frame to complete.
 #'
 #' @return `data`, with an identity column added if it had none.
 #' @keywords internal
-ensure_identity <- function(data) {
+add_default_identity <- function(data) {
   has_identity <- any(recognised_variables_what() %in% names(data))
 
   if (!has_identity) {
@@ -238,7 +238,7 @@ detect_variables_where <- function(data) {
 #' @return The declared column names, or `NULL` to detect instead.
 #' @keywords internal
 declared_if_present <- function(data, field) {
-  if (!check_metadata_exists(data)) {
+  if (!has_metadata(data)) {
     return(NULL)
   }
 

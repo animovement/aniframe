@@ -24,10 +24,10 @@
 #' @export
 validate_anievent <- function(data) {
   ensure_is_anievent(data)
-  ensure_anievent_cols(data)
+  ensure_has_anievent_cols(data)
   ensure_anievent_col_types(data)
   ensure_anievent_intervals_nonnegative(data)
-  ensure_anievent_modifiers_shape(data)
+  ensure_valid_modifiers(data)
   warn_anievent_channels_overlap(data)
   invisible(data)
 }
@@ -130,7 +130,7 @@ warn_anievent_channels_overlap <- function(data) {
 
 
 #' @keywords internal
-ensure_anievent_modifiers_shape <- function(data) {
+ensure_valid_modifiers <- function(data) {
   if (!"modifiers" %in% names(data)) {
     return(invisible(TRUE))
   }
