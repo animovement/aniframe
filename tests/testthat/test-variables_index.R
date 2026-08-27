@@ -286,3 +286,57 @@ test_that("the default metadata skeleton keeps the index out of variables_when",
   expect_equal(md$variables_index, "time")
   expect_false(md$variables_index %in% md$variables_when)
 })
+
+
+# Keys plus index identify an observation (#49) ----
+
+test_that("validate_aniframe() warns when keys and index repeat", {
+  # Two rows for the same individual at the same time: whatever tells them
+  # apart is undeclared, and every grouped operation folds them together.
+  af <- as_aniframe(
+    data.frame(individual = "a", time = c(1, 2, 2), x = 1:3, y = 1:3)
+  )
+
+  expect_warning(validate_aniframe(af), "not uniquely identified")
+  expect_warning(validate_aniframe(af), "individual")
+})
+
+test_that("validate_aniframe() is quiet when the declaration identifies rows", {
+  af <- example_aniframe(n_obs = 4, n_individuals = 2, n_keypoints = 2)
+
+  expect_no_warning(warn_duplicate_observations(af))
+})
+
+test_that("declaring the missing variable resolves the duplication", {
+  af <- as_aniframe(
+    data.frame(
+      individual = "a",
+      keypoint = c("head", "tail", "head", "tail"),
+      time = c(1, 1, 2, 2),
+      x = 1:4,
+      y = 1:4
+    ),
+    variables_what = "individual"
+  )
+  expect_warning(validate_aniframe(af), "not uniquely identified")
+
+  expect_no_warning(
+    warn_duplicate_observations(add_variables_what(af, "keypoint"))
+  )
+})
+
+test_that("the temporal context counts towards the key", {
+  # Same individual and index, different session: not a duplicate.
+  af <- as_aniframe(
+    data.frame(
+      individual = "a",
+      session = c("s1", "s1", "s2", "s2"),
+      time = c(1, 2, 1, 2),
+      x = 1:4,
+      y = 1:4
+    )
+  )
+
+  expect_equal(get_variables_when(af), "session")
+  expect_no_warning(warn_duplicate_observations(af))
+})

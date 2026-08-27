@@ -13,7 +13,9 @@
 #' * every column named in `variables_where` is numeric — hard error;
 #' * `coordinate_system` agrees with `variables_where` — **warning**
 #'   only. The frame is still usable, and the field is derived rather
-#'   than declared, so it can be refreshed.
+#'   than declared, so it can be refreshed;
+#' * identity, temporal context and the index together name one
+#'   observation per row — **warning** only (#49).
 #'
 #' @param data An aniframe object.
 #'
@@ -36,7 +38,47 @@ validate_aniframe <- function(data) {
   ensure_declared_variables_exist(data)
   ensure_is_spatial(data)
   warn_coordinate_system_drift(data)
+  warn_duplicate_observations(data)
   invisible(data)
+}
+
+
+#' Warn when the declaration does not identify one observation per row
+#'
+#' Identity plus temporal context plus the index is meant to be a
+#' composite key: one entity, in one context, at one position. When it
+#' repeats, some variable that distinguishes the rows is undeclared, and
+#' every grouped operation silently folds those rows together — a
+#' trajectory with two `x` values at the same instant is not a trajectory.
+#'
+#' A warning rather than an error. The state is reachable part-way through
+#' honest work — a frame read before its identity column is declared, say
+#' — and nothing in the class is broken by it (#49).
+#'
+#' @param data An aniframe object.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+warn_duplicate_observations <- function(data) {
+  md <- get_metadata(data)
+  key <- intersect(
+    c(md$variables_what, md$variables_when, resolve_index(md)),
+    names(data)
+  )
+  if (length(key) == 0L) {
+    return(invisible(TRUE))
+  }
+
+  n_duplicated <- sum(duplicated(dplyr::as_tibble(data)[key]))
+  if (n_duplicated > 0L) {
+    cli::cli_warn(c(
+      "{n_duplicated} row{?s} {?is/are} not uniquely identified by {.val {key}}.",
+      "i" = "Identity, temporal context and the index together should name one observation.",
+      "i" = "A variable that tells these rows apart is probably undeclared; see {.fn add_variables_what} and {.fn add_variables_when}."
+    ))
+  }
+
+  invisible(TRUE)
 }
 
 

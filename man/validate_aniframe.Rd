@@ -28,7 +28,9 @@ hard error;
 \item every column named in \code{variables_where} is numeric — hard error;
 \item \code{coordinate_system} agrees with \code{variables_where} — \strong{warning}
 only. The frame is still usable, and the field is derived rather
-than declared, so it can be refreshed.
+than declared, so it can be refreshed;
+\item identity, temporal context and the index together name one
+observation per row — \strong{warning} only (#49).
 }
 }
 \examples{
