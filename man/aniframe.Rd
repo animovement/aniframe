@@ -12,6 +12,7 @@ aniframe(
   variables_what = NULL,
   variables_when = NULL,
   variables_where = NULL,
+  index = NULL,
   .rows = NULL,
   .name_repair = c("check_unique", "unique", "universal", "minimal")
 )
@@ -35,10 +36,20 @@ named here must exist in \code{data}.}
 \item{variables_when}{Character vector of temporal columns that together
 define a unique timepoint. If \code{NULL} (the default), detected from the
 data: whichever of \code{observation}, \code{session}, \code{trial} and \code{time} are
-present. \code{time} is always required.}
+present, minus the index. These are the temporal \emph{context} — which
+session, which trial — and, together with \code{variables_what}, they are
+what the frame is grouped by. The index itself is declared separately
+and is never one of them.}
 
 \item{variables_where}{Character vector of spatial columns that together
 define position. If \code{NULL} (the default), detected from the data.}
+
+\item{index}{Length-one character vector naming the column the frame is
+indexed by — the position of each row within its temporal context.
+It is never a grouping variable. If
+\code{NULL} (the default), the frame's existing declaration is kept, or
+\code{"time"} for a frame that has none. The column must exist and be
+numeric; it may be called anything.}
 
 \item{.rows}{Number of rows (passed to tibble).}
 
@@ -71,7 +82,16 @@ aniframe(
   x = rnorm(30),
   y = rnorm(30),
   variables_what = "track",
-  variables_when = c("trial", "time")
+  variables_when = "trial"
+)
+
+# Indexed by a column that isn't called `time`
+aniframe(
+  individual = 1L,
+  frame = 1:10,
+  x = rnorm(10),
+  y = rnorm(10),
+  index = "frame"
 )
 }
 \seealso{

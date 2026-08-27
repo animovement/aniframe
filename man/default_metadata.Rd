@@ -19,14 +19,15 @@ vector of length 1 or more — readers that load from multiple files
 \item \code{variables_index}: The single column the frame is indexed by (character,
 \code{"time"}). Exactly one column, and it may be called anything — the
 constructor requires \emph{that} column rather than a column literally
-named \code{time}. It is always one of the \code{variables_when}; the rest of
-that vector is the surrounding temporal context, which is what the
-frame is grouped by. Read it with \code{\link[=get_index]{get_index()}}, change it with
+named \code{time}. It is never one of the \code{variables_when}, which holds
+the surrounding temporal context and is what the frame is grouped by;
+the index positions each row \emph{within} its context and so is never a
+grouping variable. Read it with \code{\link[=get_index]{get_index()}}, change it with
 \code{\link[=set_index]{set_index()}}. Absent from objects serialised before the field
 existed, where it reads back as \code{"time"} — the value they were built
 with.
 \item \code{variables_what}, \code{variables_when}, \code{variables_where}: The columns
-that carry, respectively, entity identity, temporal position and
+that carry, respectively, entity identity, temporal context and
 spatial position. These are the structural fields — \code{\link[=as_aniframe]{as_aniframe()}}
 uses them to coerce column types, order columns and rows, group the
 frame, and derive \code{coordinate_system}. The values here are a

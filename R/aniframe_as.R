@@ -49,6 +49,9 @@ as_aniframe <- function(
   # An explicit index wins; otherwise keep what the frame already declares,
   # falling back to "time" for a frame — or a serialised object — with no
   # declaration at all.
+  if (!is.null(index)) {
+    ensure_index_name(index)
+  }
   index <- index %||%
     (if (is_aniframe(data) || is_anievent(data)) {
       resolve_index(get_metadata(data))

@@ -6,8 +6,12 @@
 # have a column of that name and made the distinction unrecoverable
 # downstream without repeating the same literal.
 #
-# `index` names the column instead. It is one of the `variables_when`; the
-# context is the rest of them.
+# `variables_index` names the column instead, and is kept out of
+# `variables_when` entirely — that field is now exactly the context, which
+# is exactly what the frame groups by. Making the index a member of it
+# instead would leave `set_index()` promoting the old index to a grouping
+# variable, putting every row in its own group, and would leave every
+# downstream package repeating the same `setdiff` to undo it.
 
 #' The column an aniframe is indexed by
 #'
@@ -17,7 +21,12 @@
 #' observation — and which, with `variables_what`, is what the frame is
 #' grouped by. The index is never a grouping variable.
 #'
-#' @param data An aniframe or anievent object.
+#' An [anievent()] has none: a bout spans an interval rather than sitting
+#' at a point, so it is delimited by `start` and `stop`, which are
+#' declared temporal columns. Its `variables_index` is `NA`, and asking
+#' for it here is an error rather than a guess.
+#'
+#' @param data An aniframe object.
 #'
 #' @return Length-one character vector naming the index column.
 #'
@@ -29,7 +38,14 @@
 #'   full set of temporal columns.
 #' @export
 get_index <- function(data) {
-  ensure_is_aniframe_or_anievent(data)
+  if (is_anievent(data)) {
+    cli::cli_abort(c(
+      "An {.cls anievent} has no index column.",
+      "i" = "A bout spans an interval, delimited by {.field start} and {.field stop}.",
+      "i" = "Both are in {.field variables_when} — read them with {.fn get_variables_when}."
+    ))
+  }
+  ensure_is_aniframe(data)
   resolve_index(get_metadata(data))
 }
 
@@ -39,6 +55,13 @@ get_index <- function(data) {
 #' Objects serialised before the field existed have no `index`. They were
 #' built when a literal `time` column was mandatory, so that is what they
 #' are indexed by, and defaulting here keeps them working untouched.
+#'
+#' `NA` — how an [anievent()] spells "not applicable" — falls back the
+#' same way, because the one path that reaches it with anievent metadata
+#' is a cast to [aniframe()], which needs *some* index and has no better
+#' candidate. [get_index()] refuses the anievent before it gets here, so
+#' the fallback is never mistaken for an answer about the event stream
+#' itself.
 #'
 #' @param md A metadata list.
 #'
@@ -101,6 +124,35 @@ set_index <- function(data, column) {
 }
 
 
+#' Ensure a declared index names exactly one column
+#'
+#' Cardinality is checked apart from the rest of [ensure_valid_index()]
+#' because [as_aniframe()] needs it before the column is looked up, and
+#' needs it under its own argument name. Without it a two-column `index`
+#' fell through to [resolve_index()], which treats anything other than a
+#' single name as "unset" and answers `"time"` — so the declaration was
+#' silently discarded on a frame that happened to have a `time` column,
+#' and produced an error naming `"time"` on one that did not.
+#'
+#' @param index The proposed index.
+#' @param arg Name of the caller's argument, for the message.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+ensure_index_name <- function(index, arg = "index") {
+  if (!is.character(index) || length(index) != 1L || is.na(index)) {
+    cli::cli_abort(c(
+      "{.arg {arg}} must be a single column name.",
+      "i" = "A frame has exactly one index — it is the position of a row
+             within its temporal context, so there is nothing for a second
+             one to mean.",
+      "i" = "The surrounding context goes in {.arg variables_when}."
+    ))
+  }
+  invisible(TRUE)
+}
+
+
 #' Ensure a proposed index is usable
 #'
 #' @param data An aniframe object.
@@ -109,12 +161,7 @@ set_index <- function(data, column) {
 #' @return `TRUE`, invisibly.
 #' @keywords internal
 ensure_valid_index <- function(data, column) {
-  if (!is.character(column) || length(column) != 1L || is.na(column)) {
-    cli::cli_abort(c(
-      "{.arg column} must be a single column name.",
-      "i" = "A frame has exactly one index."
-    ))
-  }
+  ensure_index_name(column, arg = "column")
   if (!column %in% names(data)) {
     cli::cli_abort(
       "Column {.val {column}} is not present in the data."

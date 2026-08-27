@@ -137,9 +137,13 @@ to_anievent.aniframe <- function(
     ))
   }
 
+  # Bouts are delimited by the host frame's index, whichever column that
+  # is (#109) -- the run-length encoding reads its values as `start` and
+  # `stop`, and the scope detection groups by it.
+  index <- resolve_index(md)
   host_what <- intersect(md$variables_what, names(data))
   grouping_when <- intersect(
-    setdiff(md$variables_when, resolve_index(md)),
+    setdiff(md$variables_when, index),
     names(data)
   )
 
@@ -152,7 +156,12 @@ to_anievent.aniframe <- function(
     # singletons are protected inside `detect_event_scope()`.
     channel_scopes <- list()
     for (col in declared) {
-      channel_scopes[[col]] <- detect_event_scope(bare, col, host_what)
+      channel_scopes[[col]] <- detect_event_scope(
+        bare,
+        col,
+        host_what,
+        time_col = index
+      )
     }
     unique_scopes <- unique(channel_scopes)
     if (length(unique_scopes) > 1) {
@@ -213,7 +222,7 @@ to_anievent.aniframe <- function(
 
   to_anievent_from_columns(
     bare,
-    time_col = "time",
+    time_col = index,
     state_cols = ve$state,
     point_cols = ve$point,
     what_cols = detected_scope,

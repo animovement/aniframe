@@ -21,10 +21,10 @@ invariants are therefore checked rather than assumed:
 }
 \details{
 \itemize{
+\item the index column is present and numeric — hard error;
 \item every column named in \code{variables_what}, \code{variables_when},
 \code{variables_where} and \code{variables_event} is present in the data —
 hard error;
-\item \code{time} is present and numeric — hard error;
 \item every column named in \code{variables_where} is numeric — hard error;
 \item \code{coordinate_system} agrees with \code{variables_where} — \strong{warning}
 only. The frame is still usable, and the field is derived rather

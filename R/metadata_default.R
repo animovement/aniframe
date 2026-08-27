@@ -18,14 +18,15 @@
 #' * `variables_index`: The single column the frame is indexed by (character,
 #'   `"time"`). Exactly one column, and it may be called anything — the
 #'   constructor requires *that* column rather than a column literally
-#'   named `time`. It is always one of the `variables_when`; the rest of
-#'   that vector is the surrounding temporal context, which is what the
-#'   frame is grouped by. Read it with [get_index()], change it with
+#'   named `time`. It is never one of the `variables_when`, which holds
+#'   the surrounding temporal context and is what the frame is grouped by;
+#'   the index positions each row *within* its context and so is never a
+#'   grouping variable. Read it with [get_index()], change it with
 #'   [set_index()]. Absent from objects serialised before the field
 #'   existed, where it reads back as `"time"` — the value they were built
 #'   with.
 #' * `variables_what`, `variables_when`, `variables_where`: The columns
-#'   that carry, respectively, entity identity, temporal position and
+#'   that carry, respectively, entity identity, temporal context and
 #'   spatial position. These are the structural fields — [as_aniframe()]
 #'   uses them to coerce column types, order columns and rows, group the
 #'   frame, and derive `coordinate_system`. The values here are a
@@ -83,7 +84,9 @@ default_metadata <- function() {
     sampling_rate = as.numeric(NA),
     start_datetime = as.POSIXct(NA),
     variables_what = c("individual", "keypoint"),
-    variables_when = c("time"),
+    # The temporal *context* — empty in the skeleton, because the index is
+    # declared separately and is never one of these.
+    variables_when = character(),
     variables_index = "time",
     variables_where = c("x", "y"),
     variables_event = list(

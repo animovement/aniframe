@@ -278,6 +278,13 @@ restructure_anievent <- function(data, variables_what, variables_when) {
   # An anievent carries no spatial variables — position lives on the
   # aniframe it was encoded from.
   md$variables_where <- character()
+  # Nor does it have an index. A bout spans an interval rather than
+  # sitting at a point, so it is delimited by `start` and `stop`, both of
+  # which are declared temporal columns. `NA` is how the shared metadata
+  # substrate says "not applicable" (#73) — inheriting the aniframe
+  # default would leave an anievent claiming a `time` column it has not
+  # got.
+  md$variables_index <- as.character(NA)
 
   preserve_animovement_class(bare, cls, md)
 }

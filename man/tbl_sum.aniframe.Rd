@@ -17,7 +17,8 @@ Named character vector with summary information
 \description{
 Builds the print header rows shown above an aniframe. The set of rows is
 driven by the metadata: one row per column listed in \code{variables_what} and
-one row per column in \code{variables_when} (excluding \code{time}). This means custom
+one row per column in \code{variables_when}. The index gets its own interval
+row rather than a per-value one, so it is excluded here. This means custom
 identity/temporal variables (e.g. \code{track}, \code{model}, \code{session}) appear
 automatically, and rows are omitted entirely when their column is absent.
 }

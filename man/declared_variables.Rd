@@ -10,11 +10,16 @@ declared_variables(md)
 \item{md}{An aniframe metadata list.}
 }
 \value{
-Named list of character vectors, one per \verb{variables_*} field.
+Named list of character vectors, one per declaration field.
 }
 \description{
 \code{variables_event} is a named list of \code{state} / \code{point} columns rather
 than a flat vector, so it is flattened here to give every role the same
 shape. \code{NA} entries mean "unset" and are dropped.
+}
+\details{
+\code{variables_index} is read through \code{\link[=resolve_index]{resolve_index()}} rather than
+directly, so a frame serialised before the field existed reports the
+\code{time} column it was built with rather than nothing at all.
 }
 \keyword{internal}

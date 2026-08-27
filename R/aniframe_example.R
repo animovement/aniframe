@@ -105,7 +105,8 @@ example_aniframe <- function(
     x = stats::rnorm(n_total),
     confidence = stats::rbeta(n_total, shape1 = 5, shape2 = 2),
     variables_what = c("individual", "keypoint"),
-    variables_when = c("session", "trial", "time"),
+    variables_when = c("session", "trial"),
+    index = "time",
     variables_where = variables_where
   )
 

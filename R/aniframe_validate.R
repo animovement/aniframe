@@ -6,10 +6,10 @@
 #' metadata that names it, and assignment can change a column's type. The
 #' invariants are therefore checked rather than assumed:
 #'
+#' * the index column is present and numeric — hard error;
 #' * every column named in `variables_what`, `variables_when`,
 #'   `variables_where` and `variables_event` is present in the data —
 #'   hard error;
-#' * `time` is present and numeric — hard error;
 #' * every column named in `variables_where` is numeric — hard error;
 #' * `coordinate_system` agrees with `variables_where` — **warning**
 #'   only. The frame is still usable, and the field is derived rather
@@ -30,8 +30,11 @@
 #' @export
 validate_aniframe <- function(data) {
   ensure_is_aniframe(data)
+  # The index is checked first so a frame that has lost it gets the
+  # message about the index rather than the generic missing-column one —
+  # `declared_variables()` names it too, but only ever as a backstop.
+  ensure_aniframe_index(data)
   ensure_declared_variables_exist(data)
-  ensure_aniframe_time(data)
   ensure_is_spatial(data)
   warn_coordinate_system_drift(data)
   invisible(data)
@@ -44,9 +47,13 @@ validate_aniframe <- function(data) {
 #' than a flat vector, so it is flattened here to give every role the same
 #' shape. `NA` entries mean "unset" and are dropped.
 #'
+#' `variables_index` is read through [resolve_index()] rather than
+#' directly, so a frame serialised before the field existed reports the
+#' `time` column it was built with rather than nothing at all.
+#'
 #' @param md An aniframe metadata list.
 #'
-#' @return Named list of character vectors, one per `variables_*` field.
+#' @return Named list of character vectors, one per declaration field.
 #' @keywords internal
 declared_variables <- function(md) {
   drop_na <- function(x) {
@@ -58,6 +65,7 @@ declared_variables <- function(md) {
     variables_what = drop_na(md$variables_what),
     variables_when = drop_na(md$variables_when),
     variables_where = drop_na(md$variables_where),
+    variables_index = drop_na(resolve_index(md)),
     variables_event = drop_na(c(
       md$variables_event$state,
       md$variables_event$point
@@ -101,7 +109,7 @@ ensure_declared_variables_exist <- function(data) {
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_aniframe_time <- function(data) {
+ensure_aniframe_index <- function(data) {
   index <- resolve_index(get_metadata(data))
   if (!index %in% names(data)) {
     cli::cli_abort(c(

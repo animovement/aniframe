@@ -1,7 +1,7 @@
 #' Set the temporal unit of an aniframe or anievent
 #'
 #' @description
-#' Converts the temporal columns of an `aniframe` (the `time` column) or
+#' Converts the temporal columns of an `aniframe` (its index column) or
 #' `anievent` (the `start` and `stop` columns) to a different unit of
 #' measurement. Handles automatic conversion between standard SI time
 #' units and custom calibration from frame or arbitrary units.
@@ -21,8 +21,9 @@
 #'   and `unit_time` metadata updated accordingly.
 #'
 #' @details
-#' For an `aniframe` the `time` column is multiplied by the calibration
-#' factor; for an `anievent` both `start` and `stop` are. In either case:
+#' For an `aniframe` the column [get_index()] names is multiplied by the
+#' calibration factor; for an `anievent` both `start` and `stop` are. In
+#' either case:
 #' * the function validates `to_unit` against the permitted levels;
 #' * if converting from a standard unit (`ms`, `s`, `m`, `h`) to another
 #'   standard unit, the calibration factor is auto-computed;
@@ -39,7 +40,7 @@
 #' # aniframe: convert frames to seconds at 30 fps
 #' data_s <- set_unit_time(data, to_unit = "s", calibration_factor = 1 / 30)
 #'
-#' # anievent: same call shape; mutates start/stop instead of time
+#' # anievent: same call shape; mutates start/stop instead of the index
 #' ae_s <- set_unit_time(ae, to_unit = "s", calibration_factor = 1 / 30)
 #' }
 #'
@@ -53,8 +54,14 @@ set_unit_time <- function(data, to_unit, calibration_factor = 1) {
 set_unit_time.aniframe <- function(data, to_unit, calibration_factor = 1) {
   factor <- resolve_unit_time_calibration(data, to_unit, calibration_factor)
 
+  # The column carrying time is whichever one the frame is indexed by, not
+  # one literally named `time` (#109).
+  index <- get_index(data)
+
   data <- data |>
-    dplyr::mutate(time = .data$time * factor) |>
+    dplyr::mutate(
+      dplyr::across(dplyr::all_of(index), function(x) x * factor)
+    ) |>
     set_metadata(unit_time = to_unit)
   data
 }

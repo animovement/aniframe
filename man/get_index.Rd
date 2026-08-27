@@ -7,7 +7,7 @@
 get_index(data)
 }
 \arguments{
-\item{data}{An aniframe or anievent object.}
+\item{data}{An aniframe object.}
 }
 \value{
 Length-one character vector naming the index column.
@@ -18,6 +18,12 @@ within its temporal context. It is declared separately from
 \code{variables_when}, which holds the context itself — session, trial,
 observation — and which, with \code{variables_what}, is what the frame is
 grouped by. The index is never a grouping variable.
+}
+\details{
+An \code{\link[=anievent]{anievent()}} has none: a bout spans an interval rather than sitting
+at a point, so it is delimited by \code{start} and \code{stop}, which are
+declared temporal columns. Its \code{variables_index} is \code{NA}, and asking
+for it here is an error rather than a guess.
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

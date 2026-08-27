@@ -142,3 +142,154 @@ test_that("metadata serialised before the field existed reads back as time", {
   expect_true(check_all_metadata_fields_present(md))
   expect_equal(resolve_index(md), "time")
 })
+
+
+# The index is exactly one column ----
+
+test_that("as_aniframe() rejects an index that is not a single column name", {
+  # `resolve_index()` treats anything other than a single name as "unset"
+  # and answers `"time"`, so without this guard a two-column declaration
+  # was silently discarded on a frame that happened to have a `time`
+  # column, and blamed `"time"` on a frame that did not.
+  df <- data.frame(
+    time = 1:4,
+    frame = c(1, 2, 3, 4),
+    individual = "a",
+    x = 1:4,
+    y = 1:4
+  )
+
+  expect_error(
+    as_aniframe(df, index = c("frame", "time")),
+    "single column name"
+  )
+  expect_error(as_aniframe(df, index = character(0)), "single column name")
+  expect_error(as_aniframe(df, index = 3), "single column name")
+  expect_error(as_aniframe(df, index = NA_character_), "single column name")
+})
+
+test_that("aniframe() can declare an index too", {
+  af <- aniframe(
+    individual = "a",
+    frame = 1:3,
+    x = c(1, 2, 3),
+    y = c(0, 1, 0),
+    index = "frame"
+  )
+
+  expect_equal(get_index(af), "frame")
+  expect_false("time" %in% names(af))
+})
+
+
+# Everything temporal follows the index, not the name `time` ----
+
+test_that("set_unit_time() converts the index column", {
+  af <- as_aniframe(
+    data.frame(frame = c(1, 2, 3), individual = "a", x = 1:3, y = 1:3),
+    index = "frame"
+  ) |>
+    set_metadata(unit_time = "frame")
+
+  result <- set_unit_time(af, "s", calibration_factor = 1 / 30)
+
+  expect_equal(result$frame, c(1, 2, 3) / 30)
+  expect_equal(as.character(get_metadata(result, "unit_time")), "s")
+})
+
+test_that("set_sampling_rate() rescales the index column", {
+  af <- as_aniframe(
+    data.frame(frame = c(1, 2, 3), individual = "a", x = 1:3, y = 1:3),
+    index = "frame"
+  ) |>
+    set_metadata(unit_time = "frame")
+
+  result <- set_sampling_rate(af, 30)
+
+  expect_equal(result$frame, c(1, 2, 3) / 30)
+  expect_equal(get_metadata(result, "sampling_rate"), 30)
+})
+
+test_that("to_anievent() delimits bouts by the host frame's index", {
+  af <- as_aniframe(
+    data.frame(
+      frame = c(10, 20, 30, 40),
+      individual = "a",
+      x = 1:4,
+      y = 1:4,
+      behaviour = c("rest", "rest", "walk", "walk")
+    ),
+    index = "frame"
+  ) |>
+    set_variables_event(state = "behaviour")
+
+  ae <- to_anievent(af)
+
+  # `start` / `stop` are values of the index column, so they are in frames
+  # here rather than being read off a column named `time`.
+  expect_equal(ae$start, c(10, 30))
+  expect_equal(ae$stop, c(20, 40))
+})
+
+
+# An anievent has no index ----
+
+test_that("an anievent declares no index", {
+  # A bout spans an interval, delimited by `start` and `stop`. Inheriting
+  # the aniframe default left it claiming a `time` column it hasn't got.
+  ae <- as_aniframe(
+    data.frame(
+      time = 1:4,
+      individual = "a",
+      x = 1:4,
+      y = 1:4,
+      behaviour = c("rest", "rest", "walk", "walk")
+    )
+  ) |>
+    set_variables_event(state = "behaviour") |>
+    to_anievent()
+
+  expect_true(is.na(get_metadata(ae, "variables_index")))
+  expect_error(get_index(ae), "no index column")
+})
+
+
+# The validator knows about the index ----
+
+test_that("declared_variables() reports the index alongside the other roles", {
+  af <- aniframe(individual = "a", time = 1:3, x = c(1, 2, 3), y = c(0, 1, 0))
+
+  declared <- declared_variables(get_metadata(af))
+
+  expect_true("variables_index" %in% names(declared))
+  expect_equal(declared$variables_index, "time")
+})
+
+test_that("validate_aniframe() catches an index column that has been dropped", {
+  af <- as_aniframe(
+    data.frame(frame = c(1, 2, 3), individual = "a", x = 1:3, y = 1:3),
+    index = "frame"
+  )
+  dropped <- af
+  dropped$frame <- NULL
+
+  expect_error(validate_aniframe(dropped), "Index column")
+})
+
+test_that("validate_aniframe() catches an index column that is no longer numeric", {
+  af <- as_aniframe(
+    data.frame(frame = c(1, 2, 3), individual = "a", x = 1:3, y = 1:3),
+    index = "frame"
+  )
+  retyped <- af
+  retyped$frame <- as.character(retyped$frame)
+
+  expect_error(validate_aniframe(retyped), "must be numeric")
+})
+
+test_that("the default metadata skeleton keeps the index out of variables_when", {
+  md <- default_metadata()
+
+  expect_equal(md$variables_index, "time")
+  expect_false(md$variables_index %in% md$variables_when)
+})
