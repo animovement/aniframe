@@ -4,7 +4,13 @@
 \alias{restructure_frame}
 \title{Restructure a frame to match a declaration}
 \usage{
-restructure_frame(data, variables_what, variables_when, variables_where)
+restructure_frame(
+  data,
+  variables_what,
+  variables_when,
+  variables_where,
+  strict = TRUE
+)
 }
 \arguments{
 \item{data}{An aniframe or anievent object.}

@@ -8,6 +8,8 @@
 
   An `anievent` has no index, since a bout is delimited by `start` and `stop`. Its `variables_index` is `NA` and `get_index()` errors on it.
 
+* `get_coordinate_system()` reads the coordinate system a frame is in (#109). There is deliberately no setter: the field is derived from the axis roles, so `set_axes()` says what the columns mean and `anispace`'s `map_to_*()` functions convert the coordinates.
+
 * An `axes` metadata field records which column carries which axis role, so coordinates may be carried by columns of any name (#109). `get_axes()` reads it, `set_axes()` changes it, and `as_aniframe()` and `set_variables_where()` accept the same mapping — `c(x = "u", y = "v")`. `coordinate_system` follows from it, and `set_unit_space()` and `y_height` resolve through it. The roles are a closed set: `x`, `y`, `z`, `rho`, `phi`, `theta`, and one that forms no coordinate system is rejected by name at declaration. Declaring spatial columns without roles keeps its old meaning, the column name being the role.
 
 * Every exported function now has a runnable example (#106).
@@ -16,8 +18,11 @@
 
 * `coordinate_system` follows from which axis roles are declared rather than from column names (#109). A frame whose coordinates are named something else is now inferred correctly, where it degraded to `unknown` and was refused by every spatial function.
 
-* `validate_aniframe()` warns when identity, temporal context and the index together do not name one observation per row (#49). A repeat means some variable that tells the rows apart is undeclared, and every grouped operation folds them together.
+* `is_cartesian()`, `is_polar()`, `is_cylindrical()`, `is_spherical()`, the `is_cartesian_*d()` variants and their `ensure_` guards read `coordinate_system` rather than matching column names, and require an aniframe (#107, #109). A frame whose coordinates are called something else now satisfies the predicate for the system it is in, and an undeclared column no longer decides the answer — a spherical frame that has dropped `rho` from its declaration is no longer reported as spherical. The guards say which system the frame is in and how to get to the one you need.
 
+* `add_variables_where()` and `remove_variables_where()` carry the axis roles through (#109). They combined bare column names, so on a frame with declared roles every addition or removal reduced it to `unknown`. Removing an axis until the remainder forms no coordinate system warns rather than aborting; declaring such a set outright still aborts.
+
+* `validate_aniframe()` warns when identity, temporal context and the index together do not name one observation per row (#49). A repeat means some variable that tells the rows apart is undeclared, and every grouped operation folds them together.
 
 * `variables_when` no longer names the column the frame is indexed by; read that from `variables_index`, via `get_index()` (#109). It holds only the temporal context, so a frame with none has `character()` where it had `c("time")`, as does `default_metadata()`. `aniprocess::filter_across()` and `filter_na_across()` take `variables_when[1]` as the time column and must swap to `aniframe::get_index()`. Code reading the grouping columns is unaffected, and no longer has anything to exclude: they are `c(variables_what, variables_when)`.
 

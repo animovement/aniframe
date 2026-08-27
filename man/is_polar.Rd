@@ -13,7 +13,7 @@ is_polar(data)
 A logical value.
 }
 \description{
-Requires columns \code{rho} and \code{phi} and forbids \code{theta} or \code{z}.
+Test whether an aniframe uses a polar coordinate system
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

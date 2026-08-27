@@ -2,7 +2,7 @@
 % Please edit documentation in R/coord_system_validate.R
 \name{is_cartesian_1d}
 \alias{is_cartesian_1d}
-\title{Test for a 1‑D Cartesian coordinate system}
+\title{Test for a 1-D Cartesian coordinate system}
 \usage{
 is_cartesian_1d(data, stop = FALSE)
 }
@@ -13,12 +13,10 @@ is_cartesian_1d(data, stop = FALSE)
 It has no effect.}
 }
 \value{
-\code{TRUE} if the aniframe has exactly one of \code{x}, \code{y} or \code{z} and none of \code{rho}, \code{phi} or
-\code{theta}, otherwise \code{FALSE}.
+A logical value.
 }
 \description{
-The aniframe must contain \strong{exactly one} of \code{x}, \code{y} or \code{z} and none of the
-polar columns (\code{rho}, \code{phi}, \code{theta}).
+Test for a 1-D Cartesian coordinate system
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

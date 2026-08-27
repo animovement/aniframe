@@ -289,11 +289,21 @@ infer_coordinate_system <- function(variables_where) {
     return(coord_map[[key]])
   }
 
+  # Two different problems, and they want different advice: roles that are
+  # recognised but do not combine into a system (a spherical frame that has
+  # lost `rho`, say) need the coordinates converting, whereas names that are
+  # not roles at all just need declaring.
+  hint <- if (length(roles) > 0L && all(roles %in% known_axis_roles())) {
+    "Convert the coordinates to a system these axes do form; {.pkg anispace} has the transformations."
+  } else {
+    "To keep the coordinate system, say which axis each column carries with {.fn set_axes}."
+  }
+
   cli::cli_warn(
     c(
       "Could not infer coordinate system from spatial variables: {.val {unname(variables_where)}}.",
       "i" = "Setting coordinate system to {.val unknown}.",
-      "i" = "Say which column carries which axis to keep the coordinate system, as in {.code set_axes(data, c(x = {.str {unname(variables_where)[1]}}))}."
+      "i" = hint
     )
   )
   "unknown"

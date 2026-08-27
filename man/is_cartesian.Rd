@@ -13,8 +13,8 @@ is_cartesian(data)
 A logical value.
 }
 \description{
-Returns \code{TRUE} if the data frame satisfies \emph{any} of the 1‑D, 2‑D or 3‑D
-Cartesian checks defined in the helper functions.
+Returns \code{TRUE} if the data frame satisfies \emph{any} of the 1-D, 2-D or 3-D
+Cartesian checks.
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

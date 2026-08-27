@@ -114,10 +114,14 @@ test_that("is_spatial tracks the metadata rather than the column names", {
   af <- make_flat_af()
   expect_true(is_spatial(af))
 
-  # `y` alone still satisfies is_cartesian_1d(), but variables_where
-  # promises both columns — that is the divergence is_spatial() catches.
+  # Dropping a declared column leaves `variables_where` promising a column
+  # that isn't there. `is_spatial()` catches that; the coordinate-system
+  # predicates read the (now stale) declaration, so they report what the
+  # frame still claims to be rather than being fooled by the columns that
+  # happen to remain (#109).
   dropped <- dplyr::select(af, -x)
-  expect_true(is_cartesian_1d(dropped))
+  expect_false(is_cartesian_1d(dropped))
+  expect_true(is_cartesian_2d(dropped))
   expect_false(is_spatial(dropped))
 
   chr <- af

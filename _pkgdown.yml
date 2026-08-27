@@ -71,6 +71,7 @@ reference:
       - set_index
       - get_axes
       - set_axes
+      - get_coordinate_system
 
   - title: "Connections"
     desc: >
@@ -87,9 +88,10 @@ reference:
   - title: "Spatial checks"
     desc: |
       These functions provide checks for your coordinate system.
-      `is_spatial()` and `ensure_is_spatial()` check the spatial columns
-      against the `variables_where` metadata; the `is_cartesian*()` family
-      checks for particular column names.
+      `is_spatial()` and `ensure_is_spatial()` check that the columns named
+      in `variables_where` are present and numeric; the `is_cartesian*()`
+      family reports which coordinate system the frame is in, which follows
+      from the axis roles it declares.
     contents:
     - is_spatial
     - ensure_is_spatial

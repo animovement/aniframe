@@ -44,6 +44,26 @@ get_variables <- function(data, role) {
 }
 
 
+#' The spatial declaration, as a role mapping where there is one
+#'
+#' `get_variables()` strips names, which for `where` throws the axis roles
+#' away. Every path that re-declares the spatial columns has to start from
+#' the mapping instead, or `union()` and `setdiff()` silently reduce a
+#' renamed frame to `unknown` (#109).
+#'
+#' @param data An aniframe or anievent object.
+#'
+#' @return Named character vector, or a bare one when no roles are known.
+#' @keywords internal
+declared_where <- function(data) {
+  axes <- if (is_aniframe(data)) resolve_axes(get_metadata(data))
+  if (length(axes) > 0L) {
+    return(axes)
+  }
+  get_variables(data, "where")
+}
+
+
 #' Declare one variable role and restructure the frame to match
 #'
 #' The shared kernel behind the `set_` / `add_` / `remove_` functions.
@@ -56,21 +76,14 @@ get_variables <- function(data, role) {
 #'
 #' @return `data`, restructured and re-declared.
 #' @keywords internal
-declare_variables <- function(data, role, variables) {
+declare_variables <- function(data, role, variables, strict = TRUE) {
   ensure_is_aniframe_or_anievent(data)
   ensure_variables_chr(variables)
 
-  # `where` is read as the role mapping when there is one, so re-declaring
-  # another role does not silently drop the axes (#109).
-  existing_axes <- if (is_aniframe(data)) resolve_axes(get_metadata(data))
   declared <- list(
     what = get_variables(data, "what"),
     when = get_variables(data, "when"),
-    where = if (length(existing_axes) > 0L) {
-      existing_axes
-    } else {
-      get_variables(data, "where")
-    }
+    where = declared_where(data)
   )
   # Only `where` carries names worth keeping; stripping them elsewhere
   # guards `union()`/`setdiff()` against surprises.
@@ -80,7 +93,13 @@ declare_variables <- function(data, role, variables) {
     unname(variables)
   }
 
-  restructure_frame(data, declared$what, declared$when, declared$where)
+  restructure_frame(
+    data,
+    declared$what,
+    declared$when,
+    declared$where,
+    strict = strict
+  )
 }
 
 
@@ -134,7 +153,8 @@ restructure_frame <- function(
   data,
   variables_what,
   variables_when,
-  variables_where
+  variables_where,
+  strict = TRUE
 ) {
   if (is_anievent(data)) {
     if (length(variables_where) > 0) {
@@ -146,7 +166,13 @@ restructure_frame <- function(
     return(restructure_anievent(data, variables_what, variables_when))
   }
 
-  restructure_aniframe(data, variables_what, variables_when, variables_where)
+  restructure_aniframe(
+    data,
+    variables_what,
+    variables_when,
+    variables_where,
+    strict = strict
+  )
 }
 
 
@@ -184,7 +210,8 @@ restructure_aniframe <- function(
   data,
   variables_what,
   variables_when,
-  variables_where
+  variables_where,
+  strict = TRUE
 ) {
   cls <- class(data)
   md <- get_metadata(data)
@@ -202,9 +229,8 @@ restructure_aniframe <- function(
   # restructured against. An explicit role mapping is validated strictly —
   # a bad role is named here rather than degrading the frame to "unknown"
   # and failing in whichever spatial function the user reaches first (#109).
-  by_role <- axes_declared_by_role(variables_where)
   axes <- normalise_axes(variables_where)
-  if (by_role) {
+  if (strict && axes_declared_by_role(variables_where)) {
     ensure_valid_axis_roles(axes)
   }
   where_cols <- unname(axes)
@@ -497,11 +523,15 @@ add_variables_when <- function(data, variables) {
 add_variables_where <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
   ensure_variables_chr(variables)
-  declare_variables(
-    data,
-    "where",
-    union(get_variables(data, "where"), variables)
-  )
+
+  # `union()` drops names, so combining has to happen on the mapping: the
+  # roles already declared, plus the new ones, with anything the addition
+  # supersedes -- by role or by column -- taken out first.
+  current <- normalise_axes(declared_where(data))
+  added <- normalise_axes(variables)
+  superseded <- names(current) %in% names(added) | current %in% added
+
+  declare_variables(data, "where", c(current[!superseded], added))
 }
 
 #' @rdname variables
@@ -533,9 +563,19 @@ remove_variables_when <- function(data, variables) {
 remove_variables_where <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
   ensure_variables_chr(variables)
+
+  # By column, like the other `remove_` verbs; the roles of whatever is
+  # left travel with it, which `setdiff()` on bare columns would lose.
+  current <- normalise_axes(declared_where(data))
+
+  # Leniently: the caller removed a column, they did not assert that what
+  # is left is a coordinate system. Declaring an incoherent set outright
+  # still aborts; arriving at one by removal degrades to `unknown` with a
+  # warning, so a remove-then-add is not blocked halfway through.
   declare_variables(
     data,
     "where",
-    setdiff(get_variables(data, "where"), variables)
+    current[!current %in% variables],
+    strict = FALSE
   )
 }

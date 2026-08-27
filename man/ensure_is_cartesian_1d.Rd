@@ -2,7 +2,7 @@
 % Please edit documentation in R/coord_system_validate.R
 \name{ensure_is_cartesian_1d}
 \alias{ensure_is_cartesian_1d}
-\title{Internal guard for 1‑D Cartesian checks}
+\title{Internal guard for 1-D Cartesian checks}
 \usage{
 ensure_is_cartesian_1d(data)
 }
@@ -10,7 +10,7 @@ ensure_is_cartesian_1d(data)
 \item{data}{An aniframe.}
 }
 \description{
-Internal guard for 1‑D Cartesian checks
+Internal guard for 1-D Cartesian checks
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

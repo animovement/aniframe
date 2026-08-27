@@ -277,3 +277,83 @@ test_that("an anievent has no axes", {
 
   expect_length(get_metadata(ae, "axes"), 0)
 })
+
+
+# add_/remove_variables_where() carry the roles ----
+
+test_that("add_variables_where() keeps the roles already declared", {
+  # `union()` on bare columns drops the names, which reduced the frame to
+  # `unknown` on every addition (#109).
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", x = 1:3, y = 1:3, u = 1:3)
+  )
+
+  result <- add_variables_where(af, c(z = "u"))
+
+  expect_equal(get_axes(result), c(x = "x", y = "y", z = "u"))
+  expect_equal(get_coordinate_system(result), "cartesian_3d")
+})
+
+test_that("add_variables_where() keeps the roles of a renamed frame", {
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", uu = 1:3, vv = 1:3, ww = 1:3),
+    variables_where = c(x = "uu", y = "vv")
+  )
+
+  result <- add_variables_where(af, c(z = "ww"))
+
+  expect_equal(get_axes(result), c(x = "uu", y = "vv", z = "ww"))
+  expect_equal(get_coordinate_system(result), "cartesian_3d")
+})
+
+test_that("add_variables_where() supersedes an existing role", {
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", uu = 1:3, vv = 1:3, ww = 1:3),
+    variables_where = c(x = "uu", y = "vv")
+  )
+
+  result <- add_variables_where(af, c(y = "ww"))
+
+  expect_equal(get_axes(result), c(x = "uu", y = "ww"))
+  expect_equal(get_coordinate_system(result), "cartesian_2d")
+})
+
+test_that("remove_variables_where() keeps the roles of what is left", {
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", uu = 1:3, vv = 1:3),
+    variables_where = c(x = "uu", y = "vv")
+  )
+
+  result <- remove_variables_where(af, "vv")
+
+  expect_equal(get_axes(result), c(x = "uu"))
+  expect_equal(get_coordinate_system(result), "cartesian_1d")
+})
+
+test_that("removing an axis down to an incoherent set warns rather than aborts", {
+  # Declaring an incoherent set asserts something untrue and aborts;
+  # arriving at one by removal is a step, and must not be blocked.
+  af <- as_aniframe(
+    data.frame(
+      time = 1:3,
+      individual = "a",
+      rho = 1:3,
+      phi = 1:3,
+      theta = 1:3
+    )
+  )
+
+  expect_warning(
+    result <- remove_variables_where(af, "rho"),
+    "anispace"
+  )
+  expect_equal(get_coordinate_system(result), "unknown")
+
+  expect_error(
+    as_aniframe(
+      data.frame(time = 1:3, individual = "a", u = 1:3, v = 1:3),
+      variables_where = c(x = "u", theta = "v")
+    ),
+    "do not form a coordinate system"
+  )
+})

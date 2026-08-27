@@ -13,7 +13,7 @@ is_spherical(data)
 A logical value.
 }
 \description{
-Requires \code{rho}, \code{phi} and \code{theta}; forbids \code{z}.
+Test whether an aniframe uses a spherical coordinate system
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

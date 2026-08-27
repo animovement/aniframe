@@ -2,7 +2,7 @@
 % Please edit documentation in R/coord_system_validate.R
 \name{is_cartesian_3d}
 \alias{is_cartesian_3d}
-\title{Test for a 3‑D Cartesian coordinate system}
+\title{Test for a 3-D Cartesian coordinate system}
 \usage{
 is_cartesian_3d(data)
 }
@@ -10,11 +10,10 @@ is_cartesian_3d(data)
 \item{data}{An aniframe.}
 }
 \value{
-\code{TRUE} if the aniframe has \code{x}, \code{y} and \code{z} and none of \code{rho}, \code{phi} or
-\code{theta}, otherwise \code{FALSE}.
+A logical value.
 }
 \description{
-Requires non‑missing columns \code{x}, \code{y} and \code{z}.
+Test for a 3-D Cartesian coordinate system
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

@@ -1,7 +1,46 @@
+# Coordinate-system predicates (#109)
+#
+# These used to match column *names* — `is_polar()` looked for columns
+# literally called `rho` and `phi`. That was wrong in both directions once
+# axis roles existed: a frame whose coordinates are called anything else
+# was refused by every spatial function despite being polar, and a frame
+# that still carried an undeclared `rho` column reported as spherical
+# after `rho` had been dropped from the declaration.
+#
+# They read `coordinate_system` instead, which is derived from the axis
+# roles on every construction and re-declaration, so the predicates and
+# the metadata cannot disagree.
+
+#' The coordinate system an aniframe is in
+#'
+#' Derived from the axis roles rather than declared: [set_axes()] says
+#' which column carries which role, and the system follows from the set of
+#' roles present. It is therefore not writable — see [set_axes()] to say
+#' what the columns mean, or `anispace`'s `map_to_*()` functions to convert
+#' the coordinates themselves.
+#'
+#' @param data An aniframe or anievent object.
+#'
+#' @return Length-one character vector: one of `"cartesian_1d"`,
+#'   `"cartesian_2d"`, `"cartesian_3d"`, `"polar"`, `"cylindrical"`,
+#'   `"spherical"` or `"unknown"`.
+#'
+#' @examples
+#' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+#' get_coordinate_system(af)
+#'
+#' @seealso [get_axes()], [is_cartesian()], [is_polar()]
+#' @export
+get_coordinate_system <- function(data) {
+  ensure_is_aniframe_or_anievent(data)
+  as.character(get_metadata(data, "coordinate_system"))
+}
+
+
 #' Test whether an aniframe uses a Cartesian coordinate system
 #'
-#' Returns `TRUE` if the data frame satisfies *any* of the 1‑D, 2‑D or 3‑D
-#' Cartesian checks defined in the helper functions.
+#' Returns `TRUE` if the data frame satisfies *any* of the 1-D, 2-D or 3-D
+#' Cartesian checks.
 #'
 #' @param data An aniframe.
 #' @return A logical value.
@@ -10,9 +49,7 @@
 #' is_cartesian(af)
 #' @export
 is_cartesian <- function(data) {
-  is_cartesian_1d(data) ||
-    is_cartesian_2d(data) ||
-    is_cartesian_3d(data)
+  startsWith(get_coordinate_system(data), "cartesian")
 }
 
 
@@ -27,45 +64,26 @@ is_cartesian <- function(data) {
 #' ensure_is_cartesian(af)
 #' @export
 ensure_is_cartesian <- function(data) {
-  if (!is_cartesian(data)) {
-    cli::cli_abort(
-      "This data frame is not in a Cartesian coordinate system. Requires at least one of 'x', 'y', or 'z'."
-    )
-  }
+  ensure_coordinate_system(data, is_cartesian(data), "Cartesian")
 }
 
 
-#' Test for a 1‑D Cartesian coordinate system
-#'
-#' The aniframe must contain **exactly one** of `x`, `y` or `z` and none of the
-#' polar columns (`rho`, `phi`, `theta`).
+#' Test for a 1-D Cartesian coordinate system
 #'
 #' @param data An aniframe.
 #' @param stop Unused, and kept only so the signature does not change.
 #'   It has no effect.
-#' @return `TRUE` if the aniframe has exactly one of `x`, `y` or `z` and none of `rho`, `phi` or
-#'   `theta`, otherwise `FALSE`.
+#' @return A logical value.
 #' @examples
 #' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
 #' is_cartesian_1d(af)
 #' @export
 is_cartesian_1d <- function(data, stop = FALSE) {
-  forbidden <- c("rho", "phi", "theta")
-  present_forbidden <- intersect(names(data), forbidden)
-  cartesian_axes <- c("x", "y", "z")
-  present_axes <- intersect(names(data), cartesian_axes)
-
-  if (length(present_forbidden) > 0L) {
-    FALSE
-  } else if (length(present_axes) != 1L) {
-    FALSE
-  } else {
-    TRUE
-  }
+  identical(get_coordinate_system(data), "cartesian_1d")
 }
 
 
-#' Internal guard for 1‑D Cartesian checks
+#' Internal guard for 1-D Cartesian checks
 #'
 #' @param data An aniframe.
 #' @examples
@@ -73,42 +91,24 @@ is_cartesian_1d <- function(data, stop = FALSE) {
 #' try(ensure_is_cartesian_1d(af))
 #' @export
 ensure_is_cartesian_1d <- function(data) {
-  if (!is_cartesian_1d(data)) {
-    cli::cli_abort(
-      "This data frame is not in a 1D Cartesian coordinate system. Requires only 'x', 'y' or 'z'."
-    )
-  }
+  ensure_coordinate_system(data, is_cartesian_1d(data), "1D Cartesian")
 }
 
 
-#' Test for a 2‑D Cartesian coordinate system
-#'
-#' Requires columns `x` and `y`.  Column `z` may be present only if it is
-#' completely `NA`.
+#' Test for a 2-D Cartesian coordinate system
 #'
 #' @param data An aniframe.
-#' @return `TRUE` if the aniframe has `x` and `y` and none of `rho`, `phi` or
-#'   `theta`, otherwise `FALSE`.
+#' @return A logical value.
 #' @examples
 #' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
 #' is_cartesian_2d(af)
 #' @export
 is_cartesian_2d <- function(data) {
-  # Must contain x and y
-  if (!all(c("x", "y") %in% names(data))) {
-    return(FALSE)
-  }
-
-  # If z exists, it must be entirely NA (or absent)
-  if ("z" %in% names(data) && !all(is.na(data$z))) {
-    FALSE
-  } else {
-    TRUE
-  }
+  identical(get_coordinate_system(data), "cartesian_2d")
 }
 
 
-#' Internal guard for 2‑D Cartesian checks
+#' Internal guard for 2-D Cartesian checks
 #'
 #' @param data An aniframe.
 #' @examples
@@ -116,39 +116,24 @@ is_cartesian_2d <- function(data) {
 #' ensure_is_cartesian_2d(af)
 #' @export
 ensure_is_cartesian_2d <- function(data) {
-  if (!is_cartesian_2d(data)) {
-    cli::cli_abort(
-      "This data frame is not in a 2D Cartesian coordinate system. Requires 'x' and 'y', with no 'z'."
-    )
-  }
+  ensure_coordinate_system(data, is_cartesian_2d(data), "2D Cartesian")
 }
 
 
-#' Test for a 3‑D Cartesian coordinate system
-#'
-#' Requires non‑missing columns `x`, `y` and `z`.
+#' Test for a 3-D Cartesian coordinate system
 #'
 #' @param data An aniframe.
-#' @return `TRUE` if the aniframe has `x`, `y` and `z` and none of `rho`, `phi` or
-#'   `theta`, otherwise `FALSE`.
+#' @return A logical value.
 #' @examples
 #' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
 #' is_cartesian_3d(af)
 #' @export
 is_cartesian_3d <- function(data) {
-  # Must contain x, y, and z
-  if (!all(c("x", "y", "z") %in% names(data))) {
-    FALSE
-  } else if (all(c("x", "y", "z") %in% names(data)) && all(is.na(data$z))) {
-    FALSE
-  } else {
-    # All required columns are present
-    TRUE
-  }
+  identical(get_coordinate_system(data), "cartesian_3d")
 }
 
 
-#' Internal guard for 3‑D Cartesian checks
+#' Internal guard for 3-D Cartesian checks
 #'
 #' @param data An aniframe.
 #' @examples
@@ -156,17 +141,11 @@ is_cartesian_3d <- function(data) {
 #' try(ensure_is_cartesian_3d(af))
 #' @export
 ensure_is_cartesian_3d <- function(data) {
-  if (!is_cartesian_3d(data)) {
-    cli::cli_abort(
-      "This data frame is not in a 3D Cartesian coordinate system. Requires 'x', 'y' and 'z' columns with non-NA values."
-    )
-  }
+  ensure_coordinate_system(data, is_cartesian_3d(data), "3D Cartesian")
 }
 
 
 #' Test whether an aniframe uses a polar coordinate system
-#'
-#' Requires columns `rho` and `phi` and forbids `theta` or `z`.
 #'
 #' @param data An aniframe.
 #' @return A logical value.
@@ -175,8 +154,7 @@ ensure_is_cartesian_3d <- function(data) {
 #' is_polar(af)
 #' @export
 is_polar <- function(data) {
-  all(c("rho", "phi") %in% names(data)) &&
-    !any(c("theta", "z") %in% names(data))
+  identical(get_coordinate_system(data), "polar")
 }
 
 
@@ -189,15 +167,11 @@ is_polar <- function(data) {
 #' try(ensure_is_polar(af))
 #' @export
 ensure_is_polar <- function(data) {
-  if (!is_polar(data)) {
-    cli::cli_abort("This data frame is not in a polar coordinate system.")
-  }
+  ensure_coordinate_system(data, is_polar(data), "polar")
 }
 
 
 #' Test whether an aniframe uses a cylindrical coordinate system
-#'
-#' Requires `rho`, `phi` and `z`; forbids `theta`.
 #'
 #' @param data An aniframe.
 #' @return A logical value.
@@ -206,8 +180,7 @@ ensure_is_polar <- function(data) {
 #' is_cylindrical(af)
 #' @export
 is_cylindrical <- function(data) {
-  all(c("rho", "phi", "z") %in% names(data)) &&
-    !any(c("theta") %in% names(data))
+  identical(get_coordinate_system(data), "cylindrical")
 }
 
 
@@ -220,15 +193,11 @@ is_cylindrical <- function(data) {
 #' try(ensure_is_cylindrical(af))
 #' @export
 ensure_is_cylindrical <- function(data) {
-  if (!is_cylindrical(data)) {
-    cli::cli_abort("This data frame is not in a cylindrical coordinate system.")
-  }
+  ensure_coordinate_system(data, is_cylindrical(data), "cylindrical")
 }
 
 
 #' Test whether an aniframe uses a spherical coordinate system
-#'
-#' Requires `rho`, `phi` and `theta`; forbids `z`.
 #'
 #' @param data An aniframe.
 #' @return A logical value.
@@ -237,8 +206,7 @@ ensure_is_cylindrical <- function(data) {
 #' is_spherical(af)
 #' @export
 is_spherical <- function(data) {
-  all(c("rho", "phi", "theta") %in% names(data)) &&
-    !any(c("z") %in% names(data))
+  identical(get_coordinate_system(data), "spherical")
 }
 
 
@@ -251,7 +219,36 @@ is_spherical <- function(data) {
 #' try(ensure_is_spherical(af))
 #' @export
 ensure_is_spherical <- function(data) {
-  if (!is_spherical(data)) {
-    cli::cli_abort("This data frame is not in a spherical coordinate system.")
+  ensure_coordinate_system(data, is_spherical(data), "spherical")
+}
+
+
+#' Abort when the frame is not in the coordinate system a caller needs
+#'
+#' Reports what the frame *is* in, and points at the two ways out: saying
+#' what the columns mean, or converting the coordinates.
+#'
+#' @param data An aniframe object.
+#' @param ok Result of the corresponding `is_*()` predicate.
+#' @param wanted Human-readable name of the required coordinate system.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+ensure_coordinate_system <- function(data, ok, wanted) {
+  if (ok) {
+    return(invisible(TRUE))
   }
+
+  actual <- get_coordinate_system(data)
+  hint <- if (identical(actual, "unknown")) {
+    "Declare which axis each spatial column carries with {.fn set_axes}."
+  } else {
+    "Convert the coordinates first; {.pkg anispace} has the transformations."
+  }
+
+  cli::cli_abort(c(
+    "This aniframe is not in a {wanted} coordinate system.",
+    "i" = "{.field coordinate_system} is {.val {actual}}.",
+    "i" = hint
+  ))
 }

@@ -4,7 +4,13 @@
 \alias{restructure_aniframe}
 \title{Restructure an aniframe}
 \usage{
-restructure_aniframe(data, variables_what, variables_when, variables_where)
+restructure_aniframe(
+  data,
+  variables_what,
+  variables_when,
+  variables_where,
+  strict = TRUE
+)
 }
 \arguments{
 \item{data}{An aniframe object.}
