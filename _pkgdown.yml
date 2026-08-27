@@ -70,6 +70,7 @@ reference:
       - get_index
       - set_index
       - get_axes
+      - set_axes
 
   - title: "Connections"
     desc: >

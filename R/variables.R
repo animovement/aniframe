@@ -26,7 +26,8 @@ declaration_metadata_fields <- function() {
     "variables_what",
     "variables_when",
     "variables_where",
-    "variables_event"
+    "variables_event",
+    "axes"
   )
 }
 
@@ -59,11 +60,17 @@ declare_variables <- function(data, role, variables) {
   ensure_is_aniframe_or_anievent(data)
   ensure_variables_chr(variables)
 
+  # `where` is read as the role mapping when there is one, so re-declaring
+  # another role does not silently drop the axes (#109).
+  existing_axes <- if (is_aniframe(data)) resolve_axes(get_metadata(data))
   declared <- list(
     what = get_variables(data, "what"),
     when = get_variables(data, "when"),
-    # Names carry the axis roles, so this one is read unstripped (#109).
-    where = get_metadata(data, "variables_where")
+    where = if (length(existing_axes) > 0L) {
+      existing_axes
+    } else {
+      get_variables(data, "where")
+    }
   )
   # Only `where` carries names worth keeping; stripping them elsewhere
   # guards `union()`/`setdiff()` against surprises.
@@ -243,11 +250,11 @@ restructure_aniframe <- function(
 
   md$variables_what <- variables_what
   md$variables_when <- variables_when
-  # Roles are only stored once they mean something. A frame whose axes do
-  # not form a coordinate system keeps the bare vector it was declared
-  # with, so `unknown` behaves exactly as it did before roles existed.
-  md$variables_where <- if (identical(coordinate_system, "unknown")) {
-    where_cols
+  # `variables_where` is always a plain vector; the roles live in `axes`,
+  # which is derived from the same declaration and so cannot drift from it.
+  md$variables_where <- where_cols
+  md$axes <- if (identical(coordinate_system, "unknown")) {
+    stats::setNames(character(), character())
   } else {
     axes
   }
@@ -305,6 +312,7 @@ restructure_anievent <- function(data, variables_what, variables_when) {
   # An anievent carries no spatial variables — position lives on the
   # aniframe it was encoded from.
   md$variables_where <- character()
+  md$axes <- stats::setNames(character(), character())
   # Nor an index: a bout is delimited by `start` and `stop`. `NA` is the
   # substrate's "not applicable" (#73).
   md$variables_index <- as.character(NA)

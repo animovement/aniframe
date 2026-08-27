@@ -61,7 +61,7 @@ test_that("as_aniframe detects cylindrical data (rho, phi, z), not cartesian_1d"
   )
   expect_equal(
     get_metadata(data, "variables_where"),
-    c(rho = "rho", phi = "phi", z = "z")
+    c("rho", "phi", "z")
   )
 })
 
@@ -104,7 +104,7 @@ test_that("as_aniframe detects spherical data (rho, phi, theta)", {
   )
   expect_equal(
     get_metadata(data, "variables_where"),
-    c(rho = "rho", phi = "phi", theta = "theta")
+    c("rho", "phi", "theta")
   )
 })
 
@@ -124,7 +124,7 @@ test_that("as_aniframe detects polar data (rho, phi)", {
   )
   expect_equal(
     get_metadata(data, "variables_where"),
-    c(rho = "rho", phi = "phi")
+    c("rho", "phi")
   )
 })
 
@@ -384,7 +384,7 @@ test_that("as_aniframe stores variables in metadata", {
   result_md <- get_metadata(result)
   expect_equal(result_md$variables_what, "individual")
   expect_equal(result_md$variables_when, "trial")
-  expect_equal(result_md$variables_where, c(x = "x", y = "y"))
+  expect_equal(result_md$variables_where, c("x", "y"))
 })
 
 test_that("as_aniframe respects custom variables_what", {
@@ -576,7 +576,7 @@ test_that("as_aniframe detects polar coordinates", {
   expect_s3_class(result, "aniframe")
   expect_equal(
     get_metadata(result)$variables_where,
-    c(rho = "rho", phi = "phi")
+    c("rho", "phi")
   )
   expect_equal(as.character(get_metadata(result)$coordinate_system), "polar")
 })

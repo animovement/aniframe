@@ -1,13 +1,19 @@
 # Axis roles (#109)
 #
-# `variables_where` used to be a plain vector of column names, and the
-# coordinate system was inferred by matching those names against a fixed
-# list. The name *was* the role, so a frame whose coordinates were called
-# anything else degraded to `unknown` and every spatial function refused it.
+# The coordinate system used to be inferred by matching `variables_where`
+# against a fixed list of names. The name *was* the role, so a frame whose
+# coordinates were called anything else degraded to `unknown` and every
+# spatial function refused it.
 #
-# It is now a mapping from axis role to column: `c(x = "u", y = "v")`. The
+# The `axes` field maps role to column instead: `c(x = "u", y = "v")`. The
 # set of roles stays closed — that is what makes `map_to_polar()` and unit
 # conversion meaningful — while the spelling of the columns is free.
+#
+# It is a field of its own rather than names on `variables_where`, which
+# stays a plain vector. A named character vector is a *rename instruction*
+# to tidyselect, and `variables_where` is read raw and passed to
+# `dplyr::all_of()` downstream, where names would silently rename the
+# columns. `axes` will move into the spatial category in #118.
 
 #' The axis role sets that define each coordinate system
 #'
@@ -150,13 +156,88 @@ ensure_valid_axis_roles <- function(axes) {
 #' get_axes(renamed)
 #' get_metadata(renamed, "coordinate_system")
 #'
-#' @seealso [get_variables_where()], [set_variables_where()]
+#' @seealso [set_axes()] to change it, [get_variables_where()] for the
+#'   columns without their roles.
 #' @export
 get_axes <- function(data) {
   ensure_is_aniframe(data)
-  declared <- get_metadata(data, "variables_where")
-  if (is.null(names(declared))) {
-    return(stats::setNames(character(), character()))
+  resolve_axes(get_metadata(data))
+}
+
+
+#' Resolve the axis mapping from a metadata list
+#'
+#' Objects serialised before the field existed have no `axes`, but their
+#' `variables_where` was matched against the role names to infer a
+#' coordinate system, so the column name *was* the role. Reading it that
+#' way here keeps those frames working untouched.
+#'
+#' @param md A metadata list.
+#'
+#' @return Named character vector, empty when no role set applies.
+#' @keywords internal
+resolve_axes <- function(md) {
+  empty <- stats::setNames(character(), character())
+  axes <- md[["axes"]]
+
+  if (is.null(axes)) {
+    # Pre-#109: fall back to the historical reading of `variables_where`,
+    # but only when the columns do name a coordinate system.
+    declared <- as.character(md[["variables_where"]])
+    declared <- declared[!is.na(declared)]
+    axes <- normalise_axes(declared)
+    if (identical(infer_coordinate_system(axes), "unknown")) {
+      return(empty)
+    }
+    return(axes)
   }
-  normalise_axes(declared)
+
+  axes <- axes[!is.na(axes)]
+  if (length(axes) == 0L || is.null(names(axes))) {
+    return(empty)
+  }
+  stats::setNames(as.character(axes), names(axes))
+}
+
+
+#' Declare which column carries which axis role
+#'
+#' The mapping decides the `coordinate_system` and is what spatial
+#' transformations index by, so — like the `variables_*` declarations — it
+#' is not reachable through [set_metadata()] and has its own setter, which
+#' restructures the frame too.
+#'
+#' The direction is role to column, the same way round as [get_axes()]
+#' returns it and as [dplyr::rename()] reads, so `set_axes(af, get_axes(af))`
+#' does nothing.
+#'
+#' @param data An aniframe object.
+#' @param axes Named character vector: names are axis roles, values are the
+#'   columns carrying them. The roles must form a coordinate system, and
+#'   every column must exist in `data`.
+#'
+#' @return `data`, re-declared and restructured.
+#'
+#' @examples
+#' df <- data.frame(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 1, 0))
+#' af <- as_aniframe(df, variables_where = c("u", "v"))
+#' get_metadata(af, "coordinate_system")
+#'
+#' af <- set_axes(af, c(x = "u", y = "v"))
+#' get_axes(af)
+#' get_metadata(af, "coordinate_system")
+#'
+#' @seealso [get_axes()]
+#' @export
+set_axes <- function(data, axes) {
+  ensure_is_aniframe(data)
+  ensure_variables_chr(axes)
+  if (!axes_declared_by_role(axes)) {
+    cli::cli_abort(c(
+      "{.arg axes} must name an axis role for every column.",
+      "i" = "For example {.code c(x = \"u\", y = \"v\")}.",
+      "i" = "To declare spatial columns without roles, use {.fn set_variables_where}."
+    ))
+  }
+  declare_variables(data, "where", axes)
 }

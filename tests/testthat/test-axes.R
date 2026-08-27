@@ -99,9 +99,8 @@ test_that("an unnamed declaration that matches nothing still warns rather than a
     "Could not infer coordinate system"
   )
   expect_equal(as.character(get_metadata(af, "coordinate_system")), "unknown")
-  # Roles are only stored once they mean something, so `unknown` keeps the
-  # bare vector it was declared with.
-  expect_null(names(get_metadata(af, "variables_where")))
+  # Roles are only stored once they mean something.
+  expect_equal(get_metadata(af, "variables_where"), c("u", "v"))
   expect_equal(get_axes(af), stats::setNames(character(), character()))
 })
 
@@ -158,4 +157,123 @@ test_that("set_unit_space() converts rho but not phi on a renamed polar frame", 
 
   expect_equal(result$r, c(10, 20, 30))
   expect_equal(result$a, c(0, 1, 2))
+})
+
+
+# `axes` is a field of its own ----
+
+test_that("variables_where stays a plain vector when the roles are known", {
+  # A named character vector is a rename instruction to tidyselect, and
+  # `variables_where` is read raw and passed to `dplyr::all_of()`
+  # downstream, so names on it would silently rename columns.
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 1, 0)),
+    variables_where = c(x = "u", y = "v")
+  )
+
+  expect_null(names(get_metadata(af, "variables_where")))
+  expect_equal(get_metadata(af, "variables_where"), c("u", "v"))
+  expect_equal(get_variables_where(af), c("u", "v"))
+  expect_equal(get_axes(af), c(x = "u", y = "v"))
+})
+
+test_that("selecting by variables_where does not rename the columns", {
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 1, 0)),
+    variables_where = c(x = "u", y = "v")
+  )
+
+  where_cols <- get_metadata(af, "variables_where")
+  bare <- dplyr::ungroup(dplyr::as_tibble(af))
+
+  expect_equal(
+    names(dplyr::select(bare, dplyr::all_of(where_cols))),
+    c("u", "v")
+  )
+
+  # `aniprocess` reaches the spatial columns this way.
+  picked <- dplyr::mutate(bare, out = dplyr::pick(dplyr::all_of(where_cols)))
+  expect_equal(names(picked$out), c("u", "v"))
+})
+
+test_that("set_axes() declares the mapping and refreshes coordinate_system", {
+  af <- suppressWarnings(as_aniframe(
+    data.frame(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 1, 0)),
+    variables_where = c("u", "v")
+  ))
+  expect_equal(as.character(get_metadata(af, "coordinate_system")), "unknown")
+
+  result <- set_axes(af, c(x = "u", y = "v"))
+
+  expect_equal(get_axes(result), c(x = "u", y = "v"))
+  expect_equal(
+    as.character(get_metadata(result, "coordinate_system")),
+    "cartesian_2d"
+  )
+  expect_equal(get_variables_where(result), c("u", "v"))
+})
+
+test_that("set_axes() round-trips its own getter", {
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 1, 0)),
+    variables_where = c(x = "u", y = "v")
+  )
+
+  expect_equal(get_metadata(set_axes(af, get_axes(af))), get_metadata(af))
+})
+
+test_that("set_axes() requires a role for every column", {
+  af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+
+  expect_error(set_axes(af, c("x", "y")), "must name an axis role")
+  expect_error(set_axes(af, c(x = "x", banana = "y")), "not recognised")
+  expect_error(
+    set_axes(af, c(x = "x", theta = "y")),
+    "do not form a coordinate system"
+  )
+})
+
+test_that("set_metadata() refuses axes and names its setter", {
+  af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+
+  expect_error(set_metadata(af, axes = c(x = "x")), "set_axes")
+})
+
+test_that("re-declaring another role keeps the axis mapping", {
+  af <- as_aniframe(
+    data.frame(
+      time = 1:3,
+      individual = "a",
+      session = "s",
+      u = c(1, 2, 3),
+      v = c(0, 1, 0)
+    ),
+    variables_where = c(x = "u", y = "v")
+  )
+
+  result <- add_variables_when(af, "session")
+
+  expect_equal(get_axes(result), c(x = "u", y = "v"))
+  expect_equal(
+    as.character(get_metadata(result, "coordinate_system")),
+    "cartesian_2d"
+  )
+})
+
+test_that("metadata serialised before the field existed still resolves its axes", {
+  af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+  md <- get_metadata(af)
+  md[["axes"]] <- NULL
+
+  expect_true(check_all_metadata_fields_present(md))
+  expect_equal(resolve_axes(md), c(x = "x", y = "y"))
+})
+
+test_that("an anievent has no axes", {
+  ae <- example_aniframe(n_obs = 4, n_individuals = 1, n_keypoints = 1) |>
+    dplyr::mutate(b = factor(rep(c("r", "w"), each = 2))) |>
+    set_variables_event(state = "b") |>
+    to_anievent()
+
+  expect_length(get_metadata(ae, "axes"), 0)
 })

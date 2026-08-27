@@ -31,5 +31,6 @@ get_metadata(renamed, "coordinate_system")
 
 }
 \seealso{
-\code{\link[=get_variables_where]{get_variables_where()}}, \code{\link[=set_variables_where]{set_variables_where()}}
+\code{\link[=set_axes]{set_axes()}} to change it, \code{\link[=get_variables_where]{get_variables_where()}} for the
+columns without their roles.
 }

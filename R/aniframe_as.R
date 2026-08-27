@@ -292,7 +292,8 @@ infer_coordinate_system <- function(variables_where) {
   cli::cli_warn(
     c(
       "Could not infer coordinate system from spatial variables: {.val {unname(variables_where)}}.",
-      "i" = "Setting coordinate system to {.val unknown}."
+      "i" = "Setting coordinate system to {.val unknown}.",
+      "i" = "Say which column carries which axis to keep the coordinate system, as in {.code set_axes(data, c(x = {.str {unname(variables_where)[1]}}))}."
     )
   )
   "unknown"

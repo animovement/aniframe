@@ -35,6 +35,15 @@
 #'   In particular `variables_what` is **not** a requirement that a frame
 #'   carry `individual` and `keypoint` columns — the rule is that a frame
 #'   has at least one identity variable, whichever it happens to be.
+#' * `axes`: Which column carries which axis role (named character,
+#'   `c(x = "x", y = "y")`). Names are roles — `x`, `y`, `z`, `rho`,
+#'   `phi`, `theta` — and values are the columns carrying them, so a frame
+#'   whose coordinates are called something else still has a usable
+#'   `coordinate_system`. The role set is closed, which is what keeps
+#'   transformations between coordinate systems well defined; the column
+#'   names are free. Empty when the roles are unknown. Read it with
+#'   [get_axes()], change it with [set_axes()]. `variables_where` names the
+#'   same columns without their roles, and is derived from this.
 #' * `reference_frame`: Reference frame (factor, "allocentric").
 #'   Permitted values: "allocentric", "egocentric", "none".
 #' * `coordinate_system`: Coordinate system (factor, "cartesian_2d")
@@ -91,6 +100,7 @@ default_metadata <- function() {
       state = character(),
       point = character()
     ),
+    axes = c(x = "x", y = "y"),
     unit_space = factor(
       "px",
       levels = c(

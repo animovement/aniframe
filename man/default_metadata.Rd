@@ -36,6 +36,15 @@ constructor overwrites them from the data or from its arguments.
 In particular \code{variables_what} is \strong{not} a requirement that a frame
 carry \code{individual} and \code{keypoint} columns — the rule is that a frame
 has at least one identity variable, whichever it happens to be.
+\item \code{axes}: Which column carries which axis role (named character,
+\code{c(x = "x", y = "y")}). Names are roles — \code{x}, \code{y}, \code{z}, \code{rho},
+\code{phi}, \code{theta} — and values are the columns carrying them, so a frame
+whose coordinates are called something else still has a usable
+\code{coordinate_system}. The role set is closed, which is what keeps
+transformations between coordinate systems well defined; the column
+names are free. Empty when the roles are unknown. Read it with
+\code{\link[=get_axes]{get_axes()}}, change it with \code{\link[=set_axes]{set_axes()}}. \code{variables_where} names the
+same columns without their roles, and is derived from this.
 \item \code{reference_frame}: Reference frame (factor, "allocentric").
 Permitted values: "allocentric", "egocentric", "none".
 \item \code{coordinate_system}: Coordinate system (factor, "cartesian_2d")

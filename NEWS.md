@@ -8,7 +8,7 @@
 
   An `anievent` has no index, since a bout is delimited by `start` and `stop`. Its `variables_index` is `NA` and `get_index()` errors on it.
 
-* `variables_where` can be declared as a mapping from axis role to column — `c(x = "u", y = "v")` — so coordinates may be carried by columns of any name (#109). `get_axes()` returns the mapping. The roles are a closed set: `x`, `y`, `z`, `rho`, `phi`, `theta`, and one that forms no coordinate system is rejected by name at declaration. A plain unnamed vector keeps its old meaning, the column name being the role.
+* An `axes` metadata field records which column carries which axis role, so coordinates may be carried by columns of any name (#109). `get_axes()` reads it, `set_axes()` changes it, and `as_aniframe()` and `set_variables_where()` accept the same mapping — `c(x = "u", y = "v")`. `coordinate_system` follows from it, and `set_unit_space()` and `y_height` resolve through it. The roles are a closed set: `x`, `y`, `z`, `rho`, `phi`, `theta`, and one that forms no coordinate system is rejected by name at declaration. Declaring spatial columns without roles keeps its old meaning, the column name being the role.
 
 * Every exported function now has a runnable example (#106).
 
@@ -16,11 +16,8 @@
 
 * `coordinate_system` follows from which axis roles are declared rather than from column names (#109). A frame whose coordinates are named something else is now inferred correctly, where it degraded to `unknown` and was refused by every spatial function.
 
-* `get_metadata(data, "variables_where")` carries axis-role names once the roles are known (#109). `get_variables_where()` and `get_variables()` still return bare column names; code comparing the raw field with `identical()` must allow for the names.
-
-* `set_unit_space()` resolves the length axes of the coordinate system through the frame's axis mapping, so a frame whose coordinates are named something else is converted rather than left in the old unit under a metadata claim of the new one (#109).
-
 * `validate_aniframe()` warns when identity, temporal context and the index together do not name one observation per row (#49). A repeat means some variable that tells the rows apart is undeclared, and every grouped operation folds them together.
+
 
 * `variables_when` no longer names the column the frame is indexed by; read that from `variables_index`, via `get_index()` (#109). It holds only the temporal context, so a frame with none has `character()` where it had `c("time")`, as does `default_metadata()`. `aniprocess::filter_across()` and `filter_na_across()` take `variables_when[1]` as the time column and must swap to `aniframe::get_index()`. Code reading the grouping columns is unaffected, and no longer has anything to exclude: they are `c(variables_what, variables_when)`.
 
