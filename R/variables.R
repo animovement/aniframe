@@ -284,6 +284,7 @@ restructure_aniframe <- function(
   } else {
     axes
   }
+  warn_shadowed_axis_roles(md$axes, names(bare))
   md$variables_index <- index
   md$coordinate_system <- as_metadata_factor(
     coordinate_system,

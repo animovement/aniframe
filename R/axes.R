@@ -200,6 +200,43 @@ resolve_axes <- function(md) {
 }
 
 
+#' Warn when an axis role is carried by one column while another has its name
+#'
+#' `get_axes(af)[["x"]]` may be `"u"` while the frame also has a column
+#' literally called `x`. The frame is not malformed and the mapping is
+#' right, but `.data$x` then returns a real column of real numbers that is
+#' not the x axis — plausible wrong answers rather than an error, and the
+#' habit axis roles exist to replace (#119).
+#'
+#' A warning, not an error: the state is legal, and a column named `x` may
+#' honestly mean something else. Silence it for a whole loop with
+#' `options(aniframe.quiet = TRUE)`.
+#'
+#' @param axes A normalised role-to-column mapping.
+#' @param columns The frame's column names.
+#'
+#' @return `TRUE`, invisibly.
+#' @keywords internal
+warn_shadowed_axis_roles <- function(axes, columns) {
+  if (isTRUE(getOption("aniframe.quiet", FALSE)) || length(axes) == 0L) {
+    return(invisible(TRUE))
+  }
+
+  roles <- names(axes)
+  shadowed <- roles[roles != axes & roles %in% columns]
+  if (length(shadowed) > 0L) {
+    carried_by <- unname(axes[shadowed])
+    cli::cli_warn(c(
+      "{cli::qty(shadowed)}Axis role{?s} {.val {shadowed}} {?is/are} carried by {.val {carried_by}}, but the frame also has {cli::qty(shadowed)}{?a column/columns} of {?that/those} name{?s}.",
+      "i" = "{.val {shadowed}} {?is/are} not {?a coordinate column/coordinate columns} here; read the axes with {.fn get_axes}.",
+      "i" = "Silence this with {.code options(aniframe.quiet = TRUE)}."
+    ))
+  }
+
+  invisible(TRUE)
+}
+
+
 #' Declare which column carries which axis role
 #'
 #' The mapping decides the `coordinate_system` and is what spatial

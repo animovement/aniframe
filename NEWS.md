@@ -16,6 +16,8 @@
 
 ## Changed
 
+* Declaring an axis role that is carried by one column while a different, undeclared column has that role's name now warns (#119). The frame is legal and the mapping is right, but `.data$x` then returns a column that is not the x axis. Silence it with `options(aniframe.quiet = TRUE)`.
+
 * `coordinate_system` follows from which axis roles are declared rather than from column names (#109). A frame whose coordinates are named something else is now inferred correctly, where it degraded to `unknown` and was refused by every spatial function.
 
 * `is_cartesian()`, `is_polar()`, `is_cylindrical()`, `is_spherical()`, the `is_cartesian_*d()` variants and their `ensure_` guards read `coordinate_system` rather than matching column names, and require an aniframe (#107, #109). A frame whose coordinates are called something else now satisfies the predicate for the system it is in, and an undeclared column no longer decides the answer — a spherical frame that has dropped `rho` from its declaration is no longer reported as spherical. The guards say which system the frame is in and how to get to the one you need.

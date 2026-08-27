@@ -357,3 +357,69 @@ test_that("removing an axis down to an incoherent set warns rather than aborts",
     "do not form a coordinate system"
   )
 })
+
+
+# A role shadowed by an undeclared column of the same name (#119) ----
+
+test_that("declaring a role shadowed by a column of that name warns", {
+  # `af$x` would return a real column of real numbers that is not the x
+  # axis — plausible wrong answers rather than an error.
+  df <- data.frame(
+    time = 1:3,
+    individual = "a",
+    u = c(1, 2, 3),
+    v = c(0, 1, 0),
+    x = 9:11
+  )
+
+  expect_warning(
+    af <- as_aniframe(df, variables_where = c(x = "u", y = "v")),
+    "also has a column"
+  )
+  expect_equal(get_axes(af)[["x"]], "u")
+})
+
+test_that("no warning when the roles are carried by columns of their own name", {
+  expect_no_warning(
+    as_aniframe(data.frame(time = 1:3, individual = "a", x = 1:3, y = 1:3))
+  )
+})
+
+test_that("no warning when the shadowing column is not there", {
+  expect_no_warning(
+    as_aniframe(
+      data.frame(time = 1:3, individual = "a", u = 1:3, v = 1:3),
+      variables_where = c(x = "u", y = "v")
+    )
+  )
+})
+
+test_that("aniframe.quiet silences the shadowing warning", {
+  # The reason it is an option rather than an argument: in a loop you want
+  # to set it once, not thread it through every call.
+  df <- data.frame(
+    time = 1:3,
+    individual = "a",
+    u = c(1, 2, 3),
+    v = c(0, 1, 0),
+    x = 9:11
+  )
+
+  previous <- options(aniframe.quiet = TRUE)
+  on.exit(options(previous), add = TRUE)
+
+  expect_no_warning(as_aniframe(df, variables_where = c(x = "u", y = "v")))
+})
+
+test_that("set_axes() warns on shadowing too", {
+  df <- data.frame(
+    time = 1:3,
+    individual = "a",
+    u = c(1, 2, 3),
+    v = c(0, 1, 0),
+    rho = 9:11
+  )
+  af <- suppressWarnings(as_aniframe(df, variables_where = c("u", "v")))
+
+  expect_warning(set_axes(af, c(rho = "u", phi = "v")), "also has a column")
+})
