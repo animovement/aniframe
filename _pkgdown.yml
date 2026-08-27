@@ -57,6 +57,8 @@ reference:
       - set_unit_angle
       - get_sampling_rate
       - set_sampling_rate
+      - get_sampling_interval
+      - is_sampling_regular
       - get_origin
       - set_origin
       - get_y_height

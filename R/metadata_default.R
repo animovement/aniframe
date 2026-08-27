@@ -13,7 +13,15 @@
 #' * `filename`: Original filename(s) (character vector, NA). Accepts a
 #'   vector of length 1 or more — readers that load from multiple files
 #'   (e.g. `aniread::read_trackball()`) populate this with all source paths.
-#' * `sampling_rate`: Sampling rate in Hz (numeric, NA)
+#' * `sampling_rate`: Sampling rate in Hz (numeric, NA). Declared, not
+#'   derived — set it with [set_sampling_rate()].
+#' * `sampling_interval`: The interval between consecutive observations
+#'   (numeric, NA), in the unit the index is in. Derived from the index at
+#'   construction and refreshed on every re-declaration, so it describes
+#'   the data rather than a claim about it. Read it with
+#'   [get_sampling_interval()]; ask whether the spacing is even with
+#'   [is_sampling_regular()], which is computed on demand because dropping
+#'   rows changes the answer.
 #' * `start_datetime`: Start date and time of recording (POSIXct, NA)
 #' * `variables_index`: The single column the frame is indexed by (character,
 #'   `"time"`). Exactly one column, and it may be called anything — the
@@ -91,6 +99,7 @@ list_default_metadata <- function() {
     source_version = as.character(NA),
     filename = as.character(NA),
     sampling_rate = as.numeric(NA),
+    sampling_interval = as.numeric(NA),
     start_datetime = as.POSIXct(NA),
     variables_index = "time",
     variables_what = c("individual", "keypoint"),

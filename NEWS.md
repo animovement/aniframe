@@ -8,6 +8,12 @@
 
   An `anievent` has no index, since a bout is delimited by `start` and `stop`. Its `variables_index` is `NA` and `get_index()` errors on it.
 
+* `get_sampling_interval()` reports the spacing of the index, derived from the data at construction rather than declared, and `is_sampling_regular()` says whether that spacing is even (#114). Nothing in the stack could previously tell whether a frame was regularly sampled, which several downstream functions need — interpolating on row position rather than on time is only correct when it is.
+
+  Measured per key, since the index restarts in each group and a frame regular within every track can look irregular pooled. Regularity is computed on demand rather than stored, because dropping rows changes the answer; its `tolerance` is an argument, and relative, so floating-point timestamps are not called irregular over the last decimal place.
+
+  `validate_aniframe()` warns when a declared `sampling_rate` disagrees with the measured spacing — the same shape as #98, where the metadata claimed a unit the data was not in.
+
 * `get_sampling_rate()`, `get_unit_space()`, `get_unit_time()`, `get_unit_angle()`, `get_origin()` and `get_y_height()` read the fields that already had setters (#121). Every field with a dedicated setter now has a dedicated getter, so reading one no longer means naming it as a string. The four factor-backed ones return a bare character vector, which is what callers were doing with `as.character()` anyway.
 
 * `get_coordinate_system()` reads the coordinate system a frame is in (#109). There is deliberately no setter: the field is derived from the axis roles, so `set_axes()` says what the columns mean and `anispace`'s `map_to_*()` functions convert the coordinates.

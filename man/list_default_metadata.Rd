@@ -14,7 +14,15 @@ A named list with the following fields:
 \item \code{filename}: Original filename(s) (character vector, NA). Accepts a
 vector of length 1 or more — readers that load from multiple files
 (e.g. \code{aniread::read_trackball()}) populate this with all source paths.
-\item \code{sampling_rate}: Sampling rate in Hz (numeric, NA)
+\item \code{sampling_rate}: Sampling rate in Hz (numeric, NA). Declared, not
+derived — set it with \code{\link[=set_sampling_rate]{set_sampling_rate()}}.
+\item \code{sampling_interval}: The interval between consecutive observations
+(numeric, NA), in the unit the index is in. Derived from the index at
+construction and refreshed on every re-declaration, so it describes
+the data rather than a claim about it. Read it with
+\code{\link[=get_sampling_interval]{get_sampling_interval()}}; ask whether the spacing is even with
+\code{\link[=is_sampling_regular]{is_sampling_regular()}}, which is computed on demand because dropping
+rows changes the answer.
 \item \code{start_datetime}: Start date and time of recording (POSIXct, NA)
 \item \code{variables_index}: The single column the frame is indexed by (character,
 \code{"time"}). Exactly one column, and it may be called anything — the

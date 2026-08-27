@@ -163,7 +163,11 @@ restructure_aniframe <- function(
     "coordinate_system"
   )
 
-  preserve_animovement_class(bare, cls, md)
+  out <- preserve_animovement_class(bare, cls, md)
+
+  # Derived from the finished frame, so it measures the data as it now is.
+  md$sampling_interval <- derive_sampling_interval(out)
+  attach_metadata(out, md)
 }
 
 
@@ -212,6 +216,8 @@ restructure_anievent <- function(data, variables_what, variables_when) {
   # aniframe it was encoded from.
   md$variables_where <- character()
   md$axes <- stats::setNames(character(), character())
+  # No index, so nothing to measure a sampling interval from.
+  md$sampling_interval <- as.numeric(NA)
   # Nor an index: a bout is delimited by `start` and `stop`. `NA` is the
   # substrate's "not applicable" (#73).
   md$variables_index <- as.character(NA)

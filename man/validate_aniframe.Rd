@@ -30,7 +30,9 @@ hard error;
 only. The frame is still usable, and the field is derived rather
 than declared, so it can be refreshed;
 \item identity, temporal context and the index together name one
-observation per row — \strong{warning} only (#49).
+observation per row — \strong{warning} only (#49);
+\item a declared \code{sampling_rate} agrees with the spacing of the index —
+\strong{warning} only (#114).
 }
 }
 \examples{

@@ -15,7 +15,9 @@
 #'   only. The frame is still usable, and the field is derived rather
 #'   than declared, so it can be refreshed;
 #' * identity, temporal context and the index together name one
-#'   observation per row — **warning** only (#49).
+#'   observation per row — **warning** only (#49);
+#' * a declared `sampling_rate` agrees with the spacing of the index —
+#'   **warning** only (#114).
 #'
 #' @param data An aniframe object.
 #'
@@ -39,6 +41,7 @@ validate_aniframe <- function(data) {
   ensure_is_spatial(data)
   warn_coordinate_system_drift(data)
   warn_duplicate_observations(data)
+  warn_sampling_rate_mismatch(data)
   invisible(data)
 }
 
