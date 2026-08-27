@@ -33,6 +33,12 @@ sampling_gaps <- function(data) {
   }
 
   bare <- dplyr::as_tibble(data)
+  # The index is required to be numeric, but this runs during construction --
+  # before that is checked, and on frames a reader may hand over empty or
+  # untyped. Deriving an interval is not worth aborting a constructor over.
+  if (!is.numeric(bare[[index]])) {
+    return(numeric())
+  }
   key <- intersect(c(md$variables_what, md$variables_when), names(bare))
   values <- if (length(key) == 0L) {
     list(bare[[index]])

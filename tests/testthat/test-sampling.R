@@ -144,3 +144,19 @@ test_that("metadata written before the field existed still validates", {
   expect_no_error(ensure_valid_metadata(md))
   expect_true(has_all_metadata_fields(md))
 })
+
+test_that("a non-numeric index does not abort construction", {
+  # `sampling_interval` is derived inside the constructor, before the index
+  # has been checked for type. A reader handing over an empty or untyped
+  # column must not blow up there (found via aniread's empty-file test).
+  df <- data.frame(
+    individual = character(0),
+    time = character(0),
+    x = numeric(0),
+    y = numeric(0)
+  )
+
+  expect_no_error(af <- as_aniframe(df))
+  expect_true(is.na(get_sampling_interval(af)))
+  expect_true(is.na(is_sampling_regular(af)))
+})
