@@ -137,10 +137,7 @@ ensure_index_name <- function(index, arg = "index") {
   if (!is.character(index) || length(index) != 1L || is.na(index)) {
     cli::cli_abort(c(
       "{.arg {arg}} must be a single column name.",
-      "i" = "A frame has exactly one index: the position of a row within
-             its temporal context, so there is nothing for a second one to
-             mean.",
-      "i" = "The surrounding context goes in {.arg variables_when}."
+      "i" = "A frame has exactly one index."
     ))
   }
   invisible(TRUE)
