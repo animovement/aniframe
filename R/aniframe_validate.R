@@ -30,9 +30,8 @@
 #' @export
 validate_aniframe <- function(data) {
   ensure_is_aniframe(data)
-  # The index is checked first so a frame that has lost it gets the
-  # message about the index rather than the generic missing-column one —
-  # `declared_variables()` names it too, but only ever as a backstop.
+  # Before the generic check, which also names the index but reports it
+  # less helpfully.
   ensure_aniframe_index(data)
   ensure_declared_variables_exist(data)
   ensure_is_spatial(data)
@@ -62,10 +61,10 @@ declared_variables <- function(md) {
   }
 
   list(
+    variables_index = drop_na(resolve_index(md)),
     variables_what = drop_na(md$variables_what),
     variables_when = drop_na(md$variables_when),
     variables_where = drop_na(md$variables_where),
-    variables_index = drop_na(resolve_index(md)),
     variables_event = drop_na(c(
       md$variables_event$state,
       md$variables_event$point

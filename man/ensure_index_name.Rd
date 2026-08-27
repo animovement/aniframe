@@ -15,12 +15,9 @@ ensure_index_name(index, arg = "index")
 \code{TRUE}, invisibly.
 }
 \description{
-Cardinality is checked apart from the rest of \code{\link[=ensure_valid_index]{ensure_valid_index()}}
-because \code{\link[=as_aniframe]{as_aniframe()}} needs it before the column is looked up, and
-needs it under its own argument name. Without it a two-column \code{index}
-fell through to \code{\link[=resolve_index]{resolve_index()}}, which treats anything other than a
-single name as "unset" and answers \code{"time"} — so the declaration was
-silently discarded on a frame that happened to have a \code{time} column,
-and produced an error naming \code{"time"} on one that did not.
+Split out from \code{\link[=ensure_valid_index]{ensure_valid_index()}} because \code{\link[=as_aniframe]{as_aniframe()}} needs it
+before the column is looked up, and under its own argument name.
+Unchecked, a two-column \code{index} falls through to \code{\link[=resolve_index]{resolve_index()}},
+which reads anything but a single name as "unset" and answers \code{"time"}.
 }
 \keyword{internal}

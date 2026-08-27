@@ -19,10 +19,8 @@ are indexed by, and defaulting here keeps them working untouched.
 }
 \details{
 \code{NA} — how an \code{\link[=anievent]{anievent()}} spells "not applicable" — falls back the
-same way, because the one path that reaches it with anievent metadata
-is a cast to \code{\link[=aniframe]{aniframe()}}, which needs \emph{some} index and has no better
-candidate. \code{\link[=get_index]{get_index()}} refuses the anievent before it gets here, so
-the fallback is never mistaken for an answer about the event stream
-itself.
+same way. The only path that reaches here with anievent metadata is a
+cast to \code{\link[=aniframe]{aniframe()}}, which needs \emph{some} index; \code{\link[=get_index]{get_index()}} refuses
+the anievent before it gets this far.
 }
 \keyword{internal}

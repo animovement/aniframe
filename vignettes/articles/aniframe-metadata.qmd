@@ -63,7 +63,7 @@ The fields fall into a few groups:
 | **Sampling**       | `sampling_rate`                                                     |
 | **Units**          | `unit_space`, `unit_time`, `unit_angle`                             |
 | **Frame of reference** | `reference_frame`, `coordinate_system`, `origin`, `y_height`    |
-| **Slot vocabulary**| `variables_what`, `variables_when`, `variables_index`, `variables_where` |
+| **Slot vocabulary**| `variables_index`, `variables_what`, `variables_when`, `variables_where` |
 | **Relationships**  | `connections`                                                       |
 
 `filename` accepts a character vector — readers like
@@ -103,7 +103,7 @@ column called `time` — see
 
 ## Declaring the slot vocabulary
 
-`variables_what`, `variables_when`, `variables_index`, `variables_where`
+`variables_index`, `variables_what`, `variables_when`, `variables_where`
 and `variables_event` are a special case: they name columns rather than
 describing values, so a name that matches nothing is a promise the frame
 can't keep. All but `variables_event` go further — they are not a

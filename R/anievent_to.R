@@ -137,9 +137,6 @@ to_anievent.aniframe <- function(
     ))
   }
 
-  # Bouts are delimited by the host frame's index, whichever column that
-  # is (#109) -- the run-length encoding reads its values as `start` and
-  # `stop`, and the scope detection groups by it.
   index <- resolve_index(md)
   host_what <- intersect(md$variables_what, names(data))
   grouping_when <- intersect(

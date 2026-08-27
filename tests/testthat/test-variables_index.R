@@ -147,10 +147,7 @@ test_that("metadata serialised before the field existed reads back as time", {
 # The index is exactly one column ----
 
 test_that("as_aniframe() rejects an index that is not a single column name", {
-  # `resolve_index()` treats anything other than a single name as "unset"
-  # and answers `"time"`, so without this guard a two-column declaration
-  # was silently discarded on a frame that happened to have a `time`
-  # column, and blamed `"time"` on a frame that did not.
+  # Unguarded, this fell back to `"time"` instead of complaining.
   df <- data.frame(
     time = 1:4,
     frame = c(1, 2, 3, 4),
@@ -225,8 +222,6 @@ test_that("to_anievent() delimits bouts by the host frame's index", {
 
   ae <- to_anievent(af)
 
-  # `start` / `stop` are values of the index column, so they are in frames
-  # here rather than being read off a column named `time`.
   expect_equal(ae$start, c(10, 30))
   expect_equal(ae$stop, c(20, 40))
 })
@@ -235,8 +230,6 @@ test_that("to_anievent() delimits bouts by the host frame's index", {
 # An anievent has no index ----
 
 test_that("an anievent declares no index", {
-  # A bout spans an interval, delimited by `start` and `stop`. Inheriting
-  # the aniframe default left it claiming a `time` column it hasn't got.
   ae <- as_aniframe(
     data.frame(
       time = 1:4,

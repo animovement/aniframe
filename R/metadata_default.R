@@ -83,11 +83,9 @@ default_metadata <- function() {
     filename = as.character(NA),
     sampling_rate = as.numeric(NA),
     start_datetime = as.POSIXct(NA),
-    variables_what = c("individual", "keypoint"),
-    # The temporal *context* — empty in the skeleton, because the index is
-    # declared separately and is never one of these.
-    variables_when = character(),
     variables_index = "time",
+    variables_what = c("individual", "keypoint"),
+    variables_when = character(),
     variables_where = c("x", "y"),
     variables_event = list(
       state = character(),

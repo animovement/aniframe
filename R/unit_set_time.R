@@ -54,8 +54,6 @@ set_unit_time <- function(data, to_unit, calibration_factor = 1) {
 set_unit_time.aniframe <- function(data, to_unit, calibration_factor = 1) {
   factor <- resolve_unit_time_calibration(data, to_unit, calibration_factor)
 
-  # The column carrying time is whichever one the frame is indexed by, not
-  # one literally named `time` (#109).
   index <- get_index(data)
 
   data <- data |>

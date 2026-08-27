@@ -7,11 +7,10 @@
 # downstream without repeating the same literal.
 #
 # `variables_index` names the column instead, and is kept out of
-# `variables_when` entirely — that field is now exactly the context, which
-# is exactly what the frame groups by. Making the index a member of it
-# instead would leave `set_index()` promoting the old index to a grouping
-# variable, putting every row in its own group, and would leave every
-# downstream package repeating the same `setdiff` to undo it.
+# `variables_when` entirely, so that field is exactly what the frame
+# groups by. Making it a member would leave `set_index()` promoting the
+# old index to a grouping variable, and every downstream package
+# repeating the same `setdiff` to undo it.
 
 #' The column an aniframe is indexed by
 #'
@@ -42,7 +41,7 @@ get_index <- function(data) {
     cli::cli_abort(c(
       "An {.cls anievent} has no index column.",
       "i" = "A bout spans an interval, delimited by {.field start} and {.field stop}.",
-      "i" = "Both are in {.field variables_when} — read them with {.fn get_variables_when}."
+      "i" = "Both are in {.field variables_when}; read them with {.fn get_variables_when}."
     ))
   }
   ensure_is_aniframe(data)
@@ -57,11 +56,9 @@ get_index <- function(data) {
 #' are indexed by, and defaulting here keeps them working untouched.
 #'
 #' `NA` — how an [anievent()] spells "not applicable" — falls back the
-#' same way, because the one path that reaches it with anievent metadata
-#' is a cast to [aniframe()], which needs *some* index and has no better
-#' candidate. [get_index()] refuses the anievent before it gets here, so
-#' the fallback is never mistaken for an answer about the event stream
-#' itself.
+#' same way. The only path that reaches here with anievent metadata is a
+#' cast to [aniframe()], which needs *some* index; [get_index()] refuses
+#' the anievent before it gets this far.
 #'
 #' @param md A metadata list.
 #'
@@ -126,13 +123,10 @@ set_index <- function(data, column) {
 
 #' Ensure a declared index names exactly one column
 #'
-#' Cardinality is checked apart from the rest of [ensure_valid_index()]
-#' because [as_aniframe()] needs it before the column is looked up, and
-#' needs it under its own argument name. Without it a two-column `index`
-#' fell through to [resolve_index()], which treats anything other than a
-#' single name as "unset" and answers `"time"` — so the declaration was
-#' silently discarded on a frame that happened to have a `time` column,
-#' and produced an error naming `"time"` on one that did not.
+#' Split out from [ensure_valid_index()] because [as_aniframe()] needs it
+#' before the column is looked up, and under its own argument name.
+#' Unchecked, a two-column `index` falls through to [resolve_index()],
+#' which reads anything but a single name as "unset" and answers `"time"`.
 #'
 #' @param index The proposed index.
 #' @param arg Name of the caller's argument, for the message.
@@ -143,9 +137,9 @@ ensure_index_name <- function(index, arg = "index") {
   if (!is.character(index) || length(index) != 1L || is.na(index)) {
     cli::cli_abort(c(
       "{.arg {arg}} must be a single column name.",
-      "i" = "A frame has exactly one index — it is the position of a row
-             within its temporal context, so there is nothing for a second
-             one to mean.",
+      "i" = "A frame has exactly one index: the position of a row within
+             its temporal context, so there is nothing for a second one to
+             mean.",
       "i" = "The surrounding context goes in {.arg variables_when}."
     ))
   }
