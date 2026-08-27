@@ -157,52 +157,6 @@ as_aniframe <- function(
 }
 
 
-#' Standardize column types for aniframe
-#'
-#' Converts character identity and temporal variables to factors.
-#' Converts numeric identity and temporal variables (except the index) to
-#' integers.
-#' Spatial variables are converted to numeric.
-#'
-#' @param data Data frame to standardise.
-#' @param variables_what Identity variable names.
-#' @param variables_when Temporal variable names.
-#' @param variables_where Spatial variable names.
-#' @param index The index column, which stays numeric. The temporal
-#'   context variables are made categorical.
-#'
-#' @return Data frame with standardised column types.
-#' @keywords internal
-standardise_aniframe_cols <- function(
-  data,
-  variables_what,
-  variables_when,
-  variables_where,
-  index = "time"
-) {
-  # What and when variables (except time) should be categorical or integer
-  categorical_vars <- c(variables_what, variables_when)
-  for (col in categorical_vars) {
-    if (col %in% names(data)) {
-      if (is.character(data[[col]])) {
-        data[[col]] <- factor(data[[col]])
-      } else if (is.numeric(data[[col]])) {
-        data[[col]] <- as.integer(data[[col]])
-      }
-    }
-  }
-
-  # Convert spatial variables to numeric
-  for (col in variables_where) {
-    if (col %in% names(data)) {
-      data[[col]] <- as.numeric(data[[col]])
-    }
-  }
-
-  data
-}
-
-
 #' Ensure the data carries at least one identity variable
 #'
 #' An aniframe needs **at least one identity (`what`) variable** — the
@@ -232,81 +186,6 @@ ensure_identity <- function(data) {
   }
 
   data
-}
-
-
-#' Validate required columns for aniframe
-#'
-#' @param data Data frame to validate.
-#' @param variables_what Identity variables.
-#' @param variables_when Temporal variables.
-#' @param variables_where Spatial variables.
-#'
-#' @keywords internal
-ensure_aniframe_cols <- function(
-  data,
-  variables_what,
-  variables_when,
-  variables_where,
-  index = "time"
-) {
-  # All declared variables must exist. Declaring a column that isn't
-  # there leaves the metadata describing a frame it doesn't have.
-  ensure_declared_cols_exist(data, variables_what, "what")
-
-  # The frame needs an index. Which column that is comes from the
-  # declaration; `time` is only its default (#109).
-  if (!index %in% names(data)) {
-    cli::cli_abort(
-      c(
-        "Index column {.val {index}} is required but not found in data.",
-        "i" = "An aniframe is indexed by exactly one column.",
-        "i" = "Declare a different one with {.arg index}, or {.fn set_index}."
-      )
-    )
-  }
-
-  ensure_declared_cols_exist(data, variables_when, "when")
-  ensure_declared_cols_exist(data, variables_where, "where")
-
-  invisible(TRUE)
-}
-
-
-#' Infer coordinate system from spatial variables
-#'
-#' @param variables_where Character vector of spatial variable names.
-#' @return Character string naming the coordinate system.
-#' @keywords internal
-infer_coordinate_system <- function(variables_where) {
-  # The roles decide the system. For a bare vector of column names the
-  # name is the role, which is the historical behaviour (#109).
-  roles <- names(normalise_axes(variables_where))
-  key <- paste(sort(roles), collapse = ",")
-
-  coord_map <- list_axis_role_sets()
-  if (key %in% names(coord_map)) {
-    return(coord_map[[key]])
-  }
-
-  # Two different problems, and they want different advice: roles that are
-  # recognised but do not combine into a system (a spherical frame that has
-  # lost `rho`, say) need the coordinates converting, whereas names that are
-  # not roles at all just need declaring.
-  hint <- if (length(roles) > 0L && all(roles %in% list_axis_roles())) {
-    "Convert the coordinates to a system these axes do form; {.pkg anispace} has the transformations."
-  } else {
-    "To keep the coordinate system, say which axis each column carries with {.fn set_axes}."
-  }
-
-  cli::cli_warn(
-    c(
-      "Could not infer coordinate system from spatial variables: {.val {unname(variables_where)}}.",
-      "i" = "Setting coordinate system to {.val unknown}.",
-      "i" = hint
-    )
-  )
-  "unknown"
 }
 
 #' Detect spatial variables from data

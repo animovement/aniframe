@@ -236,3 +236,87 @@ regroup_frame <- function(data, grouping_vars) {
     dplyr::group_by(data, dplyr::across(dplyr::all_of(grouping_vars)))
   )
 }
+
+
+#' Validate required columns for aniframe
+#'
+#' @param data Data frame to validate.
+#' @param variables_what Identity variables.
+#' @param variables_when Temporal variables.
+#' @param variables_where Spatial variables.
+#'
+#' @keywords internal
+ensure_aniframe_cols <- function(
+  data,
+  variables_what,
+  variables_when,
+  variables_where,
+  index = "time"
+) {
+  # All declared variables must exist. Declaring a column that isn't
+  # there leaves the metadata describing a frame it doesn't have.
+  ensure_declared_cols_exist(data, variables_what, "what")
+
+  # The frame needs an index. Which column that is comes from the
+  # declaration; `time` is only its default (#109).
+  if (!index %in% names(data)) {
+    cli::cli_abort(
+      c(
+        "Index column {.val {index}} is required but not found in data.",
+        "i" = "An aniframe is indexed by exactly one column.",
+        "i" = "Declare a different one with {.arg index}, or {.fn set_index}."
+      )
+    )
+  }
+
+  ensure_declared_cols_exist(data, variables_when, "when")
+  ensure_declared_cols_exist(data, variables_where, "where")
+
+  invisible(TRUE)
+}
+
+
+#' Standardize column types for aniframe
+#'
+#' Converts character identity and temporal variables to factors.
+#' Converts numeric identity and temporal variables (except the index) to
+#' integers.
+#' Spatial variables are converted to numeric.
+#'
+#' @param data Data frame to standardise.
+#' @param variables_what Identity variable names.
+#' @param variables_when Temporal variable names.
+#' @param variables_where Spatial variable names.
+#' @param index The index column, which stays numeric. The temporal
+#'   context variables are made categorical.
+#'
+#' @return Data frame with standardised column types.
+#' @keywords internal
+standardise_aniframe_cols <- function(
+  data,
+  variables_what,
+  variables_when,
+  variables_where,
+  index = "time"
+) {
+  # What and when variables (except time) should be categorical or integer
+  categorical_vars <- c(variables_what, variables_when)
+  for (col in categorical_vars) {
+    if (col %in% names(data)) {
+      if (is.character(data[[col]])) {
+        data[[col]] <- factor(data[[col]])
+      } else if (is.numeric(data[[col]])) {
+        data[[col]] <- as.integer(data[[col]])
+      }
+    }
+  }
+
+  # Convert spatial variables to numeric
+  for (col in variables_where) {
+    if (col %in% names(data)) {
+      data[[col]] <- as.numeric(data[[col]])
+    }
+  }
+
+  data
+}
