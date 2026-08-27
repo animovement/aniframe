@@ -8,6 +8,8 @@
 
   An `anievent` has no index, since a bout is delimited by `start` and `stop`. Its `variables_index` is `NA` and `get_index()` errors on it.
 
+* `get_sampling_rate()`, `get_unit_space()`, `get_unit_time()`, `get_unit_angle()`, `get_origin()` and `get_y_height()` read the fields that already had setters (#121). Every field with a dedicated setter now has a dedicated getter, so reading one no longer means naming it as a string. The four factor-backed ones return a bare character vector, which is what callers were doing with `as.character()` anyway.
+
 * `get_coordinate_system()` reads the coordinate system a frame is in (#109). There is deliberately no setter: the field is derived from the axis roles, so `set_axes()` says what the columns mean and `anispace`'s `map_to_*()` functions convert the coordinates.
 
 * An `axes` metadata field records which column carries which axis role, so coordinates may be carried by columns of any name (#109). `get_axes()` reads it, `set_axes()` changes it, and `as_aniframe()` and `set_variables_where()` accept the same mapping — `c(x = "u", y = "v")`. `coordinate_system` follows from it, and `set_unit_space()` and `y_height` resolve through it. The roles are a closed set: `x`, `y`, `z`, `rho`, `phi`, `theta`, and one that forms no coordinate system is rejected by name at declaration. Declaring spatial columns without roles keeps its old meaning, the column name being the role.

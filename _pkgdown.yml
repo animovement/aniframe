@@ -49,11 +49,17 @@ reference:
     contents:
       - get_metadata
       - set_metadata
+      - get_unit_time
       - set_unit_time
+      - get_unit_space
       - set_unit_space
+      - get_unit_angle
       - set_unit_angle
+      - get_sampling_rate
       - set_sampling_rate
+      - get_origin
       - set_origin
+      - get_y_height
       - set_y_height
       - list_default_metadata
 
