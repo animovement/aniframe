@@ -2,7 +2,17 @@
 
 ## Added
 
+* An aniframe can be indexed by a column that is not called `time` (#109). A `variables_index` metadata field names the single column each row is positioned by; `get_index()` reads it, `set_index()` changes it and re-orders the frame, and `as_aniframe()` and `aniframe()` take an `index` argument. A frame has exactly one index, and it is never a grouping variable.
+
+  `set_unit_time()`, `set_sampling_rate()` and `to_anievent()` act on the declared index rather than a column named `time`, and `validate_aniframe()` checks it is present and numeric.
+
+  An `anievent` has no index, since a bout is delimited by `start` and `stop`. Its `variables_index` is `NA` and `get_index()` errors on it.
+
 * Every exported function now has a runnable example (#106).
+
+## Changed
+
+* `variables_when` no longer names the column the frame is indexed by; read that from `variables_index`, via `get_index()` (#109). It holds only the temporal context, so a frame with none has `character()` where it had `c("time")`, as does `default_metadata()`. `aniprocess::filter_across()` and `filter_na_across()` take `variables_when[1]` as the time column and must swap to `aniframe::get_index()`. Code reading the grouping columns is unaffected, and no longer has anything to exclude: they are `c(variables_what, variables_when)`.
 
 ## Fixed
 
