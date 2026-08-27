@@ -18,6 +18,8 @@
 
 * `get_metadata(data, "variables_where")` carries axis-role names once the roles are known (#109). `get_variables_where()` and `get_variables()` still return bare column names; code comparing the raw field with `identical()` must allow for the names.
 
+* `set_unit_space()` resolves the length axes of the coordinate system through the frame's axis mapping, so a frame whose coordinates are named something else is converted rather than left in the old unit under a metadata claim of the new one (#109).
+
 * `validate_aniframe()` warns when identity, temporal context and the index together do not name one observation per row (#49). A repeat means some variable that tells the rows apart is undeclared, and every grouped operation folds them together.
 
 * `variables_when` no longer names the column the frame is indexed by; read that from `variables_index`, via `get_index()` (#109). It holds only the temporal context, so a frame with none has `character()` where it had `c("time")`, as does `default_metadata()`. `aniprocess::filter_across()` and `filter_na_across()` take `variables_when[1]` as the time column and must swap to `aniframe::get_index()`. Code reading the grouping columns is unaffected, and no longer has anything to exclude: they are `c(variables_what, variables_when)`.

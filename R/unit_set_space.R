@@ -70,10 +70,14 @@ set_unit_space <- function(data, to_unit, calibration_factor = 1) {
 
   # Calibrate the axes that carry a length. Picking them by name would
   # convert x/y/z and silently leave rho — a length — in the old unit while
-  # the metadata claimed the new one (#98).
-  space_cols <- intersect(
-    length_axes(get_metadata(data, "coordinate_system")),
-    get_variables_where(data)
+  # the metadata claimed the new one (#98). `length_axes()` names roles, so
+  # they are resolved to columns through the frame's own mapping (#109).
+  axes <- get_axes(data)
+  space_cols <- unname(
+    axes[intersect(
+      length_axes(get_metadata(data, "coordinate_system")),
+      names(axes)
+    )]
   )
 
   if (length(space_cols) == 0L) {

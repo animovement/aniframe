@@ -127,3 +127,35 @@ test_that("axis_role_sets() and infer_coordinate_system() agree", {
     expect_equal(infer_coordinate_system(axes), axis_role_sets()[[key]])
   }
 })
+
+
+# Length-unit conversion resolves roles to columns ----
+
+test_that("set_unit_space() converts the length axes of a renamed frame", {
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 1, 0)),
+    variables_where = c(x = "u", y = "v")
+  )
+
+  result <- expect_no_warning(
+    set_unit_space(af, "mm", calibration_factor = 10)
+  )
+
+  expect_equal(result$u, c(10, 20, 30))
+  expect_equal(result$v, c(0, 10, 0))
+  expect_equal(as.character(get_metadata(result, "unit_space")), "mm")
+})
+
+test_that("set_unit_space() converts rho but not phi on a renamed polar frame", {
+  af <- as_aniframe(
+    data.frame(time = 1:3, individual = "a", r = c(1, 2, 3), a = c(0, 1, 2)),
+    variables_where = c(rho = "r", phi = "a")
+  )
+
+  result <- expect_no_warning(
+    set_unit_space(af, "mm", calibration_factor = 10)
+  )
+
+  expect_equal(result$r, c(10, 20, 30))
+  expect_equal(result$a, c(0, 1, 2))
+})
