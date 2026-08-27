@@ -49,7 +49,7 @@ get_coordinate_system <- function(data) {
 #' is_cartesian(af)
 #' @export
 is_cartesian <- function(data) {
-  startsWith(get_coordinate_system(data), "cartesian")
+  get_coordinate_system(data) %in% cartesian_systems()
 }
 
 
@@ -64,7 +64,7 @@ is_cartesian <- function(data) {
 #' ensure_is_cartesian(af)
 #' @export
 ensure_is_cartesian <- function(data) {
-  ensure_coordinate_system(data, is_cartesian(data), "Cartesian")
+  ensure_coordinate_system(data, cartesian_systems(), "Cartesian")
 }
 
 
@@ -91,7 +91,7 @@ is_cartesian_1d <- function(data, stop = FALSE) {
 #' try(ensure_is_cartesian_1d(af))
 #' @export
 ensure_is_cartesian_1d <- function(data) {
-  ensure_coordinate_system(data, is_cartesian_1d(data), "1D Cartesian")
+  ensure_coordinate_system(data, "cartesian_1d", "1D Cartesian")
 }
 
 
@@ -116,7 +116,7 @@ is_cartesian_2d <- function(data) {
 #' ensure_is_cartesian_2d(af)
 #' @export
 ensure_is_cartesian_2d <- function(data) {
-  ensure_coordinate_system(data, is_cartesian_2d(data), "2D Cartesian")
+  ensure_coordinate_system(data, "cartesian_2d", "2D Cartesian")
 }
 
 
@@ -141,7 +141,7 @@ is_cartesian_3d <- function(data) {
 #' try(ensure_is_cartesian_3d(af))
 #' @export
 ensure_is_cartesian_3d <- function(data) {
-  ensure_coordinate_system(data, is_cartesian_3d(data), "3D Cartesian")
+  ensure_coordinate_system(data, "cartesian_3d", "3D Cartesian")
 }
 
 
@@ -167,7 +167,7 @@ is_polar <- function(data) {
 #' try(ensure_is_polar(af))
 #' @export
 ensure_is_polar <- function(data) {
-  ensure_coordinate_system(data, is_polar(data), "polar")
+  ensure_coordinate_system(data, "polar", "polar")
 }
 
 
@@ -193,7 +193,7 @@ is_cylindrical <- function(data) {
 #' try(ensure_is_cylindrical(af))
 #' @export
 ensure_is_cylindrical <- function(data) {
-  ensure_coordinate_system(data, is_cylindrical(data), "cylindrical")
+  ensure_coordinate_system(data, "cylindrical", "cylindrical")
 }
 
 
@@ -219,23 +219,37 @@ is_spherical <- function(data) {
 #' try(ensure_is_spherical(af))
 #' @export
 ensure_is_spherical <- function(data) {
-  ensure_coordinate_system(data, is_spherical(data), "spherical")
+  ensure_coordinate_system(data, "spherical", "spherical")
 }
 
 
-#' Abort when the frame is not in the coordinate system a caller needs
+#' The Cartesian coordinate systems
+#'
+#' @return Character vector of `coordinate_system` values.
+#' @keywords internal
+cartesian_systems <- function() {
+  c("cartesian_1d", "cartesian_2d", "cartesian_3d")
+}
+
+
+#' Ensure the frame is in one of the coordinate systems a caller needs
+#'
+#' The shared guard behind `ensure_is_polar()` and its siblings. It does
+#' the check itself rather than being handed the answer, so it keeps the
+#' rule the rest of the package follows: `is_*()` returns a logical,
+#' `ensure_*()` errors.
 #'
 #' Reports what the frame *is* in, and points at the two ways out: saying
 #' what the columns mean, or converting the coordinates.
 #'
 #' @param data An aniframe object.
-#' @param ok Result of the corresponding `is_*()` predicate.
+#' @param permitted Coordinate systems that satisfy the caller.
 #' @param wanted Human-readable name of the required coordinate system.
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_coordinate_system <- function(data, ok, wanted) {
-  if (ok) {
+ensure_coordinate_system <- function(data, permitted, wanted) {
+  if (get_coordinate_system(data) %in% permitted) {
     return(invisible(TRUE))
   }
 
