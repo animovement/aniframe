@@ -55,7 +55,7 @@ reference:
       - set_sampling_rate
       - set_origin
       - set_y_height
-      - default_metadata
+      - list_default_metadata
 
   - title: "Declaring variables"
     desc: >

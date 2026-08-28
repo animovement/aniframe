@@ -73,8 +73,8 @@ as_anievent.data.frame <- function(
   variables_when = NULL
 ) {
   if (is.null(variables_what)) {
-    variables_what <- recognised_variables_what()[
-      recognised_variables_what() %in% names(data)
+    variables_what <- list_recognised_variables_what()[
+      list_recognised_variables_what() %in% names(data)
     ]
   }
   if (is.null(variables_when)) {
@@ -119,7 +119,7 @@ as_anievent.data.frame <- function(
   # variable setters use, so construction and re-declaration can't drift
   # apart (#82).
   data <- new_anievent(data)
-  data <- set_metadata(data, metadata = neutral_spatial_metadata(metadata))
+  data <- set_metadata(data, metadata = neutralise_spatial_metadata(metadata))
   data <- restructure_anievent(data, variables_what, variables_when)
 
   data
@@ -216,7 +216,7 @@ standardise_anievent_cols <- function(data, variables_what, variables_when) {
 #' @return `metadata`, with the untouched spatial fields set to their
 #'   neutral values.
 #' @keywords internal
-neutral_spatial_metadata <- function(metadata) {
+neutralise_spatial_metadata <- function(metadata) {
   neutral <- list(
     unit_space = "none",
     unit_angle = "none",

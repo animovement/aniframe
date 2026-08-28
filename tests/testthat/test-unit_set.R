@@ -271,10 +271,10 @@ test_that("set_unit_time preserves spatial and other columns", {
   expect_equal(result$value, c(100, 200, 300))
 })
 
-# Test conversion_factors_space ----
+# Test list_conversion_factors_space ----
 
-test_that("conversion_factors_space returns correct matrix structure", {
-  result <- conversion_factors_space()
+test_that("list_conversion_factors_space returns correct matrix structure", {
+  result <- list_conversion_factors_space()
 
   expect_true(is.matrix(result))
   expect_equal(dim(result), c(3, 3))
@@ -282,14 +282,14 @@ test_that("conversion_factors_space returns correct matrix structure", {
   expect_equal(colnames(result), c("mm", "cm", "m"))
 })
 
-test_that("conversion_factors_space has correct diagonal values", {
-  result <- conversion_factors_space()
+test_that("list_conversion_factors_space has correct diagonal values", {
+  result <- list_conversion_factors_space()
 
   expect_equal(diag(result) |> as.vector(), c(1, 1, 1))
 })
 
-test_that("conversion_factors_space has correct conversion values", {
-  result <- conversion_factors_space()
+test_that("list_conversion_factors_space has correct conversion values", {
+  result <- list_conversion_factors_space()
 
   # mm to cm
   expect_equal(result["cm", "mm"], 1 / 10)
@@ -305,10 +305,10 @@ test_that("conversion_factors_space has correct conversion values", {
   expect_equal(result["cm", "m"], 100)
 })
 
-# Test conversion_factors_time ----
+# Test list_conversion_factors_time ----
 
-test_that("conversion_factors_time returns correct matrix structure", {
-  result <- conversion_factors_time()
+test_that("list_conversion_factors_time returns correct matrix structure", {
+  result <- list_conversion_factors_time()
 
   expect_true(is.matrix(result))
   expect_equal(dim(result), c(4, 4))
@@ -316,14 +316,14 @@ test_that("conversion_factors_time returns correct matrix structure", {
   expect_equal(colnames(result), c("ms", "s", "m", "h"))
 })
 
-test_that("conversion_factors_time has correct diagonal values", {
-  result <- conversion_factors_time()
+test_that("list_conversion_factors_time has correct diagonal values", {
+  result <- list_conversion_factors_time()
 
   expect_equal(diag(result) |> as.vector(), c(1, 1, 1, 1))
 })
 
-test_that("conversion_factors_time has correct conversion values", {
-  result <- conversion_factors_time()
+test_that("list_conversion_factors_time has correct conversion values", {
+  result <- list_conversion_factors_time()
 
   # ms to s
   expect_equal(result["s", "ms"], 1 / 1000)
@@ -453,10 +453,10 @@ test_that("set_unit_space warns rather than silently claiming a unit it did not 
   )
 })
 
-test_that("length_axes() splits each coordinate system into lengths and angles", {
-  expect_equal(length_axes("cartesian_2d"), c("x", "y", "z"))
-  expect_equal(length_axes("polar"), "rho")
-  expect_equal(length_axes("cylindrical"), c("rho", "z"))
-  expect_equal(length_axes("spherical"), "rho")
-  expect_equal(length_axes("unknown"), character())
+test_that("get_system_axes() splits each coordinate system into lengths and angles", {
+  expect_equal(get_system_axes("cartesian_2d"), c("x", "y", "z"))
+  expect_equal(get_system_axes("polar"), "rho")
+  expect_equal(get_system_axes("cylindrical"), c("rho", "z"))
+  expect_equal(get_system_axes("spherical"), "rho")
+  expect_equal(get_system_axes("unknown"), character())
 })

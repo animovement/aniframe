@@ -189,17 +189,17 @@ test_that("tbl_sum Time row uses integer precision when span >= 1 second", {
   expect_equal(unname(result["Time"]), "00:00:00 to 00:00:02")
 })
 
-test_that("seconds_per_time_unit returns expected multipliers", {
-  expect_equal(seconds_per_time_unit("s", NA), 1)
-  expect_equal(seconds_per_time_unit("ms", NA), 1e-3)
-  expect_equal(seconds_per_time_unit("us", NA), 1e-6)
-  expect_equal(seconds_per_time_unit("ns", NA), 1e-9)
-  expect_equal(seconds_per_time_unit("m", NA), 60)
-  expect_equal(seconds_per_time_unit("h", NA), 3600)
-  expect_equal(seconds_per_time_unit("frame", 30), 1 / 30)
-  expect_true(is.na(seconds_per_time_unit("frame", NA)))
-  expect_true(is.na(seconds_per_time_unit("frame", 0)))
-  expect_true(is.na(seconds_per_time_unit("unknown", 30)))
+test_that("compute_seconds_per_time_unit returns expected multipliers", {
+  expect_equal(compute_seconds_per_time_unit("s", NA), 1)
+  expect_equal(compute_seconds_per_time_unit("ms", NA), 1e-3)
+  expect_equal(compute_seconds_per_time_unit("us", NA), 1e-6)
+  expect_equal(compute_seconds_per_time_unit("ns", NA), 1e-9)
+  expect_equal(compute_seconds_per_time_unit("m", NA), 60)
+  expect_equal(compute_seconds_per_time_unit("h", NA), 3600)
+  expect_equal(compute_seconds_per_time_unit("frame", 30), 1 / 30)
+  expect_true(is.na(compute_seconds_per_time_unit("frame", NA)))
+  expect_true(is.na(compute_seconds_per_time_unit("frame", 0)))
+  expect_true(is.na(compute_seconds_per_time_unit("unknown", 30)))
 })
 
 test_that("format_seconds_as_hms handles negative seconds with a leading minus", {

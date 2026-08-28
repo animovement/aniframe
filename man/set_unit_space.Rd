@@ -10,7 +10,7 @@ set_unit_space(data, to_unit, calibration_factor = 1)
 \item{data}{An aniframe object containing spatial coordinate data.}
 
 \item{to_unit}{Character string specifying the target spatial unit. Must be
-one of the permitted units defined in \code{default_metadata()$unit_space}.}
+one of the permitted units defined in \code{list_default_metadata()$unit_space}.}
 
 \item{calibration_factor}{Numeric value for scaling spatial coordinates.
 Default is 1. When converting from standard units (mm, cm, m), this is

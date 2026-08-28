@@ -26,7 +26,7 @@ tbl_sum.aniframe <- function(x, ...) {
       new_header,
       stats::setNames(
         paste(unique(x[[col]]), collapse = ", "),
-        title_case_pluralised(col)
+        format_plural_title(col)
       )
     )
   }
@@ -40,7 +40,7 @@ tbl_sum.aniframe <- function(x, ...) {
       new_header,
       stats::setNames(
         paste(unique(x[[col]]), collapse = ", "),
-        title_case_pluralised(col)
+        format_plural_title(col)
       )
     )
   }
@@ -83,7 +83,7 @@ tbl_sum.aniframe <- function(x, ...) {
 #' `variables_when` (e.g. `"individual"` -> `"Individuals"`).
 #'
 #' @keywords internal
-title_case_pluralised <- function(x) {
+format_plural_title <- function(x) {
   paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)), "s")
 }
 
@@ -108,7 +108,7 @@ format_time_interval <- function(x, md) {
     return(NULL)
   }
 
-  spu <- seconds_per_time_unit(
+  spu <- compute_seconds_per_time_unit(
     as.character(md$unit_time),
     md$sampling_rate
   )
@@ -158,7 +158,7 @@ format_time_interval <- function(x, md) {
 #' a `sampling_rate`, or `"unknown"`).
 #'
 #' @keywords internal
-seconds_per_time_unit <- function(unit, sampling_rate) {
+compute_seconds_per_time_unit <- function(unit, sampling_rate) {
   switch(
     unit,
     "frame" = if (

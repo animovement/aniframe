@@ -249,10 +249,10 @@ test_that("an anievent declares no index", {
 
 # The validator knows about the index ----
 
-test_that("declared_variables() reports the index alongside the other roles", {
+test_that("get_declared_variables() reports the index alongside the other roles", {
   af <- aniframe(individual = "a", time = 1:3, x = c(1, 2, 3), y = c(0, 1, 0))
 
-  declared <- declared_variables(get_metadata(af))
+  declared <- get_declared_variables(get_metadata(af))
 
   expect_true("variables_index" %in% names(declared))
   expect_equal(declared$variables_index, "time")
@@ -281,7 +281,7 @@ test_that("validate_aniframe() catches an index column that is no longer numeric
 })
 
 test_that("the default metadata skeleton keeps the index out of variables_when", {
-  md <- default_metadata()
+  md <- list_default_metadata()
 
   expect_equal(md$variables_index, "time")
   expect_false(md$variables_index %in% md$variables_when)

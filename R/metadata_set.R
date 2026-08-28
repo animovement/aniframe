@@ -46,7 +46,7 @@ ensure_no_declaration_fields <- function(user_md) {
     return(invisible(TRUE))
   }
 
-  offending <- intersect(names(user_md), declaration_metadata_fields())
+  offending <- intersect(names(user_md), list_declaration_metadata_fields())
 
   if (length(offending) > 0) {
     setters <- vapply(
@@ -84,7 +84,7 @@ ensure_no_declaration_fields <- function(user_md) {
 #' @return A factor with the field's full set of levels.
 #' @keywords internal
 as_metadata_factor <- function(value, field) {
-  factor(as.character(value), levels = levels(default_metadata()[[field]]))
+  factor(as.character(value), levels = levels(list_default_metadata()[[field]]))
 }
 
 
@@ -121,7 +121,7 @@ as_metadata_factor <- function(value, field) {
 #'
 #' @return The object with updated metadata.
 #'
-#' @seealso [get_metadata()], [default_metadata()]
+#' @seealso [get_metadata()], [list_default_metadata()]
 #'
 #' @examples
 #' \dontrun{
@@ -181,7 +181,7 @@ set_metadata <- function(data, ..., metadata = NULL) {
   # ------------------------------------------------------------------
   if (length(user_md) > 0) {
     names_md <- names(user_md)
-    defaults <- default_metadata()
+    defaults <- list_default_metadata()
 
     for (n in names_md) {
       # Check if this field exists in defaults and should be a factor
@@ -227,7 +227,7 @@ set_metadata <- function(data, ..., metadata = NULL) {
   # Does the data have metadata or not?
   # ------------------------------------------------------------------
   if (!has_metadata(data)) {
-    new_md <- default_metadata()
+    new_md <- list_default_metadata()
   } else {
     new_md <- get_metadata(data)
   }

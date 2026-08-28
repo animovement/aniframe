@@ -8,7 +8,7 @@
 #'
 #' @param data An [aniframe()] or [anievent()] object.
 #' @param to_unit Character string specifying the target time unit. Must be
-#'   one of the permitted units defined in `default_metadata()$unit_time`
+#'   one of the permitted units defined in `list_default_metadata()$unit_time`
 #'   (typically `"ms"`, `"s"`, `"m"`, `"h"`).
 #' @param calibration_factor Numeric value for scaling time values.
 #'   Default is 1. When converting from standard time units (`ms`, `s`,
@@ -90,9 +90,9 @@ set_unit_time.anievent <- function(data, to_unit, calibration_factor = 1) {
 #'
 #' @keywords internal
 resolve_unit_time_calibration <- function(data, to_unit, calibration_factor) {
-  if (!to_unit %in% levels(default_metadata()[["unit_time"]])) {
+  if (!to_unit %in% levels(list_default_metadata()[["unit_time"]])) {
     cli::cli_abort(
-      "Time unit can only be {levels(default_metadata()[[\"unit_time\"]])}, not {to_unit}."
+      "Time unit can only be {levels(list_default_metadata()[[\"unit_time\"]])}, not {to_unit}."
     )
   }
 
@@ -167,12 +167,12 @@ set_sampling_rate_impl <- function(data, sampling_rate) {
 
 #' @keywords internal
 get_conversion_factor_time <- function(from_unit, to_unit) {
-  conv <- conversion_factors_time()
+  conv <- list_conversion_factors_time()
   conv[to_unit, from_unit]
 }
 
 #' @keywords internal
-conversion_factors_time <- function() {
+list_conversion_factors_time <- function() {
   m <- matrix(
     c(
       1,

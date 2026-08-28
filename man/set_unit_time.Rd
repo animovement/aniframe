@@ -16,7 +16,7 @@ set_unit_time(data, to_unit, calibration_factor = 1)
 \item{data}{An \code{\link[=aniframe]{aniframe()}} or \code{\link[=anievent]{anievent()}} object.}
 
 \item{to_unit}{Character string specifying the target time unit. Must be
-one of the permitted units defined in \code{default_metadata()$unit_time}
+one of the permitted units defined in \code{list_default_metadata()$unit_time}
 (typically \code{"ms"}, \code{"s"}, \code{"m"}, \code{"h"}).}
 
 \item{calibration_factor}{Numeric value for scaling time values.

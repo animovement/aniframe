@@ -24,7 +24,7 @@ tbl_sum.anievent <- function(x, ...) {
       new_header,
       stats::setNames(
         paste(unique(x[[col]]), collapse = ", "),
-        title_case_pluralised(col)
+        format_plural_title(col)
       )
     )
   }

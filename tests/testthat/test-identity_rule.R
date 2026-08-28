@@ -122,7 +122,7 @@ test_that("declared identity variables are all present in the metadata", {
 test_that("the recognised identity names are a single source of truth", {
   # Guards against the list drifting between the docs and the code.
   expect_equal(
-    recognised_variables_what(),
+    list_recognised_variables_what(),
     c("model", "individual", "subject", "track", "keypoint")
   )
 })

@@ -13,7 +13,7 @@
 #'
 #' @param data An aniframe object containing spatial coordinate data.
 #' @param to_unit Character string specifying the target spatial unit. Must be
-#'   one of the permitted units defined in `default_metadata()$unit_space`.
+#'   one of the permitted units defined in `list_default_metadata()$unit_space`.
 #' @param calibration_factor Numeric value for scaling spatial coordinates.
 #'   Default is 1. When converting from standard units (mm, cm, m), this is
 #'   ignored and the appropriate conversion factor is calculated automatically.
@@ -50,9 +50,9 @@ set_unit_space <- function(data, to_unit, calibration_factor = 1) {
   ensure_is_aniframe(data)
 
   # Check that to_unit is permitted
-  if (!to_unit %in% levels(default_metadata()[["unit_space"]])) {
+  if (!to_unit %in% levels(list_default_metadata()[["unit_space"]])) {
     cli::cli_abort(
-      "Space unit can only be {levels(default_metadata()[[\"unit_space\"]])}, not {to_unit}."
+      "Space unit can only be {levels(list_default_metadata()[[\"unit_space\"]])}, not {to_unit}."
     )
   }
 
@@ -70,12 +70,12 @@ set_unit_space <- function(data, to_unit, calibration_factor = 1) {
 
   # Calibrate the axes that carry a length. Picking them by name would
   # convert x/y/z and silently leave rho — a length — in the old unit while
-  # the metadata claimed the new one (#98). `length_axes()` names roles, so
+  # the metadata claimed the new one (#98). `get_system_axes()` names roles, so
   # they are resolved to columns through the frame's own mapping (#109).
   axes <- get_axes(data)
   space_cols <- unname(
     axes[intersect(
-      length_axes(get_metadata(data, "coordinate_system")),
+      get_system_axes(get_metadata(data, "coordinate_system")),
       names(axes)
     )]
   )
@@ -112,7 +112,7 @@ set_unit_space <- function(data, to_unit, calibration_factor = 1) {
 #' @return Character vector of axis names, empty when the coordinate system
 #'   is `"unknown"` or `"none"`.
 #' @keywords internal
-length_axes <- function(coordinate_system) {
+get_system_axes <- function(coordinate_system) {
   switch(
     as.character(coordinate_system),
     cartesian_1d = ,
@@ -127,12 +127,12 @@ length_axes <- function(coordinate_system) {
 
 #' @keywords internal
 get_conversion_factor_space <- function(from_unit, to_unit) {
-  conv <- conversion_factors_space()
+  conv <- list_conversion_factors_space()
   conv[to_unit, from_unit]
 }
 
 #' @keywords internal
-conversion_factors_space <- function() {
+list_conversion_factors_space <- function() {
   m <- matrix(
     c(1, 1 / 10, 1 / 1000, 10, 1, 1 / 100, 1000, 100, 1),
     nrow = 3,

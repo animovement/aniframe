@@ -50,7 +50,7 @@ as_aniframe <- function(
   variables_where = NULL,
   index = NULL
 ) {
-  defaults <- default_metadata()
+  defaults <- list_default_metadata()
 
   # An explicit index wins; otherwise keep what the frame already declares,
   # falling back to "time" for a frame — or a serialised object — with no
@@ -73,11 +73,11 @@ as_aniframe <- function(
   # columns have since been dropped fall through to detection, so a cast
   # still repairs a frame rather than erroring on it.
   variables_when <- variables_when %||%
-    declared_if_present(data, "variables_when")
+    get_declared_if_present(data, "variables_when")
   variables_what <- variables_what %||%
-    declared_if_present(data, "variables_what")
+    get_declared_if_present(data, "variables_what")
   variables_where <- variables_where %||%
-    declared_if_present(data, "variables_where")
+    get_declared_if_present(data, "variables_where")
 
   # Resolve variables_when: detect from data if not specified
   if (is.null(variables_when)) {
@@ -98,8 +98,8 @@ as_aniframe <- function(
     data <- add_default_identity(data)
 
     # Only include recognised what variables that are present in data
-    variables_what <- recognised_variables_what()[
-      recognised_variables_what() %in% names(data)
+    variables_what <- list_recognised_variables_what()[
+      list_recognised_variables_what() %in% names(data)
     ]
   }
 
@@ -179,7 +179,7 @@ as_aniframe <- function(
 #' @return `data`, with an identity column added if it had none.
 #' @keywords internal
 add_default_identity <- function(data) {
-  has_identity <- any(recognised_variables_what() %in% names(data))
+  has_identity <- any(list_recognised_variables_what() %in% names(data))
 
   if (!has_identity) {
     data$keypoint <- "centroid"
@@ -237,7 +237,7 @@ detect_variables_where <- function(data) {
 #'
 #' @return The declared column names, or `NULL` to detect instead.
 #' @keywords internal
-declared_if_present <- function(data, field) {
+get_declared_if_present <- function(data, field) {
   if (!has_metadata(data)) {
     return(NULL)
   }

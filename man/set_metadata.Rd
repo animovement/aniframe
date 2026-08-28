@@ -55,5 +55,5 @@ data <- set_metadata(data, metadata = md)
 
 }
 \seealso{
-\code{\link[=get_metadata]{get_metadata()}}, \code{\link[=default_metadata]{default_metadata()}}
+\code{\link[=get_metadata]{get_metadata()}}, \code{\link[=list_default_metadata]{list_default_metadata()}}
 }

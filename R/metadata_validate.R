@@ -6,8 +6,8 @@ ensure_valid_metadata <- function(metadata) {
 
 # Fields added after the initial schema. Their absence is tolerated on
 # read so previously serialised objects continue to validate; new objects
-# always have them via `default_metadata()`.
-optional_metadata_fields <- function() {
+# always have them via `list_default_metadata()`.
+list_optional_metadata_fields <- function() {
   c("spec_version", "variables_event", "variables_index", "axes")
 }
 
@@ -102,8 +102,8 @@ ensure_is_list <- function(x) {
 # ------------------------------------------------------------------
 has_all_metadata_fields <- function(metadata) {
   mandatory_metadata_fields <- setdiff(
-    names(default_metadata()),
-    optional_metadata_fields()
+    names(list_default_metadata()),
+    list_optional_metadata_fields()
   )
   all(mandatory_metadata_fields %in% names(metadata)) |>
     invisible()
@@ -126,7 +126,7 @@ has_valid_metadata_types <- function(metadata) {
   matches <- c()
   for (nm in supplied_names) {
     user_val <- metadata[[nm]]
-    default_val <- default_metadata()[[nm]]
+    default_val <- list_default_metadata()[[nm]]
 
     # Allow NA for any field (NA values can have any class)
     if (length(user_val) == 1 && is.na(user_val)) {

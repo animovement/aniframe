@@ -48,11 +48,11 @@ get_metadata(data)
 ```
 
 The fields and their defaults are defined in one place,
-`default_metadata()` — that's the canonical source of truth for what
+`list_default_metadata()` — that's the canonical source of truth for what
 an `aniframe`'s metadata looks like.
 
 ```{r}
-str(default_metadata(), max.level = 1)
+str(list_default_metadata(), max.level = 1)
 ```
 
 The fields fall into a few groups:

@@ -80,7 +80,7 @@ detect_event_scope <- function(
 encode_state_bouts <- function(data, col, time_col, group_cols) {
   vals <- normalise_event_values(data[[col]], col)
   if (length(vals) == 0 || all(is.na(vals))) {
-    return(empty_bouts(group_cols, col))
+    return(make_empty_bouts(group_cols, col))
   }
 
   if (length(group_cols) > 0) {
@@ -146,7 +146,7 @@ encode_point_bouts <- function(data, col, time_col, group_cols) {
   data <- data[keep, , drop = FALSE]
   vals <- vals[keep]
   if (length(vals) == 0) {
-    return(empty_bouts(group_cols, col))
+    return(make_empty_bouts(group_cols, col))
   }
 
   out <- dplyr::tibble(
@@ -168,7 +168,7 @@ encode_point_bouts <- function(data, col, time_col, group_cols) {
 
 
 #' @keywords internal
-empty_bouts <- function(group_cols, col) {
+make_empty_bouts <- function(group_cols, col) {
   out <- dplyr::tibble(
     channel = character(),
     label = character(),

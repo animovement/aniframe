@@ -60,7 +60,7 @@ restructure_frame <- function(
 #' @return `data` with the animovement classes removed.
 #' @keywords internal
 strip_animovement_class <- function(data) {
-  class(data) <- intersect(class(data), base_frame_classes())
+  class(data) <- intersect(class(data), list_base_frame_classes())
   data
 }
 
@@ -102,7 +102,7 @@ restructure_aniframe <- function(
   # a bad role is named here rather than degrading the frame to "unknown"
   # and failing in whichever spatial function the user reaches first (#109).
   axes <- normalise_axes(variables_where)
-  if (strict && axes_declared_by_role(variables_where)) {
+  if (strict && has_axis_roles(variables_where)) {
     ensure_valid_axis_roles(axes)
   }
   where_cols <- unname(axes)

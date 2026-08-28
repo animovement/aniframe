@@ -121,13 +121,19 @@ test_that("set_metadata preserves factors with correct levels", {
   # Provide factor directly
   result <- set_metadata(
     data,
-    unit_space = factor("mm", levels = levels(default_metadata()$unit_space))
+    unit_space = factor(
+      "mm",
+      levels = levels(list_default_metadata()$unit_space)
+    )
   )
 
   md <- get_metadata(result)
   expect_s3_class(md$unit_space, "factor")
   expect_equal(as.character(md$unit_space), "mm")
-  expect_equal(levels(md$unit_space), levels(default_metadata()$unit_space))
+  expect_equal(
+    levels(md$unit_space),
+    levels(list_default_metadata()$unit_space)
+  )
 })
 
 test_that("set_metadata errors when both ... and metadata are provided", {
@@ -147,7 +153,7 @@ test_that("set_metadata initializes default metadata if none exists", {
   result <- set_metadata(data, sampling_rate = 30)
 
   md <- get_metadata(result)
-  expect_true(all(names(default_metadata()) %in% names(md)))
+  expect_true(all(names(list_default_metadata()) %in% names(md)))
   expect_equal(md$sampling_rate, 30)
 })
 

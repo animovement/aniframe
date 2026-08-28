@@ -13,7 +13,7 @@
 #' @param data An aniframe object containing angular data.
 #' @param to_unit Character string specifying the target angular unit. Must
 #'   be one of `c("rad", "deg")` (the levels of
-#'   `default_metadata()$unit_angle`).
+#'   `list_default_metadata()$unit_angle`).
 #' @param cols Optional character vector of additional angular column names
 #'   to convert. The spatial angular columns `phi` and `theta` are detected
 #'   automatically and need not be listed; pass `cols` only for non-spatial
@@ -43,9 +43,9 @@
 set_unit_angle <- function(data, to_unit, cols = NULL) {
   ensure_is_aniframe(data)
 
-  if (!to_unit %in% levels(default_metadata()[["unit_angle"]])) {
+  if (!to_unit %in% levels(list_default_metadata()[["unit_angle"]])) {
     cli::cli_abort(
-      "Angular unit can only be {levels(default_metadata()[[\"unit_angle\"]])}, not {to_unit}."
+      "Angular unit can only be {levels(list_default_metadata()[[\"unit_angle\"]])}, not {to_unit}."
     )
   }
 

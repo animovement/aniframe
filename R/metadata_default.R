@@ -83,9 +83,9 @@
 #' @seealso [set_metadata()], [get_metadata()]
 #'
 #' @examples
-#' names(default_metadata())
+#' names(list_default_metadata())
 #' @export
-default_metadata <- function() {
+list_default_metadata <- function() {
   metadata <- list(
     source = as.character(NA),
     source_version = as.character(NA),

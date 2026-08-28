@@ -117,7 +117,7 @@ get_connections <- function(data, variable = NULL) {
 
   conn <- current[[variable]]
   if (is.null(conn)) {
-    return(empty_connection_df())
+    return(make_empty_connection_df())
   }
   conn
 }
@@ -170,7 +170,7 @@ add_connections <- function(data, from, to, variable = "keypoint") {
   current <- get_connections(data)
   existing <- current[[variable]]
   if (is.null(existing)) {
-    existing <- empty_connection_df()
+    existing <- make_empty_connection_df()
   }
   current[[variable]] <- dplyr::bind_rows(existing, pairs)
 
@@ -230,7 +230,7 @@ remove_connections <- function(data, from, to, variable = "keypoint") {
 # ------------------------------------------------------------------
 
 #' @keywords internal
-empty_connection_df <- function() {
+make_empty_connection_df <- function() {
   dplyr::tibble(from = character(), to = character())
 }
 

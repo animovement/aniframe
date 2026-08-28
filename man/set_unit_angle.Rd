@@ -11,7 +11,7 @@ set_unit_angle(data, to_unit, cols = NULL)
 
 \item{to_unit}{Character string specifying the target angular unit. Must
 be one of \code{c("rad", "deg")} (the levels of
-\code{default_metadata()$unit_angle}).}
+\code{list_default_metadata()$unit_angle}).}
 
 \item{cols}{Optional character vector of additional angular column names
 to convert. The spatial angular columns \code{phi} and \code{theta} are detected

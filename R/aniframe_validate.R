@@ -96,7 +96,7 @@ warn_duplicate_observations <- function(data) {
 #'
 #' @return Named list of character vectors, one per declaration field.
 #' @keywords internal
-declared_variables <- function(md) {
+get_declared_variables <- function(md) {
   drop_na <- function(x) {
     x <- x[!is.na(x)]
     as.character(x)
@@ -122,7 +122,7 @@ declared_variables <- function(md) {
 #' @return `TRUE`, invisibly.
 #' @keywords internal
 ensure_has_declared_variables <- function(data) {
-  declared <- declared_variables(get_metadata(data))
+  declared <- get_declared_variables(get_metadata(data))
 
   for (role in names(declared)) {
     cols <- declared[[role]]
@@ -176,7 +176,7 @@ ensure_has_index <- function(data) {
 #' @return Named list with the `declared` spatial variables and the
 #'   `missing` and `non_numeric` subsets of them.
 #' @keywords internal
-spatial_problems <- function(data) {
+find_spatial_problems <- function(data) {
   declared <- get_metadata(data, "variables_where")
   declared <- as.character(declared[!is.na(declared)])
 
@@ -218,7 +218,7 @@ spatial_problems <- function(data) {
 #'
 #' @export
 is_spatial <- function(data) {
-  problems <- spatial_problems(data)
+  problems <- find_spatial_problems(data)
   length(problems$declared) > 0 &&
     length(problems$missing) == 0 &&
     length(problems$non_numeric) == 0
@@ -245,7 +245,7 @@ is_spatial <- function(data) {
 #' @export
 ensure_is_spatial <- function(data) {
   ensure_is_aniframe(data)
-  problems <- spatial_problems(data)
+  problems <- find_spatial_problems(data)
 
   if (length(problems$declared) == 0) {
     cli::cli_abort(c(

@@ -20,7 +20,7 @@
 #'
 #' @return Character vector of metadata field names.
 #' @keywords internal
-declaration_metadata_fields <- function() {
+list_declaration_metadata_fields <- function() {
   c(
     "variables_index",
     "variables_what",
@@ -55,7 +55,7 @@ get_variables <- function(data, role) {
 #'
 #' @return Named character vector, or a bare one when no roles are known.
 #' @keywords internal
-declared_where <- function(data) {
+get_declared_where <- function(data) {
   axes <- if (is_aniframe(data)) resolve_axes(get_metadata(data))
   if (length(axes) > 0L) {
     return(axes)
@@ -83,7 +83,7 @@ declare_variables <- function(data, role, variables, strict = TRUE) {
   declared <- list(
     what = get_variables(data, "what"),
     when = get_variables(data, "when"),
-    where = declared_where(data)
+    where = get_declared_where(data)
   )
   # Only `where` carries names worth keeping; stripping them elsewhere
   # guards `union()`/`setdiff()` against surprises.
@@ -284,7 +284,7 @@ add_variables_where <- function(data, variables) {
   # `union()` drops names, so combining has to happen on the mapping: the
   # roles already declared, plus the new ones, with anything the addition
   # supersedes -- by role or by column -- taken out first.
-  current <- normalise_axes(declared_where(data))
+  current <- normalise_axes(get_declared_where(data))
   added <- normalise_axes(variables)
   superseded <- names(current) %in% names(added) | current %in% added
 
@@ -323,7 +323,7 @@ remove_variables_where <- function(data, variables) {
 
   # By column, like the other `remove_` verbs; the roles of whatever is
   # left travel with it, which `setdiff()` on bare columns would lose.
-  current <- normalise_axes(declared_where(data))
+  current <- normalise_axes(get_declared_where(data))
 
   # Leniently: the caller removed a column, they did not assert that what
   # is left is a coordinate system. Declaring an incoherent set outright
