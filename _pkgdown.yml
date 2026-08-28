@@ -59,10 +59,14 @@ reference:
       - set_sampling_rate
       - get_sampling_interval
       - is_sampling_regular
-      - get_origin
-      - set_origin
-      - get_y_height
-      - set_y_height
+      - get_axis_directions
+      - set_axis_directions
+      - get_axis_extents
+      - set_axis_extents
+      - get_angle_direction
+      - set_angle_direction
+      - get_handedness
+      - set_handedness
       - list_default_metadata
 
   - title: "Declaring variables"

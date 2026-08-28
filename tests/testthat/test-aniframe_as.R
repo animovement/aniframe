@@ -25,10 +25,8 @@
 #   - attaches metadata
 #   - stores variables in metadata
 #
-# y_height fallback:
-#   - falls back to max(y) when not supplied and y is present
-#   - does not overwrite a user-supplied y_height
-#   - leaves y_height NA when y is absent from data
+# Axis extents:
+#   - are not invented; a frame declares none until asked to
 #
 # Custom variables:
 #   - respects custom variables_what
@@ -128,7 +126,10 @@ test_that("as_aniframe detects polar data (rho, phi)", {
   )
 })
 
-test_that("as_aniframe falls back y_height to max(y) when not supplied", {
+test_that("as_aniframe does not invent axis extents", {
+  # `y_height` used to fall back to `max(y)`, which is the highest tracked
+  # point rather than the frame height. An extent that was guessed reflects
+  # around the wrong place, so a frame now has none until one is declared.
   df <- data.frame(
     individual = 1L,
     time = 1:4,
@@ -136,12 +137,10 @@ test_that("as_aniframe falls back y_height to max(y) when not supplied", {
     y = c(10, 50, 200, 1000)
   )
 
-  data <- as_aniframe(df)
-
-  expect_equal(get_metadata(data, "y_height"), 1000)
+  expect_length(get_axis_extents(as_aniframe(df)), 0)
 })
 
-test_that("as_aniframe does not overwrite a user-supplied y_height", {
+test_that("as_aniframe keeps axis extents the caller supplies", {
   df <- data.frame(
     individual = 1L,
     time = 1:3,
@@ -149,21 +148,9 @@ test_that("as_aniframe does not overwrite a user-supplied y_height", {
     y = c(10, 50, 200)
   )
 
-  data <- as_aniframe(df, metadata = list(y_height = 1080))
+  data <- as_aniframe(df, metadata = list(axis_extents = c(y = 1080)))
 
-  expect_equal(get_metadata(data, "y_height"), 1080)
-})
-
-test_that("as_aniframe leaves y_height NA when y is absent from data", {
-  df <- data.frame(
-    individual = 1L,
-    time = 1:3,
-    x = c(0, 1, 2)
-  )
-
-  data <- as_aniframe(df, variables_where = "x")
-
-  expect_true(is.na(get_metadata(data, "y_height")))
+  expect_equal(get_axis_extents(data), c(y = 1080))
 })
 
 test_that("as_aniframe errors when time column missing", {

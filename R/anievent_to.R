@@ -204,8 +204,8 @@ to_anievent.aniframe <- function(
         "variables_index",
         "axes",
         "spec_version",
-        "y_height",
-        "origin",
+        "axis_directions",
+        "axis_extents",
         "coordinate_system",
         "connections",
         # Spatial fields describe the host frame, not the bouts encoded

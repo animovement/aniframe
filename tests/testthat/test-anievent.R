@@ -482,9 +482,9 @@ test_that("is_anievent / ensure_is_anievent work as expected", {
 
 # ---- Spatial metadata is not applicable to an anievent (#73) ------------
 
-test_that("an anievent does not claim a coordinate origin it cannot have", {
-  # Reading a BORIS export used to produce an anievent announcing
-  # `origin: bottom_left`, inherited from the movement defaults.
+test_that("an anievent does not claim a spatial layout it cannot have", {
+  # Reading a BORIS export used to produce an anievent announcing a
+  # coordinate system, inherited from the movement defaults.
   ae <- anievent(
     individual = 1L,
     channel = "behaviour",
@@ -494,12 +494,14 @@ test_that("an anievent does not claim a coordinate origin it cannot have", {
   )
   md <- get_metadata(ae)
 
-  expect_equal(as.character(md$origin), "none")
   expect_equal(as.character(md$reference_frame), "none")
   expect_equal(as.character(md$unit_angle), "none")
   expect_equal(as.character(md$unit_space), "none")
   expect_equal(as.character(md$coordinate_system), "unknown")
-  expect_true(is.na(md$y_height))
+  expect_length(md$axis_directions, 0)
+  expect_length(md$axis_extents, 0)
+  expect_equal(get_angle_direction(ae), "unknown")
+  expect_equal(get_handedness(ae), "unknown")
 })
 
 test_that("metadata the caller supplies is left alone", {
@@ -516,13 +518,12 @@ test_that("metadata the caller supplies is left alone", {
   expect_equal(as.character(md$unit_space), "mm")
   expect_equal(as.character(md$reference_frame), "egocentric")
   # Fields the caller said nothing about are still neutral.
-  expect_equal(as.character(md$origin), "none")
+  expect_equal(as.character(md$coordinate_system), "unknown")
 })
 
 test_that("an aniframe keeps its movement defaults", {
   md <- get_metadata(aniframe(time = 1:3, x = 1:3, y = 1:3))
 
-  expect_equal(as.character(md$origin), "bottom_left")
   expect_equal(as.character(md$reference_frame), "allocentric")
   expect_equal(as.character(md$unit_space), "px")
   expect_equal(as.character(md$unit_angle), "rad")
@@ -541,7 +542,7 @@ test_that("to_anievent does not carry the host frame's spatial metadata over", {
 
   md <- get_metadata(to_anievent(af))
 
-  expect_equal(as.character(md$origin), "none")
+  expect_length(md$axis_directions, 0)
   expect_equal(as.character(md$unit_space), "none")
   expect_equal(as.character(md$reference_frame), "none")
   # Fields that do mean something for bouts are still inherited.
@@ -551,7 +552,7 @@ test_that("to_anievent does not carry the host frame's spatial metadata over", {
 
 test_that("the neutral values are permitted on an aniframe too", {
   af <- aniframe(time = 1:3, x = 1:3, y = 1:3)
-  af <- set_metadata(af, origin = "none", reference_frame = "none")
+  af <- set_metadata(af, reference_frame = "none", unit_space = "none")
 
-  expect_equal(as.character(get_metadata(af, "origin")), "none")
+  expect_equal(as.character(get_metadata(af, "reference_frame")), "none")
 })

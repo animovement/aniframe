@@ -137,22 +137,6 @@ as_aniframe <- function(
     variables_where
   )
 
-  # Fall back y_height to max of the y axis when not supplied and that
-  # axis is present. Never overwrite a value that's already set — only
-  # `set_y_height()` / `set_origin()` should mutate it post-construction.
-  # Found by role, so a frame whose y axis is called something else is
-  # handled too.
-  axes <- get_axes(data)
-  if ("y" %in% names(axes)) {
-    current_y_height <- get_metadata(data, "y_height")
-    if (length(current_y_height) == 0 || is.na(current_y_height)) {
-      max_y <- suppressWarnings(max(data[[axes[["y"]]]], na.rm = TRUE))
-      if (is.finite(max_y)) {
-        data <- set_metadata(data, y_height = max_y)
-      }
-    }
-  }
-
   data
 }
 

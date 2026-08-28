@@ -56,21 +56,31 @@ same columns without their roles, and is derived from this.
 \item \code{reference_frame}: Reference frame (factor, "allocentric").
 Permitted values: "allocentric", "egocentric", "none".
 \item \code{coordinate_system}: Coordinate system (factor, "cartesian_2d")
-\item \code{origin}: Location of the (0,0) coordinate relative to the recording
-frame (factor, "bottom_left"). Permitted values: "bottom_left",
-"top_left", "none".
+\item \code{axis_directions}: Which way each axis points, keyed by axis role
+(named character, empty). One of "right", "left", "up", "down",
+"back" or "forward", read from where the recording was made. Read it
+with \code{\link[=get_axis_directions]{get_axis_directions()}}, change it with \code{\link[=set_axis_directions]{set_axis_directions()}},
+which reflects an axis turned over. \code{\link[=get_angle_direction]{get_angle_direction()}} and
+\code{\link[=get_handedness]{get_handedness()}} follow from it.
+\item \code{axis_extents}: How far each axis runs, keyed by axis role (named
+numeric, empty) — the video frame height for \code{y}. Read it with
+\code{\link[=get_axis_extents]{get_axis_extents()}}, change it with \code{\link[=set_axis_extents]{set_axis_extents()}}. It is what
+an axis is reflected around.
+\item \code{handedness}: Whether the frame is right- or left-handed (factor,
+"unknown"). Three declared axis directions determine it and are read
+in preference; the field carries the convention on its own for a frame
+that states one without spelling the axes out. Read it with
+\code{\link[=get_handedness]{get_handedness()}}, change it with \code{\link[=set_handedness]{set_handedness()}}.
 }
 
 The spatial fields all have a way of saying "not applicable", because
 the metadata substrate is shared with \code{\link[=anievent]{anievent()}}, which has no
-spatial component at all: \code{unit_space}, \code{unit_angle}, \code{reference_frame}
-and \code{origin} take "none", \code{coordinate_system} takes "unknown", and
-\code{y_height} takes \code{NA}. An anievent is constructed with those values
-rather than inheriting movement defaults it cannot honour (#73).
+spatial component at all: \code{unit_space}, \code{unit_angle} and
+\code{reference_frame} take "none", \code{coordinate_system} takes "unknown", and
+\code{axes}, \code{axis_directions} and \code{axis_extents} are empty. An anievent is
+constructed with those values rather than inheriting movement defaults
+it cannot honour (#73).
 \itemize{
-\item \code{y_height}: Height of the recording frame in y-axis units (numeric, NA).
-Used by \code{\link[=set_origin]{set_origin()}} to reflect y coordinates when switching origin
-conventions.
 \item \code{connections}: Named list of connection tables, one per identity or
 temporal variable (typically \code{keypoint} for skeletons; could also be
 \code{individual} for social networks). Each entry is a 2-column tibble of

@@ -203,10 +203,10 @@ standardise_anievent_cols <- function(data, variables_what, variables_when) {
 #' Fill the spatial metadata fields with their "not applicable" values
 #'
 #' An anievent shares the metadata substrate with [aniframe()] but has no
-#' spatial component: a stream of behavioural events has no coordinate
-#' origin, no reference frame and no angular unit. Inheriting the movement
-#' defaults made it claim otherwise — a BORIS export read into an anievent
-#' announced `origin: bottom_left` (#73).
+#' spatial component: a stream of behavioural events has no axes, no
+#' reference frame and no angular unit. Inheriting the movement defaults
+#' made it claim otherwise — a BORIS export read into an anievent
+#' announced a coordinate system it had no coordinates for (#73).
 #'
 #' Values the caller supplied are left alone, so a reader that knows
 #' better can still say so.
@@ -222,18 +222,13 @@ neutralise_spatial_metadata <- function(metadata) {
     unit_angle = "none",
     reference_frame = "none",
     coordinate_system = "unknown",
-    y_height = as.numeric(NA)
+    axis_directions = stats::setNames(character(), character()),
+    axis_extents = stats::setNames(numeric(), character())
   )
 
   supplied <- names(metadata)
   for (field in setdiff(names(neutral), supplied)) {
     metadata[[field]] <- neutral[[field]]
-  }
-
-  # `origin` is the field that made the problem visible, and it is the one
-  # a reader is least likely to set, so it gets the same treatment.
-  if (!"origin" %in% supplied) {
-    metadata$origin <- "none"
   }
 
   metadata

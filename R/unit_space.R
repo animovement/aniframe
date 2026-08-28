@@ -96,6 +96,13 @@ set_unit_space <- function(data, to_unit, calibration_factor = 1) {
         .names = "{.col}" # keep the original column names
       )
     )
+
+  # An extent is a length, so it is in the unit being converted from.
+  extents <- get_axis_extents(data)
+  if (length(extents) > 0L) {
+    data <- set_metadata(data, axis_extents = extents * calibration_factor)
+  }
+
   set_metadata(data, unit_space = to_unit)
 }
 

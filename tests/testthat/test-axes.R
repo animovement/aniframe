@@ -50,12 +50,13 @@ test_that("a renamed polar frame is recognised as polar", {
   expect_equal(get_axes(af)[["rho"]], "r")
 })
 
-test_that("y_height is taken from the y axis, whatever the column is called", {
+test_that("an axis extent is keyed by role, whatever the column is called", {
   df <- data.frame(time = 1:3, individual = "a", u = c(1, 2, 3), v = c(0, 5, 0))
 
   af <- as_aniframe(df, variables_where = c(x = "u", y = "v"))
+  af <- set_axis_extents(af, c(y = 5))
 
-  expect_equal(get_metadata(af, "y_height"), 5)
+  expect_equal(get_axis_extents(af), c(y = 5))
 })
 
 test_that("an unrecognised role is rejected by name", {
@@ -425,34 +426,38 @@ test_that("set_axes() warns on shadowing too", {
 })
 
 
-# set_origin() resolves the vertical axis by role ----
+# Turning an axis over resolves it by role ----
 
-test_that("set_origin() reflects the y axis of a renamed frame", {
+test_that("set_axis_directions() reflects the y axis of a renamed frame", {
   # The flip reached for a literal `y` column, so a frame whose vertical
-  # axis is called something else got a `y_height` it could not use (#109).
+  # axis is called something else got an extent it could not use (#109).
   af <- as_aniframe(
     data.frame(individual = "a", time = 1:3, u = c(1, 2, 3), v = c(0, 5, 10)),
     variables_where = c(x = "u", y = "v")
   )
-  expect_equal(get_metadata(af, "y_height"), 10)
+  af <- set_axis_extents(af, c(y = 10))
+  af <- set_axis_directions(af, c(x = "right", y = "up"))
 
-  result <- set_origin(af, "top_left")
+  result <- set_axis_directions(af, c(y = "down"))
 
   expect_equal(result$v, c(10, 5, 0))
-  expect_equal(as.character(get_metadata(result, "origin")), "top_left")
+  expect_equal(get_axis_directions(result)[["y"]], "down")
   # The x axis is untouched.
   expect_equal(result$u, c(1, 2, 3))
 })
 
-test_that("set_origin() says so when there is no y axis to reflect", {
-  # A polar frame has an origin convention -- the sense of phi -- but not
-  # one this reflection can change.
+test_that("an angular frame refuses a flip rather than leaving its angles stale", {
+  # A polar frame has a sense of rotation, but not one a reflection of the
+  # vertical axis can change: every stored phi would have to be recomputed.
   pol <- as_aniframe(
     data.frame(individual = "a", time = 1:3, rho = c(1, 2, 3), phi = c(0, 1, 2))
-  ) |>
-    set_y_height(10)
+  )
+  pol <- set_axis_directions(pol, c(x = "right", y = "up"))
 
-  expect_error(set_origin(pol, "top_left"), "no .*y.* axis")
+  expect_error(
+    set_axis_directions(pol, c(y = "down")),
+    "recomputed"
+  )
 })
 
 

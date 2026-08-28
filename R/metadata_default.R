@@ -55,19 +55,29 @@
 #' * `reference_frame`: Reference frame (factor, "allocentric").
 #'   Permitted values: "allocentric", "egocentric", "none".
 #' * `coordinate_system`: Coordinate system (factor, "cartesian_2d")
-#' * `origin`: Location of the (0,0) coordinate relative to the recording
-#'   frame (factor, "bottom_left"). Permitted values: "bottom_left",
-#'   "top_left", "none".
+#' * `axis_directions`: Which way each axis points, keyed by axis role
+#'   (named character, empty). One of "right", "left", "up", "down",
+#'   "back" or "forward", read from where the recording was made. Read it
+#'   with [get_axis_directions()], change it with [set_axis_directions()],
+#'   which reflects an axis turned over. [get_angle_direction()] and
+#'   [get_handedness()] follow from it.
+#' * `axis_extents`: How far each axis runs, keyed by axis role (named
+#'   numeric, empty) — the video frame height for `y`. Read it with
+#'   [get_axis_extents()], change it with [set_axis_extents()]. It is what
+#'   an axis is reflected around.
+#' * `handedness`: Whether the frame is right- or left-handed (factor,
+#'   "unknown"). Three declared axis directions determine it and are read
+#'   in preference; the field carries the convention on its own for a frame
+#'   that states one without spelling the axes out. Read it with
+#'   [get_handedness()], change it with [set_handedness()].
 #'
 #' The spatial fields all have a way of saying "not applicable", because
 #' the metadata substrate is shared with [anievent()], which has no
-#' spatial component at all: `unit_space`, `unit_angle`, `reference_frame`
-#' and `origin` take "none", `coordinate_system` takes "unknown", and
-#' `y_height` takes `NA`. An anievent is constructed with those values
-#' rather than inheriting movement defaults it cannot honour (#73).
-#' * `y_height`: Height of the recording frame in y-axis units (numeric, NA).
-#'   Used by [set_origin()] to reflect y coordinates when switching origin
-#'   conventions.
+#' spatial component at all: `unit_space`, `unit_angle` and
+#' `reference_frame` take "none", `coordinate_system` takes "unknown", and
+#' `axes`, `axis_directions` and `axis_extents` are empty. An anievent is
+#' constructed with those values rather than inheriting movement defaults
+#' it cannot honour (#73).
 #' * `connections`: Named list of connection tables, one per identity or
 #'   temporal variable (typically `keypoint` for skeletons; could also be
 #'   `individual` for social networks). Each entry is a 2-column tibble of
@@ -164,15 +174,16 @@ list_default_metadata <- function() {
         "spherical"
       )
     ),
-    origin = factor(
-      "bottom_left",
+    axis_directions = stats::setNames(character(), character()),
+    axis_extents = stats::setNames(numeric(), character()),
+    handedness = factor(
+      "unknown",
       levels = c(
-        "bottom_left",
-        "top_left",
-        "none"
+        "right",
+        "left",
+        "unknown"
       )
     ),
-    y_height = as.numeric(NA),
     connections = list(),
     spec_version = list(
       aniframe = "2.0.0",

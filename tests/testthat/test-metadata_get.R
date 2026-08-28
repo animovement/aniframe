@@ -37,5 +37,8 @@ test_that("asking for something that is not a field is an error", {
   af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
 
   expect_error(get_metadata(af, "sampling_frequency"), "not a metadata field")
-  expect_error(get_metadata(af, c("origin", "y_hight")), "not a metadata field")
+  expect_error(
+    get_metadata(af, c("unit_space", "unit_spce")),
+    "not a metadata field"
+  )
 })

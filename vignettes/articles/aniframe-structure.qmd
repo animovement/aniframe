@@ -249,9 +249,9 @@ is_cartesian_2d(cart)
 
 ## Where to next?
 
-- [The metadata attribute](aniframe-metadata.html) — units, origin,
-  sampling rate, and the setters that keep them consistent with the
-  data.
+- [The metadata attribute](aniframe-metadata.html) — units, axis
+  directions, sampling rate, and the setters that keep them consistent
+  with the data.
 - [Connections](aniframe-connections.html) — recording skeleton edges
   or other relationships between values of an identity / temporal
   variable.
