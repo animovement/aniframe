@@ -13,7 +13,7 @@ An R package providing core data structures for movement data.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://animovement.dev/anicore/}
+  \item \url{https://animovement.dev/anicore/}
   \item \url{https://github.com/animovement/anicore/}
   \item Report bugs at \url{https://github.com/animovement/anicore/issues}
 }
