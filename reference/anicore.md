@@ -6,7 +6,7 @@ An R package providing core data structures for movement data.
 
 Useful links:
 
-- <http://animovement.dev/anicore/>
+- <https://animovement.dev/anicore/>
 
 - <https://github.com/animovement/anicore/>
 

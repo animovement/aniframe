@@ -1,6 +1,6 @@
 # Changelog
 
-## anicore (development version)
+## anicore 0.8.0 (2026-08-28)
 
 ### Changed
 
@@ -20,7 +20,7 @@
   [`as_aniframe()`](https://animovement.dev/anicore/reference/as_aniframe.md),
   [`is_aniframe()`](https://animovement.dev/anicore/reference/is_aniframe.md)
   and every other function. Only the package changes:
-  [`library(anicore)`](http://animovement.dev/anicore/), `anicore::`,
+  [`library(anicore)`](https://animovement.dev/anicore/), `anicore::`,
   and `install.packages("anicore")`.
 
   Done now rather than at 1.0.0 because a rename only ever gets more

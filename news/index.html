@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">anicore</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,18 +57,18 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="anicore-development-version">anicore (development version)<a class="anchor" aria-label="anchor" href="#anicore-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.8.0" id="anicore-080-2026-08-28">anicore 0.8.0 (2026-08-28)<a class="anchor" aria-label="anchor" href="#anicore-080-2026-08-28"></a></h2>
 <div class="section level3">
-<h3 id="changed-development-version">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version"></a></h3>
+<h3 id="changed-0-8-0">Changed<a class="anchor" aria-label="anchor" href="#changed-0-8-0"></a></h3>
 <ul><li>
 <p><strong>The package is renamed from <code>aniframe</code> to <code>anicore</code></strong> (<a href="https://github.com/animovement/anicore/issues/84" class="external-link">#84</a>). It is no longer one class’s home: it declares <code>aniframe</code>, <code>anievent</code> and — as <a href="https://github.com/animovement/anicore/issues/84" class="external-link">#84</a> settles — the types the domain packages build on, while producing almost none of them. A package named after one of its entries was going to keep getting stranger as angles (<a href="https://github.com/animovement/anicore/issues/83" class="external-link">#83</a>), orientation (<a href="https://github.com/animovement/anicore/issues/46" class="external-link">#46</a>) and masks (<a href="https://github.com/animovement/anicore/issues/11" class="external-link">#11</a>) arrive.</p>
-<p><strong>The <code>aniframe</code> class keeps its name</strong>, as do <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code>, <code><a href="../reference/is_aniframe.html">is_aniframe()</a></code> and every other function. Only the package changes: <code><a href="http://animovement.dev/anicore/" class="external-link">library(anicore)</a></code>, <code>anicore::</code>, and <code>install.packages("anicore")</code>.</p>
+<p><strong>The <code>aniframe</code> class keeps its name</strong>, as do <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code>, <code><a href="../reference/is_aniframe.html">is_aniframe()</a></code> and every other function. Only the package changes: <code><a href="https://animovement.dev/anicore/">library(anicore)</a></code>, <code>anicore::</code>, and <code>install.packages("anicore")</code>.</p>
 <p>Done now rather than at 1.0.0 because a rename only ever gets more expensive, and there are no external users yet to carry the cost.</p>
 </li>
 <li><p><code><a href="../reference/aniframe.html">?aniframe</a></code> is the constructor again. The package documentation had claimed the same help topic, so the two were merged into one page; it is now <code><a href="../reference/anicore.html">?anicore</a></code>.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="added-development-version">Added<a class="anchor" aria-label="anchor" href="#added-development-version"></a></h3>
+<h3 id="added-0-8-0">Added<a class="anchor" aria-label="anchor" href="#added-0-8-0"></a></h3>
 <ul><li>
 <p>An aniframe can be indexed by a column that is not called <code>time</code> (<a href="https://github.com/animovement/anicore/issues/109" class="external-link">#109</a>). A <code>variables_index</code> metadata field names the single column each row is positioned by; <code><a href="../reference/get_index.html">get_index()</a></code> reads it, <code><a href="../reference/set_index.html">set_index()</a></code> changes it and re-orders the frame, and <code><a href="../reference/as_aniframe.html">as_aniframe()</a></code> and <code><a href="../reference/aniframe.html">aniframe()</a></code> take an <code>index</code> argument. A frame has exactly one index, and it is never a grouping variable.</p>
 <p><code><a href="../reference/set_unit_time.html">set_unit_time()</a></code>, <code><a href="../reference/set_sampling_rate.html">set_sampling_rate()</a></code> and <code><a href="../reference/to_anievent.html">to_anievent()</a></code> act on the declared index rather than a column named <code>time</code>, and <code><a href="../reference/validate_aniframe.html">validate_aniframe()</a></code> checks it is present and numeric.</p>
@@ -91,7 +91,7 @@
 <li><p>Every exported function now has a runnable example (<a href="https://github.com/animovement/anicore/issues/106" class="external-link">#106</a>).</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="changed-development-version-1">Changed<a class="anchor" aria-label="anchor" href="#changed-development-version-1"></a></h3>
+<h3 id="changed-0-8-0-1">Changed<a class="anchor" aria-label="anchor" href="#changed-0-8-0-1"></a></h3>
 <ul><li><p>Declaring an axis role that is carried by one column while a different, undeclared column has that role’s name now warns (<a href="https://github.com/animovement/anicore/issues/119" class="external-link">#119</a>). The frame is legal and the mapping is right, but <code>.data$x</code> then returns a column that is not the x axis. Silence it with <code>options(aniframe.quiet = TRUE)</code>.</p></li>
 <li><p><code>coordinate_system</code> follows from which axis roles are declared rather than from column names (<a href="https://github.com/animovement/anicore/issues/109" class="external-link">#109</a>). A frame whose coordinates are named something else is now inferred correctly, where it degraded to <code>unknown</code> and was refused by every spatial function.</p></li>
 <li><p><code><a href="../reference/is_cartesian.html">is_cartesian()</a></code>, <code><a href="../reference/is_polar.html">is_polar()</a></code>, <code><a href="../reference/is_cylindrical.html">is_cylindrical()</a></code>, <code><a href="../reference/is_spherical.html">is_spherical()</a></code>, the <code>is_cartesian_*d()</code> variants and their <code>ensure_</code> guards read <code>coordinate_system</code> rather than matching column names, and require an aniframe (<a href="https://github.com/animovement/anicore/issues/107" class="external-link">#107</a>, <a href="https://github.com/animovement/anicore/issues/109" class="external-link">#109</a>). A frame whose coordinates are called something else now satisfies the predicate for the system it is in, and an undeclared column no longer decides the answer — a spherical frame that has dropped <code>rho</code> from its declaration is no longer reported as spherical. The guards say which system the frame is in and how to get to the one you need.</p></li>
@@ -104,7 +104,7 @@
 <li><p><code>spec_version</code> moves to <code>aniframe = "2.0.0"</code> and <code>anievent = "0.3.0"</code> (<a href="https://github.com/animovement/anicore/issues/109" class="external-link">#109</a>). Major for <code>aniframe</code>: <code>variables_when</code> no longer names the index, which breaks a consumer reading it from there. Minor for <code>anievent</code>, which gains <code>variables_index</code> as <code>NA</code>.</p></li>
 </ul></div>
 <div class="section level3">
-<h3 id="fixed-development-version">Fixed<a class="anchor" aria-label="anchor" href="#fixed-development-version"></a></h3>
+<h3 id="fixed-0-8-0">Fixed<a class="anchor" aria-label="anchor" href="#fixed-0-8-0"></a></h3>
 <ul><li><p><code><a href="../reference/set_unit_space.html">set_unit_space()</a></code> converts the axis extents along with the coordinates (<a href="https://github.com/animovement/anicore/issues/124" class="external-link">#124</a>). An extent is a length, so converting cm to m left the frame claiming a height in the unit it no longer used.</p></li>
 <li><p><code><a href="../reference/set_unit_space.html">set_unit_space()</a></code> converts the length axes of the frame’s coordinate system rather than whichever of <code>x</code>, <code>y</code> and <code>z</code> are present (<a href="https://github.com/animovement/anicore/issues/98" class="external-link">#98</a>). <code>rho</code> is a length on polar, cylindrical and spherical frames and was never converted, while the metadata was updated to claim the new unit. Angular axes remain <code><a href="../reference/set_unit_angle.html">set_unit_angle()</a></code>’s to convert. Where the coordinate system is <code>unknown</code> a length cannot be told from an angle, and the function now warns rather than silently converting nothing.</p></li>
 <li><p><code><a href="../reference/set_unit_space.html">set_unit_space()</a></code>, <code><a href="../reference/set_unit_angle.html">set_unit_angle()</a></code>, <code><a href="../reference/set_unit_time.html">set_unit_time()</a></code> and <code><a href="../reference/set_sampling_rate.html">set_sampling_rate()</a></code> no longer re-inject a <code>keypoint</code> column and overwrite <code>variables_what</code> with it (<a href="https://github.com/animovement/anicore/issues/96" class="external-link">#96</a>). A frame given a custom identity such as <code>id</code> was silently regrouped on a constant column.</p></li>
