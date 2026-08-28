@@ -18,6 +18,13 @@ rad_to_deg(x)
 
 Numeric vector of angles expressed in degrees.
 
+## See also
+
+Other angle utilities:
+[`deg_to_rad()`](https://animovement.dev/anicore/reference/deg_to_rad.md),
+[`unwrap_angle()`](https://animovement.dev/anicore/reference/unwrap_angle.md),
+[`wrap_angle()`](https://animovement.dev/anicore/reference/wrap_angle.md)
+
 ## Examples
 
 ``` r

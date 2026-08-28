@@ -1,24 +1,24 @@
-# aniframe
+# anicore
 
 *An R package providing core data structures for movement data*
 
-The primary aim of the *aniframe* package is to provide S3 classes and
+The primary aim of the *anicore* package is to provide S3 classes and
 methods for representing and manipulating movement data.
 
 ## Installation
 
-You can install the development version of *aniframe* with:
+You can install the development version of *anicore* with:
 
 ``` r
 
-install.packages('aniframe', repos = c('https://animovement.r-universe.dev', 'https://cloud.r-project.org'))
+install.packages('anicore', repos = c('https://animovement.r-universe.dev', 'https://cloud.r-project.org'))
 ```
 
 Once you have installed the package, you can load it with:
 
 ``` r
 
-library("aniframe")
+library("anicore")
 ```
 
 ## Citation
@@ -26,24 +26,24 @@ library("aniframe")
 If you enjoy the package, please make sure to cite it. If you find a
 bug, feel free to open an issue.
 
-To cite *aniframe* in publications use:
+To cite *anicore* in publications use:
 
 ``` r
 
-citation("aniframe")
-#> To cite aniframe in publications, please cite the animovement toolbox
-#> as a whole (the first entry below). If your work used only aniframe,
-#> you may cite the package directly instead (the second entry).
+citation("anicore")
+#> To cite anicore in publications, please cite the animovement toolbox as
+#> a whole (the first entry below). If your work used only anicore, you
+#> may cite the package directly instead (the second entry).
 #> 
 #>   Roald-Arbøl M (2026). "animovement: An R toolbox for analysing
 #>   movement across space and time." doi:10.5281/zenodo.13235277
 #>   <https://doi.org/10.5281/zenodo.13235277>.
 #>   <https://animovement.dev/animovement/>.
 #> 
-#>   Roald-Arbøl M (2026). "aniframe: An R package providing core data
+#>   Roald-Arbøl M (2026). "anicore: An R package providing core data
 #>   structures for movement data." doi:10.5281/zenodo.17344597
 #>   <https://doi.org/10.5281/zenodo.17344597>.
-#>   <https://animovement.dev/aniframe/>.
+#>   <https://animovement.dev/anicore/>.
 #> 
 #> To see these entries in BibTeX format, use 'print(<citation>,
 #> bibtex=TRUE)', 'toBibtex(.)', or set

@@ -1,6 +1,6 @@
 # Refuse the metadata fields that have their own setters
 
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
 writes the metadata list and nothing else, which is what makes it safe
 to use everywhere. The `variables_*` fields need more than that: they
 name columns, so the names have to be checked against the frame, and for

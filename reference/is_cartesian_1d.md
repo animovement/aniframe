@@ -1,7 +1,6 @@
-# Test for a 1‑D Cartesian coordinate system
+# Test for a 1-D Cartesian coordinate system
 
-The aniframe must contain **exactly one** of `x`, `y` or `z` and none of
-the polar columns (`rho`, `phi`, `theta`).
+Test for a 1-D Cartesian coordinate system
 
 ## Usage
 
@@ -22,8 +21,7 @@ is_cartesian_1d(data, stop = FALSE)
 
 ## Value
 
-`TRUE` if the aniframe has exactly one of `x`, `y` or `z` and none of
-`rho`, `phi` or `theta`, otherwise `FALSE`.
+A logical value.
 
 ## Examples
 

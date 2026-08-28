@@ -2,7 +2,7 @@
 
 ``` r
 
-library(aniframe)
+library(anicore)
 ```
 
 ## What `connections` are for
@@ -17,9 +17,9 @@ small family of functions for managing it. This article covers that
 field and those functions.
 
 For the rest of the metadata see [Metadata on an
-aniframe](https://animovement.dev/aniframe/articles/aniframe-metadata.md);
+aniframe](https://animovement.dev/anicore/articles/aniframe-metadata.md);
 for the data-column structure see [The aniframe data
-structure](https://animovement.dev/aniframe/articles/aniframe-structure.md).
+structure](https://animovement.dev/anicore/articles/aniframe-structure.md).
 
 ## Storage shape
 
@@ -130,7 +130,7 @@ nrow(get_connections(fish, "keypoint"))
 #> [1] 4
 ```
 
-[`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
+[`remove_connections()`](https://animovement.dev/anicore/reference/remove_connections.md)
 matches exactly on `from`/`to`. Direction matters: removing `(a, b)`
 won’t strip `(b, a)`. If you stored an edge in one direction but want it
 gone regardless of orientation, include both pairs in the call (or
@@ -161,15 +161,15 @@ get_connections(social)
 
 The `variable` argument must be a column listed in `variables_what` or
 `variables_when` —
-[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md)
+[`set_connections()`](https://animovement.dev/anicore/reference/set_connections.md)
 errors otherwise to catch typos.
 
 ## Catching typos
 
 When a `from`/`to` value isn’t found in the corresponding column,
-[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md)
+[`set_connections()`](https://animovement.dev/anicore/reference/set_connections.md)
 and
-[`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md)
+[`add_connections()`](https://animovement.dev/anicore/reference/add_connections.md)
 emit a warning but **keep the connection** — the value may legitimately
 be missing in this particular recording while being valid elsewhere.
 
@@ -183,17 +183,17 @@ example_aniframe(n_keypoints = 5) |>
 #> # Keypoints:   head, neck, shoulder_right, shoulder_left, abdomen
 #> # Sessions:    1
 #> # Trials:      1
-#>    individual keypoint session trial  time      x      y confidence
-#>         <int> <fct>      <int> <int> <int>  <dbl>  <dbl>      <dbl>
-#>  1          1 head           1     1     1  0.309 -0.695      0.848
-#>  2          1 head           1     1     2  0.928 -0.170      0.587
-#>  3          1 head           1     1     3  1.02   1.76       0.904
-#>  4          1 head           1     1     4  0.302  0.889      0.778
-#>  5          1 head           1     1     5 -1.57  -0.278      0.441
-#>  6          1 head           1     1     6 -0.592  1.53       0.800
-#>  7          1 head           1     1     7 -0.273 -0.208      0.804
-#>  8          1 head           1     1     8  0.209 -0.305      0.763
-#>  9          1 head           1     1     9 -1.28   1.28       0.695
-#> 10          1 head           1     1    10  2.02   0.936      0.424
+#>    individual keypoint session trial  time       x       y confidence
+#>         <int> <fct>      <int> <int> <int>   <dbl>   <dbl>      <dbl>
+#>  1          1 head           1     1     1  1.22    1.75        0.928
+#>  2          1 head           1     1     2 -0.583   1.07        0.891
+#>  3          1 head           1     1     3 -0.842  -0.779       0.308
+#>  4          1 head           1     1     4  0.890   0.0655      0.882
+#>  5          1 head           1     1     5  0.182  -0.565       0.312
+#>  6          1 head           1     1     6 -0.0809  1.06        0.965
+#>  7          1 head           1     1     7  1.13   -0.954       0.941
+#>  8          1 head           1     1     8 -1.31    1.04        0.705
+#>  9          1 head           1     1     9 -0.260  -0.274       0.941
+#> 10          1 head           1     1    10 -0.0738 -0.181       0.656
 #> # ℹ 740 more rows
 ```

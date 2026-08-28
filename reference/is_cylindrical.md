@@ -1,6 +1,6 @@
 # Test whether an aniframe uses a cylindrical coordinate system
 
-Requires `rho`, `phi` and `z`; forbids `theta`.
+Test whether an aniframe uses a cylindrical coordinate system
 
 ## Usage
 

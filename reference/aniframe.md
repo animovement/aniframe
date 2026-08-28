@@ -1,6 +1,4 @@
-# aniframe package
-
-An R package providing core data structures for movement data.
+# Create an aniframe data frame
 
 Creates a specialized data frame for movement data with columns defining
 entity identity, timepoints, and spatial position.
@@ -14,6 +12,7 @@ aniframe(
   variables_what = NULL,
   variables_when = NULL,
   variables_where = NULL,
+  index = NULL,
   .rows = NULL,
   .name_repair = c("check_unique", "unique", "universal", "minimal")
 )
@@ -45,13 +44,30 @@ aniframe(
 
   Character vector of temporal columns that together define a unique
   timepoint. If `NULL` (the default), detected from the data: whichever
-  of `observation`, `session`, `trial` and `time` are present. `time` is
-  always required.
+  of `observation`, `session`, `trial` and `time` are present, minus the
+  index. These are the temporal *context* — which session, which trial —
+  and, together with `variables_what`, they are what the frame is
+  grouped by. The index itself is declared separately and is never one
+  of them.
 
 - variables_where:
 
-  Character vector of spatial columns that together define position. If
-  `NULL` (the default), detected from the data.
+  The spatial columns that together define position. Either a plain
+  character vector of column names, in which case the name is taken to
+  be the axis role, or a vector named by axis role —
+  `c(x = "u", y = "v")` — which lets the columns be called anything. The
+  roles themselves are a closed set (`x`, `y`, `z`, `rho`, `phi`,
+  `theta`), so that transformations between coordinate systems stay well
+  defined; an unrecognised role is rejected by name. If `NULL` (the
+  default), detected from the data.
+
+- index:
+
+  Length-one character vector naming the column the frame is indexed by
+  — the position of each row within its temporal context. It is never a
+  grouping variable. If `NULL` (the default), the frame's existing
+  declaration is kept, or `"time"` for a frame that has none. The column
+  must exist and be numeric; it may be called anything.
 
 - .rows:
 
@@ -64,26 +80,6 @@ aniframe(
 ## Value
 
 An aniframe object (tibble with aniframe class).
-
-## See also
-
-Useful links:
-
-- <http://animovement.dev/aniframe/>
-
-- <https://github.com/animovement/aniframe/>
-
-- Report bugs at <https://github.com/animovement/aniframe/issues>
-
-## Author
-
-**Maintainer**: Mikkel Roald-Arbøl <animovement.84w1m@passmail.com>
-([ORCID](https://orcid.org/0000-0002-9998-0058))
-
-Authors:
-
-- Mikkel Roald-Arbøl <animovement.84w1m@passmail.com>
-  ([ORCID](https://orcid.org/0000-0002-9998-0058))
 
 ## Examples
 
@@ -117,7 +113,7 @@ aniframe(
   x = rnorm(30),
   y = rnorm(30),
   variables_what = "track",
-  variables_when = c("trial", "time")
+  variables_when = "trial"
 )
 #> # Tracks: 1, 2, 3
 #> # Trials: 1
@@ -134,4 +130,26 @@ aniframe(
 #>  9     1     1     9 -0.103   0.624
 #> 10     1     1    10  0.240   2.11 
 #> # ℹ 20 more rows
+
+# Indexed by a column that isn't called `time`
+aniframe(
+  individual = 1L,
+  frame = 1:10,
+  x = rnorm(10),
+  y = rnorm(10),
+  index = "frame"
+)
+#> # Individuals: 1
+#>    individual frame       x      y
+#>         <int> <int>   <dbl>  <dbl>
+#>  1          1     1 -0.234  -0.579
+#>  2          1     2  2.09   -0.145
+#>  3          1     3 -0.111   0.526
+#>  4          1     4 -1.39    1.73 
+#>  5          1     5 -1.14    1.45 
+#>  6          1     6  1.70    1.52 
+#>  7          1     7 -0.0801 -0.384
+#>  8          1     8 -0.437   1.83 
+#>  9          1     9 -0.119  -0.551
+#> 10          1    10  0.786  -0.866
 ```

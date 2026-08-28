@@ -1,6 +1,6 @@
-# Test for a 3‑D Cartesian coordinate system
+# Test for a 3-D Cartesian coordinate system
 
-Requires non‑missing columns `x`, `y` and `z`.
+Test for a 3-D Cartesian coordinate system
 
 ## Usage
 
@@ -16,8 +16,7 @@ is_cartesian_3d(data)
 
 ## Value
 
-`TRUE` if the aniframe has `x`, `y` and `z` and none of `rho`, `phi` or
-`theta`, otherwise `FALSE`.
+A logical value.
 
 ## Examples
 

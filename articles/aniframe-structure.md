@@ -2,7 +2,7 @@
 
 ``` r
 
-library(aniframe)
+library(anicore)
 ```
 
 ## What is an `aniframe`?
@@ -21,9 +21,9 @@ three semantic slots that answer **what** is moving, **when**, and
 
 This article covers the data shape. Companion articles cover the
 [metadata
-attribute](https://animovement.dev/aniframe/articles/aniframe-metadata.md)
+attribute](https://animovement.dev/anicore/articles/aniframe-metadata.md)
 and the [connections
-field](https://animovement.dev/aniframe/articles/aniframe-connections.md)
+field](https://animovement.dev/anicore/articles/aniframe-connections.md)
 for skeletons and networks.
 
 ## Anatomy at a glance
@@ -43,18 +43,18 @@ data
 #> # Keypoints:   head, neck, shoulder_right
 #> # Sessions:    1
 #> # Trials:      1
-#>    individual keypoint session trial  time      x       y confidence
-#>         <int> <fct>      <int> <int> <int>  <dbl>   <dbl>      <dbl>
-#>  1          1 head           1     1     1  0.978  0.578       0.756
-#>  2          1 head           1     1     2  0.167 -0.366       0.893
-#>  3          1 head           1     1     3 -0.181 -1.34        0.842
-#>  4          1 head           1     1     4  0.285  0.0714      0.805
-#>  5          1 head           1     1     5  1.36   2.06        0.957
-#>  6          1 neck           1     1     1  2.54   0.654       0.821
-#>  7          1 neck           1     1     2 -0.151  0.852       0.913
-#>  8          1 neck           1     1     3 -1.20   0.140       0.930
-#>  9          1 neck           1     1     4  0.852  1.70        0.717
-#> 10          1 neck           1     1     5 -1.50  -0.334       0.571
+#>    individual keypoint session trial  time      x      y confidence
+#>         <int> <fct>      <int> <int> <int>  <dbl>  <dbl>      <dbl>
+#>  1          1 head           1     1     1 -0.600 -1.27       0.478
+#>  2          1 head           1     1     2  0.587  0.281      0.669
+#>  3          1 head           1     1     3  1.28  -2.25       0.535
+#>  4          1 head           1     1     4  0.646  0.372      0.847
+#>  5          1 head           1     1     5 -0.319  1.50       0.805
+#>  6          1 neck           1     1     1 -0.404  1.50       0.857
+#>  7          1 neck           1     1     2 -1.33   0.899      0.925
+#>  8          1 neck           1     1     3 -0.590 -1.46       0.452
+#>  9          1 neck           1     1     4  0.412 -0.168      0.621
+#> 10          1 neck           1     1     5 -1.66   0.606      0.652
 #> # ℹ 20 more rows
 ```
 
@@ -78,8 +78,16 @@ Every row of an `aniframe` answers three questions:
 | Question | Slot | Resolves | Default columns |
 |----|----|----|----|
 | **What** is moving? | Identity (`variables_what`) | An entity | `individual`, `keypoint` |
-| **When**? | Temporal (`variables_when`) | A timepoint | `time` |
+| **When**? | Temporal context (`variables_when`) | A context — which session, which trial | `session`, `trial` |
 | **Where**? | Spatial (`variables_where`) | A position | `x`, `y` |
+
+“When” is really two questions, and only the first is answered here:
+which recording session this row belongs to, and where it sits inside
+it. The first is context the row shares with its neighbours, and it is
+what the frame groups by; the second is what tells the row apart from
+them, and it orders rather than groups. That second half is the
+**index**, declared on its own in `variables_index` and covered in [its
+own section](#the-index) below.
 
 The combination of all identity and temporal columns forms a composite
 key that uniquely identifies each row; the spatial columns are what that
@@ -91,10 +99,12 @@ downstream code can introspect:
 ``` r
 
 md <- get_metadata(data)
+md$variables_index
+#> [1] "time"
 md$variables_what
 #> [1] "individual" "keypoint"
 md$variables_when
-#> [1] "session" "trial"   "time"
+#> [1] "session" "trial"
 md$variables_where
 #> [1] "x" "y"
 ```
@@ -103,10 +113,10 @@ md$variables_where
 
 Most readers populate these from the source data, but you can override
 them when constructing manually. By default,
-[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
+[`as_aniframe()`](https://animovement.dev/anicore/reference/as_aniframe.md)
 recognises `c("model", "individual", "track", "keypoint")` as identity
-columns and `c("session", "trial", "time")` as temporal columns. Pass
-the slot arguments explicitly to use other names:
+columns and `c("session", "trial")` as temporal context. Pass the slot
+arguments explicitly to use other names:
 
 ``` r
 
@@ -121,30 +131,115 @@ df <- data.frame(
 custom <- as_aniframe(
   df,
   variables_what = "track",
-  variables_when = c("trial", "time")
+  variables_when = "trial"
 )
 custom
 #> # Tracks: A, B, C
 #> # Trials: 1, 2
-#>    track trial  time      x     y
-#>    <fct> <int> <int>  <dbl> <dbl>
-#>  1 A         1     1 0.0265 0.693
-#>  2 A         1     1 0.546  0.459
-#>  3 A         1     2 0.0932 0.471
-#>  4 A         1     2 0.623  0.747
-#>  5 B         1     1 0.375  0.217
-#>  6 B         1     2 0.131  0.314
-#>  7 B         2     1 0.263  0.923
-#>  8 B         2     2 0.911  0.868
-#>  9 C         2     1 0.719  0.889
-#> 10 C         2     1 0.280  0.260
-#> 11 C         2     2 0.105  0.570
-#> 12 C         2     2 0.555  0.532
+#>    track trial  time       x      y
+#>    <fct> <int> <int>   <dbl>  <dbl>
+#>  1 A         1     1 0.870   0.824 
+#>  2 A         1     1 0.434   0.891 
+#>  3 A         1     2 0.918   0.566 
+#>  4 A         1     2 0.764   0.578 
+#>  5 B         1     1 0.846   0.566 
+#>  6 B         1     2 0.00317 0.0196
+#>  7 B         2     1 0.392   0.477 
+#>  8 B         2     2 0.533   0.262 
+#>  9 C         2     1 0.667   0.718 
+#> 10 C         2     1 0.229   0.931 
+#> 11 C         2     2 0.288   0.142 
+#> 12 C         2     2 0.734   0.194
 ```
 
-`time` is the only temporal column with a special status: it must always
-be present, and downstream operations (smoothing, derivatives) assume
-it’s monotonically ordered within each entity.
+## The index
+
+One column has a status of its own: the **index**, which gives each row
+its position within its temporal context. Read it with
+[`get_index()`](https://animovement.dev/anicore/reference/get_index.md):
+
+``` r
+
+get_index(data)
+#> [1] "time"
+```
+
+It defaults to `time`, but nothing requires that name. A frame straight
+off a camera is often indexed by frame number, and can say so:
+
+``` r
+
+frames <- data.frame(
+  individual = 1L,
+  frame = 1:6,
+  x = runif(6),
+  y = runif(6)
+)
+
+af <- as_aniframe(frames, index = "frame")
+get_index(af)
+#> [1] "frame"
+```
+
+No column called `time` is involved, and none is required:
+
+``` r
+
+names(af)
+#> [1] "individual" "frame"      "x"          "y"
+```
+
+Two rules follow from what the index *is*, and both are worth knowing.
+
+**A frame has exactly one.** The index is where a row sits within its
+context, so a second one would have nothing left to mean. Declaring more
+than one is an error rather than a silent pick between them:
+
+``` r
+
+as_aniframe(frames, index = c("frame", "individual"))
+#> Error in `ensure_index_name()`:
+#> ! `index` must be a single column name.
+#> ℹ A frame has exactly one index.
+```
+
+**It is never a grouping variable.** The frame is grouped by identity
+plus temporal *context*; the index orders rows inside each of those
+groups. Grouping by it as well would put every row in a group of its
+own, so it stays out:
+
+``` r
+
+dplyr::group_vars(data)
+#> [1] "individual" "keypoint"   "session"    "trial"
+```
+
+[`set_index()`](https://animovement.dev/anicore/reference/set_index.md)
+changes it, re-ordering the frame to match. The column that was
+previously the index becomes an ordinary, undeclared one — it is not
+promoted to temporal context, for the reason just given:
+
+``` r
+
+timestamped <- data |>
+  dplyr::mutate(timestamp = time / 30) |>
+  set_index("timestamp")
+
+get_index(timestamped)
+#> [1] "timestamp"
+get_variables_when(timestamped)
+#> [1] "session" "trial"
+dplyr::group_vars(timestamped)
+#> [1] "individual" "keypoint"   "session"    "trial"
+```
+
+`time` is still there as a column; it is simply no longer declared as
+anything.
+
+Downstream operations (smoothing, derivatives) assume the index is
+monotonically ordered within each entity, which is how
+[`as_aniframe()`](https://animovement.dev/anicore/reference/as_aniframe.md)
+arranges the frame.
 
 ## Coordinate systems
 
@@ -217,9 +312,9 @@ is_cartesian_2d(cart)
 ## Where to next?
 
 - [The metadata
-  attribute](https://animovement.dev/aniframe/articles/aniframe-metadata.md)
-  — units, origin, sampling rate, and the setters that keep them
-  consistent with the data.
-- [Connections](https://animovement.dev/aniframe/articles/aniframe-connections.md)
+  attribute](https://animovement.dev/anicore/articles/aniframe-metadata.md)
+  — units, axis directions, sampling rate, and the setters that keep
+  them consistent with the data.
+- [Connections](https://animovement.dev/anicore/articles/aniframe-connections.md)
   — recording skeleton edges or other relationships between values of an
   identity / temporal variable.

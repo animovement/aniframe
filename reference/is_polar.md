@@ -1,6 +1,6 @@
 # Test whether an aniframe uses a polar coordinate system
 
-Requires columns `rho` and `phi` and forbids `theta` or `z`.
+Test whether an aniframe uses a polar coordinate system
 
 ## Usage
 

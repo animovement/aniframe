@@ -10,7 +10,8 @@ as_aniframe(
   metadata = list(),
   variables_what = NULL,
   variables_when = NULL,
-  variables_where = NULL
+  variables_where = NULL,
+  index = NULL
 )
 ```
 
@@ -40,13 +41,30 @@ as_aniframe(
 
   Character vector of temporal columns that together define a unique
   timepoint. If `NULL` (the default), detected from the data: whichever
-  of `observation`, `session`, `trial` and `time` are present. `time` is
-  always required.
+  of `observation`, `session`, `trial` and `time` are present, minus the
+  index. These are the temporal *context* — which session, which trial —
+  and, together with `variables_what`, they are what the frame is
+  grouped by. The index itself is declared separately and is never one
+  of them.
 
 - variables_where:
 
-  Character vector of spatial columns that together define position. If
-  `NULL` (the default), detected from the data.
+  The spatial columns that together define position. Either a plain
+  character vector of column names, in which case the name is taken to
+  be the axis role, or a vector named by axis role —
+  `c(x = "u", y = "v")` — which lets the columns be called anything. The
+  roles themselves are a closed set (`x`, `y`, `z`, `rho`, `phi`,
+  `theta`), so that transformations between coordinate systems stay well
+  defined; an unrecognised role is rejected by name. If `NULL` (the
+  default), detected from the data.
+
+- index:
+
+  Length-one character vector naming the column the frame is indexed by
+  — the position of each row within its temporal context. It is never a
+  grouping variable. If `NULL` (the default), the frame's existing
+  declaration is kept, or `"time"` for a frame that has none. The column
+  must exist and be numeric; it may be called anything.
 
 ## Value
 

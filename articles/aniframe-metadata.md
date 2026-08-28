@@ -2,7 +2,7 @@
 
 ``` r
 
-library(aniframe)
+library(anicore)
 ```
 
 ## Why an attribute, not columns?
@@ -11,7 +11,7 @@ Every `aniframe` carries a metadata list as an R attribute alongside the
 data columns. The metadata records the things that are true of the
 recording as a whole rather than of any single observation: the source
 software, the sampling rate, what units the spatial coordinates are in,
-where the coordinate origin sits, and so on.
+which way its axes point, and so on.
 
 Keeping this information attached to the object — rather than living in
 a separate file or being passed around as extra arguments — is what lets
@@ -21,9 +21,9 @@ tool can read it back without a hand-off.
 
 This article covers the metadata attribute and the functions that read
 and update it. For the data-column structure see [The aniframe data
-structure](https://animovement.dev/aniframe/articles/aniframe-structure.md);
+structure](https://animovement.dev/anicore/articles/aniframe-structure.md);
 for the `connections` field specifically see
-[Connections](https://animovement.dev/aniframe/articles/aniframe-connections.md).
+[Connections](https://animovement.dev/anicore/articles/aniframe-connections.md).
 
 ## The metadata attribute
 
@@ -38,11 +38,14 @@ get_metadata(data)
 #> source_version    (character) : <NA>
 #> filename          (character) : <NA>
 #> sampling_rate     (numeric)   : <NA>
+#> sampling_interval (numeric)   : 1
 #> start_datetime    (POSIXct)   : <NA>
+#> variables_index   (character) : "time"
 #> variables_what    (character) : "individual, keypoint"
-#> variables_when    (character) : "session, trial, time"
+#> variables_when    (character) : "session, trial"
 #> variables_where   (character) : "x, y"
 #> variables_event   (list)      : "character(0), character(0)"
+#> axes              (character) : "x, y"
 #> unit_space        (factor)    : "px"
 #>                                 [levels: px, none, nm, um, mm, cm, m, km]
 #> unit_angle        (factor)    : "rad"
@@ -53,38 +56,46 @@ get_metadata(data)
 #>                                 [levels: allocentric, egocentric, none]
 #> coordinate_system (factor)    : "cartesian_2d"
 #>                                 [levels: unknown, cartesian_1d, cartesian_2d, cartesian_3d, polar, cylindrical, spherical]
-#> origin            (factor)    : "bottom_left"
-#>                                 [levels: bottom_left, top_left, none]
-#> y_height          (numeric)   : 4.033023
+#> axis_directions   (character) : 
+#> axis_extents      (numeric)   : 
+#> handedness        (factor)    : "unknown"
+#>                                 [levels: right, left, unknown]
 #> connections       (list)      : 
-#> spec_version      (list)      : "1.1.0, 0.2.0"
+#> spec_version      (list)      : "2.0.0, 0.3.0"
 ```
 
 The fields and their defaults are defined in one place,
-[`default_metadata()`](https://animovement.dev/aniframe/reference/default_metadata.md)
+[`list_default_metadata()`](https://animovement.dev/anicore/reference/list_default_metadata.md)
 — that’s the canonical source of truth for what an `aniframe`’s metadata
 looks like.
 
 ``` r
 
-str(default_metadata(), max.level = 1)
-#> List of 18
+str(list_default_metadata(), max.level = 1)
+#> List of 22
 #>  $ source           : chr NA
 #>  $ source_version   : chr NA
 #>  $ filename         : chr NA
 #>  $ sampling_rate    : num NA
+#>  $ sampling_interval: num NA
 #>  $ start_datetime   : POSIXct[1:1], format: NA
+#>  $ variables_index  : chr "time"
 #>  $ variables_what   : chr [1:2] "individual" "keypoint"
-#>  $ variables_when   : chr "time"
+#>  $ variables_when   : chr(0) 
 #>  $ variables_where  : chr [1:2] "x" "y"
 #>  $ variables_event  :List of 2
+#>  $ axes             : Named chr [1:2] "x" "y"
+#>   ..- attr(*, "names")= chr [1:2] "x" "y"
 #>  $ unit_space       : Factor w/ 8 levels "px","none","nm",..: 1
 #>  $ unit_angle       : Factor w/ 3 levels "rad","deg","none": 1
 #>  $ unit_time        : Factor w/ 8 levels "unknown","frame",..: 2
 #>  $ reference_frame  : Factor w/ 3 levels "allocentric",..: 1
 #>  $ coordinate_system: Factor w/ 7 levels "unknown","cartesian_1d",..: 3
-#>  $ origin           : Factor w/ 3 levels "bottom_left",..: 1
-#>  $ y_height         : num NA
+#>  $ axis_directions  : Named chr(0) 
+#>   ..- attr(*, "names")= chr(0) 
+#>  $ axis_extents     : Named num(0) 
+#>   ..- attr(*, "names")= chr(0) 
+#>  $ handedness       : Factor w/ 3 levels "right","left",..: 3
 #>  $ connections      : list()
 #>  $ spec_version     :List of 2
 #>  - attr(*, "class")= chr "aniframe_metadata"
@@ -97,8 +108,8 @@ The fields fall into a few groups:
 | **Provenance** | `source`, `source_version`, `filename`, `start_datetime` |
 | **Sampling** | `sampling_rate` |
 | **Units** | `unit_space`, `unit_time`, `unit_angle` |
-| **Frame of reference** | `reference_frame`, `coordinate_system`, `origin`, `y_height` |
-| **Slot vocabulary** | `variables_what`, `variables_when`, `variables_where` |
+| **Frame of reference** | `reference_frame`, `coordinate_system`, `axes`, `axis_directions`, `axis_extents`, `handedness` |
+| **Slot vocabulary** | `variables_index`, `variables_what`, `variables_when`, `variables_where` |
 | **Relationships** | `connections` |
 
 `filename` accepts a character vector — readers like
@@ -106,9 +117,9 @@ The fields fall into a few groups:
 
 ## Reading and writing metadata
 
-[`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md)
+[`get_metadata()`](https://animovement.dev/anicore/reference/get_metadata.md)
 and
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
 are the workhorses.
 
 ``` r
@@ -123,7 +134,7 @@ get_metadata(data, "source")
 #> [1] "deeplabcut"
 ```
 
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
 validates the input — factor fields are checked against their permitted
 levels, and unknown fields are rejected.
 
@@ -132,29 +143,37 @@ related fields), prefer the dedicated setters listed below.
 
 | Setter | Touches |
 |----|----|
-| [`set_unit_space()`](https://animovement.dev/aniframe/reference/set_unit_space.md) | converts `x`/`y`/`z` between length units |
-| [`set_unit_time()`](https://animovement.dev/aniframe/reference/set_unit_time.md) | converts `time` between time units |
-| [`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md) | converts `phi`/`theta` (auto) and any extra `cols` you supply |
-| [`set_sampling_rate()`](https://animovement.dev/aniframe/reference/set_sampling_rate.md) | flips `unit_time` from frames to seconds and rescales `time` |
-| [`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md) | flips the y-axis around `y_height` when changing convention |
-| [`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md) | sets the recorded frame height used by [`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md) |
+| [`set_unit_space()`](https://animovement.dev/anicore/reference/set_unit_space.md) | converts `x`/`y`/`z` between length units |
+| [`set_unit_time()`](https://animovement.dev/anicore/reference/set_unit_time.md) | converts the index column between time units |
+| [`set_unit_angle()`](https://animovement.dev/anicore/reference/set_unit_angle.md) | converts `phi`/`theta` (auto) and any extra `cols` you supply |
+| [`set_sampling_rate()`](https://animovement.dev/anicore/reference/set_sampling_rate.md) | flips `unit_time` from frames to seconds and rescales the index |
+| [`set_index()`](https://animovement.dev/anicore/reference/set_index.md) | changes which column the frame is indexed by, and re-orders it |
+| [`set_axes()`](https://animovement.dev/anicore/reference/set_axes.md) | declares which column carries which axis role |
+| [`set_axis_directions()`](https://animovement.dev/anicore/reference/set_axis_directions.md) | says which way each axis points, reflecting one turned over |
+| [`set_axis_extents()`](https://animovement.dev/anicore/reference/set_axis_extents.md) | says how far each axis runs, which a reflection turns around |
+| [`set_handedness()`](https://animovement.dev/anicore/reference/set_handedness.md) | says whether the frame is right- or left-handed |
+
+The temporal setters follow the frame’s own declaration rather than a
+column called `time` — see [the
+index](https://animovement.dev/anicore/articles/aniframe-structure.html#the-index).
 
 ## Declaring the slot vocabulary
 
-`variables_what`, `variables_when`, `variables_where` and
-`variables_event` are a special case: they name columns rather than
-describing values, so a name that matches nothing is a promise the frame
-can’t keep. The first three go further — they are not a description of
-the frame, they *are* its structure.
-[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
+`variables_index`, `variables_what`, `variables_when`,
+`variables_where`, `variables_event` and `axes` are a special case: they
+name columns rather than describing values, so a name that matches
+nothing is a promise the frame can’t keep. All but `variables_event` go
+further — they are not a description of the frame, they *are* its
+structure.
+[`as_aniframe()`](https://animovement.dev/anicore/reference/as_aniframe.md)
 uses them to coerce column types, order columns and rows, group the
 frame, and derive `coordinate_system`. Writing them without redoing that
 work would leave the frame and its own metadata disagreeing — the print
 header would update while the grouping still reflected the old
 declaration.
 
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
-therefore refuses all four, and points you at the setters that do the
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
+therefore refuses all six, and points you at the setters that do the
 whole job:
 
 ``` r
@@ -171,10 +190,15 @@ data |> set_metadata(variables_what = "id")
 #>   `set_metadata(data, metadata = get_metadata(x))`.
 ```
 
-Each role has the same four verbs as `connections`: `get_variables_*()`,
-`set_variables_*()`, `add_variables_*()` and `remove_variables_*()`. The
-column has to exist before it can be declared, so the order is always
-create-then-declare:
+The three structural roles have the same four verbs as `connections`:
+`get_variables_*()`, `set_variables_*()`, `add_variables_*()` and
+`remove_variables_*()`. `variables_index` has only two —
+[`get_index()`](https://animovement.dev/anicore/reference/get_index.md)
+and
+[`set_index()`](https://animovement.dev/anicore/reference/set_index.md)
+— because a frame has exactly one index, leaving nothing for `add_` and
+`remove_` to do. The column has to exist before it can be declared, so
+the order is always create-then-declare:
 
 ``` r
 
@@ -208,7 +232,7 @@ data |>
 the frame’s shape: it declares which columns carry per-frame event
 labels, split into interval-valued `state` columns and instantaneous
 `point` columns.
-[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md)
 reads it to know what to encode.
 
 ``` r
@@ -224,24 +248,24 @@ data |>
 #> character(0)
 ```
 
-## Coordinate origin
+## Which way the axes point
 
 For 2D image-derived data there’s an annoying convention split: most
-image / video tooling uses the **top-left** corner as `(0, 0)` (y
-increases downward), while plotting and most maths uses the
-**bottom-left** corner (y increases upward). `aniframe` records which
-one your data uses in the `origin` field, with permitted values
-`c("bottom_left", "top_left")`.
+image and video tooling counts y **downward** from the top of the frame,
+while plotting and most maths counts it **upward**. What differs is not
+where `(0, 0)` sits — it is a corner either way — but the direction y
+increases in, so that is what `aniframe` records.
 
-[`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md)
-does the actual flip when you change convention. It needs the frame
-height to compute `y_new = y_height - y_old`, so `y_height` must be set
-first. Readers populate it automatically; for manually-constructed
-`aniframe` objects,
-[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
-falls back to `max(y)`, and
-[`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md)
-lets you override that with the true value.
+`axis_directions` maps each axis role to one of six words, in three
+opposed pairs, read from where the recording was made: `right`/`left`
+across the view, `up`/`down` within it, and `back`/`forward` toward and
+away from the viewer.
+
+Turning an axis to its opposite reflects that column, so the data ends
+up expressed the way you just declared. An axis runs from zero to its
+`axis_extents` value, so the reflection is `extent - old` — and an axis
+with no declared extent is centred on its origin instead, so turning it
+over negates it.
 
 ``` r
 
@@ -250,13 +274,59 @@ img <- aniframe(
   x = c(0, 10, 20, 30),
   y = c(50, 100, 150, 200)
 ) |>
-  set_y_height(1080)
+  set_axis_extents(c(y = 1080)) |>
+  set_axis_directions(c(x = "right", y = "down"))
 
 img$y
 #> [1]  50 100 150 200
-img <- set_origin(img, "top_left")
+img <- set_axis_directions(img, c(y = "up"))
 img$y # reflected: 1080 - original y
 #> [1] 1030  980  930  880
+```
+
+### What follows from the directions
+
+Two things are read off them rather than recorded separately, so they
+cannot go on claiming a convention the axes no longer have.
+
+[`get_angle_direction()`](https://animovement.dev/anicore/reference/get_angle_direction.md)
+says which way angles run. `atan2(y, x)` counts counter-clockwise, so
+the same physical heading comes out mirrored between a y-down and a y-up
+frame — which is exactly the comparison that goes wrong silently without
+this.
+
+[`get_handedness()`](https://animovement.dev/anicore/reference/get_handedness.md)
+needs three axes. Two directions leave it open, so a frame with only `x`
+and `y` has none until it says which side it was observed from — and
+that is not a detail. A rodent filmed from above and the same rodent
+filmed from below through a glass floor give images whose `x` and `y`
+are declared identically, but whose rotations run opposite ways. The
+depth axis is the only thing that tells them apart.
+
+``` r
+
+above <- set_axis_directions(img, c(z = "back"))
+below <- set_axis_directions(img, c(z = "forward"))
+
+c(above = get_angle_direction(above), below = get_angle_direction(below))
+#>               above               below 
+#> "counter_clockwise"         "clockwise"
+c(above = get_handedness(above), below = get_handedness(below))
+#>   above   below 
+#> "right"  "left"
+```
+
+Since `det[x y z]` is `(x × y) · z`, a right-handed frame counts
+counter-clockwise about its own depth axis — always. The two answers are
+one fact seen twice.
+
+A frame can also state the convention without spelling the axes out,
+which is how most 3D recordings are described:
+
+``` r
+
+set_handedness(img) |> get_handedness() # right-handed by default
+#> [1] "right"
 ```
 
 ## Units
@@ -289,7 +359,7 @@ range(data_s$time) # frames divided by fps
 ```
 
 Spatial angular columns (`phi`, `theta`) are converted automatically by
-[`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md)
+[`set_unit_angle()`](https://animovement.dev/anicore/reference/set_unit_angle.md)
 whenever they’re present. Pass `cols` only for non-spatial angular
 columns (e.g. heading direction).
 

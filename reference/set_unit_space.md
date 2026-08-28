@@ -9,7 +9,7 @@ The columns converted are the axes of the frame's `coordinate_system`
 that carry a **length** — `x`, `y` and `z` on a Cartesian frame, but
 `rho` on a polar or spherical one and `rho` and `z` on a cylindrical
 one. The angular axes (`phi`, `theta`) are left alone; they are
-[`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md)'s
+[`set_unit_angle()`](https://animovement.dev/anicore/reference/set_unit_angle.md)'s
 to convert.
 
 ## Usage
@@ -27,7 +27,7 @@ set_unit_space(data, to_unit, calibration_factor = 1)
 - to_unit:
 
   Character string specifying the target spatial unit. Must be one of
-  the permitted units defined in `default_metadata()$unit_space`.
+  the permitted units defined in `list_default_metadata()$unit_space`.
 
 - calibration_factor:
 

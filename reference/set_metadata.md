@@ -25,13 +25,9 @@ Default metadata fields include:
 
 - `coordinate_system`: Coordinate system (default: "cartesian")
 
-- `origin`: Location of the (0,0) coordinate (default: "bottom_left")
+- `axis_directions`: Which way each axis points, keyed by axis role
 
-- `y_height`: Height of the recording frame in y-axis units (default:
-  NA)
-
-For backwards compatibility, the deprecated field `point_of_reference`
-is accepted as an alias for `origin` and emits a deprecation warning.
+- `axis_extents`: How far each axis runs, keyed by axis role
 
 ## Usage
 
@@ -60,8 +56,8 @@ The object with updated metadata.
 
 ## See also
 
-[`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md),
-[`default_metadata()`](https://animovement.dev/aniframe/reference/default_metadata.md)
+[`get_metadata()`](https://animovement.dev/anicore/reference/get_metadata.md),
+[`list_default_metadata()`](https://animovement.dev/anicore/reference/list_default_metadata.md)
 
 ## Examples
 

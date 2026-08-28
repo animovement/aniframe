@@ -31,7 +31,7 @@ print(x, ...)
 
 The S3 class is named `aniframe_metadata` for historical reasons, but
 the metadata substrate is shared by both
-[`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
+[`aniframe()`](https://animovement.dev/anicore/reference/aniframe.md)
 and
-[`anievent()`](https://animovement.dev/aniframe/reference/anievent.md)
+[`anievent()`](https://animovement.dev/anicore/reference/anievent.md)
 objects.

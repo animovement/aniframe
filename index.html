@@ -5,15 +5,15 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>aniframe – An R package providing core data structures for movement data • aniframe</title>
+<title>anicore – An R package providing core data structures for movement data • anicore</title>
 <script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="aniframe – An R package providing core data structures for movement data">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="anicore – An R package providing core data structures for movement data">
 <meta name="description" content="An R package providing core data structures for movement data.">
 <meta property="og:description" content="An R package providing core data structures for movement data.">
-<meta property="og:image" content="https://animovement.dev/aniframe/logo.svg">
+<meta property="og:image" content="https://animovement.dev/anicore/logo.svg">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +21,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">aniframe</a>
+    <a class="navbar-brand me-2" href="index.html">anicore</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.7.0.9000</small>
 
@@ -52,7 +52,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-animovement" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="animovement"><span class="fa fab fa-r-project"></span> animovement</button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-animovement">
 <li><a class="external-link dropdown-item" href="https://animovement.dev/anicheck/">anicheck</a></li>
-    <li><a class="dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
+    <li><a class="external-link dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animetric/">animetric</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animovement/">animovement</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/aniprocess/">aniprocess</a></li>
@@ -62,7 +62,7 @@
   </ul>
 </li>
 <li class="nav-item"><a class="external-link nav-link" href="https://animovement.zulipchat.com" aria-label="Chat on Zulip"><span class="fa fa-comments"></span></a></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/animovement/aniframe/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/animovement/anicore/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-lightswitch" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="Light switch"><span class="fa fa-sun"></span></button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-lightswitch">
@@ -80,44 +80,44 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.svg" class="logo" alt=""><h1 id="aniframe-">aniframe 
-<a class="anchor" aria-label="anchor" href="#aniframe-"></a>
+<img src="logo.svg" class="logo" alt=""><h1 id="anicore-">anicore 
+<a class="anchor" aria-label="anchor" href="#anicore-"></a>
 </h1>
 </div>
 <!-- badges: start -->
 
 <p><em>An R package providing core data structures for movement data</em></p>
-<p>The primary aim of the <em>aniframe</em> package is to provide S3 classes and methods for representing and manipulating movement data.</p>
+<p>The primary aim of the <em>anicore</em> package is to provide S3 classes and methods for representing and manipulating movement data.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of <em>aniframe</em> with:</p>
+<p>You can install the development version of <em>anicore</em> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'aniframe'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://animovement.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">'anicore'</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'https://animovement.r-universe.dev'</span>, <span class="st">'https://cloud.r-project.org'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>Once you have installed the package, you can load it with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://animovement.dev/aniframe/" class="external-link">"aniframe"</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="http://animovement.dev/anicore/" class="external-link">"anicore"</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you enjoy the package, please make sure to cite it. If you find a bug, feel free to open an issue.</p>
-<p>To cite <em>aniframe</em> in publications use:</p>
+<p>To cite <em>anicore</em> in publications use:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"aniframe"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; To cite aniframe in publications, please cite the animovement toolbox</span></span>
-<span><span class="co">#&gt; as a whole (the first entry below). If your work used only aniframe,</span></span>
-<span><span class="co">#&gt; you may cite the package directly instead (the second entry).</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"anicore"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; To cite anicore in publications, please cite the animovement toolbox as</span></span>
+<span><span class="co">#&gt; a whole (the first entry below). If your work used only anicore, you</span></span>
+<span><span class="co">#&gt; may cite the package directly instead (the second entry).</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;   Roald-Arbøl M (2026). "animovement: An R toolbox for analysing</span></span>
 <span><span class="co">#&gt;   movement across space and time." doi:10.5281/zenodo.13235277</span></span>
 <span><span class="co">#&gt;   &lt;https://doi.org/10.5281/zenodo.13235277&gt;.</span></span>
 <span><span class="co">#&gt;   &lt;https://animovement.dev/animovement/&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   Roald-Arbøl M (2026). "aniframe: An R package providing core data</span></span>
+<span><span class="co">#&gt;   Roald-Arbøl M (2026). "anicore: An R package providing core data</span></span>
 <span><span class="co">#&gt;   structures for movement data." doi:10.5281/zenodo.17344597</span></span>
 <span><span class="co">#&gt;   &lt;https://doi.org/10.5281/zenodo.17344597&gt;.</span></span>
-<span><span class="co">#&gt;   &lt;https://animovement.dev/aniframe/&gt;.</span></span>
+<span><span class="co">#&gt;   &lt;https://animovement.dev/anicore/&gt;.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; To see these entries in BibTeX format, use 'print(&lt;citation&gt;,</span></span>
 <span><span class="co">#&gt; bibtex=TRUE)', 'toBibtex(.)', or set</span></span>
@@ -127,8 +127,8 @@
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/animovement/aniframe/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/animovement/aniframe/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/animovement/anicore/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/animovement/anicore/issues" class="external-link">Report a bug</a></li>
 <li><a href="https://animovement.dev/animovement/" class="external-link">Learn more about animovement</a></li>
 </ul>
 </div>
@@ -145,7 +145,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing aniframe</a></li>
+<li><a href="authors.html#citation">Citing anicore</a></li>
 </ul>
 </div>
 
@@ -161,9 +161,9 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://doi.org/10.5281/zenodo.17344597" class="external-link"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17344597.svg" alt="DOI"></a></li>
-<li><a href="https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/animovement/aniframe/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://animovement.r-universe.dev" class="external-link"><img src="https://animovement.r-universe.dev/badges/aniframe" alt="aniframe status badge"></a></li>
-<li><a href="https://app.codecov.io/gh/animovement/aniframe" class="external-link"><img src="https://codecov.io/gh/animovement/aniframe/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/animovement/anicore/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/animovement/anicore/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://animovement.r-universe.dev" class="external-link"><img src="https://animovement.r-universe.dev/badges/anicore" alt="anicore status badge"></a></li>
+<li><a href="https://app.codecov.io/gh/animovement/anicore" class="external-link"><img src="https://codecov.io/gh/animovement/anicore/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://animovement.zulipchat.com" class="external-link"><img src="https://img.shields.io/badge/chat-Zulip-6492FE?logo=zulip&amp;logoColor=white" alt="Chat on Zulip"></a></li>
 </ul>
 </div>

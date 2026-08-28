@@ -7,7 +7,7 @@ restructured against a complete, consistent declaration.
 ## Usage
 
 ``` r
-declare_variables(data, role, variables)
+declare_variables(data, role, variables, strict = TRUE)
 ```
 
 ## Arguments

@@ -1,7 +1,7 @@
 # Test whether an aniframe uses a Cartesian coordinate system
 
-Returns `TRUE` if the data frame satisfies *any* of the 1‑D, 2‑D or 3‑D
-Cartesian checks defined in the helper functions.
+Returns `TRUE` if the data frame satisfies *any* of the 1-D, 2-D or 3-D
+Cartesian checks.
 
 ## Usage
 

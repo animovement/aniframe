@@ -24,7 +24,8 @@ set_unit_angle(data, to_unit, cols = NULL)
 - to_unit:
 
   Character string specifying the target angular unit. Must be one of
-  `c("rad", "deg")` (the levels of `default_metadata()$unit_angle`).
+  `c("rad", "deg")` (the levels of
+  `list_default_metadata()$unit_angle`).
 
 - cols:
 

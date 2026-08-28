@@ -26,24 +26,30 @@ The input `data`, invisibly.
 
 ## Details
 
+- the index column is present and numeric — hard error;
+
 - every column named in `variables_what`, `variables_when`,
   `variables_where` and `variables_event` is present in the data — hard
   error;
-
-- `time` is present and numeric — hard error;
 
 - every column named in `variables_where` is numeric — hard error;
 
 - `coordinate_system` agrees with `variables_where` — **warning** only.
   The frame is still usable, and the field is derived rather than
-  declared, so it can be refreshed.
+  declared, so it can be refreshed;
+
+- identity, temporal context and the index together name one observation
+  per row — **warning** only (#49);
+
+- a declared `sampling_rate` agrees with the spacing of the index —
+  **warning** only (#114).
 
 ## See also
 
-[`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md)
+[`ensure_is_spatial()`](https://animovement.dev/anicore/reference/ensure_is_spatial.md)
 for the spatial subset of these checks, which is the part downstream
 filters need on every call;
-[`validate_anievent()`](https://animovement.dev/aniframe/reference/validate_anievent.md)
+[`validate_anievent()`](https://animovement.dev/anicore/reference/validate_anievent.md)
 for the `anievent` equivalent.
 
 ## Examples

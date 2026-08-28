@@ -39,9 +39,9 @@ The aniframe with matching connections removed.
 
 ## See also
 
-[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md),
-[`get_connections()`](https://animovement.dev/aniframe/reference/get_connections.md),
-[`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md)
+[`set_connections()`](https://animovement.dev/anicore/reference/set_connections.md),
+[`get_connections()`](https://animovement.dev/anicore/reference/get_connections.md),
+[`add_connections()`](https://animovement.dev/anicore/reference/add_connections.md)
 
 ## Examples
 

@@ -8,7 +8,13 @@ bout start and is never grouped.
 ## Usage
 
 ``` r
-restructure_frame(data, variables_what, variables_when, variables_where)
+restructure_frame(
+  data,
+  variables_what,
+  variables_when,
+  variables_where,
+  strict = TRUE
+)
 ```
 
 ## Arguments

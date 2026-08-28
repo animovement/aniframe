@@ -1,6 +1,6 @@
 # Test whether an aniframe uses a spherical coordinate system
 
-Requires `rho`, `phi` and `theta`; forbids `z`.
+Test whether an aniframe uses a spherical coordinate system
 
 ## Usage
 

@@ -4,13 +4,13 @@
 columns that carry, respectively, entity identity, temporal position and
 spatial position. They are the frame's structure rather than a
 description of it:
-[`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
+[`as_aniframe()`](https://animovement.dev/anicore/reference/as_aniframe.md)
 uses them to coerce column types, order columns and rows, group the
 frame, and derive `coordinate_system`.
 
 These functions declare them *and* restructure the frame to match, so
 the two cannot drift apart.
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
 refuses these three fields for that reason.
 
 - `set_variables_*()` replaces the declaration.
@@ -74,7 +74,7 @@ character vector of column names.
 
 ## See also
 
-[`validate_aniframe()`](https://animovement.dev/aniframe/reference/validate_aniframe.md),
+[`validate_aniframe()`](https://animovement.dev/anicore/reference/validate_aniframe.md),
 which reports a frame whose metadata has drifted out of sync by some
 other route.
 

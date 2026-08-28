@@ -32,9 +32,9 @@ tibble.
 
 ## See also
 
-[`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md),
-[`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md),
-[`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
+[`set_connections()`](https://animovement.dev/anicore/reference/set_connections.md),
+[`add_connections()`](https://animovement.dev/anicore/reference/add_connections.md),
+[`remove_connections()`](https://animovement.dev/anicore/reference/remove_connections.md)
 
 ## Examples
 

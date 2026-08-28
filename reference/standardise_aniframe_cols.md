@@ -1,7 +1,7 @@
 # Standardize column types for aniframe
 
 Converts character identity and temporal variables to factors. Converts
-numeric identity and temporal variables (except time) to integers.
+numeric identity and temporal variables (except the index) to integers.
 Spatial variables are converted to numeric.
 
 ## Usage
@@ -11,7 +11,8 @@ standardise_aniframe_cols(
   data,
   variables_what,
   variables_when,
-  variables_where
+  variables_where,
+  index = "time"
 )
 ```
 
@@ -32,6 +33,11 @@ standardise_aniframe_cols(
 - variables_where:
 
   Spatial variable names.
+
+- index:
+
+  The index column, which stays numeric. The temporal context variables
+  are made categorical.
 
 ## Value
 

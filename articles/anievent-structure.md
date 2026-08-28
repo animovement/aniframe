@@ -2,13 +2,13 @@
 
 ``` r
 
-library(aniframe)
+library(anicore)
 ```
 
 ## At a glance
 
 An `anievent` is the sibling of
-[`aniframe`](https://animovement.dev/aniframe/articles/aniframe-structure.md)
+[`aniframe`](https://animovement.dev/anicore/articles/aniframe-structure.md)
 for **behavioural events**: sleep bouts, vocalisations, manual scoring
 from BORIS, the output of segmentation models.
 
@@ -23,8 +23,8 @@ columns, declared via `variables_what`) at *some time*
 
 The class is a true sibling — it does **not** inherit from `aniframe`,
 but it shares the metadata substrate, so
-[`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md),
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md),
+[`get_metadata()`](https://animovement.dev/anicore/reference/get_metadata.md),
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md),
 and the rest of the metadata API work on both.
 
 ## Channels
@@ -147,13 +147,14 @@ observation-level offset table; the class itself just carries the key.
 
 `unit_time` is carried in the shared metadata substrate, so an
 `anievent` declares the unit of its `start`/`stop` values just like an
-`aniframe` declares the unit of its `time` column (`"frame"`, `"ms"`,
-`"s"`, `"m"`, `"h"`, …).
-[`set_unit_time()`](https://animovement.dev/aniframe/reference/set_unit_time.md)
+`aniframe` declares the unit of its [index
+column](https://animovement.dev/anicore/articles/aniframe-structure.html#the-index)
+(`"frame"`, `"ms"`, `"s"`, `"m"`, `"h"`, …).
+[`set_unit_time()`](https://animovement.dev/anicore/reference/set_unit_time.md)
 and
-[`set_sampling_rate()`](https://animovement.dev/aniframe/reference/set_sampling_rate.md)
+[`set_sampling_rate()`](https://animovement.dev/anicore/reference/set_sampling_rate.md)
 dispatch on both classes — on an anievent they scale `start` and `stop`
-instead of `time`:
+instead of the index:
 
 ``` r
 
@@ -269,7 +270,7 @@ straightforward) is planned but not yet implemented.
 
 ## Validation
 
-[`validate_anievent()`](https://animovement.dev/aniframe/reference/validate_anievent.md)
+[`validate_anievent()`](https://animovement.dev/anicore/reference/validate_anievent.md)
 re-checks the structural invariants on demand, returning the input
 invisibly on success and erroring otherwise:
 
@@ -297,17 +298,17 @@ the conversion code that knows which channels are typed as what.
 
 Per-frame data (factor / character / logical columns over a time grid)
 is encoded into the bout shape with
-[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md).
+[`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md).
 The verb is distinct from
-[`as_anievent()`](https://animovement.dev/aniframe/reference/as_anievent.md):
+[`as_anievent()`](https://animovement.dev/anicore/reference/as_anievent.md):
 that one is a *strict cast* of an already-bout-shaped data frame (with
 `channel` / `type` / `label` / `start` / `stop`);
-[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md)
 *produces* that shape via run-length encoding.
 
 ### From a data frame
 
-[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md)
 on a data frame takes bare-name selections for the event columns and the
 time / identity context.
 
@@ -359,7 +360,7 @@ The channel name always comes from the column name. Use `state` vs
 
 If you already have an `aniframe` with `variables_event` declared in
 metadata,
-[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md)
 reads everything from there:
 
 ``` r
@@ -403,7 +404,7 @@ to resolve overlap, and that design is still pending.
 | Concern | Planned home | Status |
 |----|----|----|
 | The `anievent` class | `aniframe` | ✅ implemented |
-| Encoding per-frame data ([`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)) | `aniframe` | ✅ implemented |
+| Encoding per-frame data ([`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md)) | `aniframe` | ✅ implemented |
 | Conversion to `aniframe` | `aniframe` | planned |
 | Readers (BORIS, Solomon, …) | `aniread` | planned |
 | Bout-summary metrics | `animetric` | planned |

@@ -1,7 +1,6 @@
-# Test for a 2‑D Cartesian coordinate system
+# Test for a 2-D Cartesian coordinate system
 
-Requires columns `x` and `y`. Column `z` may be present only if it is
-completely `NA`.
+Test for a 2-D Cartesian coordinate system
 
 ## Usage
 
@@ -17,8 +16,7 @@ is_cartesian_2d(data)
 
 ## Value
 
-`TRUE` if the aniframe has `x` and `y` and none of `rho`, `phi` or
-`theta`, otherwise `FALSE`.
+A logical value.
 
 ## Examples
 

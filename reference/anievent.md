@@ -3,7 +3,7 @@
 Creates a specialised data frame for behavioural events in long format:
 one row per bout (state event) or instant (point event). The class is a
 sibling of
-[`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md) —
+[`aniframe()`](https://animovement.dev/anicore/reference/aniframe.md) —
 it shares the metadata substrate but holds event-bout records rather
 than per-frame movement data.
 

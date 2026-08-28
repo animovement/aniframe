@@ -1,6 +1,6 @@
-# Internal guard for 2‑D Cartesian checks
+# Internal guard for 2-D Cartesian checks
 
-Internal guard for 2‑D Cartesian checks
+Internal guard for 2-D Cartesian checks
 
 ## Usage
 

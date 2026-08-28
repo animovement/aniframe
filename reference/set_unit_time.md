@@ -1,6 +1,6 @@
 # Set the temporal unit of an aniframe or anievent
 
-Converts the temporal columns of an `aniframe` (the `time` column) or
+Converts the temporal columns of an `aniframe` (its index column) or
 `anievent` (the `start` and `stop` columns) to a different unit of
 measurement. Handles automatic conversion between standard SI time units
 and custom calibration from frame or arbitrary units.
@@ -22,16 +22,16 @@ set_unit_time(data, to_unit, calibration_factor = 1)
 - data:
 
   An
-  [`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
+  [`aniframe()`](https://animovement.dev/anicore/reference/aniframe.md)
   or
-  [`anievent()`](https://animovement.dev/aniframe/reference/anievent.md)
+  [`anievent()`](https://animovement.dev/anicore/reference/anievent.md)
   object.
 
 - to_unit:
 
   Character string specifying the target time unit. Must be one of the
-  permitted units defined in `default_metadata()$unit_time` (typically
-  `"ms"`, `"s"`, `"m"`, `"h"`).
+  permitted units defined in `list_default_metadata()$unit_time`
+  (typically `"ms"`, `"s"`, `"m"`, `"h"`).
 
 - calibration_factor:
 
@@ -49,8 +49,10 @@ The input object with temporal columns converted to `to_unit` and
 
 ## Details
 
-For an `aniframe` the `time` column is multiplied by the calibration
-factor; for an `anievent` both `start` and `stop` are. In either case:
+For an `aniframe` the column
+[`get_index()`](https://animovement.dev/anicore/reference/get_index.md)
+names is multiplied by the calibration factor; for an `anievent` both
+`start` and `stop` are. In either case:
 
 - the function validates `to_unit` against the permitted levels;
 
@@ -74,7 +76,7 @@ data_s <- set_unit_time(data, to_unit = "s")
 # aniframe: convert frames to seconds at 30 fps
 data_s <- set_unit_time(data, to_unit = "s", calibration_factor = 1 / 30)
 
-# anievent: same call shape; mutates start/stop instead of time
+# anievent: same call shape; mutates start/stop instead of the index
 ae_s <- set_unit_time(ae, to_unit = "s", calibration_factor = 1 / 30)
 } # }
 ```

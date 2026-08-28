@@ -2,10 +2,10 @@
 
 Run-length-encodes per-frame state and point variables into the
 long-format
-[`anievent()`](https://animovement.dev/aniframe/reference/anievent.md).
+[`anievent()`](https://animovement.dev/anicore/reference/anievent.md).
 Works on a data frame (with bare-name selection of the event columns and
 explicit `time` / identity) or on an
-[`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
+[`aniframe()`](https://animovement.dev/anicore/reference/aniframe.md)
 (where everything is read from metadata).
 
 ## Usage
@@ -43,7 +43,7 @@ to_anievent(
 - data:
 
   A data frame or an
-  [`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md).
+  [`aniframe()`](https://animovement.dev/anicore/reference/aniframe.md).
 
 - ...:
 
@@ -88,12 +88,12 @@ to_anievent(
 ## Value
 
 An
-[`anievent()`](https://animovement.dev/aniframe/reference/anievent.md).
+[`anievent()`](https://animovement.dev/anicore/reference/anievent.md).
 
 ## Details
 
 Distinct from
-[`as_anievent()`](https://animovement.dev/aniframe/reference/as_anievent.md):
+[`as_anievent()`](https://animovement.dev/anicore/reference/as_anievent.md):
 that one is a strict cast — the input must already be in canonical
 anievent shape (one row per bout, with `channel` / `type` / `label` /
 `start` / `stop`). `to_anievent()` is the encoding verb that *produces*

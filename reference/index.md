@@ -5,17 +5,17 @@
 Functions that create an aniframe, coerce other objects to aniframe, or
 provide example data.
 
-- [`as_aniframe()`](https://animovement.dev/aniframe/reference/as_aniframe.md)
+- [`as_aniframe()`](https://animovement.dev/anicore/reference/as_aniframe.md)
   : Convert a data frame to aniframe
-- [`aniframe()`](https://animovement.dev/aniframe/reference/aniframe.md)
-  : aniframe package
-- [`example_aniframe()`](https://animovement.dev/aniframe/reference/example_aniframe.md)
+- [`aniframe()`](https://animovement.dev/anicore/reference/aniframe.md)
+  : Create an aniframe data frame
+- [`example_aniframe()`](https://animovement.dev/anicore/reference/example_aniframe.md)
   : Create example aniframe data
-- [`is_aniframe()`](https://animovement.dev/aniframe/reference/is_aniframe.md)
+- [`is_aniframe()`](https://animovement.dev/anicore/reference/is_aniframe.md)
   : Check if object is an aniframe
-- [`ensure_is_aniframe()`](https://animovement.dev/aniframe/reference/ensure_is_aniframe.md)
+- [`ensure_is_aniframe()`](https://animovement.dev/anicore/reference/ensure_is_aniframe.md)
   : Ensure object is an aniframe
-- [`validate_aniframe()`](https://animovement.dev/aniframe/reference/validate_aniframe.md)
+- [`validate_aniframe()`](https://animovement.dev/anicore/reference/validate_aniframe.md)
   : Validate an aniframe
 
 ## Creating and converting anievent objects
@@ -23,17 +23,17 @@ provide example data.
 Functions that create an anievent (long-format behavioural event
 records) or coerce other objects to anievent.
 
-- [`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
+- [`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md)
   : Encode per-frame data into an anievent
-- [`as_anievent()`](https://animovement.dev/aniframe/reference/as_anievent.md)
+- [`as_anievent()`](https://animovement.dev/anicore/reference/as_anievent.md)
   : Cast a data frame to an anievent
-- [`anievent()`](https://animovement.dev/aniframe/reference/anievent.md)
+- [`anievent()`](https://animovement.dev/anicore/reference/anievent.md)
   : Create an anievent data frame
-- [`is_anievent()`](https://animovement.dev/aniframe/reference/is_anievent.md)
+- [`is_anievent()`](https://animovement.dev/anicore/reference/is_anievent.md)
   : Check if object is an anievent
-- [`ensure_is_anievent()`](https://animovement.dev/aniframe/reference/ensure_is_anievent.md)
+- [`ensure_is_anievent()`](https://animovement.dev/anicore/reference/ensure_is_anievent.md)
   : Ensure object is an anievent
-- [`validate_anievent()`](https://animovement.dev/aniframe/reference/validate_anievent.md)
+- [`validate_anievent()`](https://animovement.dev/anicore/reference/validate_anievent.md)
   : Validate an anievent
 
 ## Metadata handling
@@ -41,23 +41,47 @@ records) or coerce other objects to anievent.
 Functions for reading, setting, and retrieving the metadata attached to
 aniframe or anievent objects.
 
-- [`get_metadata()`](https://animovement.dev/aniframe/reference/get_metadata.md)
+- [`get_metadata()`](https://animovement.dev/anicore/reference/get_metadata.md)
   : Get metadata
-- [`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
+- [`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
   : Set metadata
-- [`set_unit_time()`](https://animovement.dev/aniframe/reference/set_unit_time.md)
+- [`get_unit_time()`](https://animovement.dev/anicore/reference/get_unit_time.md)
+  : The unit the index or bout boundaries are in
+- [`set_unit_time()`](https://animovement.dev/anicore/reference/set_unit_time.md)
   : Set the temporal unit of an aniframe or anievent
-- [`set_unit_space()`](https://animovement.dev/aniframe/reference/set_unit_space.md)
+- [`get_unit_space()`](https://animovement.dev/anicore/reference/get_unit_space.md)
+  : The unit the spatial coordinates are in
+- [`set_unit_space()`](https://animovement.dev/anicore/reference/set_unit_space.md)
   : Set the spatial unit of an aniframe object
-- [`set_unit_angle()`](https://animovement.dev/aniframe/reference/set_unit_angle.md)
+- [`get_unit_angle()`](https://animovement.dev/anicore/reference/get_unit_angle.md)
+  : The unit the angular axes are in
+- [`set_unit_angle()`](https://animovement.dev/anicore/reference/set_unit_angle.md)
   : Set the angular unit of an aniframe object
-- [`set_sampling_rate()`](https://animovement.dev/aniframe/reference/set_sampling_rate.md)
+- [`get_sampling_rate()`](https://animovement.dev/anicore/reference/get_sampling_rate.md)
+  : The sampling rate, in Hz
+- [`set_sampling_rate()`](https://animovement.dev/anicore/reference/set_sampling_rate.md)
   : Set the sampling rate of an aniframe or anievent
-- [`set_origin()`](https://animovement.dev/aniframe/reference/set_origin.md)
-  : Set the coordinate origin
-- [`set_y_height()`](https://animovement.dev/aniframe/reference/set_y_height.md)
-  : Set the y-axis frame height
-- [`default_metadata()`](https://animovement.dev/aniframe/reference/default_metadata.md)
+- [`get_sampling_interval()`](https://animovement.dev/anicore/reference/get_sampling_interval.md)
+  : The interval between consecutive observations
+- [`is_sampling_regular()`](https://animovement.dev/anicore/reference/is_sampling_regular.md)
+  : Is the frame regularly sampled?
+- [`get_axis_directions()`](https://animovement.dev/anicore/reference/get_axis_directions.md)
+  : Get the direction each axis points
+- [`set_axis_directions()`](https://animovement.dev/anicore/reference/set_axis_directions.md)
+  : Say which way an axis points
+- [`get_axis_extents()`](https://animovement.dev/anicore/reference/get_axis_extents.md)
+  : Get how far each axis runs
+- [`set_axis_extents()`](https://animovement.dev/anicore/reference/set_axis_extents.md)
+  : Say how far each axis runs
+- [`get_angle_direction()`](https://animovement.dev/anicore/reference/get_angle_direction.md)
+  : Which way angles run
+- [`set_angle_direction()`](https://animovement.dev/anicore/reference/set_angle_direction.md)
+  : Say which way angles run
+- [`get_handedness()`](https://animovement.dev/anicore/reference/get_handedness.md)
+  : Whether the frame is right- or left-handed
+- [`set_handedness()`](https://animovement.dev/anicore/reference/set_handedness.md)
+  : Say whether the frame is right- or left-handed
+- [`list_default_metadata()`](https://animovement.dev/anicore/reference/list_default_metadata.md)
   : Default metadata structure
 
 ## Declaring variables
@@ -66,27 +90,37 @@ Declare which columns carry identity, time and position. These are the
 frame’s structure rather than a description of it, so the setters
 restructure the frame to match — coercing column types, relocating,
 reordering, regrouping, and refreshing derived fields.
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
-refuses these three fields for that reason.
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
+refuses these fields for that reason.
 
-- [`get_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`get_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`get_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`set_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`set_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`set_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`add_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`add_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`add_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`remove_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`remove_variables_when()`](https://animovement.dev/aniframe/reference/variables.md)
-  [`remove_variables_where()`](https://animovement.dev/aniframe/reference/variables.md)
+- [`get_variables_what()`](https://animovement.dev/anicore/reference/variables.md)
+  [`get_variables_when()`](https://animovement.dev/anicore/reference/variables.md)
+  [`get_variables_where()`](https://animovement.dev/anicore/reference/variables.md)
+  [`set_variables_what()`](https://animovement.dev/anicore/reference/variables.md)
+  [`set_variables_when()`](https://animovement.dev/anicore/reference/variables.md)
+  [`set_variables_where()`](https://animovement.dev/anicore/reference/variables.md)
+  [`add_variables_what()`](https://animovement.dev/anicore/reference/variables.md)
+  [`add_variables_when()`](https://animovement.dev/anicore/reference/variables.md)
+  [`add_variables_where()`](https://animovement.dev/anicore/reference/variables.md)
+  [`remove_variables_what()`](https://animovement.dev/anicore/reference/variables.md)
+  [`remove_variables_when()`](https://animovement.dev/anicore/reference/variables.md)
+  [`remove_variables_where()`](https://animovement.dev/anicore/reference/variables.md)
   : Declare which columns carry identity, time and position
-- [`get_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
-  [`set_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
-  [`add_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
-  [`remove_variables_event()`](https://animovement.dev/aniframe/reference/variables_event.md)
+- [`get_variables_event()`](https://animovement.dev/anicore/reference/variables_event.md)
+  [`set_variables_event()`](https://animovement.dev/anicore/reference/variables_event.md)
+  [`add_variables_event()`](https://animovement.dev/anicore/reference/variables_event.md)
+  [`remove_variables_event()`](https://animovement.dev/anicore/reference/variables_event.md)
   : Declare which columns carry per-frame event labels
+- [`get_index()`](https://animovement.dev/anicore/reference/get_index.md)
+  : The column an aniframe is indexed by
+- [`set_index()`](https://animovement.dev/anicore/reference/set_index.md)
+  : Declare which column an aniframe is indexed by
+- [`get_axes()`](https://animovement.dev/anicore/reference/get_axes.md)
+  : The axis roles of an aniframe, and the columns carrying them
+- [`set_axes()`](https://animovement.dev/anicore/reference/set_axes.md)
+  : Declare which column carries which axis role
+- [`get_coordinate_system()`](https://animovement.dev/anicore/reference/get_coordinate_system.md)
+  : The coordinate system an aniframe is in
 
 ## Connections
 
@@ -94,62 +128,67 @@ Manage connections between identity or temporal variables (e.g. skeleton
 edges between keypoints, or social-network edges between individuals).
 Stored as a named list of `from`/`to` tibbles in `metadata$connections`.
 
-- [`set_connections()`](https://animovement.dev/aniframe/reference/set_connections.md)
+- [`set_connections()`](https://animovement.dev/anicore/reference/set_connections.md)
   : Set the connections for a variable
-- [`get_connections()`](https://animovement.dev/aniframe/reference/get_connections.md)
+- [`get_connections()`](https://animovement.dev/anicore/reference/get_connections.md)
   : Get connections from an aniframe
-- [`add_connections()`](https://animovement.dev/aniframe/reference/add_connections.md)
+- [`add_connections()`](https://animovement.dev/anicore/reference/add_connections.md)
   : Add connections to an aniframe
-- [`remove_connections()`](https://animovement.dev/aniframe/reference/remove_connections.md)
+- [`remove_connections()`](https://animovement.dev/anicore/reference/remove_connections.md)
   : Remove connections from an aniframe
 
 ## Spatial checks
 
 These functions provide checks for your coordinate system.
-[`is_spatial()`](https://animovement.dev/aniframe/reference/is_spatial.md)
+[`is_spatial()`](https://animovement.dev/anicore/reference/is_spatial.md)
 and
-[`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md)
-check the spatial columns against the `variables_where` metadata; the
-`is_cartesian*()` family checks for particular column names.
+[`ensure_is_spatial()`](https://animovement.dev/anicore/reference/ensure_is_spatial.md)
+check that the columns named in `variables_where` are present and
+numeric; the `is_cartesian*()` family reports which coordinate system
+the frame is in, which follows from the axis roles it declares.
 
-- [`is_spatial()`](https://animovement.dev/aniframe/reference/is_spatial.md)
+- [`is_spatial()`](https://animovement.dev/anicore/reference/is_spatial.md)
   : Test whether the spatial columns match the metadata
-- [`ensure_is_spatial()`](https://animovement.dev/aniframe/reference/ensure_is_spatial.md)
+- [`ensure_is_spatial()`](https://animovement.dev/anicore/reference/ensure_is_spatial.md)
   : Ensure the spatial columns match the metadata
-- [`is_cartesian()`](https://animovement.dev/aniframe/reference/is_cartesian.md)
+- [`is_cartesian()`](https://animovement.dev/anicore/reference/is_cartesian.md)
   : Test whether an aniframe uses a Cartesian coordinate system
-- [`is_cartesian_1d()`](https://animovement.dev/aniframe/reference/is_cartesian_1d.md)
-  : Test for a 1‑D Cartesian coordinate system
-- [`is_cartesian_2d()`](https://animovement.dev/aniframe/reference/is_cartesian_2d.md)
-  : Test for a 2‑D Cartesian coordinate system
-- [`is_cartesian_3d()`](https://animovement.dev/aniframe/reference/is_cartesian_3d.md)
-  : Test for a 3‑D Cartesian coordinate system
-- [`is_polar()`](https://animovement.dev/aniframe/reference/is_polar.md)
+- [`is_cartesian_1d()`](https://animovement.dev/anicore/reference/is_cartesian_1d.md)
+  : Test for a 1-D Cartesian coordinate system
+- [`is_cartesian_2d()`](https://animovement.dev/anicore/reference/is_cartesian_2d.md)
+  : Test for a 2-D Cartesian coordinate system
+- [`is_cartesian_3d()`](https://animovement.dev/anicore/reference/is_cartesian_3d.md)
+  : Test for a 3-D Cartesian coordinate system
+- [`is_polar()`](https://animovement.dev/anicore/reference/is_polar.md)
   : Test whether an aniframe uses a polar coordinate system
-- [`is_cylindrical()`](https://animovement.dev/aniframe/reference/is_cylindrical.md)
+- [`is_cylindrical()`](https://animovement.dev/anicore/reference/is_cylindrical.md)
   : Test whether an aniframe uses a cylindrical coordinate system
-- [`is_spherical()`](https://animovement.dev/aniframe/reference/is_spherical.md)
+- [`is_spherical()`](https://animovement.dev/anicore/reference/is_spherical.md)
   : Test whether an aniframe uses a spherical coordinate system
-- [`ensure_is_cartesian()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian.md)
+- [`ensure_is_cartesian()`](https://animovement.dev/anicore/reference/ensure_is_cartesian.md)
   : Internal guard for Cartesian checks
-- [`ensure_is_cartesian_1d()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian_1d.md)
-  : Internal guard for 1‑D Cartesian checks
-- [`ensure_is_cartesian_2d()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian_2d.md)
-  : Internal guard for 2‑D Cartesian checks
-- [`ensure_is_cartesian_3d()`](https://animovement.dev/aniframe/reference/ensure_is_cartesian_3d.md)
-  : Internal guard for 3‑D Cartesian checks
-- [`ensure_is_polar()`](https://animovement.dev/aniframe/reference/ensure_is_polar.md)
+- [`ensure_is_cartesian_1d()`](https://animovement.dev/anicore/reference/ensure_is_cartesian_1d.md)
+  : Internal guard for 1-D Cartesian checks
+- [`ensure_is_cartesian_2d()`](https://animovement.dev/anicore/reference/ensure_is_cartesian_2d.md)
+  : Internal guard for 2-D Cartesian checks
+- [`ensure_is_cartesian_3d()`](https://animovement.dev/anicore/reference/ensure_is_cartesian_3d.md)
+  : Internal guard for 3-D Cartesian checks
+- [`ensure_is_polar()`](https://animovement.dev/anicore/reference/ensure_is_polar.md)
   : Internal guard for polar checks
-- [`ensure_is_cylindrical()`](https://animovement.dev/aniframe/reference/ensure_is_cylindrical.md)
+- [`ensure_is_cylindrical()`](https://animovement.dev/anicore/reference/ensure_is_cylindrical.md)
   : Internal guard for cylindrical checks
-- [`ensure_is_spherical()`](https://animovement.dev/aniframe/reference/ensure_is_spherical.md)
+- [`ensure_is_spherical()`](https://animovement.dev/anicore/reference/ensure_is_spherical.md)
   : Internal guard for spherical checks
 
 ## Helpers
 
-- [`rad_to_deg()`](https://animovement.dev/aniframe/reference/rad_to_deg.md)
+- [`rad_to_deg()`](https://animovement.dev/anicore/reference/rad_to_deg.md)
   : Convert radians to degrees
-- [`deg_to_rad()`](https://animovement.dev/aniframe/reference/deg_to_rad.md)
+- [`deg_to_rad()`](https://animovement.dev/anicore/reference/deg_to_rad.md)
   : Convert degrees to radians
-- [`convert_nan_to_na()`](https://animovement.dev/aniframe/reference/convert_nan_to_na.md)
+- [`wrap_angle()`](https://animovement.dev/anicore/reference/wrap_angle.md)
+  : Constrain angles to a standard range
+- [`unwrap_angle()`](https://animovement.dev/anicore/reference/unwrap_angle.md)
+  : Remove wrapping from a sequence of angles
+- [`convert_nan_to_na()`](https://animovement.dev/anicore/reference/convert_nan_to_na.md)
   : Convert NaN to NA in numeric columns

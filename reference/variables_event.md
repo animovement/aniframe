@@ -9,13 +9,13 @@ categorical event labels, split into two kinds:
 - **point** columns are instantaneous — every non-`NA` frame is its own
   zero-length event.
 
-[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md)
+[`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md)
 reads the declaration to know what to encode, and the print header
 surfaces it as "State event variables" / "Point event variables".
 
 These functions declare the columns and check they exist, so the
 metadata cannot promise a column the frame doesn't have.
-[`set_metadata()`](https://animovement.dev/aniframe/reference/set_metadata.md)
+[`set_metadata()`](https://animovement.dev/anicore/reference/set_metadata.md)
 refuses the field for that reason.
 
 - `set_variables_event()` replaces the side(s) you name and leaves the
@@ -70,9 +70,9 @@ For the setters, `data` with the declaration recorded. For
 
 ## See also
 
-[`to_anievent()`](https://animovement.dev/aniframe/reference/to_anievent.md),
+[`to_anievent()`](https://animovement.dev/anicore/reference/to_anievent.md),
 which consumes the declaration;
-[`set_variables_what()`](https://animovement.dev/aniframe/reference/variables.md)
+[`set_variables_what()`](https://animovement.dev/anicore/reference/variables.md)
 and friends for the other variable roles.
 
 ## Examples
@@ -115,7 +115,7 @@ get_variables_event(set_variables_event(af, point = character()))
 
 # Declaring a column that isn't there is caught
 try(add_variables_event(af, state = "grooming"))
-#> Error in ensure_declared_cols_exist(data, c(declared$state, declared$point),  : 
+#> Error in ensure_has_declared_cols(data, c(declared$state, declared$point),  : 
 #>   Event variable not found in data: "grooming".
 #> ℹ Create the column first, then declare it.
 ```
