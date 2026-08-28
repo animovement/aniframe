@@ -160,3 +160,36 @@ test_that("a non-numeric index does not abort construction", {
   expect_true(is.na(get_sampling_interval(af)))
   expect_true(is.na(is_sampling_regular(af)))
 })
+
+
+# Frames with nothing to measure ----
+
+test_that("no gaps are taken when the index column is gone", {
+  af <- example_aniframe(n_obs = 5, n_individuals = 1, n_keypoints = 1)
+  stripped <- suppressWarnings(dplyr::select(dplyr::ungroup(af), -"time"))
+
+  expect_equal(sampling_gaps(stripped), numeric())
+})
+
+test_that("the interval is NA when metadata predates the field", {
+  af <- example_aniframe(n_obs = 5, n_individuals = 1, n_keypoints = 1)
+  md <- attr(af, "metadata")
+  md[["sampling_interval"]] <- NULL
+  attr(af, "metadata") <- md
+
+  expect_true(is.na(get_sampling_interval(af)))
+})
+
+test_that("regularity is undecidable when every gap is zero", {
+  af <- suppressWarnings(as_aniframe(
+    data.frame(
+      individual = "a",
+      keypoint = "nose",
+      time = c(1, 1, 1),
+      x = 1:3,
+      y = 1:3
+    )
+  ))
+
+  expect_true(is.na(is_sampling_regular(af)))
+})

@@ -184,14 +184,9 @@ warn_sampling_rate_mismatch <- function(data) {
     return(invisible(TRUE))
   }
 
-  seconds_per_unit <- seconds_per_time_unit(unit, rate)
-  if (is.na(seconds_per_unit)) {
-    return(invisible(TRUE))
-  }
-
-  observed <- interval * seconds_per_unit
+  observed <- interval * seconds_per_time_unit(unit, rate)
   expected <- 1 / rate
-  if (abs(observed - expected) > 1e-6 * expected) {
+  if (!is.na(observed) && abs(observed - expected) > 1e-6 * expected) {
     cli::cli_warn(c(
       "{.field sampling_rate} says {.val {rate}} Hz, but the index is spaced {.val {signif(1 / observed, 4)}} Hz.",
       "i" = "The interval is derived from the data; the rate is declared.",
