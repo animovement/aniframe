@@ -39,13 +39,13 @@ ensure_are_metadata_fields <- function(fields, call = rlang::caller_env()) {
   if (is.null(fields)) {
     return(invisible(TRUE))
   }
-  known <- names(default_metadata())
+  known <- names(list_default_metadata())
   unknown <- setdiff(fields, known)
   if (length(unknown) > 0L) {
     cli::cli_abort(
       c(
         "{.val {unknown}} {?is/are} not {?a/} metadata field{?s}.",
-        "i" = "See {.fn default_metadata} for the fields an object can carry."
+        "i" = "See {.fn list_default_metadata} for the fields an object can carry."
       ),
       call = call
     )
