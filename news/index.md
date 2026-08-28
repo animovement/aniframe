@@ -1,5 +1,7 @@
 # Changelog
 
+## anicore (development version)
+
 ## anicore 0.8.0 (2026-08-28)
 
 ### Changed
