@@ -2,6 +2,26 @@
 
 ## anicore (development version)
 
+### Changed
+
+- The order of `variables_what` no longer asserts a hierarchy
+  ([\#141](https://github.com/animovement/anicore/issues/141)). It was
+  documented as coarse to fine, which reads naturally for the names that
+  nest — a subject has tracks, a track has keypoints — but identity
+  variables need not nest at all. `sex`, `treatment` and `genotype`
+  partition a population without containing one another, and there is no
+  sense in which one is finer than the next.
+
+  The order is now documented as what auto-detection emits, not
+  something a frame asserts. Nothing should read a position in
+  `variables_what` as meaning a level; a function that needs to know
+  which variable to act on asks for it — `animetric::add_centroid()`
+  takes `across`, `anispace::translate_coords()` takes `level`.
+
+  No behaviour changes. Detection emits the same order, and the order
+  still carries through to column order and grouping, which is
+  presentation: grouping by `(a, b)` and `(b, a)` gives the same groups.
+
 ## anicore 0.8.0 (2026-08-28)
 
 ### Changed

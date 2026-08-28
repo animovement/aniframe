@@ -37,7 +37,7 @@ appropriately for your data."><meta property="og:image" content="https://animove
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-animovement" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="animovement"><span class="fa fab fa-r-project"></span> animovement</button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-animovement"><li><a class="external-link dropdown-item" href="https://animovement.dev/anicheck/">anicheck</a></li>
-    <li><a class="external-link dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
+    <li><a class="dropdown-item" href="https://animovement.dev/anicore/">aniframe</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animetric/">animetric</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animovement/">animovement</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/aniprocess/">aniprocess</a></li>
@@ -114,7 +114,10 @@ placeholder skeleton for an object with no data attached; every
 constructor overwrites them from the data or from its arguments.
 In particular <code>variables_what</code> is <strong>not</strong> a requirement that a frame
 carry <code>individual</code> and <code>keypoint</code> columns — the rule is that a frame
-has at least one identity variable, whichever it happens to be.</p></li>
+has at least one identity variable, whichever it happens to be. Nor
+does the order of <code>variables_what</code> assert a hierarchy: identity
+variables need not nest, and a position in the vector does not mean a
+level. See <code><a href="list_recognised_variables_what.html">list_recognised_variables_what()</a></code>.</p></li>
 <li><p><code>axes</code>: Which column carries which axis role (named character,
 <code>c(x = "x", y = "y")</code>). Names are roles — <code>x</code>, <code>y</code>, <code>z</code>, <code>rho</code>,
 <code>phi</code>, <code>theta</code> — and values are the columns carrying them, so a frame
@@ -157,7 +160,7 @@ temporal variable (typically <code>keypoint</code> for skeletons; could also be
 <li><p><code>variables_event</code>: Named list with two entries, <code>state</code> and <code>point</code>,
 each a character vector naming columns that carry per-frame
 categorical event labels. <code>state</code> columns are interval-valued
-(durative behaviours, ordered coarse to fine to encode nesting);
+(durative behaviours, listed coarse to fine where they nest);
 <code>point</code> columns are instantaneous (zero-duration events). Foundation
 for the <code>anievent</code> class and downstream event-handling utilities.
 Default is an empty list for each.</p></li>

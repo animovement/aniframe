@@ -66,7 +66,11 @@ A named list with the following fields:
   constructor overwrites them from the data or from its arguments. In
   particular `variables_what` is **not** a requirement that a frame
   carry `individual` and `keypoint` columns — the rule is that a frame
-  has at least one identity variable, whichever it happens to be.
+  has at least one identity variable, whichever it happens to be. Nor
+  does the order of `variables_what` assert a hierarchy: identity
+  variables need not nest, and a position in the vector does not mean a
+  level. See
+  [`list_recognised_variables_what()`](https://animovement.dev/anicore/reference/list_recognised_variables_what.md).
 
 - `axes`: Which column carries which axis role (named character,
   `c(x = "x", y = "y")`). Names are roles — `x`, `y`, `z`, `rho`, `phi`,
@@ -135,10 +139,10 @@ it cannot honour (#73).
 - `variables_event`: Named list with two entries, `state` and `point`,
   each a character vector naming columns that carry per-frame
   categorical event labels. `state` columns are interval-valued
-  (durative behaviours, ordered coarse to fine to encode nesting);
-  `point` columns are instantaneous (zero-duration events). Foundation
-  for the `anievent` class and downstream event-handling utilities.
-  Default is an empty list for each.
+  (durative behaviours, listed coarse to fine where they nest); `point`
+  columns are instantaneous (zero-duration events). Foundation for the
+  `anievent` class and downstream event-handling utilities. Default is
+  an empty list for each.
 
 - `spec_version`: Named list of semantic version strings, one per class
   in the animovement ecosystem (currently `aniframe` and `anievent`).

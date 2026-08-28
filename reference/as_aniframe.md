@@ -30,12 +30,14 @@ as_aniframe(
   Character vector of identity columns that together define a unique
   entity, and which the frame is grouped by. If `NULL` (the default),
   detected from the data: whichever of `model`, `individual`, `subject`,
-  `track` and `keypoint` are present, in that order (coarse to fine). An
-  aniframe needs at least one identity variable, so if none of them is
-  found, a `keypoint` column is added with the value `"centroid"`. Pass
-  `character(0)` to declare no identity variables at all — a deliberate
-  opt-out, which leaves the frame ungrouped. Every column named here
-  must exist in `data`.
+  `track` and `keypoint` are present, in the order
+  [`list_recognised_variables_what()`](https://animovement.dev/anicore/reference/list_recognised_variables_what.md)
+  lists them. Order carries no meaning of its own — see its
+  documentation. An aniframe needs at least one identity variable, so if
+  none of them is found, a `keypoint` column is added with the value
+  `"centroid"`. Pass `character(0)` to declare no identity variables at
+  all — a deliberate opt-out, which leaves the frame ungrouped. Every
+  column named here must exist in `data`.
 
 - variables_when:
 

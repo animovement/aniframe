@@ -29,7 +29,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-animovement" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="animovement"><span class="fa fab fa-r-project"></span> animovement</button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdown-animovement"><li><a class="external-link dropdown-item" href="https://animovement.dev/anicheck/">anicheck</a></li>
-    <li><a class="external-link dropdown-item" href="https://animovement.dev/aniframe/">aniframe</a></li>
+    <li><a class="dropdown-item" href="https://animovement.dev/anicore/">aniframe</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animetric/">animetric</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/animovement/">animovement</a></li>
     <li><a class="external-link dropdown-item" href="https://animovement.dev/aniprocess/">aniprocess</a></li>
@@ -89,8 +89,9 @@
 <dd><p>Character vector of identity columns that together
 define a unique entity, and which the frame is grouped by. If <code>NULL</code>
 (the default), detected from the data: whichever of <code>model</code>,
-<code>individual</code>, <code>subject</code>, <code>track</code> and <code>keypoint</code> are present, in that
-order (coarse to fine). An aniframe needs
+<code>individual</code>, <code>subject</code>, <code>track</code> and <code>keypoint</code> are present, in the
+order <code><a href="list_recognised_variables_what.html">list_recognised_variables_what()</a></code> lists them. Order carries no
+meaning of its own — see its documentation. An aniframe needs
 at least one identity variable, so if none of them is found, a
 <code>keypoint</code> column is added with the value <code>"centroid"</code>. Pass
 <code>character(0)</code> to declare no identity variables at all — a
