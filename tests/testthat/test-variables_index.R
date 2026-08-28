@@ -340,3 +340,17 @@ test_that("the temporal context counts towards the key", {
   expect_equal(get_variables_when(af), "session")
   expect_no_warning(warn_duplicate_observations(af))
 })
+
+test_that("there is nothing to check when no key column is present", {
+  # Reachable only by calling the helper directly: through
+  # `validate_aniframe()` the index check aborts first. A frame that has
+  # drifted this far has bigger problems, and this should not be one of them.
+  af <- suppressWarnings(as_aniframe(
+    data.frame(time = 1:3, x = 1:3, y = 1:3),
+    variables_what = character(0)
+  ))
+  stripped <- suppressWarnings(dplyr::select(dplyr::ungroup(af), -"time"))
+
+  expect_no_warning(warn_duplicate_observations(stripped))
+  expect_true(warn_duplicate_observations(stripped))
+})
