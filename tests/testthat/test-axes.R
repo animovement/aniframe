@@ -454,3 +454,28 @@ test_that("set_origin() says so when there is no y axis to reflect", {
 
   expect_error(set_origin(pol, "top_left"), "no .*y.* axis")
 })
+
+
+# The empty and unresolvable paths ----
+
+test_that("normalise_axes() handles an empty declaration", {
+  expect_equal(
+    normalise_axes(character(0)),
+    stats::setNames(character(), character())
+  )
+  expect_length(normalise_axes(NULL), 0)
+})
+
+test_that("resolve_axes() gives nothing when the columns name no system", {
+  # Metadata from before the field existed, whose `variables_where` does not
+  # read as a coordinate system under the historical name-is-role rule.
+  md <- get_metadata(example_aniframe(
+    n_obs = 3,
+    n_individuals = 1,
+    n_keypoints = 1
+  ))
+  md[["axes"]] <- NULL
+  md[["variables_where"]] <- c("u", "v")
+
+  expect_equal(resolve_axes(md), stats::setNames(character(), character()))
+})
