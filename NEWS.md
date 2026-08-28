@@ -30,6 +30,8 @@
 
 * `wrap_angle()` and `unwrap_angle()` move here from `anispace` (#128). They are angle arithmetic rather than coordinate transformation, and belong beside `deg_to_rad()` and `rad_to_deg()`, which were already here. `animetric` re-exported both from `anispace`, which is the sign of a primitive sitting one layer above the packages that need it.
 
+* Turning an axis over on a frame that stores angles recomputes them, rather than refusing (#134). No column carries `x`, `y` or `z` on a polar, cylindrical or spherical frame, but the angles are measured from those axes: turning `x` over takes the supplement of `phi`, turning `y` over negates it, and turning `z` over takes the supplement of `theta`. The result comes back in the unit and range the frame keeps its angles in, and `rho` never moves. An axis with a declared extent still refuses, because reflecting around it would move every point's distance from the origin.
+
 * Every exported function now has a runnable example (#106).
 
 ## Changed

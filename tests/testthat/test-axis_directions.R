@@ -120,13 +120,17 @@ test_that("turning an axis onto a different line reflects nothing", {
   expect_equal(set_axis_directions(af, c(y = "forward"))$v, c(0, 5, 10))
 })
 
-test_that("an angular frame refuses rather than leaving its angles stale", {
+test_that("an angular frame moves its angles instead of a column", {
+  # Covered fully in test-angular_flips.R (#134).
   pol <- as_aniframe(
     data.frame(individual = "a", time = 1:3, rho = c(1, 2, 3), phi = c(0, 1, 2))
   )
   pol <- set_axis_directions(pol, c(x = "right", y = "up"))
 
-  expect_error(set_axis_directions(pol, c(y = "down")), "recomputed")
+  expect_equal(
+    set_axis_directions(pol, c(y = "down"))$phi,
+    -c(0, 1, 2) %% (2 * pi)
+  )
 })
 
 

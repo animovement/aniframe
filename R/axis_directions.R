@@ -12,18 +12,6 @@ list_axis_directions <- function() {
 }
 
 
-#' The axis roles that are angles
-#'
-#' Turning a linear axis over changes what these mean, so a frame carrying
-#' one cannot be flipped without recomputing them.
-#'
-#' @return Character vector of axis roles.
-#' @keywords internal
-list_angular_axis_roles <- function() {
-  c("phi", "theta")
-}
-
-
 #' The axis roles that can point somewhere
 #'
 #' The Cartesian axes. `rho` is a distance and `phi` and `theta` are angles,
@@ -155,6 +143,9 @@ resolve_axis_directions <- function(md) {
 #' [set_axis_extents()] for data that is measured from a corner, such as
 #' video.
 #'
+#' On a frame that stores angles there is no column to reflect, but `phi`
+#' and `theta` are measured from the axes and are recomputed instead.
+#'
 #' @examples
 #' af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
 #' af <- set_axis_extents(af, c(y = 1080))
@@ -213,19 +204,9 @@ reflect_axis_role <- function(data, role) {
   axes <- get_axes(data)
   if (!role %in% names(axes)) {
     # An angle is measured from the axes, so turning one over leaves every
-    # stored angle facing the wrong way. Refusing is the honest answer:
-    # relabelling the metadata would not make the values true.
-    angular <- intersect(list_angular_axis_roles(), names(axes))
-    if (length(angular) > 0L) {
-      cli::cli_abort(c(
-        "Cannot turn the {.field {role}} axis over on a {.val {get_coordinate_system(data)}} frame.",
-        "i" = "{.val {angular}} {?is/are} measured from the axes, so every angle would have to be recomputed.",
-        "i" = "{.pkg anispace} has the transformations."
-      ))
-    }
-    # No column carries this role, so there is nothing to express
-    # differently -- the direction is a fact about the space, not the data.
-    return(data)
+    # stored angle facing the wrong way. Recomputing them is the whole job,
+    # not a relabelling (#134).
+    return(reflect_angular_axis(data, role))
   }
 
   # An axis runs from zero to its extent, so its mirror is `extent - v`.
@@ -368,4 +349,95 @@ reflect_axis <- function(data, axis, reference) {
   }
   data[[axis]] <- reference - data[[axis]]
   data
+}
+
+
+#' The angular column an axis role is measured against
+#'
+#' Turning a Cartesian axis over moves the angles measured from it. `phi`
+#' runs from `x` toward `y`, so either of those moves it; `theta` is measured
+#' from the pole, so only `z` moves it.
+#'
+#' @return Named character vector, axis role to angular role.
+#' @keywords internal
+list_angular_axis_dependencies <- function() {
+  c(x = "phi", y = "phi", z = "theta")
+}
+
+
+#' Turn an axis over on a frame that stores angles
+#'
+#' No column carries the role, so there is nothing to reflect -- but the
+#' angles are measured from it, and a frame left claiming a direction its
+#' angles do not agree with is the failure this is here to prevent.
+#'
+#' Turning `x` over reflects `phi` about the vertical, turning `y` over
+#' reflects it about the horizontal, and turning `z` over reflects `theta`
+#' about the equator. Anything else leaves the data alone: the direction is
+#' then a fact about the space rather than about the columns.
+#'
+#' @param data An aniframe object.
+#' @param role An axis role.
+#'
+#' @return `data`, with the angles it stores measured the other way.
+#' @keywords internal
+reflect_angular_axis <- function(data, role) {
+  axes <- get_axes(data)
+  angular <- list_angular_axis_dependencies()[[role]]
+
+  if (is.na(angular) || !angular %in% names(axes)) {
+    return(data)
+  }
+
+  # `extent - v` is a mirror in a plane that misses the origin, which moves
+  # every point's distance from it. There is no angle that expresses that.
+  extents <- get_axis_extents(data)
+  if (role %in% names(extents) && extents[[role]] != 0) {
+    cli::cli_abort(c(
+      "Cannot turn the {.field {role}} axis over around an extent on a {.val {get_coordinate_system(data)}} frame.",
+      "i" = "Reflecting around {.val {extents[[role]]}} would move every point's distance from the origin, which {.field rho} would have to change to express.",
+      "i" = "Clear the extent with {.code set_axis_extents(data, c({role} = NA))} to turn the axis over about the origin."
+    ))
+  }
+
+  column <- axes[[angular]]
+  ensure_has_column(data, column)
+
+  # `theta` is a colatitude in [0, pi], so its supplement is already in
+  # range; `phi` is a bearing and has to come back onto the range the frame
+  # keeps it in.
+  is_colatitude <- identical(angular, "theta")
+
+  data[[column]] <- reflect_angle(
+    data[[column]],
+    about = if (is_colatitude || identical(role, "x")) "half_turn" else "zero",
+    unit = get_unit_angle(data),
+    wrap = !is_colatitude,
+    signed = any(data[[column]] < 0, na.rm = TRUE)
+  )
+  data
+}
+
+
+#' Reflect a vector of angles
+#'
+#' @param x Numeric vector of angles.
+#' @param about `"zero"` to negate, `"half_turn"` to take the supplement.
+#' @param unit The frame's `unit_angle`.
+#' @param wrap Whether the result is a bearing, and so has to come back onto
+#'   a full turn.
+#' @param signed Whether that range is the signed one rather than `[0, 2pi)`.
+#'
+#' @return The reflected angles, in the same unit and range.
+#' @keywords internal
+reflect_angle <- function(x, about, unit, wrap = TRUE, signed = FALSE) {
+  radians <- if (identical(unit, "deg")) deg_to_rad(x) else x
+
+  reflected <- if (identical(about, "half_turn")) pi - radians else -radians
+
+  if (wrap) {
+    reflected <- wrap_angle(reflected, modulo = if (signed) "pi" else "2pi")
+  }
+
+  if (identical(unit, "deg")) rad_to_deg(reflected) else reflected
 }

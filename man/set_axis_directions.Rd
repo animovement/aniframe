@@ -35,6 +35,9 @@ An axis runs from zero to its extent, so turning it over gives
 origin instead, and turning it over negates it. Declare one with
 \code{\link[=set_axis_extents]{set_axis_extents()}} for data that is measured from a corner, such as
 video.
+
+On a frame that stores angles there is no column to reflect, but \code{phi}
+and \code{theta} are measured from the axes and are recomputed instead.
 }
 \examples{
 af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)

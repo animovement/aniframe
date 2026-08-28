@@ -446,18 +446,18 @@ test_that("set_axis_directions() reflects the y axis of a renamed frame", {
   expect_equal(result$u, c(1, 2, 3))
 })
 
-test_that("an angular frame refuses a flip rather than leaving its angles stale", {
-  # A polar frame has a sense of rotation, but not one a reflection of the
-  # vertical axis can change: every stored phi would have to be recomputed.
+test_that("an angular frame has its angles recomputed rather than left stale", {
+  # A polar frame has a sense of rotation, and no column to reflect: the
+  # stored phi is what carries the direction, so that is what moves (#134).
   pol <- as_aniframe(
     data.frame(individual = "a", time = 1:3, rho = c(1, 2, 3), phi = c(0, 1, 2))
   )
   pol <- set_axis_directions(pol, c(x = "right", y = "up"))
 
-  expect_error(
-    set_axis_directions(pol, c(y = "down")),
-    "recomputed"
-  )
+  result <- set_axis_directions(pol, c(y = "down"))
+
+  expect_equal(result$phi, (-c(0, 1, 2)) %% (2 * pi))
+  expect_equal(result$rho, c(1, 2, 3))
 })
 
 
