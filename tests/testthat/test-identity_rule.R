@@ -53,15 +53,15 @@ test_that("the injected identity is keypoint = centroid", {
   expect_equal(as.character(unique(af$keypoint)), "centroid")
 })
 
-test_that("ensure_identity leaves data that already has an identity alone", {
+test_that("add_default_identity leaves data that already has an identity alone", {
   with_id <- dplyr::mutate(flat_df(), individual = "a")
 
-  expect_identical(ensure_identity(with_id), with_id)
-  expect_false("keypoint" %in% names(ensure_identity(with_id)))
+  expect_identical(add_default_identity(with_id), with_id)
+  expect_false("keypoint" %in% names(add_default_identity(with_id)))
 })
 
-test_that("ensure_identity adds one when there is none", {
-  out <- ensure_identity(flat_df())
+test_that("add_default_identity adds one when there is none", {
+  out <- add_default_identity(flat_df())
 
   expect_true("keypoint" %in% names(out))
   expect_equal(unique(out$keypoint), "centroid")
@@ -122,7 +122,7 @@ test_that("declared identity variables are all present in the metadata", {
 test_that("the recognised identity names are a single source of truth", {
   # Guards against the list drifting between the docs and the code.
   expect_equal(
-    recognised_variables_what(),
+    list_recognised_variables_what(),
     c("model", "individual", "subject", "track", "keypoint")
   )
 })

@@ -1,17 +1,17 @@
 library(testthat)
 
 # ------------------------------------------------------------------
-# Tests for ensure_metadata_exists()
+# Tests for ensure_has_metadata()
 # ------------------------------------------------------------------
 
-test_that("Tests for ensure_metadata_exists()", {
+test_that("Tests for ensure_has_metadata()", {
   x <- example_aniframe()
-  expect_no_error(ensure_metadata_exists(x))
+  expect_no_error(ensure_has_metadata(x))
 })
 
-test_that("Tests for ensure_metadata_exists()", {
+test_that("Tests for ensure_has_metadata()", {
   x <- data.frame()
-  expect_error(ensure_metadata_exists(x))
+  expect_error(ensure_has_metadata(x))
 })
 
 # ------------------------------------------------------------------
@@ -29,16 +29,16 @@ test_that("Tests for ensure_is_list()", {
 })
 
 # ------------------------------------------------------------------
-# Tests for ensure_all_metadata_fields_present()
+# Tests for ensure_has_all_metadata_fields()
 # ------------------------------------------------------------------
 
-test_that("Tests for ensure_all_metadata_fields_present()", {
+test_that("Tests for ensure_has_all_metadata_fields()", {
   x <- example_aniframe()
-  expect_no_error(ensure_all_metadata_fields_present(get_metadata(x)))
+  expect_no_error(ensure_has_all_metadata_fields(get_metadata(x)))
 })
 
-test_that("Tests for ensure_all_metadata_fields_present()", {
+test_that("Tests for ensure_has_all_metadata_fields()", {
   x <- example_aniframe()
   md <- get_metadata(x)
-  expect_error(ensure_all_metadata_fields_present(md[-1]))
+  expect_error(ensure_has_all_metadata_fields(md[-1]))
 })

@@ -20,12 +20,14 @@
 #'
 #' @return Character vector of metadata field names.
 #' @keywords internal
-declaration_metadata_fields <- function() {
+list_declaration_metadata_fields <- function() {
   c(
+    "variables_index",
     "variables_what",
     "variables_when",
     "variables_where",
-    "variables_event"
+    "variables_event",
+    "axes"
   )
 }
 
@@ -42,6 +44,26 @@ get_variables <- function(data, role) {
 }
 
 
+#' The spatial declaration, as a role mapping where there is one
+#'
+#' `get_variables()` strips names, which for `where` throws the axis roles
+#' away. Every path that re-declares the spatial columns has to start from
+#' the mapping instead, or `union()` and `setdiff()` silently reduce a
+#' renamed frame to `unknown` (#109).
+#'
+#' @param data An aniframe or anievent object.
+#'
+#' @return Named character vector, or a bare one when no roles are known.
+#' @keywords internal
+get_declared_where <- function(data) {
+  axes <- if (is_aniframe(data)) resolve_axes(get_metadata(data))
+  if (length(axes) > 0L) {
+    return(axes)
+  }
+  get_variables(data, "where")
+}
+
+
 #' Declare one variable role and restructure the frame to match
 #'
 #' The shared kernel behind the `set_` / `add_` / `remove_` functions.
@@ -54,18 +76,30 @@ get_variables <- function(data, role) {
 #'
 #' @return `data`, restructured and re-declared.
 #' @keywords internal
-declare_variables <- function(data, role, variables) {
+declare_variables <- function(data, role, variables, strict = TRUE) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
 
   declared <- list(
     what = get_variables(data, "what"),
     when = get_variables(data, "when"),
-    where = get_variables(data, "where")
+    where = get_declared_where(data)
   )
-  declared[[role]] <- unname(variables)
+  # Only `where` carries names worth keeping; stripping them elsewhere
+  # guards `union()`/`setdiff()` against surprises.
+  declared[[role]] <- if (identical(role, "where")) {
+    variables
+  } else {
+    unname(variables)
+  }
 
-  restructure_frame(data, declared$what, declared$when, declared$where)
+  restructure_frame(
+    data,
+    declared$what,
+    declared$when,
+    declared$where,
+    strict = strict
+  )
 }
 
 
@@ -78,7 +112,7 @@ declare_variables <- function(data, role, variables) {
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_variables_chr <- function(variables) {
+ensure_variables_character <- function(variables) {
   if (!is.character(variables)) {
     cli::cli_abort(
       "{.arg variables} must be a character vector, not {.cls {class(variables)}}."
@@ -88,201 +122,9 @@ ensure_variables_chr <- function(variables) {
 }
 
 
-#' Ensure the object is one of the animovement frame classes
-#'
-#' @param data Object to test.
-#'
-#' @return `TRUE`, invisibly.
-#' @keywords internal
-ensure_is_aniframe_or_anievent <- function(data) {
-  if (!is_aniframe(data) && !is_anievent(data)) {
-    cli::cli_abort("Data is neither an aniframe nor an anievent.")
-  }
-  invisible(TRUE)
-}
-
-
-#' Restructure a frame to match a declaration
-#'
-#' Dispatches to the per-class restructure. The two classes share the
-#' metadata substrate but not their layout: an aniframe is grouped and
-#' ordered by identity then time, an anievent is ordered by identity then
-#' bout start and is never grouped.
-#'
-#' @param data An aniframe or anievent object.
-#' @param variables_what,variables_when,variables_where The full
-#'   declaration to apply.
-#'
-#' @return `data`, restructured, with the declaration recorded.
-#' @keywords internal
-restructure_frame <- function(
-  data,
-  variables_what,
-  variables_when,
-  variables_where
-) {
-  if (is_anievent(data)) {
-    if (length(variables_where) > 0) {
-      cli::cli_abort(c(
-        "An {.cls anievent} has no spatial variables.",
-        "i" = "{.field variables_where} is always empty on an anievent; spatial position lives on the {.cls aniframe} it was encoded from."
-      ))
-    }
-    return(restructure_anievent(data, variables_what, variables_when))
-  }
-
-  restructure_aniframe(data, variables_what, variables_when, variables_where)
-}
-
-
-#' Strip a frame back to its dplyr classes
-#'
-#' The structural steps operate on a plain frame, so they neither
-#' dispatch back into the class-preserving methods nor trigger the
-#' `ungroup()` "use with care" warning when a declaration leaves nothing
-#' to group by.
-#'
-#' @param data An aniframe or anievent object.
-#'
-#' @return `data` with the animovement classes removed.
-#' @keywords internal
-strip_animovement_class <- function(data) {
-  class(data) <- intersect(class(data), base_frame_classes())
-  data
-}
-
-
-#' Restructure an aniframe
-#'
-#' The tail of [as_aniframe()], factored out so that construction and
-#' re-declaration cannot drift apart: validate the declared columns
-#' exist, standardise their types, relocate, arrange, regroup, and
-#' refresh the derived `coordinate_system`.
-#'
-#' @param data An aniframe object.
-#' @param variables_what,variables_when,variables_where The declaration
-#'   to apply.
-#'
-#' @return `data`, restructured, with the declaration recorded.
-#' @keywords internal
-restructure_aniframe <- function(
-  data,
-  variables_what,
-  variables_when,
-  variables_where
-) {
-  cls <- class(data)
-  md <- get_metadata(data)
-  bare <- strip_animovement_class(data)
-
-  ensure_aniframe_cols(bare, variables_what, variables_when, variables_where)
-  bare <- standardise_aniframe_cols(
-    bare,
-    variables_what,
-    variables_when,
-    variables_where
-  )
-
-  # Column order: what, when, where, confidence, everything else.
-  standard_cols <- unique(c(variables_what, variables_when, variables_where))
-  if ("confidence" %in% names(bare)) {
-    standard_cols <- c(standard_cols, "confidence")
-  }
-  bare <- bare[, c(standard_cols, setdiff(names(bare), standard_cols))]
-
-  # Order by identity first, then temporal (keeps trajectories contiguous).
-  bare <- dplyr::arrange(
-    bare,
-    dplyr::across(dplyr::all_of(variables_what)),
-    dplyr::across(dplyr::all_of(variables_when))
-  )
-
-  # Group by identity + temporal context (all what + when except time).
-  grouping_vars <- c(variables_what, setdiff(variables_when, "time"))
-  bare <- regroup_frame(bare, grouping_vars)
-
-  md$variables_what <- variables_what
-  md$variables_when <- variables_when
-  md$variables_where <- variables_where
-  md$coordinate_system <- as_metadata_factor(
-    infer_coordinate_system(variables_where),
-    "coordinate_system"
-  )
-
-  preserve_animovement_class(bare, cls, md)
-}
-
-
-#' Restructure an anievent
-#'
-#' The anievent counterpart to [restructure_aniframe()]: validate,
-#' standardise types, relocate, and order by identity then bout start.
-#' An anievent is not grouped.
-#'
-#' @param data An anievent object.
-#' @param variables_what,variables_when The declaration to apply.
-#'
-#' @return `data`, restructured, with the declaration recorded.
-#' @keywords internal
-restructure_anievent <- function(data, variables_what, variables_when) {
-  cls <- class(data)
-  md <- get_metadata(data)
-  bare <- strip_animovement_class(data)
-
-  ensure_anievent_cols(bare)
-  ensure_declared_cols_exist(bare, variables_what, "what")
-  ensure_declared_cols_exist(
-    bare,
-    setdiff(variables_when, c("start", "stop")),
-    "when"
-  )
-  bare <- standardise_anievent_cols(bare, variables_what, variables_when)
-
-  event_cols <- c("channel", "type", "label")
-  if ("modifiers" %in% names(bare)) {
-    event_cols <- c(event_cols, "modifiers")
-  }
-  standard_cols <- c(variables_what, variables_when, event_cols)
-  bare <- bare[, c(standard_cols, setdiff(names(bare), standard_cols))]
-
-  when_grouping <- setdiff(variables_when, c("start", "stop"))
-  bare <- dplyr::arrange(
-    bare,
-    dplyr::across(dplyr::all_of(c(variables_what, when_grouping))),
-    .data$start
-  )
-
-  md$variables_what <- variables_what
-  md$variables_when <- variables_when
-  # An anievent carries no spatial variables — position lives on the
-  # aniframe it was encoded from.
-  md$variables_where <- character()
-
-  preserve_animovement_class(bare, cls, md)
-}
-
-
-#' Group a frame by the given columns, or ungroup it when there are none
-#'
-#' @param data A plain (non-animovement) data frame.
-#' @param grouping_vars Character vector of columns to group by.
-#'
-#' @return `data`, grouped or ungrouped.
-#' @keywords internal
-regroup_frame <- function(data, grouping_vars) {
-  if (length(grouping_vars) == 0) {
-    return(dplyr::ungroup(data))
-  }
-
-  suppressWarnings(
-    dplyr::group_by(data, dplyr::across(dplyr::all_of(grouping_vars)))
-  )
-}
-
-
 #' Ensure declared columns are present
 #'
-#' Shared by construction ([ensure_aniframe_cols()]) and re-declaration,
+#' Shared by construction ([ensure_has_aniframe_cols()]) and re-declaration,
 #' so a column that isn't there is reported the same way whichever route
 #' the caller took.
 #'
@@ -292,7 +134,7 @@ regroup_frame <- function(data, grouping_vars) {
 #'
 #' @return `TRUE`, invisibly.
 #' @keywords internal
-ensure_declared_cols_exist <- function(data, cols, role) {
+ensure_has_declared_cols <- function(data, cols, role) {
   missing_cols <- setdiff(cols, names(data))
   if (length(missing_cols) == 0) {
     return(invisible(TRUE))
@@ -417,7 +259,7 @@ set_variables_where <- function(data, variables) {
 #' @export
 add_variables_what <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
   declare_variables(data, "what", union(get_variables(data, "what"), variables))
 }
 
@@ -425,35 +267,35 @@ add_variables_what <- function(data, variables) {
 #' @export
 add_variables_when <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
 
-  # `time` is the leaf of the temporal hierarchy — rows are ordered by
-  # the coarser context first, then by time within it. Appending a
-  # session or trial *after* `time` would sort by time across sessions
-  # and interleave them, so the new columns go ahead of it.
-  declared <- union(get_variables(data, "when"), variables)
-  declared <- c(setdiff(declared, "time"), intersect(declared, "time"))
-
-  declare_variables(data, "when", declared)
+  # `variables_when` holds only the temporal context, so a new column
+  # simply joins it — the index sorts after all of them regardless, and is
+  # declared separately.
+  declare_variables(data, "when", union(get_variables(data, "when"), variables))
 }
 
 #' @rdname variables
 #' @export
 add_variables_where <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
-  declare_variables(
-    data,
-    "where",
-    union(get_variables(data, "where"), variables)
-  )
+  ensure_variables_character(variables)
+
+  # `union()` drops names, so combining has to happen on the mapping: the
+  # roles already declared, plus the new ones, with anything the addition
+  # supersedes -- by role or by column -- taken out first.
+  current <- normalise_axes(get_declared_where(data))
+  added <- normalise_axes(variables)
+  superseded <- names(current) %in% names(added) | current %in% added
+
+  declare_variables(data, "where", c(current[!superseded], added))
 }
 
 #' @rdname variables
 #' @export
 remove_variables_what <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
   declare_variables(
     data,
     "what",
@@ -465,7 +307,7 @@ remove_variables_what <- function(data, variables) {
 #' @export
 remove_variables_when <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
   declare_variables(
     data,
     "when",
@@ -477,10 +319,20 @@ remove_variables_when <- function(data, variables) {
 #' @export
 remove_variables_where <- function(data, variables) {
   ensure_is_aniframe_or_anievent(data)
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
+
+  # By column, like the other `remove_` verbs; the roles of whatever is
+  # left travel with it, which `setdiff()` on bare columns would lose.
+  current <- normalise_axes(get_declared_where(data))
+
+  # Leniently: the caller removed a column, they did not assert that what
+  # is left is a coordinate system. Declaring an incoherent set outright
+  # still aborts; arriving at one by removal degrades to `unknown` with a
+  # warning, so a remove-then-add is not blocked halfway through.
   declare_variables(
     data,
     "where",
-    setdiff(get_variables(data, "where"), variables)
+    current[!current %in% variables],
+    strict = FALSE
   )
 }

@@ -28,7 +28,16 @@
 #'   x = rnorm(30),
 #'   y = rnorm(30),
 #'   variables_what = "track",
-#'   variables_when = c("trial", "time")
+#'   variables_when = "trial"
+#' )
+#'
+#' # Indexed by a column that isn't called `time`
+#' aniframe(
+#'   individual = 1L,
+#'   frame = 1:10,
+#'   x = rnorm(10),
+#'   y = rnorm(10),
+#'   index = "frame"
 #' )
 aniframe <- function(
   ...,
@@ -36,6 +45,7 @@ aniframe <- function(
   variables_what = NULL,
   variables_when = NULL,
   variables_where = NULL,
+  index = NULL,
   .rows = NULL,
   .name_repair = c("check_unique", "unique", "universal", "minimal")
 ) {
@@ -53,6 +63,7 @@ aniframe <- function(
     metadata = metadata,
     variables_what = variables_what,
     variables_when = variables_when,
-    variables_where = variables_where
+    variables_where = variables_where,
+    index = index
   )
 }

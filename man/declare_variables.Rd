@@ -4,7 +4,7 @@
 \alias{declare_variables}
 \title{Declare one variable role and restructure the frame to match}
 \usage{
-declare_variables(data, role, variables)
+declare_variables(data, role, variables, strict = TRUE)
 }
 \arguments{
 \item{data}{An aniframe or anievent object.}

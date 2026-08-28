@@ -8,6 +8,6 @@
 
 library(testthat)
 library(dplyr)
-library(aniframe)
+library(anicore)
 
-test_check("aniframe")
+test_check("anicore")

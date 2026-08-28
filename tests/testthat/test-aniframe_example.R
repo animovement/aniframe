@@ -100,7 +100,10 @@ test_that("example_aniframe creates 3D data with x, y, and z", {
   result <- example_aniframe(n_dims = 3)
 
   expect_true(all(c("x", "y", "z") %in% names(result)))
-  expect_equal(get_metadata(result)$variables_where, c("x", "y", "z"))
+  expect_equal(
+    get_metadata(result)$variables_where,
+    c("x", "y", "z")
+  )
 })
 
 test_that("example_aniframe creates correct number of rows", {
@@ -135,6 +138,7 @@ test_that("example_aniframe sets correct metadata variables", {
   expect_equal(get_metadata(result)$variables_what, c("individual", "keypoint"))
   expect_equal(
     get_metadata(result)$variables_when,
-    c("session", "trial", "time")
+    # The index is declared separately and is not temporal *context*.
+    c("session", "trial")
   )
 })

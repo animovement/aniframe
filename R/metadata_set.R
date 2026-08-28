@@ -42,14 +42,25 @@ write_metadata <- function(data, metadata) {
 ensure_no_declaration_fields <- function(user_md) {
   # A complete metadata object is a wholesale replacement of the
   # attribute, not a field write.
-  if (check_all_metadata_fields_present(user_md)) {
+  if (has_all_metadata_fields(user_md)) {
     return(invisible(TRUE))
   }
 
-  offending <- intersect(names(user_md), declaration_metadata_fields())
+  offending <- intersect(names(user_md), list_declaration_metadata_fields())
 
   if (length(offending) > 0) {
-    setters <- paste0("set_", offending)
+    setters <- vapply(
+      offending,
+      function(field) {
+        # The index's setter is named for the concept, not the field.
+        if (identical(field, "variables_index")) {
+          "set_index"
+        } else {
+          paste0("set_", field)
+        }
+      },
+      character(1)
+    )
     cli::cli_abort(c(
       # Message strings are code, not comments, so they must stay ASCII:
       # R CMD check warns on non-ASCII in R sources, and CI errors on
@@ -73,7 +84,7 @@ ensure_no_declaration_fields <- function(user_md) {
 #' @return A factor with the field's full set of levels.
 #' @keywords internal
 as_metadata_factor <- function(value, field) {
-  factor(as.character(value), levels = levels(default_metadata()[[field]]))
+  factor(as.character(value), levels = levels(list_default_metadata()[[field]]))
 }
 
 
@@ -97,11 +108,8 @@ as_metadata_factor <- function(value, field) {
 #' * `start_datetime`: Start date and time of recording
 #' * `reference_frame`: Reference frame (default: "allocentric")
 #' * `coordinate_system`: Coordinate system (default: "cartesian")
-#' * `origin`: Location of the (0,0) coordinate (default: "bottom_left")
-#' * `y_height`: Height of the recording frame in y-axis units (default: NA)
-#'
-#' For backwards compatibility, the deprecated field `point_of_reference` is
-#' accepted as an alias for `origin` and emits a deprecation warning.
+#' * `axis_directions`: Which way each axis points, keyed by axis role
+#' * `axis_extents`: How far each axis runs, keyed by axis role
 #'
 #' @param data An aniframe or anievent object.
 #' @param ... Named metadata values (e.g., `sampling_rate = 30, source = "sleap"`)
@@ -110,7 +118,7 @@ as_metadata_factor <- function(value, field) {
 #'
 #' @return The object with updated metadata.
 #'
-#' @seealso [get_metadata()], [default_metadata()]
+#' @seealso [get_metadata()], [list_default_metadata()]
 #'
 #' @examples
 #' \dontrun{
@@ -149,28 +157,11 @@ set_metadata <- function(data, ..., metadata = NULL) {
   ensure_no_declaration_fields(user_md)
 
   # ------------------------------------------------------------------
-  # Backwards-compat: `point_of_reference` was renamed to `origin`
-  # ------------------------------------------------------------------
-  if ("point_of_reference" %in% names(user_md)) {
-    if ("origin" %in% names(user_md)) {
-      cli::cli_abort(
-        "Cannot specify both {.field point_of_reference} (deprecated) and {.field origin}."
-      )
-    }
-    cli::cli_warn(c(
-      "Metadata field {.field point_of_reference} is deprecated; use {.field origin} instead.",
-      "i" = "The supplied value will be applied to {.field origin}."
-    ))
-    user_md$origin <- user_md$point_of_reference
-    user_md$point_of_reference <- NULL
-  }
-
-  # ------------------------------------------------------------------
   # Convert character values to factors where appropriate
   # ------------------------------------------------------------------
   if (length(user_md) > 0) {
     names_md <- names(user_md)
-    defaults <- default_metadata()
+    defaults <- list_default_metadata()
 
     for (n in names_md) {
       # Check if this field exists in defaults and should be a factor
@@ -215,8 +206,8 @@ set_metadata <- function(data, ..., metadata = NULL) {
   # ------------------------------------------------------------------
   # Does the data have metadata or not?
   # ------------------------------------------------------------------
-  if (!check_metadata_exists(data)) {
-    new_md <- default_metadata()
+  if (!has_metadata(data)) {
+    new_md <- list_default_metadata()
   } else {
     new_md <- get_metadata(data)
   }

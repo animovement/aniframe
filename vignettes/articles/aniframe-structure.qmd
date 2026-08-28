@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(aniframe)
+library(anicore)
 ```
 
 ## What is an `aniframe`?
@@ -71,8 +71,16 @@ Every row of an `aniframe` answers three questions:
 | Question | Slot          | Resolves   | Default columns          |
 |----------|---------------|------------|--------------------------|
 | **What** is moving? | Identity (`variables_what`) | An entity   | `individual`, `keypoint` |
-| **When**?           | Temporal (`variables_when`) | A timepoint | `time`                   |
+| **When**?           | Temporal context (`variables_when`) | A context — which session, which trial | `session`, `trial` |
 | **Where**?          | Spatial (`variables_where`) | A position  | `x`, `y`                 |
+
+"When" is really two questions, and only the first is answered here:
+which recording session this row belongs to, and where it sits inside
+it. The first is context the row shares with its neighbours, and it is
+what the frame groups by; the second is what tells the row apart from
+them, and it orders rather than groups. That second half is the
+**index**, declared on its own in `variables_index` and covered in
+[its own section](#the-index) below.
 
 The combination of all identity and temporal columns forms a composite
 key that uniquely identifies each row; the spatial columns are what
@@ -83,6 +91,7 @@ downstream code can introspect:
 
 ```{r}
 md <- get_metadata(data)
+md$variables_index
 md$variables_what
 md$variables_when
 md$variables_where
@@ -93,8 +102,8 @@ md$variables_where
 Most readers populate these from the source data, but you can override
 them when constructing manually. By default, `as_aniframe()` recognises
 `c("model", "individual", "track", "keypoint")` as identity columns and
-`c("session", "trial", "time")` as temporal columns. Pass the slot
-arguments explicitly to use other names:
+`c("session", "trial")` as temporal context. Pass the slot arguments
+explicitly to use other names:
 
 ```{r}
 df <- data.frame(
@@ -108,14 +117,80 @@ df <- data.frame(
 custom <- as_aniframe(
   df,
   variables_what = "track",
-  variables_when = c("trial", "time")
+  variables_when = "trial"
 )
 custom
 ```
 
-`time` is the only temporal column with a special status: it must
-always be present, and downstream operations (smoothing, derivatives)
-assume it's monotonically ordered within each entity.
+## The index
+
+One column has a status of its own: the **index**, which gives each row
+its position within its temporal context. Read it with `get_index()`:
+
+```{r}
+get_index(data)
+```
+
+It defaults to `time`, but nothing requires that name. A frame straight
+off a camera is often indexed by frame number, and can say so:
+
+```{r}
+frames <- data.frame(
+  individual = 1L,
+  frame = 1:6,
+  x = runif(6),
+  y = runif(6)
+)
+
+af <- as_aniframe(frames, index = "frame")
+get_index(af)
+```
+
+No column called `time` is involved, and none is required:
+
+```{r}
+names(af)
+```
+
+Two rules follow from what the index *is*, and both are worth knowing.
+
+**A frame has exactly one.** The index is where a row sits within its
+context, so a second one would have nothing left to mean. Declaring more
+than one is an error rather than a silent pick between them:
+
+```{r error=TRUE}
+as_aniframe(frames, index = c("frame", "individual"))
+```
+
+**It is never a grouping variable.** The frame is grouped by identity
+plus temporal *context*; the index orders rows inside each of those
+groups. Grouping by it as well would put every row in a group of its
+own, so it stays out:
+
+```{r}
+dplyr::group_vars(data)
+```
+
+`set_index()` changes it, re-ordering the frame to match. The column
+that was previously the index becomes an ordinary, undeclared one — it
+is not promoted to temporal context, for the reason just given:
+
+```{r}
+timestamped <- data |>
+  dplyr::mutate(timestamp = time / 30) |>
+  set_index("timestamp")
+
+get_index(timestamped)
+get_variables_when(timestamped)
+dplyr::group_vars(timestamped)
+```
+
+`time` is still there as a column; it is simply no longer declared as
+anything.
+
+Downstream operations (smoothing, derivatives) assume the index is
+monotonically ordered within each entity, which is how `as_aniframe()`
+arranges the frame.
 
 ## Coordinate systems
 
@@ -174,9 +249,9 @@ is_cartesian_2d(cart)
 
 ## Where to next?
 
-- [The metadata attribute](aniframe-metadata.html) — units, origin,
-  sampling rate, and the setters that keep them consistent with the
-  data.
+- [The metadata attribute](aniframe-metadata.html) — units, axis
+  directions, sampling rate, and the setters that keep them consistent
+  with the data.
 - [Connections](aniframe-connections.html) — recording skeleton edges
   or other relationships between values of an identity / temporal
   variable.

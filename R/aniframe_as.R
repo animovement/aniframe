@@ -15,9 +15,24 @@
 #' @param variables_when Character vector of temporal columns that together
 #'   define a unique timepoint. If `NULL` (the default), detected from the
 #'   data: whichever of `observation`, `session`, `trial` and `time` are
-#'   present. `time` is always required.
-#' @param variables_where Character vector of spatial columns that together
-#'   define position. If `NULL` (the default), detected from the data.
+#'   present, minus the index. These are the temporal *context* — which
+#'   session, which trial — and, together with `variables_what`, they are
+#'   what the frame is grouped by. The index itself is declared separately
+#'   and is never one of them.
+#' @param index Length-one character vector naming the column the frame is
+#'   indexed by — the position of each row within its temporal context.
+#'   It is never a grouping variable. If
+#'   `NULL` (the default), the frame's existing declaration is kept, or
+#'   `"time"` for a frame that has none. The column must exist and be
+#'   numeric; it may be called anything.
+#' @param variables_where The spatial columns that together define
+#'   position. Either a plain character vector of column names, in which
+#'   case the name is taken to be the axis role, or a vector named by axis
+#'   role — `c(x = "u", y = "v")` — which lets the columns be called
+#'   anything. The roles themselves are a closed set (`x`, `y`, `z`,
+#'   `rho`, `phi`, `theta`), so that transformations between coordinate
+#'   systems stay well defined; an unrecognised role is rejected by name.
+#'   If `NULL` (the default), detected from the data.
 #'
 #' @return An aniframe object
 #' @examples
@@ -32,9 +47,24 @@ as_aniframe <- function(
   metadata = list(),
   variables_what = NULL,
   variables_when = NULL,
-  variables_where = NULL
+  variables_where = NULL,
+  index = NULL
 ) {
-  defaults <- default_metadata()
+  defaults <- list_default_metadata()
+
+  # An explicit index wins; otherwise keep what the frame already declares,
+  # falling back to "time" for a frame — or a serialised object — with no
+  # declaration at all.
+  if (!is.null(index)) {
+    ensure_index_name(index)
+  }
+  index <- index %||%
+    (if (is_aniframe(data) || is_anievent(data)) {
+      resolve_index(get_metadata(data))
+    } else {
+      NULL
+    }) %||%
+    "time"
 
   # A frame that already declares a role keeps it. Casting an aniframe
   # that has been given a custom identity -- `id`, say -- used to re-run
@@ -43,11 +73,11 @@ as_aniframe <- function(
   # columns have since been dropped fall through to detection, so a cast
   # still repairs a frame rather than erroring on it.
   variables_when <- variables_when %||%
-    declared_if_present(data, "variables_when")
+    get_declared_if_present(data, "variables_when")
   variables_what <- variables_what %||%
-    declared_if_present(data, "variables_what")
+    get_declared_if_present(data, "variables_what")
   variables_where <- variables_where %||%
-    declared_if_present(data, "variables_where")
+    get_declared_if_present(data, "variables_where")
 
   # Resolve variables_when: detect from data if not specified
   if (is.null(variables_when)) {
@@ -58,13 +88,18 @@ as_aniframe <- function(
     variables_when <- recognised_when[recognised_when %in% names(data)]
   }
 
+  # `variables_when` is the temporal *context* — which session, which
+  # trial. The index is the position within that context and is declared
+  # separately, so detection's `time` drops out here.
+  variables_when <- setdiff(variables_when, index)
+
   # Resolve variables_what: detect from data if not specified
   if (is.null(variables_what)) {
-    data <- ensure_identity(data)
+    data <- add_default_identity(data)
 
     # Only include recognised what variables that are present in data
-    variables_what <- recognised_variables_what()[
-      recognised_variables_what() %in% names(data)
+    variables_what <- list_recognised_variables_what()[
+      list_recognised_variables_what() %in% names(data)
     ]
   }
 
@@ -88,6 +123,13 @@ as_aniframe <- function(
   # through the same code so they cannot drift apart (#82).
   data <- new_aniframe(data)
   data <- set_metadata(data, metadata = metadata)
+
+  # `index` is a declaration, so `set_metadata()` refuses it — it goes on
+  # directly, before the restructure that reads it back.
+  md <- get_metadata(data)
+  md[["variables_index"]] <- index
+  data <- attach_metadata(data, md)
+
   data <- restructure_aniframe(
     data,
     variables_what,
@@ -95,66 +137,11 @@ as_aniframe <- function(
     variables_where
   )
 
-  # Fall back y_height to max(y) when not supplied and y is present.
-  # Never overwrite a value that's already set — only `set_y_height()` /
-  # `set_origin()` should mutate it post-construction.
-  if ("y" %in% variables_where) {
-    current_y_height <- get_metadata(data, "y_height")
-    if (length(current_y_height) == 0 || is.na(current_y_height)) {
-      max_y <- suppressWarnings(max(data$y, na.rm = TRUE))
-      if (is.finite(max_y)) {
-        data <- set_metadata(data, y_height = max_y)
-      }
-    }
-  }
-
   data
 }
 
 
-#' Standardize column types for aniframe
-#'
-#' Converts character identity and temporal variables to factors.
-#' Converts numeric identity and temporal variables (except time) to integers.
-#' Spatial variables are converted to numeric.
-#'
-#' @param data Data frame to standardise.
-#' @param variables_what Identity variable names.
-#' @param variables_when Temporal variable names.
-#' @param variables_where Spatial variable names.
-#'
-#' @return Data frame with standardised column types.
-#' @keywords internal
-standardise_aniframe_cols <- function(
-  data,
-  variables_what,
-  variables_when,
-  variables_where
-) {
-  # What and when variables (except time) should be categorical or integer
-  categorical_vars <- c(variables_what, setdiff(variables_when, "time"))
-  for (col in categorical_vars) {
-    if (col %in% names(data)) {
-      if (is.character(data[[col]])) {
-        data[[col]] <- factor(data[[col]])
-      } else if (is.numeric(data[[col]])) {
-        data[[col]] <- as.integer(data[[col]])
-      }
-    }
-  }
-
-  # Convert spatial variables to numeric
-  for (col in variables_where) {
-    if (col %in% names(data)) {
-      data[[col]] <- as.numeric(data[[col]])
-    }
-  }
-
-  data
-}
-
-
-#' Ensure the data carries at least one identity variable
+#' Add a default identity variable when the data has none
 #'
 #' An aniframe needs **at least one identity (`what`) variable** — the
 #' columns that together say which entity a row belongs to, and which the
@@ -171,91 +158,18 @@ standardise_aniframe_cols <- function(
 #' `variables_what = character(0)` is a deliberate declaration of "no
 #' identity variables" and is left alone.
 #'
-#' @param data Data frame to check.
+#' @param data Data frame to complete.
 #'
 #' @return `data`, with an identity column added if it had none.
 #' @keywords internal
-ensure_identity <- function(data) {
-  has_identity <- any(recognised_variables_what() %in% names(data))
+add_default_identity <- function(data) {
+  has_identity <- any(list_recognised_variables_what() %in% names(data))
 
   if (!has_identity) {
     data$keypoint <- "centroid"
   }
 
   data
-}
-
-
-#' Validate required columns for aniframe
-#'
-#' @param data Data frame to validate.
-#' @param variables_what Identity variables.
-#' @param variables_when Temporal variables.
-#' @param variables_where Spatial variables.
-#'
-#' @keywords internal
-ensure_aniframe_cols <- function(
-  data,
-  variables_what,
-  variables_when,
-  variables_where
-) {
-  # All declared variables must exist. Declaring a column that isn't
-  # there leaves the metadata describing a frame it doesn't have.
-  ensure_declared_cols_exist(data, variables_what, "what")
-
-  # time column is always required
-  if (!"time" %in% names(data)) {
-    cli::cli_abort(
-      c(
-        "Column {.val time} is required but not found in data.",
-        "i" = "The {.val time} column must always be present."
-      )
-    )
-  }
-
-  ensure_declared_cols_exist(data, setdiff(variables_when, "time"), "when")
-  ensure_declared_cols_exist(data, variables_where, "where")
-
-  invisible(TRUE)
-}
-
-
-#' Infer coordinate system from spatial variables
-#'
-#' @param variables_where Character vector of spatial variable names.
-#' @return Character string naming the coordinate system.
-#' @keywords internal
-infer_coordinate_system <- function(variables_where) {
-  vars <- sort(variables_where)
-
-  # Map sorted variable combinations to coordinate systems
-  coord_map <- list(
-    "x" = "cartesian_1d",
-    "y" = "cartesian_1d",
-    "z" = "cartesian_1d",
-    "x,y" = "cartesian_2d",
-    "x,z" = "cartesian_2d",
-    "y,z" = "cartesian_2d",
-    "x,y,z" = "cartesian_3d",
-    "phi,rho" = "polar",
-    "phi,rho,z" = "cylindrical",
-    "phi,rho,theta" = "spherical"
-  )
-
-  key <- paste(vars, collapse = ",")
-
-  if (key %in% names(coord_map)) {
-    return(coord_map[[key]])
-  }
-
-  cli::cli_warn(
-    c(
-      "Could not infer coordinate system from spatial variables: {.val {variables_where}}.",
-      "i" = "Setting coordinate system to {.val unknown}."
-    )
-  )
-  "unknown"
 }
 
 #' Detect spatial variables from data
@@ -307,8 +221,8 @@ detect_variables_where <- function(data) {
 #'
 #' @return The declared column names, or `NULL` to detect instead.
 #' @keywords internal
-declared_if_present <- function(data, field) {
-  if (!check_metadata_exists(data)) {
+get_declared_if_present <- function(data, field) {
+  if (!has_metadata(data)) {
     return(NULL)
   }
 

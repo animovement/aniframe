@@ -13,10 +13,28 @@
 #' * `filename`: Original filename(s) (character vector, NA). Accepts a
 #'   vector of length 1 or more — readers that load from multiple files
 #'   (e.g. `aniread::read_trackball()`) populate this with all source paths.
-#' * `sampling_rate`: Sampling rate in Hz (numeric, NA)
+#' * `sampling_rate`: Sampling rate in Hz (numeric, NA). Declared, not
+#'   derived — set it with [set_sampling_rate()].
+#' * `sampling_interval`: The interval between consecutive observations
+#'   (numeric, NA), in the unit the index is in. Derived from the index at
+#'   construction and refreshed on every re-declaration, so it describes
+#'   the data rather than a claim about it. Read it with
+#'   [get_sampling_interval()]; ask whether the spacing is even with
+#'   [is_sampling_regular()], which is computed on demand because dropping
+#'   rows changes the answer.
 #' * `start_datetime`: Start date and time of recording (POSIXct, NA)
+#' * `variables_index`: The single column the frame is indexed by (character,
+#'   `"time"`). Exactly one column, and it may be called anything — the
+#'   constructor requires *that* column rather than a column literally
+#'   named `time`. It is never one of the `variables_when`, which holds
+#'   the surrounding temporal context and is what the frame is grouped by;
+#'   the index positions each row *within* its context and so is never a
+#'   grouping variable. Read it with [get_index()], change it with
+#'   [set_index()]. Absent from objects serialised before the field
+#'   existed, where it reads back as `"time"` — the value they were built
+#'   with.
 #' * `variables_what`, `variables_when`, `variables_where`: The columns
-#'   that carry, respectively, entity identity, temporal position and
+#'   that carry, respectively, entity identity, temporal context and
 #'   spatial position. These are the structural fields — [as_aniframe()]
 #'   uses them to coerce column types, order columns and rows, group the
 #'   frame, and derive `coordinate_system`. The values here are a
@@ -25,22 +43,41 @@
 #'   In particular `variables_what` is **not** a requirement that a frame
 #'   carry `individual` and `keypoint` columns — the rule is that a frame
 #'   has at least one identity variable, whichever it happens to be.
+#' * `axes`: Which column carries which axis role (named character,
+#'   `c(x = "x", y = "y")`). Names are roles — `x`, `y`, `z`, `rho`,
+#'   `phi`, `theta` — and values are the columns carrying them, so a frame
+#'   whose coordinates are called something else still has a usable
+#'   `coordinate_system`. The role set is closed, which is what keeps
+#'   transformations between coordinate systems well defined; the column
+#'   names are free. Empty when the roles are unknown. Read it with
+#'   [get_axes()], change it with [set_axes()]. `variables_where` names the
+#'   same columns without their roles, and is derived from this.
 #' * `reference_frame`: Reference frame (factor, "allocentric").
 #'   Permitted values: "allocentric", "egocentric", "none".
 #' * `coordinate_system`: Coordinate system (factor, "cartesian_2d")
-#' * `origin`: Location of the (0,0) coordinate relative to the recording
-#'   frame (factor, "bottom_left"). Permitted values: "bottom_left",
-#'   "top_left", "none".
+#' * `axis_directions`: Which way each axis points, keyed by axis role
+#'   (named character, empty). One of "right", "left", "up", "down",
+#'   "back" or "forward", read from where the recording was made. Read it
+#'   with [get_axis_directions()], change it with [set_axis_directions()],
+#'   which reflects an axis turned over. [get_angle_direction()] and
+#'   [get_handedness()] follow from it.
+#' * `axis_extents`: How far each axis runs, keyed by axis role (named
+#'   numeric, empty) — the video frame height for `y`. Read it with
+#'   [get_axis_extents()], change it with [set_axis_extents()]. It is what
+#'   an axis is reflected around.
+#' * `handedness`: Whether the frame is right- or left-handed (factor,
+#'   "unknown"). Three declared axis directions determine it and are read
+#'   in preference; the field carries the convention on its own for a frame
+#'   that states one without spelling the axes out. Read it with
+#'   [get_handedness()], change it with [set_handedness()].
 #'
 #' The spatial fields all have a way of saying "not applicable", because
 #' the metadata substrate is shared with [anievent()], which has no
-#' spatial component at all: `unit_space`, `unit_angle`, `reference_frame`
-#' and `origin` take "none", `coordinate_system` takes "unknown", and
-#' `y_height` takes `NA`. An anievent is constructed with those values
-#' rather than inheriting movement defaults it cannot honour (#73).
-#' * `y_height`: Height of the recording frame in y-axis units (numeric, NA).
-#'   Used by [set_origin()] to reflect y coordinates when switching origin
-#'   conventions.
+#' spatial component at all: `unit_space`, `unit_angle` and
+#' `reference_frame` take "none", `coordinate_system` takes "unknown", and
+#' `axes`, `axis_directions` and `axis_extents` are empty. An anievent is
+#' constructed with those values rather than inheriting movement defaults
+#' it cannot honour (#73).
 #' * `connections`: Named list of connection tables, one per identity or
 #'   temporal variable (typically `keypoint` for skeletons; could also be
 #'   `individual` for social networks). Each entry is a 2-column tibble of
@@ -64,22 +101,25 @@
 #' @seealso [set_metadata()], [get_metadata()]
 #'
 #' @examples
-#' names(default_metadata())
+#' names(list_default_metadata())
 #' @export
-default_metadata <- function() {
+list_default_metadata <- function() {
   metadata <- list(
     source = as.character(NA),
     source_version = as.character(NA),
     filename = as.character(NA),
     sampling_rate = as.numeric(NA),
+    sampling_interval = as.numeric(NA),
     start_datetime = as.POSIXct(NA),
+    variables_index = "time",
     variables_what = c("individual", "keypoint"),
-    variables_when = c("time"),
+    variables_when = character(),
     variables_where = c("x", "y"),
     variables_event = list(
       state = character(),
       point = character()
     ),
+    axes = c(x = "x", y = "y"),
     unit_space = factor(
       "px",
       levels = c(
@@ -134,19 +174,20 @@ default_metadata <- function() {
         "spherical"
       )
     ),
-    origin = factor(
-      "bottom_left",
+    axis_directions = stats::setNames(character(), character()),
+    axis_extents = stats::setNames(numeric(), character()),
+    handedness = factor(
+      "unknown",
       levels = c(
-        "bottom_left",
-        "top_left",
-        "none"
+        "right",
+        "left",
+        "unknown"
       )
     ),
-    y_height = as.numeric(NA),
     connections = list(),
     spec_version = list(
-      aniframe = "1.1.0",
-      anievent = "0.2.0"
+      aniframe = "2.0.0",
+      anievent = "0.3.0"
     )
   )
 

@@ -164,7 +164,7 @@ test_that("preserve_animovement_class restores order and drops dplyr classes", {
   bare <- dplyr::tibble(a = 1)
   cls <- c("test_kin", "aniframe", "grouped_df", "tbl_df", "tbl", "data.frame")
 
-  out <- preserve_animovement_class(bare, cls, default_metadata())
+  out <- preserve_animovement_class(bare, cls, list_default_metadata())
 
   # Animovement classes restored ahead of the tibble tail, in order...
   expect_identical(

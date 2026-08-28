@@ -36,12 +36,9 @@ Default metadata fields include:
 \item \code{start_datetime}: Start date and time of recording
 \item \code{reference_frame}: Reference frame (default: "allocentric")
 \item \code{coordinate_system}: Coordinate system (default: "cartesian")
-\item \code{origin}: Location of the (0,0) coordinate (default: "bottom_left")
-\item \code{y_height}: Height of the recording frame in y-axis units (default: NA)
+\item \code{axis_directions}: Which way each axis points, keyed by axis role
+\item \code{axis_extents}: How far each axis runs, keyed by axis role
 }
-
-For backwards compatibility, the deprecated field \code{point_of_reference} is
-accepted as an alias for \code{origin} and emits a deprecation warning.
 }
 \examples{
 \dontrun{
@@ -55,5 +52,5 @@ data <- set_metadata(data, metadata = md)
 
 }
 \seealso{
-\code{\link[=get_metadata]{get_metadata()}}, \code{\link[=default_metadata]{default_metadata()}}
+\code{\link[=get_metadata]{get_metadata()}}, \code{\link[=list_default_metadata]{list_default_metadata()}}
 }

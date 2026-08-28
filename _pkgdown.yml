@@ -1,6 +1,6 @@
-url: https://animovement.dev/aniframe/
+url: https://animovement.dev/anicore/
 home:
-  title: "aniframe – An R package providing core data structures for movement data"
+  title: "anicore – An R package providing core data structures for movement data"
 
 # Shared navbar (incl. the animovement dropdown + Zulip), theme, and author
 # details are inherited from animovementtemplate.
@@ -49,13 +49,25 @@ reference:
     contents:
       - get_metadata
       - set_metadata
+      - get_unit_time
       - set_unit_time
+      - get_unit_space
       - set_unit_space
+      - get_unit_angle
       - set_unit_angle
+      - get_sampling_rate
       - set_sampling_rate
-      - set_origin
-      - set_y_height
-      - default_metadata
+      - get_sampling_interval
+      - is_sampling_regular
+      - get_axis_directions
+      - set_axis_directions
+      - get_axis_extents
+      - set_axis_extents
+      - get_angle_direction
+      - set_angle_direction
+      - get_handedness
+      - set_handedness
+      - list_default_metadata
 
   - title: "Declaring variables"
     desc: >
@@ -63,10 +75,15 @@ reference:
       the frame's structure rather than a description of it, so the
       setters restructure the frame to match — coercing column types,
       relocating, reordering, regrouping, and refreshing derived fields.
-      `set_metadata()` refuses these three fields for that reason.
+      `set_metadata()` refuses these fields for that reason.
     contents:
       - variables
       - variables_event
+      - get_index
+      - set_index
+      - get_axes
+      - set_axes
+      - get_coordinate_system
 
   - title: "Connections"
     desc: >
@@ -83,9 +100,10 @@ reference:
   - title: "Spatial checks"
     desc: |
       These functions provide checks for your coordinate system.
-      `is_spatial()` and `ensure_is_spatial()` check the spatial columns
-      against the `variables_where` metadata; the `is_cartesian*()` family
-      checks for particular column names.
+      `is_spatial()` and `ensure_is_spatial()` check that the columns named
+      in `variables_where` are present and numeric; the `is_cartesian*()`
+      family reports which coordinate system the frame is in, which follows
+      from the axis roles it declares.
     contents:
     - is_spatial
     - ensure_is_spatial
@@ -109,5 +127,7 @@ reference:
     contents:
     - rad_to_deg
     - deg_to_rad
+    - wrap_angle
+    - unwrap_angle
     - convert_nan_to_na
 

@@ -32,7 +32,7 @@ declare_variables_event <- function(data, state, point) {
 
   declared <- normalise_variables_event(list(state = state, point = point))
   ensure_valid_variables_event(declared)
-  ensure_declared_cols_exist(
+  ensure_has_declared_cols(
     data,
     c(declared$state, declared$point),
     "event"
@@ -158,10 +158,10 @@ set_variables_event <- function(data, state = NULL, point = NULL) {
 #' @export
 add_variables_event <- function(data, state = NULL, point = NULL) {
   if (!is.null(state)) {
-    ensure_variables_chr(state)
+    ensure_variables_character(state)
   }
   if (!is.null(point)) {
-    ensure_variables_chr(point)
+    ensure_variables_character(point)
   }
   current <- get_variables_event(data)
 
@@ -176,7 +176,7 @@ add_variables_event <- function(data, state = NULL, point = NULL) {
 #' @rdname variables_event
 #' @export
 remove_variables_event <- function(data, variables) {
-  ensure_variables_chr(variables)
+  ensure_variables_character(variables)
   current <- get_variables_event(data)
 
   declare_variables_event(
