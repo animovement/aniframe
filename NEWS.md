@@ -28,6 +28,8 @@
 
 * `set_angle_direction()` asks for a sense of rotation and declares the axis directions that give it (#124), turning the vertical axis over when both are already declared.
 
+* `wrap_angle()` and `unwrap_angle()` move here from `anispace` (#128). They are angle arithmetic rather than coordinate transformation, and belong beside `deg_to_rad()` and `rad_to_deg()`, which were already here. `animetric` re-exported both from `anispace`, which is the sign of a primitive sitting one layer above the packages that need it.
+
 * Every exported function now has a runnable example (#106).
 
 ## Changed

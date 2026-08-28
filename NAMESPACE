@@ -122,8 +122,10 @@ export(set_variables_what)
 export(set_variables_when)
 export(set_variables_where)
 export(to_anievent)
+export(unwrap_angle)
 export(validate_anievent)
 export(validate_aniframe)
+export(wrap_angle)
 importFrom(dplyr,
   arrange,
   filter,

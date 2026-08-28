@@ -17,30 +17,6 @@ convert_nan_to_na <- function(data) {
   )
 }
 
-#' Convert radians to degrees
-#'
-#' @param x Numeric vector of angles (radians).
-#' @return Numeric vector of angles expressed in degrees.
-#' @examples
-#' rad_to_deg(pi)
-#' rad_to_deg(c(0, pi / 2, pi))
-#' @export
-rad_to_deg <- function(x) {
-  (x * 180) / pi
-}
-
-#' Convert degrees to radians
-#'
-#' @param x Numeric vector of angles (degrees).
-#' @return Numeric vector of angles expressed in radians.
-#' @examples
-#' deg_to_rad(180)
-#' deg_to_rad(c(0, 90, 180))
-#' @export
-deg_to_rad <- function(x) {
-  (x * pi) / 180
-}
-
 #' Identity variable names recognised across the animovement classes
 #'
 #' The identity (`what`) columns auto-detection looks for, shared by
