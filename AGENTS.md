@@ -1,14 +1,14 @@
 # AGENTS.md
 
-`aniframe` is part of the [animovement](https://animovement.dev) suite —
+`anicore` is part of the [animovement](https://animovement.dev) suite —
 the core data structures that the rest of the suite is built on.
 
 ## Where to look things up
 
-- **This package’s API** — <https://animovement.dev/aniframe/llms.txt>
+- **This package’s API** — <https://animovement.dev/anicore/llms.txt>
   lists every exported function, grouped, with a one-line description.
   Full help for one function, including its exact signature, is at
-  `https://animovement.dev/aniframe/reference/<function>.md`.
+  `https://animovement.dev/anicore/reference/<function>.md`.
 - **Which package owns what** —
   <https://github.com/animovement/animovement-agents> maps the suite:
   the aniframe data model, and the verb prefixes each package owns.
@@ -35,7 +35,7 @@ they cannot drift from the installed package.
   Checks must pass before merging.
 - **Write the pull request title as a [Conventional
   Commit](https://www.conventionalcommits.org/en/v1.0.0/)** —
-  `fix(aniframe): keep metadata through filter_kalman()`. Merges squash,
+  `fix(anicore): keep metadata through filter_kalman()`. Merges squash,
   so the title becomes the commit on `main`, and a workflow checks it.
   Types and the breaking-change rule are in
   [CONTRIBUTING.md](https://github.com/animovement/.github/blob/main/CONTRIBUTING.md#commit-messages).
