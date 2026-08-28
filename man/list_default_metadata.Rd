@@ -43,7 +43,10 @@ placeholder skeleton for an object with no data attached; every
 constructor overwrites them from the data or from its arguments.
 In particular \code{variables_what} is \strong{not} a requirement that a frame
 carry \code{individual} and \code{keypoint} columns — the rule is that a frame
-has at least one identity variable, whichever it happens to be.
+has at least one identity variable, whichever it happens to be. Nor
+does the order of \code{variables_what} assert a hierarchy: identity
+variables need not nest, and a position in the vector does not mean a
+level. See \code{\link[=list_recognised_variables_what]{list_recognised_variables_what()}}.
 \item \code{axes}: Which column carries which axis role (named character,
 \code{c(x = "x", y = "y")}). Names are roles — \code{x}, \code{y}, \code{z}, \code{rho},
 \code{phi}, \code{theta} — and values are the columns carrying them, so a frame
@@ -90,7 +93,7 @@ temporal variable (typically \code{keypoint} for skeletons; could also be
 \item \code{variables_event}: Named list with two entries, \code{state} and \code{point},
 each a character vector naming columns that carry per-frame
 categorical event labels. \code{state} columns are interval-valued
-(durative behaviours, ordered coarse to fine to encode nesting);
+(durative behaviours, listed coarse to fine where they nest);
 \code{point} columns are instantaneous (zero-duration events). Foundation
 for the \code{anievent} class and downstream event-handling utilities.
 Default is an empty list for each.
