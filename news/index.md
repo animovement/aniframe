@@ -5,7 +5,8 @@
 ### Changed
 
 - The order of `variables_what` no longer asserts a hierarchy
-  ([\#141](https://github.com/animovement/anicore/issues/141)). It was
+  ([\#140](https://github.com/animovement/anicore/issues/140),
+  [\#141](https://github.com/animovement/anicore/issues/141)). It was
   documented as coarse to fine, which reads naturally for the names that
   nest — a subject has tracks, a track has keypoints — but identity
   variables need not nest at all. `sex`, `treatment` and `genotype`
