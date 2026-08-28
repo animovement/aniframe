@@ -24,7 +24,7 @@
 #' @return Named list mapping a comma-separated sorted role set to the
 #'   coordinate system it defines.
 #' @keywords internal
-axis_role_sets <- function() {
+list_axis_role_sets <- function() {
   list(
     "x" = "cartesian_1d",
     "y" = "cartesian_1d",
@@ -44,7 +44,7 @@ axis_role_sets <- function() {
 #'
 #' @return Character vector of role names.
 #' @keywords internal
-known_axis_roles <- function() {
+list_axis_roles <- function() {
   c("x", "y", "z", "rho", "phi", "theta")
 }
 
@@ -86,7 +86,7 @@ normalise_axes <- function(variables_where) {
 #'
 #' @return `TRUE` when every element carries a role name.
 #' @keywords internal
-axes_declared_by_role <- function(variables_where) {
+has_axis_roles <- function(variables_where) {
   nms <- names(variables_where)
   length(variables_where) > 0L &&
     !is.null(nms) &&
@@ -107,11 +107,11 @@ axes_declared_by_role <- function(variables_where) {
 ensure_valid_axis_roles <- function(axes) {
   roles <- names(axes)
 
-  unknown <- setdiff(roles, known_axis_roles())
+  unknown <- setdiff(roles, list_axis_roles())
   if (length(unknown) > 0L) {
     cli::cli_abort(c(
       "{cli::qty(unknown)}{?Axis role/Axis roles} {.val {unknown}} {?is/are} not recognised.",
-      "i" = "Roles are {.val {known_axis_roles()}}.",
+      "i" = "Roles are {.val {list_axis_roles()}}.",
       "i" = "The role set is closed so that transformations between coordinate systems stay well defined; the column names are free."
     ))
   }
@@ -123,10 +123,10 @@ ensure_valid_axis_roles <- function(axes) {
     )
   }
 
-  if (!paste(sort(roles), collapse = ",") %in% names(axis_role_sets())) {
+  if (!paste(sort(roles), collapse = ",") %in% names(list_axis_role_sets())) {
     cli::cli_abort(c(
       "Axis roles {.val {roles}} do not form a coordinate system.",
-      "i" = "Recognised combinations are {.val {names(axis_role_sets())}}."
+      "i" = "Recognised combinations are {.val {names(list_axis_role_sets())}}."
     ))
   }
 
@@ -269,7 +269,7 @@ warn_shadowed_axis_roles <- function(axes, columns) {
 set_axes <- function(data, axes) {
   ensure_is_aniframe(data)
   ensure_variables_chr(axes)
-  if (!axes_declared_by_role(axes)) {
+  if (!has_axis_roles(axes)) {
     cli::cli_abort(c(
       "{.arg axes} must name an axis role for every column.",
       "i" = "For example {.code c(x = \"u\", y = \"v\")}.",

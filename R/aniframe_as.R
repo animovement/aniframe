@@ -284,7 +284,7 @@ infer_coordinate_system <- function(variables_where) {
   roles <- names(normalise_axes(variables_where))
   key <- paste(sort(roles), collapse = ",")
 
-  coord_map <- axis_role_sets()
+  coord_map <- list_axis_role_sets()
   if (key %in% names(coord_map)) {
     return(coord_map[[key]])
   }
@@ -293,7 +293,7 @@ infer_coordinate_system <- function(variables_where) {
   # recognised but do not combine into a system (a spherical frame that has
   # lost `rho`, say) need the coordinates converting, whereas names that are
   # not roles at all just need declaring.
-  hint <- if (length(roles) > 0L && all(roles %in% known_axis_roles())) {
+  hint <- if (length(roles) > 0L && all(roles %in% list_axis_roles())) {
     "Convert the coordinates to a system these axes do form; {.pkg anispace} has the transformations."
   } else {
     "To keep the coordinate system, say which axis each column carries with {.fn set_axes}."

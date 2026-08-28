@@ -117,13 +117,13 @@ test_that("set_variables_where() accepts a role mapping", {
   )
 })
 
-test_that("axis_role_sets() and infer_coordinate_system() agree", {
+test_that("list_axis_role_sets() and infer_coordinate_system() agree", {
   # The inference reads its map from the same place the validator does, so
   # a role set can never be accepted and then fail to infer.
-  for (key in names(axis_role_sets())) {
+  for (key in names(list_axis_role_sets())) {
     roles <- strsplit(key, ",", fixed = TRUE)[[1]]
     axes <- stats::setNames(roles, roles)
-    expect_equal(infer_coordinate_system(axes), axis_role_sets()[[key]])
+    expect_equal(infer_coordinate_system(axes), list_axis_role_sets()[[key]])
   }
 })
 
