@@ -6,13 +6,13 @@
   so that all packages stay consistent.
 -->
 
-`aniframe` is part of the [animovement](https://animovement.dev) suite — the core data structures that the rest of the suite is built on.
+`anicore` is part of the [animovement](https://animovement.dev) suite — the core data structures that the rest of the suite is built on.
 
 ## Where to look things up
 
-- **This package's API** — <https://animovement.dev/aniframe/llms.txt> lists every exported
+- **This package's API** — <https://animovement.dev/anicore/llms.txt> lists every exported
   function, grouped, with a one-line description. Full help for one function, including its exact
-  signature, is at `https://animovement.dev/aniframe/reference/<function>.md`.
+  signature, is at `https://animovement.dev/anicore/reference/<function>.md`.
 - **Which package owns what** — <https://github.com/animovement/animovement-agents> maps the suite:
   the aniframe data model, and the verb prefixes each package owns.
 - **How we work** — [CONTRIBUTING.md](https://github.com/animovement/.github/blob/main/CONTRIBUTING.md).
@@ -31,7 +31,7 @@ installed package.
 - **Run the tests** — `devtools::test()`. Do not rely on code looking correct.
 - **Do not push to `main`.** It is protected; open a pull request. Checks must pass before merging.
 - **Write the pull request title as a [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/)**
-  — `fix(aniframe): keep metadata through filter_kalman()`. Merges squash, so the title becomes the
+  — `fix(anicore): keep metadata through filter_kalman()`. Merges squash, so the title becomes the
   commit on `main`, and a workflow checks it. Types and the breaking-change rule are in
   [CONTRIBUTING.md](https://github.com/animovement/.github/blob/main/CONTRIBUTING.md#commit-messages).
 - **Fill in the pull request template** rather than replacing it with generated prose.
