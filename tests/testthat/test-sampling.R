@@ -168,7 +168,7 @@ test_that("no gaps are taken when the index column is gone", {
   af <- example_aniframe(n_obs = 5, n_individuals = 1, n_keypoints = 1)
   stripped <- suppressWarnings(dplyr::select(dplyr::ungroup(af), -"time"))
 
-  expect_equal(sampling_gaps(stripped), numeric())
+  expect_equal(compute_sampling_gaps(stripped), numeric())
 })
 
 test_that("the interval is NA when metadata predates the field", {

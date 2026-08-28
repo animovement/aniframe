@@ -25,7 +25,7 @@
 #'
 #' @return Numeric vector of gaps, empty when there are none to take.
 #' @keywords internal
-sampling_gaps <- function(data) {
+compute_sampling_gaps <- function(data) {
   md <- get_metadata(data)
   index <- resolve_index(md)
   if (!index %in% names(data)) {
@@ -60,8 +60,8 @@ sampling_gaps <- function(data) {
 #'
 #' @return Numeric scalar, or `NA` when the frame has no gaps to measure.
 #' @keywords internal
-derive_sampling_interval <- function(data) {
-  gaps <- sampling_gaps(data)
+compute_sampling_interval <- function(data) {
+  gaps <- compute_sampling_gaps(data)
   if (length(gaps) == 0L) {
     return(as.numeric(NA))
   }
@@ -137,7 +137,7 @@ is_sampling_regular <- function(data, tolerance = 1e-6) {
     cli::cli_abort("{.arg tolerance} must be a single number.")
   }
 
-  gaps <- sampling_gaps(data)
+  gaps <- compute_sampling_gaps(data)
   if (length(gaps) == 0L) {
     return(NA)
   }
@@ -184,7 +184,7 @@ warn_sampling_rate_mismatch <- function(data) {
     return(invisible(TRUE))
   }
 
-  observed <- interval * seconds_per_time_unit(unit, rate)
+  observed <- interval * compute_seconds_per_time_unit(unit, rate)
   expected <- 1 / rate
   if (!is.na(observed) && abs(observed - expected) > 1e-6 * expected) {
     cli::cli_warn(c(

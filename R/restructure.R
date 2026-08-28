@@ -166,7 +166,7 @@ restructure_aniframe <- function(
   out <- preserve_animovement_class(bare, cls, md)
 
   # Derived from the finished frame, so it measures the data as it now is.
-  md$sampling_interval <- derive_sampling_interval(out)
+  md$sampling_interval <- compute_sampling_interval(out)
   attach_metadata(out, md)
 }
 
