@@ -9,7 +9,9 @@ get_metadata(data, fields = NULL)
 \arguments{
 \item{data}{An aniframe or anievent object.}
 
-\item{fields}{If only specific metadata fields should be returned.}
+\item{fields}{If only specific metadata fields should be returned. A field
+the object does not carry gives \code{NULL}; a name that is not a metadata
+field at all is an error.}
 }
 \value{
 The metadata associated with the object.

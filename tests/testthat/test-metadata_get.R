@@ -23,3 +23,19 @@ test_that("get_metadata() returns a sub-list when fields has length > 1", {
   expect_equal(sub$sampling_rate, 30)
   expect_equal(sub$source, "test")
 })
+
+test_that("a field the object does not carry gives NULL", {
+  af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+  md <- attr(af, "metadata")
+  md[["sampling_rate"]] <- NULL
+  attr(af, "metadata") <- md
+
+  expect_null(get_metadata(af, "sampling_rate"))
+})
+
+test_that("asking for something that is not a field is an error", {
+  af <- example_aniframe(n_obs = 3, n_individuals = 1, n_keypoints = 1)
+
+  expect_error(get_metadata(af, "sampling_frequency"), "not a metadata field")
+  expect_error(get_metadata(af, c("origin", "y_hight")), "not a metadata field")
+})
