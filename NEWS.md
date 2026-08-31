@@ -2,6 +2,10 @@
 
 ## Added
 
+* `convert_inf_to_na()`, the sibling of `convert_nan_to_na()`, for sources that mark a missing observation with an infinity rather than a `NaN`. TRex is one — its own documentation masks `np.inf` out before plotting, and its `missing` flag is 1 in exactly those frames. Left in place an `Inf` propagates through arithmetic silently, so one untracked frame turns a mean or a speed into `Inf` rather than into a missing value (animovement/aniread#116).
+
+## Added
+
 * A `source_format` metadata field, recording which export layout a file was read as (animovement/aniread#118). Tracking software changes its export layout between releases — FreeMoCap's tidy CSV gained a `reprojection_error` column at v1.8.0, and its wide per-model CSVs are a different layout again — so `source` alone does not say what was parsed. Readers set it to a short layout name such as `"by_frame_9col"`.
 
   It is deliberately separate from `source_version`, which stays reserved for a version the file actually states. Most tracking formats record none, and a layout inferred from a column count must not be stored as though it had been read. Where both are known, both are set.

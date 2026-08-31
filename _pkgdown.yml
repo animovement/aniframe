@@ -151,4 +151,5 @@ reference:
     desc:
     contents:
     - convert_nan_to_na
+    - convert_inf_to_na
 

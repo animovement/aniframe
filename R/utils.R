@@ -17,6 +17,33 @@ convert_nan_to_na <- function(data) {
   )
 }
 
+#' Convert Inf to NA in numeric columns
+#'
+#' Replaces all `Inf` and `-Inf` values with `NA` in numeric columns of a
+#' data frame. The sibling of [convert_nan_to_na()], for sources that mark a
+#' missing observation with an infinity rather than a `NaN` — TRex is one,
+#' and its own documentation masks `np.inf` out before plotting.
+#'
+#' Worth doing at read time rather than later: an `Inf` propagates through
+#' arithmetic silently, so a single untracked frame turns a mean, a speed or
+#' a bounding box into `Inf` rather than into a missing value.
+#'
+#' @param data A data frame.
+#' @return A data frame with `Inf` and `-Inf` replaced by `NA` in numeric
+#'   columns.
+#' @examples
+#' df <- data.frame(x = c(1, Inf, -Inf, 3))
+#' convert_inf_to_na(df)
+#' @export
+convert_inf_to_na <- function(data) {
+  dplyr::mutate(
+    data,
+    dplyr::across(dplyr::where(is.numeric), function(x) {
+      ifelse(is.infinite(x), NA, x)
+    })
+  )
+}
+
 #' Identity variable names recognised across the animovement classes
 #'
 #' The identity (`what`) columns auto-detection looks for, shared by
