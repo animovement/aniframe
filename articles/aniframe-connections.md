@@ -183,17 +183,17 @@ example_aniframe(n_keypoints = 5) |>
 #> # Keypoints:   head, neck, shoulder_right, shoulder_left, abdomen
 #> # Sessions:    1
 #> # Trials:      1
-#>    individual keypoint session trial  time       x       y confidence
-#>         <int> <fct>      <int> <int> <int>   <dbl>   <dbl>      <dbl>
-#>  1          1 head           1     1     1 -0.475  -0.903       0.816
-#>  2          1 head           1     1     2 -0.700   1.10        0.833
-#>  3          1 head           1     1     3  0.0731 -0.0730      0.721
-#>  4          1 head           1     1     4 -1.83   -2.21        0.349
-#>  5          1 head           1     1     5 -0.718   0.900       0.928
-#>  6          1 head           1     1     6  1.19    0.503       0.289
-#>  7          1 head           1     1     7  0.0620  1.70        0.631
-#>  8          1 head           1     1     8  0.0220 -1.27        0.742
-#>  9          1 head           1     1     9 -0.762  -0.0147      0.625
-#> 10          1 head           1     1    10 -0.383  -2.00        0.813
+#>    individual keypoint session trial  time      x      y confidence
+#>         <int> <fct>      <int> <int> <int>  <dbl>  <dbl>      <dbl>
+#>  1          1 head           1     1     1 -0.996 -0.707      0.637
+#>  2          1 head           1     1     2  1.08  -0.565      0.481
+#>  3          1 head           1     1     3  0.609  1.05       0.539
+#>  4          1 head           1     1     4 -0.703  0.383      0.880
+#>  5          1 head           1     1     5  0.873 -0.605      0.873
+#>  6          1 head           1     1     6 -0.787  0.116      0.619
+#>  7          1 head           1     1     7  2.13  -1.43       0.932
+#>  8          1 head           1     1     8  0.629  1.55       0.814
+#>  9          1 head           1     1     9 -0.479  0.695      0.706
+#> 10          1 head           1     1    10 -1.03   0.681      0.789
 #> # ℹ 740 more rows
 ```
