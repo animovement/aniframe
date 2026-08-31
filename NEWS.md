@@ -6,6 +6,12 @@
 
   It is deliberately separate from `source_version`, which stays reserved for a version the file actually states. Most tracking formats record none, and a layout inferred from a column count must not be stored as though it had been read. Where both are known, both are set.
 
+* Circular descriptive statistics, beside the existing angle utilities: `circ_median()` (Fisher's median), `circ_mean()`, `circ_sd()` and `circ_mad()`. Where two directions tie for the median, they are averaged **on the circle**: averaging them arithmetically returns their antipode when the tie straddles zero, which is 180 degrees from the answer. Angles have no smallest or largest value, so the ordinary median and standard deviation do not apply — the mean of 350 and 10 degrees is 0, not 180 (#147).
+
+* `circ_difference()` and `circ_successive_difference()`, moved here from anispace, where they were `calculate_angular_difference()` and `diff_angle()`. The first is the shortest signed distance between two angles you name; the second applies it along a series, comparing each angle with the one before it. Both are general-purpose primitives rather than spatial transforms — `circ_difference()` is the one the circular summaries are built on — so anicore owns them alongside the rest of the angle utilities (#147).
+
+  The rename follows the convention these settle on: `circ_*()` for functions that compute with the wraparound, where an ordinary mean or difference would give the wrong answer, and `*_angle()` or `x_to_y()` for manipulating how an angle is written.
+
 ## Changed
 
 * `spec_version` moves to `aniframe = "2.1.0"` and `anievent = "0.4.0"`. Minor for both: each gains `source_format` as `NA`. Objects serialised before the field existed continue to validate.
@@ -253,7 +259,7 @@ Spatial transformations leave aniframe for [anispace](https://github.com/animove
 
 ## Removed
 
-* The coordinate transformations `map_to_cartesian()`, `map_to_polar()`, `map_to_cylindrical()` and `map_to_spherical()`, the component converters `cartesian_to_rho()`, `cartesian_to_phi()`, `cartesian_to_theta()`, `polar_to_x()`, `polar_to_y()` and `spherical_to_z()`, the rigid transforms `rotate_coords()`, `translate_coords()` and `transform_to_egocentric()`, and the angle helpers `wrap_angle()`, `unwrap_angle()`, `diff_angle()` and `calculate_angular_difference()`. All are available from anispace.
+* The coordinate transformations `map_to_cartesian()`, `map_to_polar()`, `map_to_cylindrical()` and `map_to_spherical()`, the component converters `cartesian_to_rho()`, `cartesian_to_phi()`, `cartesian_to_theta()`, `polar_to_x()`, `polar_to_y()` and `spherical_to_z()`, the rigid transforms `rotate_coords()`, `translate_coords()` and `transform_to_egocentric()`, and the angle helpers `wrap_angle()`, `unwrap_angle()`, `diff_angle()` and `circ_difference()`. All are available from anispace.
 
 # aniframe 0.2.5
 
@@ -294,7 +300,7 @@ Spatial transformations leave aniframe for [anispace](https://github.com/animove
 * Unit handling: `set_unit_space()`, `set_unit_angle()`, `set_unit_time()` and `set_sampling_rate()`.
 * Coordinate transformations: `map_to_cartesian()`, `map_to_polar()`, `map_to_cylindrical()` and `map_to_spherical()`, with the component converters `cartesian_to_rho()`, `cartesian_to_phi()`, `cartesian_to_theta()`, `polar_to_x()`, `polar_to_y()` and `spherical_to_z()`.
 * Rigid transformations: `rotate_coords()`, `translate_coords()` and `transform_to_egocentric()`.
-* Angle handling: `deg_to_rad()`, `rad_to_deg()`, `constrain_angles_radians()`, `calculate_angular_difference()` and `diff_angle()`.
+* Angle handling: `deg_to_rad()`, `rad_to_deg()`, `constrain_angles_radians()`, `circ_difference()` and `diff_angle()`.
 * `ensure_is_aniframe()`, a guard for functions that require an aniframe.
 * Trackball calibration, via `get_trackball_calibration_factor()`.
 
