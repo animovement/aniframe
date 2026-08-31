@@ -21,7 +21,16 @@ A named list with the following fields:
 
 - `source`: Data source identifier (character, NA)
 
-- `source_version`: Version of the data source (character, NA)
+- `source_version`: Version of the software that wrote the file
+  (character, NA). Set only when the file states it — most tracking
+  formats record no version, and an inferred one must not be stored
+  here.
+
+- `source_format`: The export layout the file was read as (character,
+  NA), e.g. `"by_frame_9col"`. Software changes its export layout
+  between releases, so knowing which variant was parsed is what makes
+  drift visible. Unlike `source_version` this is normally derived from
+  the file's structure rather than read from a version string.
 
 - `filename`: Original filename(s) (character vector, NA). Accepts a
   vector of length 1 or more — readers that load from multiple files
@@ -160,12 +169,12 @@ it cannot honour (#73).
 
 ``` r
 names(list_default_metadata())
-#>  [1] "source"            "source_version"    "filename"         
-#>  [4] "sampling_rate"     "sampling_interval" "start_datetime"   
-#>  [7] "variables_index"   "variables_what"    "variables_when"   
-#> [10] "variables_where"   "variables_event"   "axes"             
-#> [13] "unit_space"        "unit_angle"        "unit_time"        
-#> [16] "reference_frame"   "coordinate_system" "axis_directions"  
-#> [19] "axis_extents"      "handedness"        "connections"      
-#> [22] "spec_version"     
+#>  [1] "source"            "source_version"    "source_format"    
+#>  [4] "filename"          "sampling_rate"     "sampling_interval"
+#>  [7] "start_datetime"    "variables_index"   "variables_what"   
+#> [10] "variables_when"    "variables_where"   "variables_event"  
+#> [13] "axes"              "unit_space"        "unit_angle"       
+#> [16] "unit_time"         "reference_frame"   "coordinate_system"
+#> [19] "axis_directions"   "axis_extents"      "handedness"       
+#> [22] "connections"       "spec_version"     
 ```

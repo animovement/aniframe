@@ -2,7 +2,26 @@
 
 ## anicore (development version)
 
+### Added
+
+- A `source_format` metadata field, recording which export layout a file
+  was read as (animovement/aniread#118). Tracking software changes its
+  export layout between releases — FreeMoCap’s tidy CSV gained a
+  `reprojection_error` column at v1.8.0, and its wide per-model CSVs are
+  a different layout again — so `source` alone does not say what was
+  parsed. Readers set it to a short layout name such as
+  `"by_frame_9col"`.
+
+  It is deliberately separate from `source_version`, which stays
+  reserved for a version the file actually states. Most tracking formats
+  record none, and a layout inferred from a column count must not be
+  stored as though it had been read. Where both are known, both are set.
+
 ### Changed
+
+- `spec_version` moves to `aniframe = "2.1.0"` and `anievent = "0.4.0"`.
+  Minor for both: each gains `source_format` as `NA`. Objects serialised
+  before the field existed continue to validate.
 
 - The order of `variables_what` no longer asserts a hierarchy
   ([\#140](https://github.com/animovement/anicore/issues/140),

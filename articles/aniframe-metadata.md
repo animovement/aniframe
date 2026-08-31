@@ -36,6 +36,7 @@ get_metadata(data)
 #> ── animovement metadata ────────────────────────────────────────────────────────
 #> source            (character) : <NA>
 #> source_version    (character) : <NA>
+#> source_format     (character) : <NA>
 #> filename          (character) : <NA>
 #> sampling_rate     (numeric)   : <NA>
 #> sampling_interval (numeric)   : 1
@@ -61,7 +62,7 @@ get_metadata(data)
 #> handedness        (factor)    : "unknown"
 #>                                 [levels: right, left, unknown]
 #> connections       (list)      : 
-#> spec_version      (list)      : "2.0.0, 0.3.0"
+#> spec_version      (list)      : "2.1.0, 0.4.0"
 ```
 
 The fields and their defaults are defined in one place,
@@ -72,9 +73,10 @@ looks like.
 ``` r
 
 str(list_default_metadata(), max.level = 1)
-#> List of 22
+#> List of 23
 #>  $ source           : chr NA
 #>  $ source_version   : chr NA
+#>  $ source_format    : chr NA
 #>  $ filename         : chr NA
 #>  $ sampling_rate    : num NA
 #>  $ sampling_interval: num NA

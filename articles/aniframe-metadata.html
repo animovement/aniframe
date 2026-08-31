@@ -114,6 +114,7 @@
 <span><span class="co">#&gt; ── animovement metadata ────────────────────────────────────────────────────────</span></span>
 <span><span class="co">#&gt; source            (character) : &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; source_version    (character) : &lt;NA&gt;</span></span>
+<span><span class="co">#&gt; source_format     (character) : &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; filename          (character) : &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; sampling_rate     (numeric)   : &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; sampling_interval (numeric)   : 1</span></span>
@@ -139,15 +140,16 @@
 <span><span class="co">#&gt; handedness        (factor)    : "unknown"</span></span>
 <span><span class="co">#&gt;                                 [levels: right, left, unknown]</span></span>
 <span><span class="co">#&gt; connections       (list)      : </span></span>
-<span><span class="co">#&gt; spec_version      (list)      : "2.0.0, 0.3.0"</span></span></code></pre></div>
+<span><span class="co">#&gt; spec_version      (list)      : "2.1.0, 0.4.0"</span></span></code></pre></div>
 </div>
 <p>The fields and their defaults are defined in one place, <code><a href="../reference/list_default_metadata.html">list_default_metadata()</a></code> — that’s the canonical source of truth for what an <code>aniframe</code>’s metadata looks like.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="../reference/list_default_metadata.html">list_default_metadata</a></span><span class="op">(</span><span class="op">)</span>, max.level <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; List of 22</span></span>
+<span><span class="co">#&gt; List of 23</span></span>
 <span><span class="co">#&gt;  $ source           : chr NA</span></span>
 <span><span class="co">#&gt;  $ source_version   : chr NA</span></span>
+<span><span class="co">#&gt;  $ source_format    : chr NA</span></span>
 <span><span class="co">#&gt;  $ filename         : chr NA</span></span>
 <span><span class="co">#&gt;  $ sampling_rate    : num NA</span></span>
 <span><span class="co">#&gt;  $ sampling_interval: num NA</span></span>

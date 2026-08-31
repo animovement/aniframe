@@ -89,14 +89,14 @@ field at all is an error.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">af</span> <span class="op">&lt;-</span> <span class="fu"><a href="example_aniframe.html">example_aniframe</a></span><span class="op">(</span>n_obs <span class="op">=</span> <span class="fl">3</span>, n_individuals <span class="op">=</span> <span class="fl">1</span>, n_keypoints <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">get_metadata</span><span class="op">(</span><span class="va">af</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "source"            "source_version"    "filename"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "sampling_rate"     "sampling_interval" "start_datetime"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "variables_index"   "variables_what"    "variables_when"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "variables_where"   "variables_event"   "axes"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "unit_space"        "unit_angle"        "unit_time"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "reference_frame"   "coordinate_system" "axis_directions"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "axis_extents"      "handedness"        "connections"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "spec_version"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "source"            "source_version"    "source_format"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "filename"          "sampling_rate"     "sampling_interval"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "start_datetime"    "variables_index"   "variables_what"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "variables_when"    "variables_where"   "variables_event"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "axes"              "unit_space"        "unit_angle"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "unit_time"         "reference_frame"   "coordinate_system"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "axis_directions"   "axis_extents"      "handedness"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "connections"       "spec_version"     </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># A single field can be pulled out by name</span></span></span>
 <span class="r-in"><span><span class="fu">get_metadata</span><span class="op">(</span><span class="va">af</span>, <span class="st">'sampling_rate'</span><span class="op">)</span></span></span>

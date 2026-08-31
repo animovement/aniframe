@@ -7,7 +7,9 @@ Character values for factor fields will be automatically converted to factors
 if they match allowed levels.
 Default metadata fields include:
 source: Data source identifier
-source_version: Version of the data source
+source_version: Version of the software that wrote the file, where
+the file states one
+source_format: The export layout the file was read as
 filename: Original filename(s) — accepts a character vector
 (length 1 or more) for readers that load from multiple files
 sampling_rate: Sampling rate in Hz
@@ -25,7 +27,9 @@ Character values for factor fields will be automatically converted to factors
 if they match allowed levels.
 Default metadata fields include:
 source: Data source identifier
-source_version: Version of the data source
+source_version: Version of the software that wrote the file, where
+the file states one
+source_format: The export layout the file was read as
 filename: Original filename(s) — accepts a character vector
 (length 1 or more) for readers that load from multiple files
 sampling_rate: Sampling rate in Hz
@@ -101,7 +105,9 @@ values taking precedence.</p>
 <p>Character values for factor fields will be automatically converted to factors
 if they match allowed levels.</p>
 <p>Default metadata fields include:</p><ul><li><p><code>source</code>: Data source identifier</p></li>
-<li><p><code>source_version</code>: Version of the data source</p></li>
+<li><p><code>source_version</code>: Version of the software that wrote the file, where
+the file states one</p></li>
+<li><p><code>source_format</code>: The export layout the file was read as</p></li>
 <li><p><code>filename</code>: Original filename(s) — accepts a character vector
 (length 1 or more) for readers that load from multiple files</p></li>
 <li><p><code>sampling_rate</code>: Sampling rate in Hz</p></li>
