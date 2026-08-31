@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">anicore</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9001</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9002</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,6 +60,11 @@
 <h2 class="pkg-version" data-toc-text="development version" id="anicore-development-version">anicore (development version)<a class="anchor" aria-label="anchor" href="#anicore-development-version"></a></h2>
 <div class="section level3">
 <h3 id="added-development-version">Added<a class="anchor" aria-label="anchor" href="#added-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/convert_inf_to_na.html">convert_inf_to_na()</a></code>, the sibling of <code><a href="../reference/convert_nan_to_na.html">convert_nan_to_na()</a></code>, for sources that mark a missing observation with an infinity rather than a <code>NaN</code>. TRex is one — its own documentation masks <code>np.inf</code> out before plotting, and its <code>missing</code> flag is 1 in exactly those frames. Left in place an <code>Inf</code> propagates through arithmetic silently, so one untracked frame turns a mean or a speed into <code>Inf</code> rather than into a missing value (animovement/aniread#116).</li>
+</ul></div>
+<div class="section level3">
+<h3 id="added-development-version-1">Added<a class="anchor" aria-label="anchor" href="#added-development-version-1"></a></h3>
 <ul><li>
 <p>A <code>source_format</code> metadata field, recording which export layout a file was read as (animovement/aniread#118). Tracking software changes its export layout between releases — FreeMoCap’s tidy CSV gained a <code>reprojection_error</code> column at v1.8.0, and its wide per-model CSVs are a different layout again — so <code>source</code> alone does not say what was parsed. Readers set it to a short layout name such as <code>"by_frame_9col"</code>.</p>
 <p>It is deliberately separate from <code>source_version</code>, which stays reserved for a version the file actually states. Most tracking formats record none, and a layout inferred from a column count must not be stored as though it had been read. Where both are known, both are set.</p>

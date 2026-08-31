@@ -217,3 +217,5 @@ the wrong answer, since the mean of 350 and 10 degrees is 0, not 180.
 
 - [`convert_nan_to_na()`](https://animovement.dev/anicore/reference/convert_nan_to_na.md)
   : Convert NaN to NA in numeric columns
+- [`convert_inf_to_na()`](https://animovement.dev/anicore/reference/convert_inf_to_na.md)
+  : Convert Inf to NA in numeric columns

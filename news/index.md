@@ -4,6 +4,18 @@
 
 ### Added
 
+- [`convert_inf_to_na()`](https://animovement.dev/anicore/reference/convert_inf_to_na.md),
+  the sibling of
+  [`convert_nan_to_na()`](https://animovement.dev/anicore/reference/convert_nan_to_na.md),
+  for sources that mark a missing observation with an infinity rather
+  than a `NaN`. TRex is one — its own documentation masks `np.inf` out
+  before plotting, and its `missing` flag is 1 in exactly those frames.
+  Left in place an `Inf` propagates through arithmetic silently, so one
+  untracked frame turns a mean or a speed into `Inf` rather than into a
+  missing value (animovement/aniread#116).
+
+### Added
+
 - A `source_format` metadata field, recording which export layout a file
   was read as (animovement/aniread#118). Tracking software changes its
   export layout between releases — FreeMoCap’s tidy CSV gained a
