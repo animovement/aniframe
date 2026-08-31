@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">anicore</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -530,8 +530,13 @@
         </dt>
         <dd>Internal guard for spherical checks</dd>
       </dl></div><div class="section level2">
-      <h2 id="helpers">Helpers<a class="anchor" aria-label="anchor" href="#helpers"></a></h2>
+      <h2 id="angles">Angles<a class="anchor" aria-label="anchor" href="#angles"></a></h2>
 
+      <div class="section-desc"><p>Two families, and the difference matters. <code>*_angle()</code> and the <code>x_to_y()</code> conversions manipulate how an angle is written. The <code>circ_*()</code> functions compute with the wraparound: an ordinary mean or median of angles gives the wrong answer, since the mean of 350 and 10 degrees is 0, not 180.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+      <h3 id="handling-angles">Handling angles<a class="anchor" aria-label="anchor" href="#handling-angles"></a></h3>
 
 
       <dl></dl></div><div class="section level2">
@@ -566,8 +571,68 @@
 
         </dt>
         <dd>Remove wrapping from a sequence of angles</dd>
+      </dl></div><div class="section level2">
+
+      <h3 id="circular-statistics">Circular statistics<a class="anchor" aria-label="anchor" href="#circular-statistics"></a></h3>
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="circ_difference.html">circ_difference()</a></code>
+
+        </dt>
+        <dd>Shortest signed distance between two angles</dd>
 
         <dt>
+
+          <code><a href="circ_successive_difference.html">circ_successive_difference()</a></code>
+
+        </dt>
+        <dd>Differences between successive angles in a series</dd>
+
+        <dt>
+
+          <code><a href="circ_mean.html">circ_mean()</a></code>
+
+        </dt>
+        <dd>Circular mean</dd>
+
+        <dt>
+
+          <code><a href="circ_median.html">circ_median()</a></code>
+
+        </dt>
+        <dd>Circular median</dd>
+
+        <dt>
+
+          <code><a href="circ_sd.html">circ_sd()</a></code>
+
+        </dt>
+        <dd>Circular standard deviation</dd>
+
+        <dt>
+
+          <code><a href="circ_mad.html">circ_mad()</a></code>
+
+        </dt>
+        <dd>Circular median absolute deviation</dd>
+      </dl></div><div class="section level2">
+      <h2 id="helpers">Helpers<a class="anchor" aria-label="anchor" href="#helpers"></a></h2>
+
+
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
 
           <code><a href="convert_nan_to_na.html">convert_nan_to_na()</a></code>
 

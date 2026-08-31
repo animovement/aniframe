@@ -27,6 +27,12 @@
 <url><loc>https://animovement.dev/anicore/reference/cash-.aniframe.html</loc></url>
 <url><loc>https://animovement.dev/anicore/reference/cash-set-.anievent.html</loc></url>
 <url><loc>https://animovement.dev/anicore/reference/cash-set-.aniframe.html</loc></url>
+<url><loc>https://animovement.dev/anicore/reference/circ_difference.html</loc></url>
+<url><loc>https://animovement.dev/anicore/reference/circ_mad.html</loc></url>
+<url><loc>https://animovement.dev/anicore/reference/circ_mean.html</loc></url>
+<url><loc>https://animovement.dev/anicore/reference/circ_median.html</loc></url>
+<url><loc>https://animovement.dev/anicore/reference/circ_sd.html</loc></url>
+<url><loc>https://animovement.dev/anicore/reference/circ_successive_difference.html</loc></url>
 <url><loc>https://animovement.dev/anicore/reference/compute_sampling_gaps.html</loc></url>
 <url><loc>https://animovement.dev/anicore/reference/compute_sampling_interval.html</loc></url>
 <url><loc>https://animovement.dev/anicore/reference/compute_seconds_per_time_unit.html</loc></url>

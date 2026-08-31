@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">anicore</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.8.0.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,11 @@
 <ul><li>
 <p>A <code>source_format</code> metadata field, recording which export layout a file was read as (animovement/aniread#118). Tracking software changes its export layout between releases — FreeMoCap’s tidy CSV gained a <code>reprojection_error</code> column at v1.8.0, and its wide per-model CSVs are a different layout again — so <code>source</code> alone does not say what was parsed. Readers set it to a short layout name such as <code>"by_frame_9col"</code>.</p>
 <p>It is deliberately separate from <code>source_version</code>, which stays reserved for a version the file actually states. Most tracking formats record none, and a layout inferred from a column count must not be stored as though it had been read. Where both are known, both are set.</p>
+</li>
+<li><p>Circular descriptive statistics, beside the existing angle utilities: <code><a href="../reference/circ_median.html">circ_median()</a></code> (Fisher’s median), <code><a href="../reference/circ_mean.html">circ_mean()</a></code>, <code><a href="../reference/circ_sd.html">circ_sd()</a></code> and <code><a href="../reference/circ_mad.html">circ_mad()</a></code>. Where two directions tie for the median, they are averaged <strong>on the circle</strong>: averaging them arithmetically returns their antipode when the tie straddles zero, which is 180 degrees from the answer. Angles have no smallest or largest value, so the ordinary median and standard deviation do not apply — the mean of 350 and 10 degrees is 0, not 180 (<a href="https://github.com/animovement/anicore/issues/147" class="external-link">#147</a>).</p></li>
+<li>
+<p><code><a href="../reference/circ_difference.html">circ_difference()</a></code> and <code><a href="../reference/circ_successive_difference.html">circ_successive_difference()</a></code>, moved here from anispace, where they were <code>calculate_angular_difference()</code> and <code>diff_angle()</code>. The first is the shortest signed distance between two angles you name; the second applies it along a series, comparing each angle with the one before it. Both are general-purpose primitives rather than spatial transforms — <code><a href="../reference/circ_difference.html">circ_difference()</a></code> is the one the circular summaries are built on — so anicore owns them alongside the rest of the angle utilities (<a href="https://github.com/animovement/anicore/issues/147" class="external-link">#147</a>).</p>
+<p>The rename follows the convention these settle on: <code>circ_*()</code> for functions that compute with the wraparound, where an ordinary mean or difference would give the wrong answer, and <code>*_angle()</code> or <code>x_to_y()</code> for manipulating how an angle is written.</p>
 </li>
 </ul></div>
 <div class="section level3">

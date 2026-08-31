@@ -17,6 +17,39 @@
   record none, and a layout inferred from a column count must not be
   stored as though it had been read. Where both are known, both are set.
 
+- Circular descriptive statistics, beside the existing angle utilities:
+  [`circ_median()`](https://animovement.dev/anicore/reference/circ_median.md)
+  (Fisher’s median),
+  [`circ_mean()`](https://animovement.dev/anicore/reference/circ_mean.md),
+  [`circ_sd()`](https://animovement.dev/anicore/reference/circ_sd.md)
+  and
+  [`circ_mad()`](https://animovement.dev/anicore/reference/circ_mad.md).
+  Where two directions tie for the median, they are averaged **on the
+  circle**: averaging them arithmetically returns their antipode when
+  the tie straddles zero, which is 180 degrees from the answer. Angles
+  have no smallest or largest value, so the ordinary median and standard
+  deviation do not apply — the mean of 350 and 10 degrees is 0, not 180
+  ([\#147](https://github.com/animovement/anicore/issues/147)).
+
+- [`circ_difference()`](https://animovement.dev/anicore/reference/circ_difference.md)
+  and
+  [`circ_successive_difference()`](https://animovement.dev/anicore/reference/circ_successive_difference.md),
+  moved here from anispace, where they were
+  `calculate_angular_difference()` and `diff_angle()`. The first is the
+  shortest signed distance between two angles you name; the second
+  applies it along a series, comparing each angle with the one before
+  it. Both are general-purpose primitives rather than spatial transforms
+  —
+  [`circ_difference()`](https://animovement.dev/anicore/reference/circ_difference.md)
+  is the one the circular summaries are built on — so anicore owns them
+  alongside the rest of the angle utilities
+  ([\#147](https://github.com/animovement/anicore/issues/147)).
+
+  The rename follows the convention these settle on: `circ_*()` for
+  functions that compute with the wraparound, where an ordinary mean or
+  difference would give the wrong answer, and `*_angle()` or `x_to_y()`
+  for manipulating how an angle is written.
+
 ### Changed
 
 - `spec_version` moves to `aniframe = "2.1.0"` and `anievent = "0.4.0"`.

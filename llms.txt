@@ -232,7 +232,14 @@ the frame is in, which follows from the axis roles it declares.
 - [`ensure_is_spherical()`](https://animovement.dev/anicore/reference/ensure_is_spherical.md)
   : Internal guard for spherical checks
 
-## Helpers
+## Angles
+
+Two families, and the difference matters. `*_angle()` and the `x_to_y()`
+conversions manipulate how an angle is written. The `circ_*()` functions
+compute with the wraparound: an ordinary mean or median of angles gives
+the wrong answer, since the mean of 350 and 10 degrees is 0, not 180.
+
+### Handling angles
 
 - [`rad_to_deg()`](https://animovement.dev/anicore/reference/rad_to_deg.md)
   : Convert radians to degrees
@@ -242,6 +249,24 @@ the frame is in, which follows from the axis roles it declares.
   : Constrain angles to a standard range
 - [`unwrap_angle()`](https://animovement.dev/anicore/reference/unwrap_angle.md)
   : Remove wrapping from a sequence of angles
+
+### Circular statistics
+
+- [`circ_difference()`](https://animovement.dev/anicore/reference/circ_difference.md)
+  : Shortest signed distance between two angles
+- [`circ_successive_difference()`](https://animovement.dev/anicore/reference/circ_successive_difference.md)
+  : Differences between successive angles in a series
+- [`circ_mean()`](https://animovement.dev/anicore/reference/circ_mean.md)
+  : Circular mean
+- [`circ_median()`](https://animovement.dev/anicore/reference/circ_median.md)
+  : Circular median
+- [`circ_sd()`](https://animovement.dev/anicore/reference/circ_sd.md) :
+  Circular standard deviation
+- [`circ_mad()`](https://animovement.dev/anicore/reference/circ_mad.md)
+  : Circular median absolute deviation
+
+## Helpers
+
 - [`convert_nan_to_na()`](https://animovement.dev/anicore/reference/convert_nan_to_na.md)
   : Convert NaN to NA in numeric columns
 
