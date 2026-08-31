@@ -124,12 +124,31 @@ reference:
     - ensure_is_cylindrical
     - ensure_is_spherical
 
-  - title: "Helpers"
-    desc:
+  - title: "Angles"
+    desc: >
+      Two families, and the difference matters. `*_angle()` and the `x_to_y()`
+      conversions manipulate how an angle is written. The `circ_*()` functions
+      compute with the wraparound: an ordinary mean or median of angles gives
+      the wrong answer, since the mean of 350 and 10 degrees is 0, not 180.
+
+  - subtitle: "Handling angles"
     contents:
     - rad_to_deg
     - deg_to_rad
     - wrap_angle
     - unwrap_angle
+
+  - subtitle: "Circular statistics"
+    contents:
+    - circ_difference
+    - circ_successive_difference
+    - circ_mean
+    - circ_median
+    - circ_sd
+    - circ_mad
+
+  - title: "Helpers"
+    desc:
+    contents:
     - convert_nan_to_na
 
