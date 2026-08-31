@@ -101,7 +101,7 @@
 
 * `as_aniframe()` keeps the roles a frame already declares rather than re-deriving them, so casting an aniframe is no longer destructive (#96). A declaration whose columns have since been dropped still falls through to detection, so a cast continues to repair a drifted frame.
 
-# aniframe 0.7.0 (2026-08-18)
+# anicore 0.7.0 (2026-08-18, as aniframe)
 
 ## Added
 
@@ -131,7 +131,7 @@
 
 * An `anievent` no longer claims spatial properties it cannot have, such as a BORIS export announcing `origin: bottom_left` (#73). `unit_angle`, `origin` and `reference_frame` gain a `"none"` level.
 
-# aniframe 0.6.0 (2026-06-24)
+# anicore 0.6.0 (2026-06-24, as aniframe)
 
 ## Added
 
@@ -159,7 +159,7 @@
 
 * The metadata print heading reads "animovement metadata", since the substrate is shared by both classes (#69). The S3 class name is unchanged.
 
-# aniframe 0.5.0 (2026-05-04)
+# anicore 0.5.0 (2026-05-04, as aniframe)
 
 ## Added
 
@@ -193,13 +193,13 @@
 
 * `as_aniframe()` no longer mis-classifies cylindrical (`rho`, `phi`, `z`) and spherical (`rho`, `phi`, `theta`) data as Cartesian (#44). Detection recognises the `rho` + `phi` signature first, so cylindrical data is no longer reduced to `cartesian_1d` by its `z` column. Cylindrical spatial columns are now ordered `rho`, `phi`, `z` (#43).
 
-# aniframe 0.4.1
+# anicore 0.4.1 (as aniframe)
 
 ## Fixed
 
 * Corrected metadata written by `as_aniframe()`.
 
-# aniframe 0.4.0
+# anicore 0.4.0 (as aniframe)
 
 ## Added
 
@@ -211,7 +211,7 @@
 * `time` is required. A frame without it is no longer a valid aniframe.
 * An unrecognised set of spatial columns is accepted, with `coordinate_system` recorded as `"unknown"`, rather than refused.
 
-# aniframe 0.3.5
+# anicore 0.3.5 (as aniframe)
 
 ## Added
 
@@ -222,33 +222,33 @@
 
 * `get_trackball_calibration_factor()`, following the move of trackball handling to aniread.
 
-# aniframe 0.3.4
+# anicore 0.3.4 (as aniframe)
 
 ## Removed
 
 * Trackball calibration. It reads hardware output rather than describing a frame, and belongs with the readers in aniread.
 
-# aniframe 0.3.3
+# anicore 0.3.3 (as aniframe)
 
 ## Fixed
 
 * `NA` and `NaN` handling in metadata and coercion.
 * An `NA` datetime is no longer given a class, which had made empty `start_datetime` values print oddly.
 
-# aniframe 0.3.2
+# anicore 0.3.2 (as aniframe)
 
 ## Changed
 
 * `"cartesian"` is no longer a permitted `coordinate_system` value; the dimensioned forms `cartesian_1d`, `cartesian_2d` and `cartesian_3d` replace it.
 * Metadata printing and the `start_datetime` class were tidied.
 
-# aniframe 0.3.1
+# anicore 0.3.1 (as aniframe)
 
 ## Removed
 
 * `add_centroid()`. Deriving a centroid is a metric rather than a property of the frame, and belongs in animetric.
 
-# aniframe 0.3.0
+# anicore 0.3.0 (as aniframe)
 
 Spatial transformations leave aniframe for [anispace](https://github.com/animovement/anispace). aniframe keeps the coordinate *system* — what a frame is in, and how to test it — while converting between systems becomes anispace's job.
 
@@ -261,19 +261,19 @@ Spatial transformations leave aniframe for [anispace](https://github.com/animove
 
 * The coordinate transformations `map_to_cartesian()`, `map_to_polar()`, `map_to_cylindrical()` and `map_to_spherical()`, the component converters `cartesian_to_rho()`, `cartesian_to_phi()`, `cartesian_to_theta()`, `polar_to_x()`, `polar_to_y()` and `spherical_to_z()`, the rigid transforms `rotate_coords()`, `translate_coords()` and `transform_to_egocentric()`, and the angle helpers `wrap_angle()`, `unwrap_angle()`, `diff_angle()` and `circ_difference()`. All are available from anispace.
 
-# aniframe 0.2.5
+# anicore 0.2.5 (as aniframe)
 
 ## Fixed
 
 * `map_to_cartesian()` no longer adds a `z` column when converting from polar coordinates.
 
-# aniframe 0.2.4
+# anicore 0.2.4 (as aniframe)
 
 ## Changed
 
 * `set_metadata()` accepts a partial metadata list, rather than requiring every field.
 
-# aniframe 0.2.3
+# anicore 0.2.3 (as aniframe)
 
 ## Added
 
@@ -283,7 +283,7 @@ Spatial transformations leave aniframe for [anispace](https://github.com/animove
 
 * `model` is recognised as an identity column, alongside `individual` and `keypoint`.
 
-# aniframe 0.2.2
+# anicore 0.2.2 (as aniframe)
 
 ## Added
 
@@ -293,7 +293,7 @@ Spatial transformations leave aniframe for [anispace](https://github.com/animove
 
 * `constrain_angles_radians()` is renamed `wrap_angle()`.
 
-# aniframe 0.2.1
+# anicore 0.2.1 (as aniframe)
 
 ## Added
 
@@ -304,13 +304,13 @@ Spatial transformations leave aniframe for [anispace](https://github.com/animove
 * `ensure_is_aniframe()`, a guard for functions that require an aniframe.
 * Trackball calibration, via `get_trackball_calibration_factor()`.
 
-# aniframe 0.2.0 (2025-10-23)
+# anicore 0.2.0 (2025-10-23, as aniframe)
 
 ## Changed
 
 * `tbl_sum.aniframe()` is registered as an S3 method rather than exported.
 
-# aniframe 0.1.0 (2025-10-13)
+# anicore 0.1.0 (2025-10-13, as aniframe)
 
 First release. aniframe provides the core data structure for the animovement suite: a tibble subclass carrying metadata that says which columns hold identity, time and position.
 
