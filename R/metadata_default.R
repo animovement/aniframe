@@ -9,7 +9,15 @@
 #'
 #' @return A named list with the following fields:
 #' * `source`: Data source identifier (character, NA)
-#' * `source_version`: Version of the data source (character, NA)
+#' * `source_version`: Version of the software that wrote the file
+#'   (character, NA). Set only when the file states it — most tracking
+#'   formats record no version, and an inferred one must not be stored
+#'   here.
+#' * `source_format`: The export layout the file was read as (character,
+#'   NA), e.g. `"by_frame_9col"`. Software changes its export layout
+#'   between releases, so knowing which variant was parsed is what makes
+#'   drift visible. Unlike `source_version` this is normally derived from
+#'   the file's structure rather than read from a version string.
 #' * `filename`: Original filename(s) (character vector, NA). Accepts a
 #'   vector of length 1 or more — readers that load from multiple files
 #'   (e.g. `aniread::read_trackball()`) populate this with all source paths.
@@ -110,6 +118,7 @@ list_default_metadata <- function() {
   metadata <- list(
     source = as.character(NA),
     source_version = as.character(NA),
+    source_format = as.character(NA),
     filename = as.character(NA),
     sampling_rate = as.numeric(NA),
     sampling_interval = as.numeric(NA),
@@ -189,8 +198,8 @@ list_default_metadata <- function() {
     ),
     connections = list(),
     spec_version = list(
-      aniframe = "2.0.0",
-      anievent = "0.3.0"
+      aniframe = "2.1.0",
+      anievent = "0.4.0"
     )
   )
 

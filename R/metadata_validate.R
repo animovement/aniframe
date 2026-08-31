@@ -9,6 +9,7 @@ ensure_valid_metadata <- function(metadata) {
 # always have them via `list_default_metadata()`.
 list_optional_metadata_fields <- function() {
   c(
+    "source_format",
     "spec_version",
     "variables_event",
     "variables_index",

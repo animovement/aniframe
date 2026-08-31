@@ -101,7 +101,9 @@ as_metadata_factor <- function(value, field) {
 #'
 #' Default metadata fields include:
 #' * `source`: Data source identifier
-#' * `source_version`: Version of the data source
+#' * `source_version`: Version of the software that wrote the file, where
+#'   the file states one
+#' * `source_format`: The export layout the file was read as
 #' * `filename`: Original filename(s) — accepts a character vector
 #'   (length 1 or more) for readers that load from multiple files
 #' * `sampling_rate`: Sampling rate in Hz

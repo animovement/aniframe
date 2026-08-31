@@ -29,7 +29,9 @@ if they match allowed levels.
 Default metadata fields include:
 \itemize{
 \item \code{source}: Data source identifier
-\item \code{source_version}: Version of the data source
+\item \code{source_version}: Version of the software that wrote the file, where
+the file states one
+\item \code{source_format}: The export layout the file was read as
 \item \code{filename}: Original filename(s) — accepts a character vector
 (length 1 or more) for readers that load from multiple files
 \item \code{sampling_rate}: Sampling rate in Hz
